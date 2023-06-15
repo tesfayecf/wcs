@@ -1,0 +1,40 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run Django dev",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/manage.py",
+            "args": [
+                "runserver"
+            ],
+            "django": true,
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Build React App",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/backend/frontend",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run-script",
+                "build"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Run React App dev",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/backend/frontend",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run-script",
+                "start"
+            ],
+            "console": "integratedTerminal"
+        }
+    ]
+}

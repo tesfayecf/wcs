@@ -1,5 +1,5 @@
-import './globals.css'
-
+import '../styles/globals.scss'
+import Navbar from './components/navbar/Navbar'
 
 export const metadata = {
   title: 'WCS App',
@@ -16,11 +16,14 @@ export default function RootLayout({ children }: IAppLayoutProps) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-        <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
         <title>WCS</title>
       </head>
       <body>
+        <header>
+          <nav>
+            <Navbar/>
+          </nav>
+        </header>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id="rootLayout">
           {children}

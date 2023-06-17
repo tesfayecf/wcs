@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './styles/SummaryWidget.module.scss'
+import pie_svg from "./../../../../public/pie-chart-svg.svg"
 
 type ISummaryWidgetProps = {}
 
@@ -7,30 +8,19 @@ type ISummaryWidgetProps = {}
 const SummaryWidget: React.FunctionComponent<ISummaryWidgetProps> = (props: ISummaryWidgetProps) => {
   return (
 
-    <div className={styles.summary_main}>
-      <div id="title-div" className={styles.summary_main_title}>
+    <div className={styles.summary}>
+      <div id="title-div" className={styles.summary_title}>
         <p>Summary</p>
       </div>
-      <div id="content-div" className={styles.summary_main_content}>
-        {/* <div className="pie-chart-container">
-          <Pie id="pie-chart" data={ecomPieChartData} legendVisiblity={true} height="230px" width="350px" />
-        </div> */}
-        <div className={styles.summary_main_content_data}>
-          <div className={styles.summary_main_content_data_card}>
-            <p className={styles.summary_main_content_data_card_title}> Inflows </p>
-            <p className={styles.summary_main_content_data_card_element}> 900 L </p>
-            <p className={styles.summary_main_content_data_card_element}> ↑ 30% </p>
-          </div>
-          <div className={styles.summary_main_content_data_card}>
-            <p className={styles.summary_main_content_data_card_title}> Outflows </p>
-            <p className={styles.summary_main_content_data_card_element}> 500 L </p>
-            <p className={styles.summary_main_content_data_card_element}> ↓ 20% </p>
-          </div>
-          <div className={styles.summary_main_content_data_card}>
-            <p className={styles.summary_main_content_data_card_title}> Savings </p>
-            <p className={styles.summary_main_content_data_card_element}> 50 € </p>
-            <p className={styles.summary_main_content_data_card_element}> ↑ 33% </p>
-          </div>
+      <div id="content-div" className={styles.summary_content}>
+        <div id='piechart-div' className={styles.summary_content_pie_chart}>
+          {/* {pie_svg} */}
+          📈
+        </div>
+        <div className={styles.summary_content_data}>
+          <SummaryCard title='Inflows' quantity={900} unit='liter' percentage={30} />
+          <SummaryCard title='Inflows' quantity={500} unit='liter' percentage={-20} />
+          <SummaryCard title='Inflows' quantity={50} unit='liter' percentage={17} />
         </div>
       </div>
     </div>
@@ -38,3 +28,35 @@ const SummaryWidget: React.FunctionComponent<ISummaryWidgetProps> = (props: ISum
 }
 
 export default SummaryWidget;
+
+type ISummaryCardProps = {
+  title: string,
+  quantity: number,
+  unit: "euro" | "liter"
+  percentage: number
+}
+
+
+const SummaryCard: React.FunctionComponent<ISummaryCardProps> = (props: ISummaryCardProps) => {
+  var percentageText = ""
+  if (props.percentage <= 0) {
+    percentageText = "↓ " + -1 * props.percentage + " %";
+  } else {
+    percentageText = "↑ " + props.percentage + " %";
+  }
+
+  var quantityText = String(props.quantity);
+  if (props.unit === "euro") {
+    quantityText += " €"
+  } else if (props.unit === "liter") {
+    quantityText += " L"
+  }
+
+  return (
+    <div className={styles.summary_content_data_card}>
+      <p className={styles.summary_content_data_card_title}> {props.title} </p>
+      <p className={styles.summary_content_data_card_element}> {quantityText}</p>
+      <p className={styles.summary_content_data_card_element}> {percentageText} </p>
+    </div>
+  )
+}

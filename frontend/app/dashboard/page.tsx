@@ -1,14 +1,27 @@
 import React from "react";
+import styles from "./styles/Dashboard.module.scss"
+import contentBoxStyles from "./../components/contentBox/styles/ContentBox.module.scss"
 import SummaryWidget from "./components/SummaryWidget/SummaryWidget";
+import ContentBox from "../components/contentBox/ContentBox";
 
 type IDasboardProps = {}
 
 const Dashboard: React.FunctionComponent<IDasboardProps> = (props: IDasboardProps) => {
-    return (
-        <div id="dashboard-wrapper">
-            <SummaryWidget/>
-        </div >
-    )
+  return (
+    <div className={styles.dashboard_main}>
+      <div className={styles.dashboard_main_info}>
+        <div className={contentBoxStyles.content_box_summary}>
+          <SummaryWidget />
+        </div>
+        <div className={contentBoxStyles.content_box_summary}>
+          {/* <WeatherWidget /> */}
+        </div>
+      </div>
+      <div className="dashboard-tanks-container">
+        {/* {waterTankWidgets} */}
+      </div>
+    </div>
+  )
 }
 
 export default Dashboard;

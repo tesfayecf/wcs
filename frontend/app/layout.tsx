@@ -7,7 +7,7 @@ export const metadata = {
 }
 
 type IAppLayoutProps = {
-  children: React.ReactNode
+  children: React.ReactNode[]
 }
 
 export default function RootLayout({ children }: IAppLayoutProps) {

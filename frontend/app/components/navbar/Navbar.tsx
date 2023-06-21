@@ -1,10 +1,17 @@
 import React from 'react'
 import Link from 'next/link'
+import { useStore } from '@/app/store/store'
 import styles from './styles/Navbar.module.scss'
 
 type INavbarProps = {}
 
 const Navbar: React.FunctionComponent<INavbarProps> = (props: INavbarProps) => {
+
+    // const userInfo = useStore.getState().AppStore.userInfo;
+    // console.log(userInfo);
+    const data = useStore.getState().AppStore.userInfo.name;
+    console.log("navbar data", data);
+
 
     return (
         <div id='navbar' className={styles.container}>

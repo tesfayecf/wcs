@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import style from "./styles/ContentBox.module.scss"
+import styles from "./styles/ContentBox.module.scss"
 import { JsxElement } from "typescript";
 
 type IContentBoxProps = {
@@ -8,7 +8,7 @@ type IContentBoxProps = {
 
 const ContentBox: React.FunctionComponent<IContentBoxProps> = (props) => {
     return (
-        <div id="content-box" >
+        <div id="content-box" className={styles.content_box} >
             {props.children}
         </div>
         // <div id="content-box" className="content-box" style={props.sytles}>

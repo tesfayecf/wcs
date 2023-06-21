@@ -19,8 +19,8 @@ const SummaryWidget: React.FunctionComponent<ISummaryWidgetProps> = (props: ISum
         </div>
         <div className={styles.summary_content_data}>
           <SummaryCard title='Inflows' quantity={900} unit='liter' percentage={30} />
-          <SummaryCard title='Inflows' quantity={500} unit='liter' percentage={-20} />
-          <SummaryCard title='Inflows' quantity={50} unit='liter' percentage={17} />
+          <SummaryCard title='Outflows' quantity={500} unit='liter' percentage={-20} />
+          <SummaryCard title='Savings' quantity={50} unit='liter' percentage={17} />
         </div>
       </div>
     </div>

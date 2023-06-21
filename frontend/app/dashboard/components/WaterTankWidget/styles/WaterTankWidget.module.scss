@@ -1,0 +1,77 @@
+.watertank {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 0.75rem;
+
+    &_disabled {
+        position: absolute;
+        opacity: 0.3;
+        width: 100%;
+        height: 100%;
+        border-radius: 0.75rem;
+        background-color: gray;
+    }
+
+    &_content {
+        display: flex;
+        background-color: #ffffff;
+        flex-direction: row;
+        width: 100%;
+        height: 100%;
+        border-radius: 0.75rem;
+        gap: 0.5rem;
+
+        &_svg {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+
+            &_volume {
+                padding: 0.75rem;
+                margin-bottom: 0.25rem;
+                font-size: 1.125rem;
+                line-height: 1.75rem;
+                text-align: center;
+                align-items: center;
+
+                &_text {
+                    font-weight: 700;
+                }
+            }
+        }
+
+        &_data {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+
+            &_name {
+                margin: 1.5rem;
+                font-size: 1.25rem;
+                line-height: 1.75rem;
+                font-weight: 700;
+                text-align: center;
+                height: 1.5rem;
+            }
+
+            &_list {
+                padding: 0.5rem;
+                margin: 0.5rem;
+            }
+
+            &_status {
+                padding: 0.75rem;
+                margin-bottom: 0.25rem;
+                font-size: 1.125rem;
+                line-height: 1.75rem;
+                text-align: center;
+                align-items: center;
+
+                &_text {
+                    font-weight: 700;
+                }
+            }
+        }
+    }
+}

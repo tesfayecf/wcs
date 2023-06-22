@@ -8,9 +8,6 @@ import ContentBox from "../components/contentBox/ContentBox";
 import WaterTankWidget from "./components/WaterTankWidget/WaterTankWidget";
 import WaterTankAddButton from "./components/WaterTankWidget/AddWaterTankWidget";
 
-import Providers from "../store/Provider";
-import Preloader from "../store/Preloader";
-
 const dashboarHandler = DashboardHandler.getInstance();
 
 type IDashboardProps = {}

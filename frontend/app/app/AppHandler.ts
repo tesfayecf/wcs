@@ -1,4 +1,4 @@
-import { useStore } from "./store/store";
+import { useStore } from "../store/store";
 
 class AppHandler {
     private static instance: AppHandler;

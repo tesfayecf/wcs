@@ -1,6 +1,6 @@
 "use client"
 import { useRef } from "react";
-import { useStore, AppStore } from "./store/store";
+import { useStore, AppStore } from "../store/store";
 
 
 function AppStoreInitializer(AppStore: AppStore) {

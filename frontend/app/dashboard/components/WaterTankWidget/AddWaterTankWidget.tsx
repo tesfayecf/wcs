@@ -16,11 +16,6 @@ const WaterTankAddButton: React.FunctionComponent<IAddWaterTankWidgetProps> = (p
 
     const toggleAddTankMenu = React.useCallback(() => {
         dashboardHandler.setShowAddTankMenu(!showAddTankMenu);
-        // useStore.setState((state) => ({
-        //     DashboardStore: {
-        //         showAddTankMenu: !showAddTankMenu,
-        //     }
-        // }));
         console.log("button clicked");
     }, [showAddTankMenu]);
 

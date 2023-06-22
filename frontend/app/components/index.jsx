@@ -3,7 +3,7 @@
 // export { default as Button } from './shared/Button';
 // export { default as Footer } from './shared/Footer';
 // export { default as Header } from './shared/Header';
-// export { default as ContentBox } from './shared/ContentBox';
+export { default as ContentBox } from './contentBox/ContentBox';
 
 // // --- Sidebar
 // export { default as Sidebar } from './shared/sidebar/Sidebar';

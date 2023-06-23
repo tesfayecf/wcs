@@ -19,8 +19,18 @@ interface LoginStore { }
 
 interface UserStore { }
 
+interface ITankCreationForm {
+    name: string;
+    capacity: number;
+    type: string;
+    dimension: string;
+    material: string;
+    brand: string;
+}
+
 export interface DashboardStore {
     showAddTankMenu: boolean;
+    tankCreationForm: ITankCreationForm;
 }
 
 interface AnalyticsStore { }
@@ -50,7 +60,15 @@ export const useStore = create<Store>((set: any, get: any) => {
         LoginStore: {},
         UserStore: {},
         DashboardStore: {
-            showAddTankMenu: false
+            showAddTankMenu: false,
+            tankCreationForm: {
+                name: '',
+                type: '',
+                capacity: 0,
+                dimension: '',
+                material: '',
+                brand: '',
+            }
         },
         AnalyticsStore: {}
     }

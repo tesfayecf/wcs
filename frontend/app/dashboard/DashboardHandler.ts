@@ -24,6 +24,14 @@ class DashboardHandler {
         useStore.setState((state) => ({
             DashboardStore: {
                 showAddTankMenu: false,
+                tankCreationForm: {
+                    name: '',
+                    type: 'Storage',
+                    capacity: 0,
+                    dimension: '',
+                    material: '',
+                    brand: '',
+                }
             }
         }));
         return useStore.getState().DashboardStore;
@@ -32,10 +40,22 @@ class DashboardHandler {
     public setShowAddTankMenu(showAddTankMenu: boolean) {
         useStore.setState((state) => ({
             DashboardStore: {
+                ...state.DashboardStore,
                 showAddTankMenu: showAddTankMenu,
             }
         }));
     }
+
+    // TODO: import tank creation form type
+    public setTankCreationForm(tankCreationForm: any) {
+        useStore.setState((state) => ({
+            DashboardStore: {
+                ...state.DashboardStore,
+                tankCreationForm: tankCreationForm,
+            }
+        }));
+    }
+    
 }
 
 export default DashboardHandler;

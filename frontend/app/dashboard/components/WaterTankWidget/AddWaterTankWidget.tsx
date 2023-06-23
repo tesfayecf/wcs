@@ -19,9 +19,6 @@ const WaterTankAddButton: React.FunctionComponent<IAddWaterTankWidgetProps> = (p
         console.log("button clicked");
     }, [showAddTankMenu]);
 
-    console.log(showAddTankMenu)
-
-
     return (
         <div className={styles.main}>
             <div className={styles.main_content}>

@@ -49,6 +49,9 @@ const AddWaterTankPopUp: React.FunctionComponent<IAddWaterTankPopUpProps> = (pro
         <>
             <Dialog open={showAddTankMenu} onClose={onClose}>
                 <DialogTitle>ADD WATER TANK</DialogTitle>
+                <div>
+                    <h1>ADD WATER TANK</h1>
+                </div>
                 <DialogContent>
                     <TextField autoFocus onChange={onNameChange} id='name' label='Name' fullWidth variant='standard' />
                     <Select

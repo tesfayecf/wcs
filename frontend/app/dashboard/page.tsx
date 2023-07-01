@@ -7,7 +7,8 @@ import WeatherWidget from "./components/WeatherWidget/WeatherWidget";
 import ContentBox from "../components/contentBox/ContentBox";
 import WaterTankWidget from "./components/WaterTankWidget/WaterTankWidget";
 import WaterTankAddButton from "./components/WaterTankWidget/AddWaterTankWidget";
-import AddWaterTankPopUp from "./components/WaterTankWidget/AddWaterTankPopUp";
+// import AddWaterTankPopUp from "./components/WaterTankWidget/AddWaterTankPopUp";
+import AddWaterTankPopUp2 from "./components/WaterTankWidget/AddWaterTankPopUp2";
 
 const dashboarHandler = DashboardHandler.getInstance();
 
@@ -31,7 +32,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardPr
           <WaterTankAddButton />
         </ContentBox>
       </div>
-      <AddWaterTankPopUp />
+      <AddWaterTankPopUp2 />
     </div>
   )
 }

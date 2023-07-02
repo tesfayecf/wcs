@@ -1,9 +1,10 @@
 "use client"
 import { useRef } from "react";
-import { useStore, DashboardStore } from "@/app/store/store"
+import { useStore } from "@/app/store/store"
+import { IDashboardStore } from "./DashboardTypes"
 
 
-function DashboardStoreInitializer(DashboardStore: DashboardStore) {
+function DashboardStoreInitializer(DashboardStore: IDashboardStore) {
     const initialized = useRef(false);
     if (!initialized.current) {
         useStore.setState((state) => ({

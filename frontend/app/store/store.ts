@@ -1,62 +1,43 @@
-import { create } from 'zustand'
-import { AppStore } from '../app/AppTypes';
-import { AuthStore } from '../auth/AuthTypes';
-import { DashboardStore } from '../dashboard/DashboardTypes';
+import { create } from 'zustand';
 
-interface AnalyticsStore { }
+import { AppStoreDefault, AppEndpoints } from '../app/AppStore';
+import { IAppStore, IAppEndpoints } from '../app/AppTypes';
+
+import { AuthStoreDefault, AuthEndpoints } from '../auth/AuthStore';
+import { IAuthStore, IAuthEndpoints } from '../auth/AuthTypes';
+
+import { DashboardStoreDefault, DashboardEndpoints } from '../dashboard/DashboardStore';
+import { IDashboardStore, IDashboardEndpoints } from '../dashboard/DashboardTypes';
+
 
 interface Store {
-    AppStore: AppStore,
-    AuthStore: AuthStore,
-    DashboardStore: DashboardStore,
-    AnalyticsStore: AnalyticsStore,
+    AppStore: {
+        store: IAppStore,
+        endpoints: IAppEndpoints
+    };
+    AuthStore: {
+        store: IAuthStore,
+        endpoints: IAuthEndpoints
+    };
+    DashboardStore: {
+        store: IDashboardStore,
+        endpoints: IDashboardEndpoints
+    }
 }
 
-export const useStore = create<Store>((set: any, get: any) => {
+export const useStore = create<Store>((set, get) => {
     return {
         AppStore: {
-            checkValue: 0,
-            userInfo: {
-                id: -1,
-                name: '',
-                email: '',
-                role: 'user',
-                status: 'inactive',
-                lastLogin: '',
-            }
+            store: AppStoreDefault,
+            endpoints: AppEndpoints
         },
         AuthStore: {
-            loginForm: {
-                email: '',
-                password: '',
-            },
-            registerForm: {
-                name: '',
-                last_name: '',
-                email: '',
-                password: '',
-                re_password: ''
-            },
-            resetPasswordForm: {
-                old_password: '',
-                password: '',
-                re_password: '',
-
-            }
+            store: AuthStoreDefault,
+            endpoints: AuthEndpoints,
         },
         DashboardStore: {
-            showAddTankMenu: false,
-            tankCreationForm: {
-                name: '',
-                type: '',
-                capacity: 0,
-                dimension: '',
-                material: '',
-                brand: '',
-            }
+            store: DashboardStoreDefault,
+            endpoints: DashboardEndpoints
         },
-        AnalyticsStore: {}
-    }
-})
-
-
+    };
+});

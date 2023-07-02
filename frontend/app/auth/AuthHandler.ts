@@ -19,30 +19,46 @@ class AuthHandler {
         console.log("Initialising auth handler...");
     }
 
+    public getInitialStoreData = () => {
+        return {
+            loginForm: {
+                email: '',
+                emailError: false,
+                password: '',
+                passwordError: false,
+            },
+            registerForm: {
+                first_name: '',
+                first_nameError: false,
+                last_name: '',
+                last_nameError: false,
+                email: '',
+                emailError: false,
+                password: '',
+                passwordError: false,
+                re_password: '',
+                re_passwordError: false,
+            },
+            resetPasswordForm: {
+                old_password: '',
+                old_passwordError: false,
+                password: '',
+                passwordError: false,
+                re_password: '',
+                re_passwordError: false,
+            }
+        }
+    }
+
     public setInitialAuthInfo() {
         useStore.setState((state) => ({
             AuthStore: {
-                loginForm: {
-                    email: '',
-                    password: '',
-                },
-                registerForm: {
-                    name: '',
-                    last_name: '',
-                    email: '',
-                    password: '',
-                    re_password: ''
-                },
-                resetPasswordForm: {
-                    old_password: '',
-                    password: '',
-                    re_password: '',
-                }
-            }
+                ...state.AuthStore,
+                store: this.getInitialStoreData()
+            },
         }));
-        return useStore.getState().AuthStore;
+        return useStore.getState().AuthStore.store;
     }
-
 }
 
 export default AuthHandler;

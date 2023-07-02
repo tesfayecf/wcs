@@ -1,5 +1,4 @@
 
-
 export interface ITankCreationForm {
     name: string;
     capacity: number;
@@ -9,7 +8,16 @@ export interface ITankCreationForm {
     brand: string;
 }
 
-export interface DashboardStore {
+export interface IDashboardStore {
     showAddTankMenu: boolean;
     tankCreationForm: ITankCreationForm;
 }
+
+
+///////////////
+//// ENDPOINTS
+///////////////
+
+export interface IDashboardEndpoints {
+}
+

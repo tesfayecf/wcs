@@ -56,7 +56,6 @@ class DashboardHandler {
             }
         }));
     }
-    
 }
 
 export default DashboardHandler;

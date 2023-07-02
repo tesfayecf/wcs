@@ -2,9 +2,9 @@ import '../styles/globals.scss'
 import Footer from './components/fotter/Footer'
 import Navbar from './components/navbar/Navbar'
 
-import { AppStore } from './app/AppTypes'
-import { AuthStore } from './auth/AuthTypes'
-import { DashboardStore } from './dashboard/DashboardTypes'
+import { IAppStore } from './app/AppTypes'
+import { IAuthStore } from './auth/AuthTypes'
+import { IDashboardStore } from './dashboard/DashboardTypes'
 
 import AppHandler from './app/AppHandler'
 import AuthHandler from './auth/AuthHandler'
@@ -27,9 +27,9 @@ const appHandler: AppHandler = AppHandler.getInstance();
 const authHandler: AuthHandler = AuthHandler.getInstance();
 const dashboardHandler: DashboardHandler = DashboardHandler.getInstance();
 
-const initialAppStore: AppStore = appHandler.setInitialAppInfo();
-const initialAuthStore: AuthStore = authHandler.setInitialAuthInfo();
-const initailDasboardStore: DashboardStore = dashboardHandler.setInitialDashboardInfo();
+const initialAppStore: IAppStore = appHandler.setInitialAppInfo();
+const initialAuthStore: IAuthStore = authHandler.setInitialAuthInfo();
+const initailDasboardStore: IDashboardStore = dashboardHandler.setInitialDashboardInfo();
 
 
 export default function RootLayout({ children }: IAppLayoutProps) {

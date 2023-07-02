@@ -1,10 +1,10 @@
 "use client"
 import { useRef } from "react";
-import { AppStore } from "./AppTypes";
+import { IAppStore } from "./AppTypes";
 import { useStore } from "../store/store";
 
 
-function AppStoreInitializer(AppStore: AppStore) {
+function AppStoreInitializer(AppStore: IAppStore) {
     const initialized = useRef(false);
     if (!initialized.current) {
         useStore.setState((state) => ({

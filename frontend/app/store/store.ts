@@ -1,44 +1,13 @@
 import { create } from 'zustand'
-
-interface UserInfo {
-    id: number;
-    name: string;
-    email: string;
-    role: string;
-    status: string;
-    lastLogin: string;
-    avatar: string;
-}
-
-export interface AppStore {
-    checkValue: number;
-    userInfo: UserInfo;
-}
-
-interface LoginStore { }
-
-interface UserStore { }
-
-interface ITankCreationForm {
-    name: string;
-    capacity: number;
-    type: string;
-    dimension: string;
-    material: string;
-    brand: string;
-}
-
-export interface DashboardStore {
-    showAddTankMenu: boolean;
-    tankCreationForm: ITankCreationForm;
-}
+import { AppStore } from '../app/AppTypes';
+import { AuthStore } from '../auth/AuthTypes';
+import { DashboardStore } from '../dashboard/DashboardTypes';
 
 interface AnalyticsStore { }
 
 interface Store {
     AppStore: AppStore,
-    LoginStore: LoginStore,
-    UserStore: UserStore,
+    AuthStore: AuthStore,
     DashboardStore: DashboardStore,
     AnalyticsStore: AnalyticsStore,
 }
@@ -51,14 +20,30 @@ export const useStore = create<Store>((set: any, get: any) => {
                 id: -1,
                 name: '',
                 email: '',
-                role: '',
-                status: '',
+                role: 'user',
+                status: 'inactive',
                 lastLogin: '',
-                avatar: ''
             }
         },
-        LoginStore: {},
-        UserStore: {},
+        AuthStore: {
+            loginForm: {
+                email: '',
+                password: '',
+            },
+            registerForm: {
+                name: '',
+                last_name: '',
+                email: '',
+                password: '',
+                re_password: ''
+            },
+            resetPasswordForm: {
+                old_password: '',
+                password: '',
+                re_password: '',
+
+            }
+        },
         DashboardStore: {
             showAddTankMenu: false,
             tankCreationForm: {

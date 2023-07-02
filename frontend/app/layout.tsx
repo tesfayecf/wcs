@@ -1,15 +1,22 @@
 import '../styles/globals.scss'
 import Footer from './components/fotter/Footer'
 import Navbar from './components/navbar/Navbar'
-import AppStoreInitializer from './app/AppStoreInitializer'
+
+import { AppStore } from './app/AppTypes'
+import { AuthStore } from './auth/AuthTypes'
+import { DashboardStore } from './dashboard/DashboardTypes'
+
 import AppHandler from './app/AppHandler'
-import { AppStore, DashboardStore } from './store/store'
+import AuthHandler from './auth/AuthHandler'
 import DashboardHandler from './dashboard/DashboardHandler'
+
+import AppStoreInitializer from './app/AppStoreInitializer'
+import AuthStoreInitializer from './auth/AuthStoreInitializer'
 import DashboardStoreInitializer from './dashboard/DashboardStoreInitializer'
 
 export const metadata = {
   title: 'WCS App',
-  description: '',
+  description: 'Web app to control water resources',
 }
 
 type IAppLayoutProps = {
@@ -17,15 +24,15 @@ type IAppLayoutProps = {
 }
 
 const appHandler: AppHandler = AppHandler.getInstance();
-const initialAppStore: AppStore = appHandler.setInitialAppInfo();
-
+const authHandler: AuthHandler = AuthHandler.getInstance();
 const dashboardHandler: DashboardHandler = DashboardHandler.getInstance();
+
+const initialAppStore: AppStore = appHandler.setInitialAppInfo();
+const initialAuthStore: AuthStore = authHandler.setInitialAuthInfo();
 const initailDasboardStore: DashboardStore = dashboardHandler.setInitialDashboardInfo();
 
 
 export default function RootLayout({ children }: IAppLayoutProps) {
-
-
   return (
     <html lang="en">
       <head>
@@ -35,6 +42,7 @@ export default function RootLayout({ children }: IAppLayoutProps) {
       </head>
       <body>
         <AppStoreInitializer {...initialAppStore} />
+        <AuthStoreInitializer {...initialAuthStore} />
         <DashboardStoreInitializer {...initailDasboardStore} />
         <header>
           <nav>

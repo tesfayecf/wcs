@@ -1,6 +1,5 @@
 import React from 'react'
 import styles from './styles/SummaryWidget.module.scss'
-import pie_svg from "./../../../../public/pie-chart-svg.svg"
 
 type ISummaryWidgetProps = {}
 
@@ -14,7 +13,6 @@ const SummaryWidget: React.FunctionComponent<ISummaryWidgetProps> = (props: ISum
       </div>
       <div id="content-div" className={styles.summary_content}>
         <div id='piechart-div' className={styles.summary_content_pie_chart}>
-          {/* {pie_svg} */}
           📈
         </div>
         <div className={styles.summary_content_data}>

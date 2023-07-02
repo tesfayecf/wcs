@@ -13,6 +13,8 @@ interface IAddWaterTankWidgetProps {
 const WaterTankAddButton: React.FunctionComponent<IAddWaterTankWidgetProps> = (props: IAddWaterTankWidgetProps) => {
 
     const { showAddTankMenu } = useStore().DashboardStore;
+    // only until userInfo depth
+    // const data = useStore.getState().AppStore.userInfo; 
 
     const toggleAddTankMenu = React.useCallback(() => {
         dashboardHandler.setShowAddTankMenu(!showAddTankMenu);

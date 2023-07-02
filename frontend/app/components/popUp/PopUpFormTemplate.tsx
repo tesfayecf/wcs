@@ -80,8 +80,8 @@ const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) =>
       <div className={styles.content_fields}>{renderFields()}</div>
       <div className={styles.content_buttons}>
         <DialogActions>
-          <button onClick={props.onSubmit}>{props.submitButtonText}</button>
-          <button onClick={props.onCancel}>{props.onCancelButtonText}</button>
+          <button onClick={props.onSubmit} className={styles.content_buttons_button}>{props.submitButtonText}</button>
+          <button onClick={props.onCancel} className={styles.content_buttons_button}>{props.onCancelButtonText}</button>
         </DialogActions>
       </div>
     </Dialog>

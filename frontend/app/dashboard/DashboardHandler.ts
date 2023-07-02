@@ -1,4 +1,5 @@
 import { useStore } from "../store/store";
+import { ITankCreationForm } from "./DashboardTypes";
 
 class DashboardHandler {
     private static instance: DashboardHandler;
@@ -47,7 +48,7 @@ class DashboardHandler {
     }
 
     // TODO: import tank creation form type
-    public setTankCreationForm(tankCreationForm: any) {
+    public setTankCreationForm(tankCreationForm: ITankCreationForm) {
         useStore.setState((state) => ({
             DashboardStore: {
                 ...state.DashboardStore,

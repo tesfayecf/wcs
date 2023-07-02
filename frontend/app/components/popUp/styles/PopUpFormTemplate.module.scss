@@ -29,14 +29,20 @@
         padding: 5px;
 
         &_field {
-
             width: 90%;
-
         }
-
     }
 
     &_buttons {
+        margin: 15px;
+        padding: 15px;
+        display: flex;
+        flex-direction: row;
+        justify-content: end;
+        gap: 25px;
 
+        &_button {
+            margin: 0px 15px;
+        }
     }
 }

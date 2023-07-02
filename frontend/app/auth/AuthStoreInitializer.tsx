@@ -1,19 +1,19 @@
 "use client"
 import { useRef } from "react";
-import { AppStore } from "./AppTypes";
+import { AuthStore } from "./AuthTypes";
 import { useStore } from "../store/store";
 
 
-function AppStoreInitializer(AppStore: AppStore) {
+function AuthStoreInitializer(AuthStore: AuthStore) {
     const initialized = useRef(false);
     if (!initialized.current) {
         useStore.setState((state) => ({
-            AppStore: AppStore
+            AuthStore: AuthStore
         }))
         initialized.current = true;
     }
     return null;
 }
 
-export default AppStoreInitializer;
+export default AuthStoreInitializer;
 

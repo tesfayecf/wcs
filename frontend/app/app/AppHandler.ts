@@ -16,15 +16,14 @@ class AppHandler {
     }
 
     public init(): void {
-        // Get initial dasboard data 
-        console.log("Initialising dashboard...");
+        console.log("Initialising app handler...");
     }
 
     public setInitialAppInfo() {
         useStore.setState((state) => ({
             AppStore: {
                 checkValue: 255,
-                userInfo: userSessionInfo
+                userInfo: userSessionInfo // TODO: Api request
             }
         }));
 

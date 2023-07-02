@@ -1,5 +1,5 @@
 import { useStore } from "../store/store";
-import { ITankCreationForm } from "./DashboardTypes";
+import { IDashboardStore, ITankCreationForm } from "./DashboardTypes";
 
 class DashboardHandler {
     private static instance: DashboardHandler;
@@ -21,18 +21,25 @@ class DashboardHandler {
         console.log("Initialising dashboard...");
     }
 
+    public getInitialStoreData: () => IDashboardStore = () => {
+        return {
+            showAddTankMenu: false,
+            tankCreationForm: {
+                name: '',
+                type: 'Storage',
+                capacity: 0,
+                dimension: '',
+                material: '',
+                brand: '',
+            }
+        }
+    }
+
     public setInitialDashboardInfo() {
         useStore.setState((state) => ({
             DashboardStore: {
-                showAddTankMenu: false,
-                tankCreationForm: {
-                    name: '',
-                    type: 'Storage',
-                    capacity: 0,
-                    dimension: '',
-                    material: '',
-                    brand: '',
-                }
+                ...state.DashboardStore,
+                store: this.getInitialStoreData()
             }
         }));
         return useStore.getState().DashboardStore;

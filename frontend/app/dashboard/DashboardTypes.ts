@@ -19,6 +19,7 @@ export interface IDashboardStore {
 ///////////////
 
 export interface IDashboardEndpoints {
-    prova: () => void
+    setShowAddTankMenu: (showAddTankMenu: boolean, set?: any, get?: any) => void;
+    setTankCreationForm: (tankCreationForm: ITankCreationForm, set?: any, get?: any) => void
 }
 

@@ -46,28 +46,13 @@ class DashboardHandler {
     }
 
     public setShowAddTankMenu(showAddTankMenu: boolean) {
-        useStore.setState((state) => ({
-            DashboardStore: {
-                ...state.DashboardStore,
-                store: {
-                    ...state.DashboardStore.store,
-                    showAddTankMenu: showAddTankMenu,
-                }
-            }
-        }));
+        // check other things
+        useStore.getState().DashboardStore.endpoints.setShowAddTankMenu(showAddTankMenu);
+
     }
 
-    // TODO: import tank creation form type
     public setTankCreationForm(tankCreationForm: ITankCreationForm) {
-        useStore.setState((state) => ({
-            DashboardStore: {
-                ...state.DashboardStore,
-                store: {
-                    ...state.DashboardStore.store,
-                    tankCreationForm: tankCreationForm,
-                }
-            }
-        }));
+        useStore.getState().DashboardStore.endpoints.setTankCreationForm(tankCreationForm);
     }
 }
 

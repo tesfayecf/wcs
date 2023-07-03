@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 
 import { AppStoreDefault, AppEndpoints } from '../app/AppStore';
 import { IAppStore, IAppEndpoints } from '../app/AppTypes';
@@ -6,38 +7,29 @@ import { IAppStore, IAppEndpoints } from '../app/AppTypes';
 import { AuthStoreDefault, AuthEndpoints } from '../auth/AuthStore';
 import { IAuthStore, IAuthEndpoints } from '../auth/AuthTypes';
 
-import { DashboardStoreDefault, DashboardEndpoints } from '../dashboard/DashboardStore';
+import { DashboardStoreDefault, getDashboardEndpoints } from '../dashboard/DashboardStore';
 import { IDashboardStore, IDashboardEndpoints } from '../dashboard/DashboardTypes';
 
+import { IStore } from './storeTypes';
 
-interface Store {
-    AppStore: {
-        store: IAppStore,
-        // endpoints: IAppEndpoints,
-    };
-    AuthStore: {
-        store: IAuthStore,
-        // endpoints: IAuthEndpoints,
-    };
-    DashboardStore: {
-        store: IDashboardStore,
-        endpoints: IDashboardEndpoints,
-    }
-}
 
-export const useStore = create<Store>((set, get) => {
-    return {
-        AppStore: {
-            store: AppStoreDefault,
-            // endpoints: AppEndpoints
-        },
-        AuthStore: {
-            store: AuthStoreDefault,
-            // endpoints: AuthEndpoints,
-        },
-        DashboardStore: {
-            store: DashboardStoreDefault,
-            endpoints: DashboardEndpoints,
-        },
-    };
-});
+
+
+export const useStore = create<IStore>()(
+    devtools(
+        (set, get) => {
+        return {
+            AppStore: {
+                store: AppStoreDefault,
+                // endpoints: AppEndpoints
+            },
+            AuthStore: {
+                store: AuthStoreDefault,
+                // endpoints: AuthEndpoints,
+            },
+            DashboardStore: {
+                store: DashboardStoreDefault,
+                endpoints: getDashboardEndpoints(set, get),
+            },
+        };
+    }));

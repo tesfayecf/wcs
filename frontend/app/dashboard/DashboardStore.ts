@@ -1,6 +1,6 @@
-import { IDashboardStore, IDashboardEndpoints } from "./DashboardTypes";
-
-
+import { IStore } from "../store/storeTypes";
+import { IDashboardStore, IDashboardEndpoints, ITankCreationForm } from "./DashboardTypes";
+import { produce } from "immer";
 
 export const DashboardStoreDefault: IDashboardStore = {
     showAddTankMenu: false,
@@ -14,6 +14,22 @@ export const DashboardStoreDefault: IDashboardStore = {
     }
 }
 
-export const DashboardEndpoints: IDashboardEndpoints = {
-    prova: () => {console.log("prova Zustand")}
-};
+export function getDashboardEndpoints(setLocal: any, getLocal: any): IDashboardEndpoints {
+    
+    return {
+        setShowAddTankMenu: (showAddTankMenu: boolean, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.DashboardStore.store.showAddTankMenu = showAddTankMenu;
+                return state;
+            }));
+        },
+
+        setTankCreationForm: (tankCreationForm: ITankCreationForm, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.DashboardStore.store.tankCreationForm = tankCreationForm;
+                return state;
+
+            }))
+        },
+    }
+}

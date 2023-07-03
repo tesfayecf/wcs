@@ -7,7 +7,7 @@ type INavbarProps = {}
 
 const Navbar: React.FunctionComponent<INavbarProps> = (props: INavbarProps) => {
 
-    const data = useStore.getState().AppStore.userInfo.name;
+    const data = useStore.getState().AppStore.store.userInfo.name;
     console.log("navbar data", data);
 
 

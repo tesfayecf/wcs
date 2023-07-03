@@ -15,5 +15,5 @@ export const DashboardStoreDefault: IDashboardStore = {
 }
 
 export const DashboardEndpoints: IDashboardEndpoints = {
-
+    prova: () => {console.log("prova Zustand")}
 };

@@ -1,79 +1,114 @@
 'use client'
 import React from 'react';
 import { useStore } from '@/app/store/store';
-import styles from './styles/AddWaterTankPopUp.module.scss';
+// import styles from './styles/AddWaterTankPopUp.module.scss';
 import DashboardHandler from '../../DashboardHandler';
-import { Dialog, DialogTitle, DialogContent, TextField, Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import { SelectChangeEvent } from '@mui/material';
+import PopUpFormTemplate from '@/app/components/popUp/PopUpFormTemplate';
 
 const dashboardHandler = DashboardHandler.getInstance();
 
-interface IAddWaterTankPopUpProps {
-
-}
+interface IAddWaterTankPopUpProps { }
 
 const AddWaterTankPopUp: React.FunctionComponent<IAddWaterTankPopUpProps> = (props: IAddWaterTankPopUpProps) => {
 
-    const { showAddTankMenu, tankCreationForm } = useStore().DashboardStore;
+    const store = useStore().DashboardStore.store;
+    const { showAddTankMenu, tankCreationForm } = store;
+    console.log(store);
+    console.log(showAddTankMenu);
+    console.log(tankCreationForm);
 
     const onClose = () => {
         dashboardHandler.setShowAddTankMenu(false);
     }
 
     const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        dashboardHandler.setTankCreationForm({ ...tankCreationForm, name: event.target.value });
+        dashboardHandler.setTankCreationForm({ ...store.tankCreationForm, name: event.target.value });
     }
 
-    const onCapacityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        dashboardHandler.setTankCreationForm({ ...tankCreationForm, capacity: event.target.value });
-    }
+    // const onCapacityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     dashboardHandler.setTankCreationForm({ ...store.tankCreationForm, capacity: event.target.value });
+    // }
 
     const onDimensionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        dashboardHandler.setTankCreationForm({ ...tankCreationForm, dimension: event.target.value });
+        dashboardHandler.setTankCreationForm({ ...store.tankCreationForm, dimension: event.target.value });
     }
 
     const onBrandChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        dashboardHandler.setTankCreationForm({ ...tankCreationForm, brand: event.target.value });
+        dashboardHandler.setTankCreationForm({ ...store.tankCreationForm, brand: event.target.value });
     }
 
     const onMaterialChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        dashboardHandler.setTankCreationForm({ ...tankCreationForm, material: event.target.value });
+        dashboardHandler.setTankCreationForm({ ...store.tankCreationForm, material: event.target.value });
     }
 
     const onSelectType = (event: SelectChangeEvent<string>, child: React.ReactNode) => {
-        dashboardHandler.setTankCreationForm({ ...tankCreationForm, type: event.target.value });
+        dashboardHandler.setTankCreationForm({ ...store.tankCreationForm, type: event.target.value });
     }
 
 
 
     return (
         <>
-            <Dialog open={showAddTankMenu} onClose={onClose}>
-                <DialogTitle>ADD WATER TANK</DialogTitle>
-                <div>
-                    <h1>ADD WATER TANK</h1>
-                </div>
-                <DialogContent>
-                    <TextField autoFocus onChange={onNameChange} id='name' label='Name' fullWidth variant='standard' />
-                    <Select
-                        labelId="type-selector"
-                        id="type"
-                        value={tankCreationForm.type}
-                        label="Type"
-                        onChange={onSelectType}
-                    >
-                        <MenuItem value="Storage">Storage</MenuItem>
-                        <MenuItem value="Reservoir">Reservoir</MenuItem>
-                        <MenuItem value="Well">Well</MenuItem>
-                        <MenuItem value="Tank">Tank</MenuItem>
-                        <MenuItem value="Other">Other</MenuItem>
-                    </Select>
-                    <TextField onChange={onCapacityChange} id='capacity' label='capacity' fullWidth variant='standard' />
-                    <TextField onChange={onDimensionChange} id='dimension' label='dimension' fullWidth variant='standard' />
-                    <TextField onChange={onBrandChange} id='brand' label='brand' fullWidth variant='standard' />
-                    <TextField onChange={onMaterialChange} id='material' label='material' fullWidth variant='standard' />
-                </DialogContent>
-
-            </Dialog>
+            <PopUpFormTemplate
+                title="Add Tank"
+                open={store.showAddTankMenu}
+                onCancel={onClose}
+                onSubmit={() => { console.log(store.tankCreationForm) }}
+                submitButtonText="Add"
+                onCancelButtonText="Cancel"
+                fields={[
+                    {
+                        name: "Name",
+                        type: "textInput",
+                        placeholder: "name",
+                        value: store.tankCreationForm.name,
+                        onChange: onNameChange,
+                        error: false,
+                    },
+                    {
+                        name: "Type",
+                        type: "select",
+                        placeholder: "type",
+                        value: store.tankCreationForm.type,
+                        onChange: onSelectType,
+                        error: false,
+                        selectItems: ["Storage", "Well", "Reservoir", "Tank", "Other"]
+                    },
+                    // {
+                    //     name: "Capacity",
+                    //     type: "textInput",
+                    //     placeholder: "capacity",
+                    //     value: store.tankCreationForm.capacity.toString(),
+                    //     onChange: onCapacityChange,
+                    //     error: false,
+                    // },
+                    {
+                        name: "Dimensions",
+                        type: "textInput",
+                        placeholder: "dimensions",
+                        value: store.tankCreationForm.dimension,
+                        onChange: onDimensionChange,
+                        error: false,
+                    },
+                    {
+                        name: "Brand",
+                        type: "textInput",
+                        placeholder: "brand",
+                        value: store.tankCreationForm.brand,
+                        onChange: onBrandChange,
+                        error: false,
+                    },
+                    {
+                        name: "Material",
+                        type: "textInput",
+                        placeholder: "material",
+                        value: store.tankCreationForm.material,
+                        onChange: onMaterialChange,
+                        error: false,
+                    }
+                ]}
+            />
         </>
     )
 };

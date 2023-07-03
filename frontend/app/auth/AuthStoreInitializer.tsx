@@ -11,7 +11,7 @@ function AuthStoreInitializer(AuthStore: IAuthStore) {
         useStore.setState((state) => ({
             AuthStore: {
                 store: AuthStore,
-                endpoints: AuthEndpoints
+                // endpoints: AuthEndpoints
             }
         }))
         initialized.current = true;

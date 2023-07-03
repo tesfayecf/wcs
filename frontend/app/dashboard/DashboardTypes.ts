@@ -19,5 +19,6 @@ export interface IDashboardStore {
 ///////////////
 
 export interface IDashboardEndpoints {
+    prova: () => void
 }
 

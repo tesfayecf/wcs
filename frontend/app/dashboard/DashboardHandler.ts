@@ -49,7 +49,10 @@ class DashboardHandler {
         useStore.setState((state) => ({
             DashboardStore: {
                 ...state.DashboardStore,
-                showAddTankMenu: showAddTankMenu,
+                store: {
+                    ...state.DashboardStore.store,
+                    showAddTankMenu: showAddTankMenu,
+                }
             }
         }));
     }
@@ -59,7 +62,10 @@ class DashboardHandler {
         useStore.setState((state) => ({
             DashboardStore: {
                 ...state.DashboardStore,
-                tankCreationForm: tankCreationForm,
+                store: {
+                    ...state.DashboardStore.store,
+                    tankCreationForm: tankCreationForm,
+                }
             }
         }));
     }

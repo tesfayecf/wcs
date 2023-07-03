@@ -13,11 +13,11 @@ import { IDashboardStore, IDashboardEndpoints } from '../dashboard/DashboardType
 interface Store {
     AppStore: {
         store: IAppStore,
-        endpoints: IAppEndpoints,
+        // endpoints: IAppEndpoints,
     };
     AuthStore: {
         store: IAuthStore,
-        endpoints: IAuthEndpoints,
+        // endpoints: IAuthEndpoints,
     };
     DashboardStore: {
         store: IDashboardStore,
@@ -29,11 +29,11 @@ export const useStore = create<Store>((set, get) => {
     return {
         AppStore: {
             store: AppStoreDefault,
-            endpoints: AppEndpoints
+            // endpoints: AppEndpoints
         },
         AuthStore: {
             store: AuthStoreDefault,
-            endpoints: AuthEndpoints,
+            // endpoints: AuthEndpoints,
         },
         DashboardStore: {
             store: DashboardStoreDefault,

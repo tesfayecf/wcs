@@ -42,7 +42,7 @@ class DashboardHandler {
                 store: this.getInitialStoreData()
             }
         }));
-        return useStore.getState().DashboardStore;
+        return useStore.getState().DashboardStore.store;
     }
 
     public setShowAddTankMenu(showAddTankMenu: boolean) {

@@ -2,7 +2,7 @@
 import { useRef } from "react";
 import { useStore } from "@/app/store/store"
 import { IDashboardStore } from "./DashboardTypes"
-import { DashboardEndpoints } from "./DashboardStore";
+// import { DashboardEndpoints } from "./DashboardStore";
 
 
 function DashboardStoreInitializer(DashboardStore: IDashboardStore) {
@@ -10,8 +10,8 @@ function DashboardStoreInitializer(DashboardStore: IDashboardStore) {
     if (!initialized.current) {
         useStore.setState((state) => ({
             DashboardStore: {
+                ...state.DashboardStore,
                 store: DashboardStore,
-                endpoints: DashboardEndpoints
             }
         }))
         initialized.current = true;

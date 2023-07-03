@@ -44,10 +44,10 @@ interface User {
     email: string;
 }
 export interface IAuthEndpoints {
-    retrieveUser: () => Promise<User | undefined>;
-    login: (email: string, password: string) => Promise<void>;
-    register: (data: User & { password: string; re_password: string }) => Promise<void>;
-    verify: () => Promise<void>;
-    logout: () => Promise<void>;
-    resetPassword: (email: string) => Promise<void>;
+    retrieveUser: (set?: any, get?: any) => Promise<User | undefined>;
+    login: (email: string, password: string, set?: any, get?: any) => Promise<void>;
+    register: (first_name: string, last_name: string, email: string, password: string, set?: any, get?: any) => Promise<void>;
+    verify: (set?: any, get?: any) => Promise<void>;
+    logout: (set?: any, get?: any) => Promise<void>;
+    resetPassword: (email: string, set?: any, get?: any) => Promise<void>;
 }

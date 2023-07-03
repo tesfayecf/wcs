@@ -7,7 +7,7 @@ export const DashboardStoreDefault: IDashboardStore = {
     tankCreationForm: {
         name: '',
         type: '',
-        capacity: 0,
+        capacity: "",
         dimension: '',
         material: '',
         brand: '',

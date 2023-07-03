@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-import { AppStoreDefault, AppEndpoints } from '../app/AppStore';
+import { AppStoreDefault, getAppEndpoints } from '../app/AppStore';
 import { IAppStore, IAppEndpoints } from '../app/AppTypes';
 
-import { AuthStoreDefault, AuthEndpoints } from '../auth/AuthStore';
+import { AuthStoreDefault, getAuthEndpoints } from '../auth/AuthStore';
 import { IAuthStore, IAuthEndpoints } from '../auth/AuthTypes';
 
 import { DashboardStoreDefault, getDashboardEndpoints } from '../dashboard/DashboardStore';
@@ -21,11 +21,11 @@ export const useStore = create<IStore>()(
         return {
             AppStore: {
                 store: AppStoreDefault,
-                // endpoints: AppEndpoints
+                endpoints: getAppEndpoints(set, get),
             },
             AuthStore: {
                 store: AuthStoreDefault,
-                // endpoints: AuthEndpoints,
+                endpoints: getAuthEndpoints(set, get),
             },
             DashboardStore: {
                 store: DashboardStoreDefault,

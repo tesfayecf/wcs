@@ -1,7 +1,7 @@
 
 export interface ITankCreationForm {
     name: string;
-    capacity: number;
+    capacity: string;
     type: string;
     dimension: string;
     material: string;

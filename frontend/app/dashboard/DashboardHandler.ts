@@ -27,7 +27,7 @@ class DashboardHandler {
             tankCreationForm: {
                 name: '',
                 type: 'Storage',
-                capacity: 0,
+                capacity: "",
                 dimension: '',
                 material: '',
                 brand: '',

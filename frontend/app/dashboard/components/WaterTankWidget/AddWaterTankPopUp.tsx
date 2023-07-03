@@ -23,9 +23,9 @@ const AddWaterTankPopUp: React.FunctionComponent<IAddWaterTankPopUpProps> = (pro
         dashboardHandler.setTankCreationForm({ ...tankCreationForm, name: event.target.value });
     }
 
-    // const onCapacityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     dashboardHandler.setTankCreationForm({ ...store.tankCreationForm, capacity: event.target.value });
-    // }
+    const onCapacityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        dashboardHandler.setTankCreationForm({ ...tankCreationForm, capacity: event.target.value });
+    }
 
     const onDimensionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         dashboardHandler.setTankCreationForm({ ...tankCreationForm, dimension: event.target.value });
@@ -72,14 +72,14 @@ const AddWaterTankPopUp: React.FunctionComponent<IAddWaterTankPopUpProps> = (pro
                         error: false,
                         selectItems: ["Storage", "Well", "Reservoir", "Tank", "Other"]
                     },
-                    // {
-                    //     name: "Capacity",
-                    //     type: "textInput",
-                    //     placeholder: "capacity",
-                    //     value: store.tankCreationForm.capacity.toString(),
-                    //     onChange: onCapacityChange,
-                    //     error: false,
-                    // },
+                    {
+                        name: "Capacity",
+                        type: "textInput",
+                        placeholder: "capacity",
+                        value: tankCreationForm.capacity,
+                        onChange: onCapacityChange,
+                        error: false,
+                    },
                     {
                         name: "Dimensions",
                         type: "textInput",

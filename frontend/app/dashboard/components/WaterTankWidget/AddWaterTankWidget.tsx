@@ -12,7 +12,6 @@ interface IAddWaterTankWidgetProps {
 
 const WaterTankAddButton: React.FunctionComponent<IAddWaterTankWidgetProps> = (props: IAddWaterTankWidgetProps) => {
 
-    console.log(useStore().DashboardStore.store);
     const showAddTankMenu = useStore().DashboardStore.store.showAddTankMenu;
 
     const toggleAddTankMenu = React.useCallback(() => {

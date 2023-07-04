@@ -56,7 +56,7 @@ class AuthHandler {
             AuthStore: {
                 ...state.AuthStore,
                 store: this.getInitialStoreData()
-            },
+            }
         }));
         return useStore.getState().AuthStore.store;
     }

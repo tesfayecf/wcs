@@ -71,7 +71,7 @@ class AppHandler {
         const mutex = new Mutex();
         const baseQuery = async (args: any, extraOptions: any) => {
             await mutex.acquire();
-            let result = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api${args.url}`, {
+            let result = await fetch(`${process.env.API_BASE_URL_DEV}/api${args.url}`, {
                 method: args.method,
                 credentials: 'include',
             });
@@ -80,13 +80,13 @@ class AppHandler {
                 if (!mutex.isLocked()) {
                     const release = await mutex.acquire();
                     try {
-                        const refreshResult = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/jwt/refresh/`, {
+                        const refreshResult = await fetch(`${process.env.API_BASE_URL_DEV}/api/jwt/refresh/`, {
                             method: 'POST',
                             credentials: 'include',
                         });
                         if (refreshResult.ok) {
                             this.setAuth();
-                            result = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api${args.url}`, {
+                            result = await fetch(`${process.env.API_BASE_URL_DEV}/api${args.url}`, {
                                 method: args.method,
                                 credentials: 'include',
                             });
@@ -98,7 +98,7 @@ class AppHandler {
                     }
                 } else {
                     await mutex.waitForUnlock();
-                    result = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api${args.url}`, {
+                    result = await fetch(`${process.env.API_BASE_URL_DEV}/api${args.url}`, {
                         method: args.method,
                         credentials: 'include',
                     });

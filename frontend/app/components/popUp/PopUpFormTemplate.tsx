@@ -82,8 +82,8 @@ const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) =>
 
 
     const handleSubmit = () => {
+        props.onSubmit();
         if (validateForm()) {
-            props.onSubmit();
             resetForm();
         }
     };

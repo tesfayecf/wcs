@@ -1,6 +1,9 @@
 import { produce } from "immer";
 import { IStore } from "../store/storeTypes";
 import { IAuthEndpoints, IAuthStore, ILoginForm, IRegisterForm, IResetPasswordForm } from "./AuthTypes";
+import RequestHandler from "../utils/request/requestHandler";
+
+const requestHandler = RequestHandler.getInstance();
 
 export const AuthStoreDefault: IAuthStore = {
     loginForm: {
@@ -10,15 +13,15 @@ export const AuthStoreDefault: IAuthStore = {
         passwordError: false,
     },
     registerForm: {
-        first_name: '',
+        first_name: 'fefasdfadscasdcasdfds',
         first_nameError: false,
-        last_name: '',
+        last_name: 'ferfefewfadsfasdf',
         last_nameError: false,
-        email: '',
+        email: 'adfcfqewfasdx@gmail.com',
         emailError: false,
-        password: '',
+        password: 'qwertyuiop',
         passwordError: false,
-        re_password: '',
+        re_password: 'qwertyuiop',
         re_passwordError: false,
     },
     resetPasswordForm: {
@@ -75,16 +78,38 @@ export function getAuthEndpoints(setLocal: any, getLocal: any): IAuthEndpoints {
                 console.error('Failed to login:', error);
             }
         },
-        register: async (first_name: string, last_name: string, email: string, password: string, set: any = setLocal, get: any = getLocal) => {
-            try {
-                const response = await fetch('/users/', {
-                    method: 'POST',
-                    body: JSON.stringify({ first_name, last_name, email, password }),
-                });
-                // Process the registration response as needed
-            } catch (error) {
-                console.error('Failed to register:', error);
-            }
+        register: async (first_name: string, last_name: string, email: string, password: string, re_password: string, set: any = setLocal, get: any = getLocal) => {
+            // try {
+                // console.log(password)
+                // const response = await fetch('http://127.0.0.1:8000/api/users/', {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json', // Specify JSON as the content type
+
+                //     },
+                //     credentials: 'same-origin', // Set credentials to same-origin
+                //     body: JSON.stringify({ first_name, last_name, email, password, re_password }), // Convert payload to JSON string
+                // });
+                // if (response.status === 201) {
+                //     console.log("SUCCES")
+                // } else {
+                //     console.log("ERROR")
+                // }
+
+                // const postData = {
+                //     first_name,
+                //     last_name,
+                //     email,
+                //     password,
+                //     re_password
+                // }
+
+                // const response = await requestHandler.post('/api/users/', postData);
+                // console.log(response)
+            // }
+            // catch (error) {
+            //     console.error('Failed to register:', error);
+            // }
         },
         verify: async (set: any = setLocal, get: any = getLocal) => {
             try {

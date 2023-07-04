@@ -6,6 +6,8 @@ import { IAppStore } from './app/AppTypes'
 import { IAuthStore } from './auth/AuthTypes'
 import { IDashboardStore } from './dashboard/DashboardTypes'
 
+import RequestHandler from './utils/request/requestHandler'
+
 import AppHandler from './app/AppHandler'
 import AuthHandler from './auth/AuthHandler'
 import DashboardHandler from './dashboard/DashboardHandler'
@@ -22,6 +24,8 @@ export const metadata = {
 type IAppLayoutProps = {
   children: React.ReactNode[]
 }
+
+const requestHandler: RequestHandler = RequestHandler.getInstance();
 
 const appHandler: AppHandler = AppHandler.getInstance();
 const authHandler: AuthHandler = AuthHandler.getInstance();

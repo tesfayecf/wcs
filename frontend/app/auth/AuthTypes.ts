@@ -49,7 +49,7 @@ export interface IAuthEndpoints {
     setResetPasswordForm: (resetPasswordForm: IResetPasswordForm, set?: any, get?: any) => void;
     getUser: (set?: any, get?: any) => Promise<User | undefined>;
     login: (email: string, password: string, set?: any, get?: any) => Promise<void>;
-    register: (first_name: string, last_name: string, email: string, password: string, set?: any, get?: any) => Promise<void>;
+    register: (first_name: string, last_name: string, email: string, password: string, re_password: string, set?: any, get?: any) => Promise<void>;
     verify: (set?: any, get?: any) => Promise<void>;
     logout: (set?: any, get?: any) => Promise<void>;
     resetPassword: (email: string, set?: any, get?: any) => Promise<void>;

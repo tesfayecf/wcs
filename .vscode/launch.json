@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Run Django dev",
+            "name": "Django dev",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/backend/manage.py",
@@ -10,10 +10,10 @@
                 "runserver"
             ],
             "django": true,
-            "console": "integratedTerminal"
+            "console": "internalConsole"
         },
         {
-            "name": "Run NextJS dev",
+            "name": "NextJS dev",
             "type": "node",
             "request": "launch",
             "cwd": "${workspaceFolder}/frontend",
@@ -27,6 +27,66 @@
                 "dev"
             ],
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Django prod",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/manage.py",
+            "args": [
+                "runserver"
+            ],
+            "django": true,
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "NextJS prod",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/frontend",
+            "runtimeExecutable": "npm",
+            "restart": true,
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "runtimeArgs": [
+                "run-script",
+                "start"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "web-renderer",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}/frontend",
+            "timeout": 10000,
+            "sourceMaps": true
         }
+    ],
+    "compounds": [
+        {
+            "name": "NextJS debug",
+            "configurations": [
+                "NextJS dev",
+                "web-renderer"
+            ]
+        },
+        {
+            "name": "APP debug",
+            "configurations": [
+                "NextJS dev",
+                "web-renderer",
+                "Django dev"
+            ]
+        },
+        {
+            "name": "APP prod",
+            "configurations": [
+                "NextJS prod",
+                "Django prod"
+            ]
+        },
     ]
 }

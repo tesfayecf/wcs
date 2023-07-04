@@ -1,16 +1,16 @@
-import { IAppStore } from "../app/AppTypes";
-import { IAuthStore } from "../auth/AuthTypes";
+import { IAppEndpoints, IAppStore } from "../app/AppTypes";
+import { IAuthEndpoints, IAuthStore } from "../auth/AuthTypes";
 import { IDashboardEndpoints, IDashboardStore } from "../dashboard/DashboardTypes";
 
 
 export interface IStore {
     AppStore: {
         store: IAppStore,
-        // endpoints: IAppEndpoints,
+        endpoints: IAppEndpoints,
     };
     AuthStore: {
         store: IAuthStore,
-        // endpoints: IAuthEndpoints,
+        endpoints: IAuthEndpoints,
     };
     DashboardStore: {
         store: IDashboardStore,

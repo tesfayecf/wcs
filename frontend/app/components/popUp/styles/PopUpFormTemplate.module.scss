@@ -11,7 +11,7 @@
     &_title {
         min-width: 500px;
         width: 50%;
-        // height: 20%;
+        text-align: center;
         font-size: 10px;
         align-items: center;
         margin: 20px;
@@ -38,7 +38,7 @@
         padding: 15px;
         display: flex;
         flex-direction: row;
-        justify-content: end;
+        justify-content: flex-end;
         gap: 25px;
 
         &_button {

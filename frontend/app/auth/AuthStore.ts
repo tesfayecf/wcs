@@ -1,4 +1,6 @@
-import { IAuthEndpoints, IAuthStore } from "./AuthTypes";
+import { produce } from "immer";
+import { IStore } from "../store/storeTypes";
+import { IAuthEndpoints, IAuthStore, ILoginForm, IRegisterForm, IResetPasswordForm } from "./AuthTypes";
 
 export const AuthStoreDefault: IAuthStore = {
     loginForm: {
@@ -32,7 +34,26 @@ export const AuthStoreDefault: IAuthStore = {
 
 export function getAuthEndpoints(setLocal: any, getLocal: any): IAuthEndpoints {
     return {
-        retrieveUser: async (set: any = setLocal, get: any = getLocal) => {
+        setLoginForm: (loginForm: ILoginForm, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AuthStore.store.loginForm = loginForm;
+                return state;
+            }), false, "setLoginForm");
+        },
+        setRegisterForm: (registerForm: IRegisterForm, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AuthStore.store.registerForm = registerForm;
+                return state;
+            }), false, "setRegisterForm");
+        },
+        setResetPasswordForm: (resetPasswordForm: IResetPasswordForm, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AuthStore.store.resetPasswordForm = resetPasswordForm;
+                return state;
+            }), false, "setResetPasswordForm");
+        },
+
+        getUser: async (set: any = setLocal, get: any = getLocal) => {
             try {
                 const response = await fetch('/users/me/');
                 const user = await response.json();

@@ -1,4 +1,5 @@
 import { useStore } from "../store/store";
+import { IRegisterForm } from "./AuthTypes";
 
 class AuthHandler {
     private static instance: AuthHandler;
@@ -58,6 +59,10 @@ class AuthHandler {
             },
         }));
         return useStore.getState().AuthStore.store;
+    }
+
+    public setRegisterForm(registerForm: IRegisterForm) {
+        useStore.getState().AuthStore.endpoints.setRegisterForm(registerForm);
     }
 }
 

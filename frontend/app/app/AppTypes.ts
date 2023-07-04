@@ -32,5 +32,5 @@ interface User {
     email: string;
 }
 export interface IAppEndpoints {
-    retrieveUser: (set?: any, get?: any) => Promise<User | undefined>;
+    // retrieveUser: (set?: any, get?: any) => Promise<User | undefined>;
 }

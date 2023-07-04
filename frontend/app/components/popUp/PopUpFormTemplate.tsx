@@ -1,10 +1,8 @@
 import React, { ChangeEvent, useState } from "react";
 import {
     Dialog,
-    DialogActions,
     MenuItem,
     Select,
-    SelectChangeEvent,
     TextField,
 } from "@mui/material";
 import styles from "./styles/PopUpFormTemplate.module.scss";
@@ -18,6 +16,7 @@ interface IField {
     error?: boolean;
     errorMessage?: string;
     selectItems?: string[];
+    password?: boolean;
     validation?: {
         required?: boolean;
         minLength?: number;
@@ -31,8 +30,9 @@ interface IPopUpFormProps {
     fields: IField[];
     submitButtonText: string;
     onSubmit: () => void;
-    onCancel: () => void;
-    onCancelButtonText: string;
+    onCancel?: () => void;
+    hideCancelButton?: boolean;
+    onCancelButtonText?: string;
 }
 
 const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) => {
@@ -119,6 +119,7 @@ const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) =>
                         placeholder={fieldData.placeholder}
                         fullWidth
                         size="small"
+                        type={fieldData.password ? "password" : "text"}
                     />
                 );
             } else if (fieldData.type === "select" && fieldData.selectItems) {
@@ -160,30 +161,29 @@ const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) =>
     const isFormValid = formFields.some((field) => field.error);
 
     return (
-        <Dialog open={props.open} onClose={props.onCancel} className={styles.content}>
+        <Dialog open={props.open} onClose={props.onCancel} className={styles.content} >
             <div className={styles.content_title}>
                 <h1>{props.title}</h1>
             </div>
             <div className={styles.content_fields}>{renderFields()}</div>
             <div className={styles.content_buttons}>
-                <DialogActions>
-                    <button
-                        onClick={handleSubmit}
-                        className={styles.content_buttons_button}
-                        disabled={isFormValid}
-                    >
-                        {props.submitButtonText}
-                    </button>
-                    <button
-                        onClick={() => {
-                            resetForm();
+                <button
+                    onClick={handleSubmit}
+                    className={styles.content_buttons_button}
+                    disabled={isFormValid}
+                >
+                    {props.submitButtonText}
+                </button>
+                {!props.hideCancelButton ? <button
+                    onClick={() => {
+                        resetForm();
+                        if (props.onCancel !== undefined)
                             props.onCancel();
-                        }}
-                        className={styles.content_buttons_button}
-                    >
-                        {props.onCancelButtonText}
-                    </button>
-                </DialogActions>
+                    }}
+                    className={styles.content_buttons_button}
+                >
+                    {props.onCancelButtonText}
+                </button> : null}
             </div>
         </Dialog>
     );

@@ -19,18 +19,18 @@ export const AppStoreDefault: IAppStore = {
 
 export function getAppEndpoints(setLocal: any, getLocal: any): IAppEndpoints {
     return {
-        retrieveUser: async (set: any = setLocal, get: any = getLocal) => {
-            try {
-                // TODO: make a request handler that can handle concurrent request and has a queu...
-                // TODO: write data to store
-                const response = await fetch('/users/me/');
-                const user = await response.json();
-                return user;
-            } catch (error) {
-                console.error('Failed to retrieve user:', error);
-                return undefined;
-            }
-        },
+        // retrieveUser: async (set: any = setLocal, get: any = getLocal) => {
+        //     try {
+        //         // TODO: make a request handler that can handle concurrent request and has a queu...
+        //         // TODO: write data to store
+        //         const response = await fetch('/users/me/');
+        //         const user = await response.json();
+        //         return user;
+        //     } catch (error) {
+        //         console.error('Failed to retrieve user:', error);
+        //         return undefined;
+        //     }
+        // },
 
     }
 }

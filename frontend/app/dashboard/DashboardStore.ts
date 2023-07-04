@@ -21,7 +21,7 @@ export function getDashboardEndpoints(setLocal: any, getLocal: any): IDashboardE
             set(produce((state: IStore) => {
                 state.DashboardStore.store.showAddTankMenu = showAddTankMenu;
                 return state;
-            }));
+            }), false, "setShowAddTankMenu");
         },
 
         setTankCreationForm: (tankCreationForm: ITankCreationForm, set: any = setLocal, get: any = getLocal) => {
@@ -29,7 +29,7 @@ export function getDashboardEndpoints(setLocal: any, getLocal: any): IDashboardE
                 state.DashboardStore.store.tankCreationForm = tankCreationForm;
                 return state;
 
-            }))
+            }), false, "setTankCreationForm");
         },
     }
 }

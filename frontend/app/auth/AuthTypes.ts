@@ -19,7 +19,7 @@ export interface IRegisterForm {
     re_passwordError: boolean;
 }
 
-export interface IResetPassword {
+export interface IResetPasswordForm {
     old_password: string;
     old_passwordError: boolean;
     password: string;
@@ -31,7 +31,7 @@ export interface IResetPassword {
 export interface IAuthStore {
     loginForm: ILoginForm,
     registerForm: IRegisterForm,
-    resetPasswordForm: IResetPassword,
+    resetPasswordForm: IResetPasswordForm,
 }
 
 ///////////////
@@ -44,7 +44,10 @@ interface User {
     email: string;
 }
 export interface IAuthEndpoints {
-    retrieveUser: (set?: any, get?: any) => Promise<User | undefined>;
+    setLoginForm: (loginForm: ILoginForm, set?: any, get?: any) => void;
+    setRegisterForm: (registerForm: IRegisterForm, set?: any, get?: any) => void;
+    setResetPasswordForm: (resetPasswordForm: IResetPasswordForm, set?: any, get?: any) => void;
+    getUser: (set?: any, get?: any) => Promise<User | undefined>;
     login: (email: string, password: string, set?: any, get?: any) => Promise<void>;
     register: (first_name: string, last_name: string, email: string, password: string, set?: any, get?: any) => Promise<void>;
     verify: (set?: any, get?: any) => Promise<void>;

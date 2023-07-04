@@ -40,7 +40,7 @@ class AppHandler {
             }
         }));
 
-        return useStore.getState().AppStore;
+        return useStore.getState().AppStore.store;
     }
 
     public setAuth() {

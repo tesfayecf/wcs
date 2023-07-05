@@ -35,6 +35,18 @@ const Register: React.FunctionComponent<IRegisterProps> = (props: IRegisterProps
 
     const onSumbit = React.useCallback(() => {
         authHandler.register();
+        authHandler.setRegisterForm({
+            first_name: "",
+            first_nameError: false,
+            last_name: "",
+            last_nameError: false,
+            email: "",
+            emailError: false,
+            password: "",
+            passwordError: false,
+            re_password: "",
+            re_passwordError: false,
+        })
     }, [])
 
     return (

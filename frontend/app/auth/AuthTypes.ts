@@ -50,6 +50,7 @@ export interface IAuthEndpoints {
     setLoginFormPassword: (password: string, set?: any, get?: any) => void;
     setLoginFormPasswordError: (error: boolean, set?: any, get?: any) => void;
     // Register Form
+    setRegisterForm: (registerForm: IRegisterForm, set?: any, get?: any) => void;
     setRegisterFormFirstName: (first_name: string, set?: any, get?: any) => void;
     setRegisterFormFirstNameError: (error: boolean, set?: any, get?: any) => void;
     setRegisterFormLastName: (last_name: string, set?: any, get?: any) => void;

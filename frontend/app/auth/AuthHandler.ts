@@ -82,11 +82,15 @@ class AuthHandler {
 
 
     // Register Form
+
+    public setRegisterForm(registerForm: IRegisterForm) {
+        useStore.getState().AuthStore.endpoints.setRegisterForm(registerForm);
+    }
+
     public setRegisterFormFirstName(first_name: string) {
         const isValid = /^[A-Za-z]+$/.test(first_name);
         useStore.getState().AuthStore.endpoints.setRegisterFormFirstName(first_name);
         useStore.getState().AuthStore.endpoints.setRegisterFormFirstNameError(!isValid);
-        console.log(useStore.getState().AuthStore.store.registerForm.first_nameError);
     }
 
     public setRegisterFormLastName(last_name: string) {

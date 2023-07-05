@@ -32,13 +32,13 @@ interface IPopUpFormProps {
 }
 
 const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) => {
-    const [formFields, setFormFields] = useState<IField[]>(props.fields);
+    // const [formFields, setFormFields] = useState<IField[]>(props.fields);
 
-    const handleFieldChange = (event: any, index: number) => {
-        const updatedFields = [...formFields];
-        updatedFields[index].value = event.target.value;
-        setFormFields(updatedFields);
-    };
+    // const handleFieldChange = (event: any, index: number) => {
+    //     const updatedFields = [...formFields];
+    //     updatedFields[index].value = event.target.value;
+    //     setFormFields(updatedFields);
+    // };
 
     // const validateForm = () => {
     //     const updatedFields = [...formFields];
@@ -72,7 +72,7 @@ const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) =>
     // };
 
     const resetForm = () => {
-        const resetFields = formFields.map((field) => {
+        const resetFields = props.fields.map((field) => {
             field.onChange("");
             return ({
                 ...field,
@@ -80,7 +80,7 @@ const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) =>
                 error: false,
             })
         });
-        setFormFields(resetFields);
+        // setFormFields(resetFields);
     };
 
     const handleSubmit = () => {
@@ -91,10 +91,9 @@ const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) =>
     };
 
     const renderFields = () => {
-        return formFields.map((fieldData: IField, index: number) => {
+        return props.fields.map((fieldData: IField, index: number) => {
             let field = null;
             const { error, errorMessage } = fieldData;
-            console.log("PopUpFormTemplate:", error)
             if (fieldData.type === "textInput") {
                 field = (
                     <TextField
@@ -104,7 +103,7 @@ const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) =>
                         value={fieldData.value}
                         onChange={(event) => {
                             fieldData.onChange(event);
-                            handleFieldChange(event, index); // local state
+                            // handleFieldChange(event, index); // local state
                             // validateForm()
                         }}
                         error={props.fields[index].error}
@@ -128,7 +127,7 @@ const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) =>
                         label={fieldData.name}
                         variant="outlined"
                         value={fieldData.value}
-                        onChange={(event) => handleFieldChange(event, index)}
+                        onChange={(event) => fieldData.onChange(event)}
                         labelId={fieldData.name}
                         error={error}
                         defaultValue="Storage"

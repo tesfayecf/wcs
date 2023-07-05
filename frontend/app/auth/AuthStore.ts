@@ -63,16 +63,21 @@ export function getAuthEndpoints(setLocal: any, getLocal: any): IAuthEndpoints {
             }), false, "setLoginFormPasswordError");
         },
         // Register Form
-        setRegisterFormFirstName: (first_name: string, set: any = setLocal, get: any = getLocal) => {
+        setRegisterForm: (registerForm: IRegisterForm, set: any = setLocal, get: any = getLocal) => {
             set(produce((state: IStore) => {
-                console.log(first_name)
+                state.AuthStore.store.registerForm = registerForm;
+                return state;
+            }), false, "setRegisterForm");
+        },
+
+        setRegisterFormFirstName:   (first_name: string, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
                 state.AuthStore.store.registerForm.first_name = first_name;
                 return state;
             }), false, "setRegisterFormFirstName");
         },
         setRegisterFormFirstNameError: (error: boolean, set: any = setLocal, get: any = getLocal) => {
             set(produce((state: IStore) => {
-                if (error) console.log("Error")
                 state.AuthStore.store.registerForm.first_nameError = error;
                 return state;
             }), false, "setRegisterFormFirstNameError");

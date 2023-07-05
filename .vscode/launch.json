@@ -7,7 +7,8 @@
             "request": "launch",
             "program": "${workspaceFolder}/backend/manage.py",
             "args": [
-                "runserver"
+                "runserver",
+                "--inspect"
             ],
             "django": true,
             "console": "internalConsole"

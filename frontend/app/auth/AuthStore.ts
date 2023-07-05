@@ -37,25 +37,133 @@ export const AuthStoreDefault: IAuthStore = {
 
 export function getAuthEndpoints(setLocal: any, getLocal: any): IAuthEndpoints {
     return {
-        setLoginForm: (loginForm: ILoginForm, set: any = setLocal, get: any = getLocal) => {
+        // Login Form
+        setLoginFormEmail: (email: string, set: any = setLocal, get: any = getLocal) => {
             set(produce((state: IStore) => {
-                state.AuthStore.store.loginForm = loginForm;
+                state.AuthStore.store.loginForm.email = email;
                 return state;
-            }), false, "setLoginForm");
+            }), false, "setLoginFormEmail");
         },
-        setRegisterForm: (registerForm: IRegisterForm, set: any = setLocal, get: any = getLocal) => {
+        setLoginFormEmailError: (error: boolean, set: any = setLocal, get: any = getLocal) => {
             set(produce((state: IStore) => {
-                state.AuthStore.store.registerForm = registerForm;
+                state.AuthStore.store.loginForm.emailError = error;
                 return state;
-            }), false, "setRegisterForm");
+            }), false, "setLoginFormEmail");
         },
-        setResetPasswordForm: (resetPasswordForm: IResetPasswordForm, set: any = setLocal, get: any = getLocal) => {
+        setLoginFormPassword: (password: string, set: any = setLocal, get: any = getLocal) => {
             set(produce((state: IStore) => {
-                state.AuthStore.store.resetPasswordForm = resetPasswordForm;
+                state.AuthStore.store.loginForm.password = password;
                 return state;
-            }), false, "setResetPasswordForm");
+            }), false, "setLoginFormPassword");
+        },
+        setLoginFormPasswordError: (error: boolean, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AuthStore.store.loginForm.passwordError = error;
+                return state;
+            }), false, "setLoginFormPasswordError");
+        },
+        // Register Form
+        setRegisterFormFirstName: (first_name: string, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                console.log(first_name)
+                state.AuthStore.store.registerForm.first_name = first_name;
+                return state;
+            }), false, "setRegisterFormFirstName");
+        },
+        setRegisterFormFirstNameError: (error: boolean, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                if (error) console.log("Error")
+                state.AuthStore.store.registerForm.first_nameError = error;
+                return state;
+            }), false, "setRegisterFormFirstNameError");
+        },
+        setRegisterFormLastName: (last_name: string, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AuthStore.store.registerForm.last_name = last_name;
+                return state;
+            }), false, "setRegisterFormLastName");
+        },
+        setRegisterFormLastNameError: (error: boolean, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AuthStore.store.registerForm.last_nameError = error;
+                return state;
+            }), false, "setRegisterFormLastNameError");
+        },
+        setRegisterFormEmail: (email: string, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AuthStore.store.registerForm.email = email;
+                return state;
+            }), false, "setRegisterFormEmail");
+        },
+        setRegisterFormEmailError: (error: boolean, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AuthStore.store.registerForm.emailError = error;
+                return state;
+            }), false, "setRegisterFormEmailError");
+        },
+        setRegisterFormPassword: (password: string, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AuthStore.store.registerForm.password = password;
+                return state;
+            }), false, "setRegisterFormPassword");
+        },
+        setRegisterFormPasswordError: (error: boolean, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AuthStore.store.registerForm.passwordError = error;
+                return state;
+            }), false, "setRegisterFormPasswordError");
+        },
+        setRegisterFormRePassword: (re_password: string, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AuthStore.store.registerForm.re_password = re_password;
+                return state;
+            }), false, "setRegisterFormRePassword");
+        },
+        setRegisterFormRePasswordError: (error: boolean, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AuthStore.store.registerForm.re_passwordError = error;
+                return state;
+            }), false, "setRegisterFormRePasswordError");
+        },
+        // Reset Password Form
+        setResetPasswordFormOldPassword: (old_password: string, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AuthStore.store.resetPasswordForm.old_password = old_password;
+                return state;
+            }), false, "setResetPasswordFormOldPassword");
+        },
+        setResetPasswordFormOldPasswordError: (error: boolean, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AuthStore.store.resetPasswordForm.old_passwordError = error;
+                return state;
+            }), false, "setResetPasswordFormOldPasswordError");
+        },
+        setResetPasswordFormPassword: (password: string, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AuthStore.store.resetPasswordForm.password = password;
+                return state;
+            }), false, "setResetPasswordFormPassword");
+        },
+        setResetPasswordFormPasswordError: (error: boolean, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AuthStore.store.resetPasswordForm.passwordError = error;
+                return state;
+            }), false, "setResetPasswordFormPasswordError");
+        },
+        setResetPasswordFormRePassword: (re_password: string, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AuthStore.store.resetPasswordForm.re_password = re_password;
+                return state;
+            }), false, "setResetPasswordFormRePassword");
+        },
+        setResetPasswordFormRePasswordError: (error: boolean, set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AuthStore.store.resetPasswordForm.re_passwordError = error;
+                return state;
+            }), false, "setResetPasswordFormRePasswordError");
         },
 
+        // Utils
         getUser: async (set: any = setLocal, get: any = getLocal) => {
             try {
                 const response = await fetch('/users/me/');
@@ -79,37 +187,7 @@ export function getAuthEndpoints(setLocal: any, getLocal: any): IAuthEndpoints {
             }
         },
         register: async (first_name: string, last_name: string, email: string, password: string, re_password: string, set: any = setLocal, get: any = getLocal) => {
-            // try {
-                // console.log(password)
-                // const response = await fetch('http://127.0.0.1:8000/api/users/', {
-                //     method: 'POST',
-                //     headers: {
-                //         'Content-Type': 'application/json', // Specify JSON as the content type
 
-                //     },
-                //     credentials: 'same-origin', // Set credentials to same-origin
-                //     body: JSON.stringify({ first_name, last_name, email, password, re_password }), // Convert payload to JSON string
-                // });
-                // if (response.status === 201) {
-                //     console.log("SUCCES")
-                // } else {
-                //     console.log("ERROR")
-                // }
-
-                // const postData = {
-                //     first_name,
-                //     last_name,
-                //     email,
-                //     password,
-                //     re_password
-                // }
-
-                // const response = await requestHandler.post('/api/users/', postData);
-                // console.log(response)
-            // }
-            // catch (error) {
-            //     console.error('Failed to register:', error);
-            // }
         },
         verify: async (set: any = setLocal, get: any = getLocal) => {
             try {

@@ -19,16 +19,43 @@ class RequestHandler {
         return RequestHandler.instance;
     }
 
+    // public async get<T>(path: string, args?: T, config?: AxiosRequestConfig): Promise<APIResponse<T>> {
+    //     return this.makeRequest<T>('GET', path, args, config);
+    // }
+
+    // public async post<T>(path: string, data?: T, config?: AxiosRequestConfig): Promise<APIResponse<T>> {
+    //     return this.makeRequest<T>('POST', path, data, config);
+    // }
+
+    // public async put<T>(path: string, data?: T, config?: AxiosRequestConfig): Promise<APIResponse<T>> {
+    //     return this.makeRequest<T>('PUT', path, data, config);
+    // }
+
     public async get<T>(path: string, args?: T, config?: AxiosRequestConfig): Promise<APIResponse<T>> {
-        return this.makeRequest<T>('GET', path, args, config);
+        try {
+            const response = await this.makeRequest<T>('GET', path, args, config);
+            return response;
+        } catch (error) {
+            throw error;
+        }
     }
 
     public async post<T>(path: string, data?: T, config?: AxiosRequestConfig): Promise<APIResponse<T>> {
-        return this.makeRequest<T>('POST', path, data, config);
+        try {
+            const response = await this.makeRequest<T>('POST', path, data, config);
+            return response;
+        } catch (error) {
+            throw error;
+        }
     }
 
     public async put<T>(path: string, data?: T, config?: AxiosRequestConfig): Promise<APIResponse<T>> {
-        return this.makeRequest<T>('PUT', path, data, config);
+        try {
+            const response = await this.makeRequest<T>('PUT', path, data, config);
+            return response;
+        } catch (error) {
+            throw error;
+        }
     }
 
     private async makeRequest<T, P = any>(method: string, path: string, data?: P, config?: AxiosRequestConfig): Promise<APIResponse<T>> {
@@ -65,27 +92,30 @@ class RequestHandler {
 
                 resolve(apiResponse);
             } catch (error: unknown) {
-                const responseError = error as AxiosError<T>;
-                const apiError: APIError<T> = {
-                    message: responseError.message,
-                    code: parseInt(responseError.code || "0") || 0,
-                    data: responseError.response?.data || undefined,
-                };
+                if (axios.isCancel(error)) {
+                } else {
+                    const responseError = error as AxiosError<T>;
+                    const apiError: APIError<T> = {
+                        message: responseError.message,
+                        code: parseInt(responseError.code || "0") || 0,
+                        data: responseError.response?.data || undefined,
+                    };
 
-                const apiResponse: APIResponse<T> = {
-                    request: {
-                        url: responseError.config?.url || '',
-                        method: responseError.config?.method || '',
-                    },
-                    status: responseError.response?.status || 0,
-                    statusText: responseError.response?.statusText || '',
-                    headers: responseError.response?.headers || {},
-                    data: responseError.response?.data || undefined,
-                    error: apiError,
-                };
+                    const apiResponse: APIResponse<T> = {
+                        request: {
+                            url: responseError.config?.url || '',
+                            method: responseError.config?.method || '',
+                        },
+                        status: responseError.response?.status || 0,
+                        statusText: responseError.response?.statusText || '',
+                        headers: responseError.response?.headers || {},
+                        data: responseError.response?.data || undefined,
+                        error: apiError,
+                    };
 
-                this.handleError(error);
-                reject(apiResponse);
+                    this.handleError(error);
+                    reject(apiResponse);
+                }
             } finally {
                 this.cache.delete(cacheKey);
                 this.cancelTokens.delete(cacheKey);
@@ -93,7 +123,6 @@ class RequestHandler {
         });
 
         this.cache.set(cacheKey, requestPromise);
-
         return requestPromise;
     }
 
@@ -105,9 +134,7 @@ class RequestHandler {
 
     public clearCache(): void {
         this.cache.clear();
-        this.cancelTokens.forEach((cancelTokenSource) => {
-            cancelTokenSource.cancel('Cache cleared');
-        });
+        this.cancelTokens.forEach((cancelTokenSource) => {});
         this.cancelTokens.clear();
     }
 }

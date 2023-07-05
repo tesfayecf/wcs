@@ -1,10 +1,5 @@
-import React, { ChangeEvent, useState } from "react";
-import {
-    Dialog,
-    MenuItem,
-    Select,
-    TextField,
-} from "@mui/material";
+import React, { useState } from "react";
+import { Dialog, MenuItem, Select, TextField } from "@mui/material";
 import styles from "./styles/PopUpFormTemplate.module.scss";
 
 interface IField {
@@ -31,6 +26,7 @@ interface IPopUpFormProps {
     submitButtonText: string;
     onSubmit: () => void;
     onCancel?: () => void;
+    hideBackDrop?: boolean;
     hideCancelButton?: boolean;
     onCancelButtonText?: string;
 }
@@ -38,70 +34,67 @@ interface IPopUpFormProps {
 const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) => {
     const [formFields, setFormFields] = useState<IField[]>(props.fields);
 
-    const handleFieldChange = (
-        event: any,
-        index: number
-    ) => {
+    const handleFieldChange = (event: any, index: number) => {
         const updatedFields = [...formFields];
         updatedFields[index].value = event.target.value;
         setFormFields(updatedFields);
     };
 
-    const validateForm = () => {
-        const updatedFields = [...formFields];
-        let formIsValid = false;
+    // const validateForm = () => {
+    //     const updatedFields = [...formFields];
+    //     let formIsValid = false;
 
-        updatedFields.forEach((field) => {
-            field.error = false;
-            field.errorMessage = "";
+    //     updatedFields.forEach((field) => {
+    //         field.error = false;
+    //         field.errorMessage = "";
 
-            if (field.validation?.required && field.value.trim() === "") {
-                field.error = true;
-                field.errorMessage = "This field is required.";
-                formIsValid = false;
-            }
+    //         if (field.validation?.required && field.value.trim() === "") {
+    //             field.error = true;
+    //             field.errorMessage = "This field is required.";
+    //             formIsValid = false;
+    //         }
 
-            if (field.validation?.minLength && field.value.length < field.validation.minLength) {
-                field.error = true;
-                field.errorMessage = `Minimum length should be ${field.validation.minLength}.`;
-                formIsValid = false;
-            }
+    //         if (field.validation?.minLength && field.value.length < field.validation.minLength) {
+    //             field.error = true;
+    //             field.errorMessage = `Minimum length should be ${field.validation.minLength}.`;
+    //             formIsValid = false;
+    //         }
 
-            if (field.validation?.maxLength && field.value.length > field.validation.maxLength) {
-                field.error = true;
-                field.errorMessage = `Maximum length should be ${field.validation.maxLength}.`;
-                formIsValid = false;
-            }
+    //         if (field.validation?.maxLength && field.value.length > field.validation.maxLength) {
+    //             field.error = true;
+    //             field.errorMessage = `Maximum length should be ${field.validation.maxLength}.`;
+    //             formIsValid = false;
+    //         }
+    //     });
 
-            // Add more validation checks based on the field's validation rules
+    //     setFormFields(updatedFields);
+    //     return formIsValid;
+    // };
+
+    const resetForm = () => {
+        const resetFields = formFields.map((field) => {
+            field.onChange("");
+            return ({
+                ...field,
+                value: "",
+                error: false,
+            })
         });
-
-        setFormFields(updatedFields);
-        return formIsValid;
+        setFormFields(resetFields);
     };
-
 
     const handleSubmit = () => {
         props.onSubmit();
-        if (validateForm()) {
-            resetForm();
-        }
-    };
-
-    const resetForm = () => {
-        const resetFields = formFields.map((field) => ({
-            ...field,
-            value: "",
-            error: false,
-        }));
-        setFormFields(resetFields);
+        // if (validateForm()) {
+        //     resetForm();
+        // }
     };
 
     const renderFields = () => {
         return formFields.map((fieldData: IField, index: number) => {
             let field = null;
             const { error, errorMessage } = fieldData;
-
+            console.log("PopUpFormTemplate:", error)
             if (fieldData.type === "textInput") {
                 field = (
                     <TextField
@@ -112,10 +105,10 @@ const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) =>
                         onChange={(event) => {
                             fieldData.onChange(event);
                             handleFieldChange(event, index); // local state
-                            validateForm()
+                            // validateForm()
                         }}
-                        error={error}
-                        helperText={error && errorMessage}
+                        error={props.fields[index].error}
+                        helperText={props.fields[index].error && props.fields[index].errorMessage}
                         placeholder={fieldData.placeholder}
                         fullWidth
                         size="small"
@@ -138,7 +131,6 @@ const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) =>
                         onChange={(event) => handleFieldChange(event, index)}
                         labelId={fieldData.name}
                         error={error}
-                        // helperText={error && errorMessage}
                         defaultValue="Storage"
                         placeholder={fieldData.placeholder}
                         fullWidth
@@ -158,10 +150,10 @@ const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) =>
         });
     };
 
-    const isFormValid = formFields.some((field) => field.error);
+    const isFormValid = props.fields.some((field) => field.error);
 
     return (
-        <Dialog open={props.open} onClose={props.onCancel} className={styles.content} >
+        <Dialog open={props.open} onClose={props.onCancel} className={styles.content} hideBackdrop={props.hideBackDrop} >
             <div className={styles.content_title}>
                 <h1>{props.title}</h1>
             </div>

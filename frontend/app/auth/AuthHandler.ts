@@ -35,15 +35,15 @@ class AuthHandler {
                 passwordError: false,
             },
             registerForm: {
-                first_name: 'fefasdfadscasdcasdfds',
+                first_name: '',
                 first_nameError: false,
-                last_name: 'ferfefewfadsfasdf',
+                last_name: '',
                 last_nameError: false,
-                email: 'adfcfqewfasdx3@gmail.com',
+                email: '',
                 emailError: false,
-                password: 'qwertyuiopasdfghjklñzxcvbnm',
+                password: '',
                 passwordError: false,
-                re_password: 'qwertyuiopasdfghjklñzxcvbnm',
+                re_password: '',
                 re_passwordError: false,
             },
             resetPasswordForm: {
@@ -67,24 +67,86 @@ class AuthHandler {
         return useStore.getState().AuthStore.store;
     }
 
-    // Fer un set per a cada field i utilitzar el set error per al handler del request
-
-    public setRegisterForm(registerForm: IRegisterForm) {
-        useStore.getState().AuthStore.endpoints.setRegisterForm(registerForm);
+    // Login Form
+    public setLoginFormEmail(email: string) {
+        const isValid = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email);
+        useStore.getState().AuthStore.endpoints.setLoginFormEmail(email);
+        useStore.getState().AuthStore.endpoints.setLoginFormEmailError(!isValid);
     }
 
+    public setLoginFormPassword(password: string) {
+        const isValid = /^[A-Za-z0-9!@#$%^&*()_]{6,}$/.test(password);
+        useStore.getState().AuthStore.endpoints.setLoginFormPassword(password);
+        useStore.getState().AuthStore.endpoints.setLoginFormPasswordError(!isValid);
+    }
+
+
+    // Register Form
+    public setRegisterFormFirstName(first_name: string) {
+        const isValid = /^[A-Za-z]+$/.test(first_name);
+        useStore.getState().AuthStore.endpoints.setRegisterFormFirstName(first_name);
+        useStore.getState().AuthStore.endpoints.setRegisterFormFirstNameError(!isValid);
+        console.log(useStore.getState().AuthStore.store.registerForm.first_nameError);
+    }
+
+    public setRegisterFormLastName(last_name: string) {
+        const isValid = /^[A-Za-z]+$/.test(last_name);
+        useStore.getState().AuthStore.endpoints.setRegisterFormLastName(last_name);
+        useStore.getState().AuthStore.endpoints.setRegisterFormLastNameError(!isValid);
+    }
+
+    public setRegisterFormEmail(email: string) {
+        const isValid = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email);
+        useStore.getState().AuthStore.endpoints.setRegisterFormEmail(email);
+        useStore.getState().AuthStore.endpoints.setRegisterFormEmailError(!isValid);
+    }
+
+    public setRegisterFormPassword(password: string) {
+        const isValid = /^[A-Za-z0-9!@#$%^&*()_]{6,}$/.test(password);
+        useStore.getState().AuthStore.endpoints.setRegisterFormPassword(password);
+        useStore.getState().AuthStore.endpoints.setRegisterFormPasswordError(!isValid);
+    }
+
+    public setRegisterFormRePassword(re_password: string) {
+        const isValid = re_password === useStore.getState().AuthStore.store.registerForm.password;
+        useStore.getState().AuthStore.endpoints.setRegisterFormRePassword(re_password);
+        useStore.getState().AuthStore.endpoints.setRegisterFormRePasswordError(!isValid);
+    }
+
+
+    // Reset Password Form
+    public setResetPasswordFormOldPassword(old_password: string) {
+        const isValid = /^[A-Za-z0-9!@#$%^&*()_]{6,}$/.test(old_password);
+        useStore.getState().AuthStore.endpoints.setResetPasswordFormOldPassword(old_password);
+        useStore.getState().AuthStore.endpoints.setResetPasswordFormOldPasswordError(!isValid);
+    }
+
+    public setResetPasswordFormPassword(password: string) {
+        const isValid = /^[A-Za-z0-9!@#$%^&*()_]{6,}$/.test(password);
+        useStore.getState().AuthStore.endpoints.setResetPasswordFormPassword(password);
+        useStore.getState().AuthStore.endpoints.setResetPasswordFormPasswordError(!isValid);
+    }
+
+    public setResetPasswordFormRePassword(re_password: string) {
+        const isValid = re_password === useStore.getState().AuthStore.store.resetPasswordForm.password;
+        useStore.getState().AuthStore.endpoints.setResetPasswordFormRePassword(re_password);
+        useStore.getState().AuthStore.endpoints.setResetPasswordFormRePasswordError(!isValid);
+    }
+
+
+
     public async register() {
-        const { first_name, last_name, email, password, re_password } = useStore.getState().AuthStore.store.registerForm;
         try {
+            const { first_name, last_name, email, password, re_password } = useStore.getState().AuthStore.store.registerForm;
             const response = await requestHandler.post<Partial<IRegisterForm>>("/api/users/", { first_name, last_name, email, password, re_password })
-            console.log("SUCCES" ,response);
-
-        } catch (error: unknown) {
-            let data = error as APIResponse<Partial<IRegisterForm>>
-            console.log("ERROR" ,data.error?.data?.email);
+            if (response.status === 201) {
+                console.log("SUCCES", response);
+            } else {
+                console.log("ERROR", response);
+            }
+        } catch (error) {
+            // Log error
         }
-        // useStore.getState().AuthStore.endpoints.register(first_name, last_name, email, password, re_password);
-
     }
 }
 

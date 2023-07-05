@@ -44,9 +44,30 @@ interface User {
     email: string;
 }
 export interface IAuthEndpoints {
-    setLoginForm: (loginForm: ILoginForm, set?: any, get?: any) => void;
-    setRegisterForm: (registerForm: IRegisterForm, set?: any, get?: any) => void;
-    setResetPasswordForm: (resetPasswordForm: IResetPasswordForm, set?: any, get?: any) => void;
+    // Login Form
+    setLoginFormEmail: (email: string, set?: any, get?: any) => void;
+    setLoginFormEmailError: (error: boolean, set?: any, get?: any) => void;
+    setLoginFormPassword: (password: string, set?: any, get?: any) => void;
+    setLoginFormPasswordError: (error: boolean, set?: any, get?: any) => void;
+    // Register Form
+    setRegisterFormFirstName: (first_name: string, set?: any, get?: any) => void;
+    setRegisterFormFirstNameError: (error: boolean, set?: any, get?: any) => void;
+    setRegisterFormLastName: (last_name: string, set?: any, get?: any) => void;
+    setRegisterFormLastNameError: (error: boolean, set?: any, get?: any) => void;
+    setRegisterFormEmail: (email: string, set?: any, get?: any) => void;
+    setRegisterFormEmailError: (error: boolean, set?: any, get?: any) => void;
+    setRegisterFormPassword: (password: string, set?: any, get?: any) => void;
+    setRegisterFormPasswordError: (error: boolean, set?: any, get?: any) => void;
+    setRegisterFormRePassword: (re_password: string, set?: any, get?: any) => void;
+    setRegisterFormRePasswordError: (error: boolean, set?: any, get?: any) => void;
+    setResetPasswordFormOldPassword: (old_password: string, set?: any, get?: any) => void;
+    // Reset Password Form
+    setResetPasswordFormOldPasswordError: (error: boolean, set?: any, get?: any) => void;
+    setResetPasswordFormPassword: (password: string, set?: any, get?: any) => void;
+    setResetPasswordFormPasswordError: (error: boolean, set?: any, get?: any) => void;
+    setResetPasswordFormRePassword: (re_password: string, set?: any, get?: any) => void;
+    setResetPasswordFormRePasswordError: (error: boolean, set?: any, get?: any) => void;
+
     getUser: (set?: any, get?: any) => Promise<User | undefined>;
     login: (email: string, password: string, set?: any, get?: any) => Promise<void>;
     register: (first_name: string, last_name: string, email: string, password: string, re_password: string, set?: any, get?: any) => Promise<void>;

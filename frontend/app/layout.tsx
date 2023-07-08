@@ -1,28 +1,30 @@
-import '../styles/globals.scss'
-import Footer from './components/fotter/Footer'
-import Navbar from './components/navbar/Navbar'
+'use client'
+import '@/styles/globals.scss'
+import React from 'react'
 
-import { IAppStore } from './app/AppTypes'
-import { IAuthStore } from './auth/AuthTypes'
-import { IDashboardStore } from './dashboard/DashboardTypes'
+import useLoadingPage from '@/app/components/loadingPage/useLoadingPage'
 
-import RequestHandler from './utils/request/requestHandler'
+import { IAppStore } from '@/app/app/AppTypes'
+import { IAuthStore } from '@/app/(auth)/AuthTypes'
+import { IDashboardStore } from '@/app/(pages)/dashboard/DashboardTypes'
 
-import AppHandler from './app/AppHandler'
-import AuthHandler from './auth/AuthHandler'
-import DashboardHandler from './dashboard/DashboardHandler'
+import RequestHandler from '@/app/utils/request/requestHandler'
 
-import AppStoreInitializer from './app/AppStoreInitializer'
-import AuthStoreInitializer from './auth/AuthStoreInitializer'
-import DashboardStoreInitializer from './dashboard/DashboardStoreInitializer'
+import AppHandler from '@/app/app/AppHandler'
+import AuthHandler from '@/app/(auth)/AuthHandler'
+import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler'
+
+import AppStoreInitializer from '@/app/app/AppStoreInitializer'
+import AuthStoreInitializer from '@/app/(auth)/AuthStoreInitializer'
+import DashboardStoreInitializer from '@/app/(pages)/dashboard/DashboardStoreInitializer'
 
 export const metadata = {
-  title: 'WCS App',
-  description: 'Web app to control water resources',
+    title: 'WCS App',
+    description: 'Web app to control water resources',
 }
 
 type IAppLayoutProps = {
-  children: React.ReactNode[]
+    children: React.ReactNode[] | React.ReactNode | undefined | null;
 }
 
 const requestHandler: RequestHandler = RequestHandler.getInstance();
@@ -37,28 +39,21 @@ const initailDasboardStore: IDashboardStore = dashboardHandler.setInitialDashboa
 
 
 export default function RootLayout({ children }: IAppLayoutProps) {
-  return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>WCS</title>
-      </head>
-      <body>
-        <AppStoreInitializer {...initialAppStore} />
-        <AuthStoreInitializer {...initialAuthStore} />
-        <DashboardStoreInitializer {...initailDasboardStore} />
-        <header>
-          <nav>
-            <Navbar />
-          </nav>
-        </header>
-        <noscript>You need to enable JavaScript to run this app.</noscript>
-        <div id="rootLayout">
-          {children}
-        </div>
-        <Footer />
-      </body>
-    </html>
-  )
+    console.log("Root layout")
+    return (
+        <>
+            <AppStoreInitializer {...initialAppStore} />
+            <AuthStoreInitializer {...initialAuthStore} />
+            <DashboardStoreInitializer {...initailDasboardStore} />
+            <html lang="en">
+                <head>
+                    <meta charSet="utf-8" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1" />
+                    <title>WCS</title>
+                </head>
+                {useLoadingPage()}
+                {children}
+            </html>
+        </>
+    )
 }

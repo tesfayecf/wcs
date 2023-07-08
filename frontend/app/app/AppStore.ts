@@ -1,8 +1,12 @@
-import { IAppEndpoints, IAppStore } from "./AppTypes";
+import { produce } from "immer";
+import { IStore } from "../store/storeTypes";
+import { IAppActions, IAppStore } from "./AppTypes";
 
 export const AppStoreDefault: IAppStore = {
     isAuthenticated: false,
-    isLoading: true,
+    isLoading: false,
+    isConnected: false,
+
     isAdmin: false,
     isStaff: false,
     isUser: false,
@@ -17,20 +21,31 @@ export const AppStoreDefault: IAppStore = {
     }
 }
 
-export function getAppEndpoints(setLocal: any, getLocal: any): IAppEndpoints {
+export function getAppActions(setLocal: any, getLocal: any): IAppActions {
     return {
-        // retrieveUser: async (set: any = setLocal, get: any = getLocal) => {
-        //     try {
-        //         // TODO: make a request handler that can handle concurrent request and has a queu...
-        //         // TODO: write data to store
-        //         const response = await fetch('/users/me/');
-        //         const user = await response.json();
-        //         return user;
-        //     } catch (error) {
-        //         console.error('Failed to retrieve user:', error);
-        //         return undefined;
-        //     }
-        // },
-
+        startAuthentication: (set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AppStore.store.isLoading = true;
+                return state;
+            }), false, "startAuthentication");
+        },
+        finishAuthentication: (set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AppStore.store.isLoading = false;
+                return state;
+            }), false, "finishInitialLoad");
+        },
+        setAuth: (set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AppStore.store.isAuthenticated = true;
+                return state;
+            }), false, "setAuth");
+        },
+        logout: (set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AppStore.store.isAuthenticated = false;
+                return state;
+            }), false, "logout");
+        }
     }
 }

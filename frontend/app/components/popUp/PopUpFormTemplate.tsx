@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Dialog, MenuItem, Select, TextField } from "@mui/material";
 import styles from "./styles/PopUpFormTemplate.module.scss";
+import LoadingSVG from "../loadingPage/LoadingSVG";
 
 interface IField {
     type: "textInput" | "select";
@@ -29,10 +30,11 @@ interface IPopUpFormProps {
     hideBackDrop?: boolean;
     hideCancelButton?: boolean;
     onCancelButtonText?: string;
+    isLoading?: boolean;
 }
 
 const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) => {
-    // const [formFields, setFormFields] = useState<IField[]>(props.fields);
+    // const [loading, setFormFields] = useState<IField[]>(props.fields);
 
     // const handleFieldChange = (event: any, index: number) => {
     //     const updatedFields = [...formFields];
@@ -163,7 +165,7 @@ const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) =>
                     className={styles.content_buttons_button}
                     disabled={isFormValid}
                 >
-                    {props.submitButtonText}
+                    {props.isLoading ? (<><LoadingSVG /> Loading... </>) : (props.submitButtonText)}
                 </button>
                 {!props.hideCancelButton ? <button
                     onClick={() => {
@@ -176,7 +178,7 @@ const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) =>
                     {props.onCancelButtonText}
                 </button> : null}
             </div>
-        </Dialog>
+        </Dialog >
     );
 };
 

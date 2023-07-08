@@ -8,14 +8,14 @@ type INavbarProps = {}
 const Navbar: React.FunctionComponent<INavbarProps> = (props: INavbarProps) => {
 
     const data = useStore.getState().AppStore.store.userInfo.name;
-    console.log("navbar data", data);
 
 
     return (
         <div id='navbar' className={styles.container}>
             <div id='navigation-buttons-container' className={styles.navigation_buttons_container}>
-                <NavbarButton text='Dashboard' index="./dashboard" />
-                <NavbarButton text='Analytics' index="./analytics" />
+                <NavbarButton text='Dashboard' index="/dashboard" />
+                <NavbarButton text='Analytics' index="/analytics" />
+                <NavbarButton text='Profile' index="/analytics" />
             </div>
         </div>
     )

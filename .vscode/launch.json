@@ -1,93 +1,85 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Django dev",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/backend/manage.py",
-            "args": [
-                "runserver",
-                "--inspect"
-            ],
-            "django": true,
-            "console": "internalConsole"
-        },
-        {
-            "name": "NextJS dev",
-            "type": "node",
-            "request": "launch",
-            "cwd": "${workspaceFolder}/frontend",
-            "runtimeExecutable": "npm",
-            "restart": true,
-            "env": {
-                "NODE_ENV": "development"
-            },
-            "runtimeArgs": [
-                "run-script",
-                "dev"
-            ],
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Django prod",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/backend/manage.py",
-            "args": [
-                "runserver"
-            ],
-            "django": true,
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "NextJS prod",
-            "type": "node",
-            "request": "launch",
-            "cwd": "${workspaceFolder}/frontend",
-            "runtimeExecutable": "npm",
-            "restart": true,
-            "env": {
-                "NODE_ENV": "development"
-            },
-            "runtimeArgs": [
-                "run-script",
-                "start"
-            ],
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "web-renderer",
-            "type": "chrome",
-            "request": "launch",
-            "url": "http://localhost:3000",
-            "webRoot": "${workspaceFolder}/frontend",
-            "timeout": 10000,
-            "sourceMaps": true
-        }
-    ],
-    "compounds": [
-        {
-            "name": "NextJS debug",
-            "configurations": [
-                "NextJS dev",
-                "web-renderer"
-            ]
-        },
-        {
-            "name": "APP debug",
-            "configurations": [
-                "NextJS dev",
-                "web-renderer",
-                "Django dev"
-            ]
-        },
-        {
-            "name": "APP prod",
-            "configurations": [
-                "NextJS prod",
-                "Django prod"
-            ]
-        },
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Django dev",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/manage.py",
+      "args": ["runserver"],
+      "django": true,
+      "console": "internalConsole"
+    },
+    {
+      "name": "NextJS dev",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/frontend",
+      "runtimeExecutable": "npm",
+      "restart": true,
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "runtimeArgs": ["run-script", "dev", "--inspect"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "NextJS dev - start",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/frontend",
+      "runtimeExecutable": "npm",
+      "restart": true,
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "runtimeArgs": ["run-script", "start", "--inspect"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Django prod",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/manage.py",
+      "args": ["runserver"],
+      "django": true,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "NextJS prod",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/frontend",
+      "runtimeExecutable": "npm",
+      "restart": true,
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "runtimeArgs": ["run-script", "start"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "web-renderer",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/frontend",
+      "timeout": 10000,
+      "sourceMaps": true
+    }
+  ],
+  "compounds": [
+    {
+      "name": "NextJS debug",
+      "configurations": ["NextJS dev", "web-renderer"]
+    },
+    {
+      "name": "APP debug",
+      "configurations": ["NextJS dev", "web-renderer", "Django dev"]
+    },
+    {
+      "name": "APP prod",
+      "configurations": ["NextJS prod", "Django prod"]
+    }
+  ]
 }

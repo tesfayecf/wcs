@@ -4,6 +4,7 @@ import { IAppStore } from "./AppTypes";
 import { useStore } from "../store/store";
 
 function AppStoreInitializer(AppStore: IAppStore) {
+    console.log("AppStoreInitializer")
     const initialized = useRef(false);
     if (!initialized.current) {
         useStore.setState((state) => ({
@@ -11,7 +12,7 @@ function AppStoreInitializer(AppStore: IAppStore) {
                 ...state.AppStore,
                 store: AppStore,
             }
-        }))
+        }), false, "AppStoreInitializer")
         initialized.current = true;
     }
     return null;

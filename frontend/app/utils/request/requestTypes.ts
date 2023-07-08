@@ -5,6 +5,8 @@
 //     '/api/posts': PostResponse;
 // }
 
+import { AxiosRequestConfig } from "axios";
+
 // interface DataResponse {
 //     id: number;
 //     name: string;
@@ -22,6 +24,20 @@
 //     content: string;
 // }
 
+export interface ICacheOptions {
+    enabled?: boolean; // Flag to enable/disable caching
+    time?: number; // Cache time in milliseconds
+    overwrite?: boolean; // Flag to overwrite cache if exists
+}
+
+
+export interface RequestProps<P> {
+    method: string,
+    path: string,
+    data?: P,
+    config?: AxiosRequestConfig,
+    cacheOptions?: ICacheOptions
+}
 
 
 

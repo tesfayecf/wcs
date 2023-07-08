@@ -21,8 +21,9 @@ class AppHandler {
 
     public getInitialStoreData = () => {
         return {
-            isAuthenticated: false,
-            isLoading: true,
+            isAuthenticated: true,
+            isConnected: false,
+            isLoading: false,
             isAdmin: false,
             isStaff: false,
             isUser: false,
@@ -43,28 +44,20 @@ class AppHandler {
         return useStore.getState().AppStore.store;
     }
 
+    public authenticateUser() {
+
+    }
+
+    public startAuthentication() {
+        useStore.getState().AppStore.actions.startAuthentication();
+    }
+
     public setAuth() {
-        useStore.setState((state) => ({
-            AppStore: {
-                ...state.AppStore,
-                store: {
-                    ...state.AppStore.store,
-                    isAuthenticated: true,
-                }
-            }
-        }));
+        useStore.getState().AppStore.actions.setAuth();
     }
 
     public logout() {
-        useStore.setState((state) => ({
-            AppStore: {
-                ...state.AppStore,
-                store: {
-                    ...state.AppStore.store,
-                    isAuthenticated: false,
-                }
-            }
-        }));
+        useStore.getState().AppStore.actions.logout();
     }
 
     public handleTokenRefresh = async () => {
@@ -117,7 +110,7 @@ const userSessionInfo: any = {
     user: {
         id: 1,
         name: 'John Doe',
-        email: 'john@gmail.com',
+        email: 'tesfayecarreras02@gmail.com',
         role: 'admin',
         status: 'active',
         lastLogin: '2021-01-01',

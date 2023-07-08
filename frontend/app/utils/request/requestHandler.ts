@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, CancelTokenSource } from 'axios';
-import { APIError, APIResponse } from './requestTypes';
+import { APIError, APIResponse, ICacheOptions, RequestProps } from './requestTypes';
 
 class RequestHandler {
     private static instance: RequestHandler;
@@ -31,38 +31,34 @@ class RequestHandler {
     //     return this.makeRequest<T>('PUT', path, data, config);
     // }
 
-    public async get<T>(path: string, args?: T, config?: AxiosRequestConfig): Promise<APIResponse<T>> {
+    public async get<T>(path: string, requestData: T, config?: AxiosRequestConfig, cacheOptions?: ICacheOptions): Promise<APIResponse<T>> {
         try {
-            const response = await this.makeRequest<T>('GET', path, args, config);
+            const response = await this.makeRequest<T>({ method: 'GET', path, data: requestData, config, cacheOptions });
             return response;
         } catch (error) {
             throw error;
         }
     }
 
-    public async post<T>(path: string, data?: T, config?: AxiosRequestConfig): Promise<APIResponse<T>> {
+    public post<T>(path: string, requestData: T, config?: AxiosRequestConfig, cacheOptions?: ICacheOptions): Promise<APIResponse<T>> {
+        return this.makeRequest<T>({ method: 'POST', path, data: requestData, config, cacheOptions });
+    }
+
+    public async put<T>(path: string, requestData: T, config?: AxiosRequestConfig, cacheOptions?: ICacheOptions): Promise<APIResponse<T>> {
         try {
-            const response = await this.makeRequest<T>('POST', path, data, config);
+            const response = await this.makeRequest<T>({ method: 'PUT', path, data: requestData, config, cacheOptions });
             return response;
         } catch (error) {
             throw error;
         }
     }
 
-    public async put<T>(path: string, data?: T, config?: AxiosRequestConfig): Promise<APIResponse<T>> {
-        try {
-            const response = await this.makeRequest<T>('PUT', path, data, config);
-            return response;
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    private async makeRequest<T, P = any>(method: string, path: string, data?: P, config?: AxiosRequestConfig): Promise<APIResponse<T>> {
+    private async makeRequest<T>(requestData: RequestProps<T>): Promise<APIResponse<T>> {
+        const { path, method, data, config, cacheOptions } = requestData;
         const cacheKey = `${path}-${JSON.stringify(data)}`;
         const cachedPromise = this.cache.get(cacheKey);
 
-        if (cachedPromise) {
+        if (cachedPromise && cacheOptions && !cacheOptions.overwrite) {
             return cachedPromise as Promise<APIResponse<T>>;
         }
 
@@ -93,6 +89,7 @@ class RequestHandler {
                 resolve(apiResponse);
             } catch (error: unknown) {
                 if (axios.isCancel(error)) {
+                    // Handle cancellation
                 } else {
                     const responseError = error as AxiosError<T>;
                     const apiError: APIError<T> = {
@@ -134,7 +131,7 @@ class RequestHandler {
 
     public clearCache(): void {
         this.cache.clear();
-        this.cancelTokens.forEach((cancelTokenSource) => {});
+        this.cancelTokens.forEach((cancelTokenSource) => { });
         this.cancelTokens.clear();
     }
 }
@@ -148,7 +145,7 @@ export default RequestHandler;
 
 /**
  * 
- * Error Handling: Implement a centralized error handling mechanism to handle errors consistently and provide meaningful error messages or retry mechanisms when appropriate.
+Error Handling: Implement a centralized error handling mechanism to handle errors consistently and provide meaningful error messages or retry mechanisms when appropriate.
 
 Response Interceptors: Utilize response interceptors to handle common response transformations, such as parsing JSON responses, handling error codes, or transforming data before returning it.
 

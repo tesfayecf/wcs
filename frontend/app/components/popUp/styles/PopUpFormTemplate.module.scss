@@ -42,7 +42,24 @@
         gap: 25px;
 
         &_button {
-            margin: 0px 15px;
+            display: inline-flex; 
+            padding-top: 10px;
+            padding-bottom: 10px; 
+            padding-left: 20px;
+            padding-right: 20px; 
+            margin-right: 25px; 
+            background-color: #178e61; 
+            color: #ffffff; 
+            font-size: 15px;
+            line-height: 20px; 
+            font-weight: 500; 
+            text-align: center; 
+            align-items: center; 
+            border-radius: 8px; 
+
+            &:hover {
+                background-color: #1eb179; 
+            }
         }
     }
 }

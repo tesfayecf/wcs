@@ -13,24 +13,32 @@ export interface IUserInfo {
 }
 
 export interface IAppStore {
+    isAuthenticated: boolean;
+    isLoading: boolean;
+    isConnected: boolean;
+
     isAdmin: boolean;
     isStaff: boolean;
     isUser: boolean;
-    isAuthenticated: boolean;
-    isLoading: boolean;
+
     checkValue: number;
     userInfo: IUserInfo;
 }
 
 ///////////////
-//// ENDPOINTS
+//// ACTIONS
 ///////////////
 
-interface User {
-    first_name: string;
-    last_name: string;
-    email: string;
+export interface ISetterProps {
+    value: any;
+    error?: boolean;
+    set?: any;
+    get?: any;
 }
-export interface IAppEndpoints {
-    // retrieveUser: (set?: any, get?: any) => Promise<User | undefined>;
+
+export interface IAppActions {
+    startAuthentication: (set?: any, get?: any) => void;
+    finishAuthentication: (set?: any, get?: any) => void;
+    setAuth: (set?: any, get?: any) => void;
+    logout: (set?: any, get?: any) => void;
 }

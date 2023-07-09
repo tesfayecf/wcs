@@ -14,7 +14,7 @@ type IAppLayoutProps = {
 export default function RootLayout({ children }: IAppLayoutProps) {
     console.log("Pages layout")
     return (
-        <body>
+        <div id="pagesLayout">
             <RequireAuth>
                 <header>
                     <nav>
@@ -22,11 +22,11 @@ export default function RootLayout({ children }: IAppLayoutProps) {
                     </nav>
                 </header>
                 <noscript>You need to enable JavaScript to run this app.</noscript>
-                <div id="pagesLayout">
+                <div>
                     {children}
                 </div>
                 <Footer />
             </RequireAuth>
-        </body>
+        </div>
     )
 }

@@ -23,7 +23,7 @@ class AppHandler {
         return {
             isAuthenticated: false,
             isConnected: false,
-            isLoading: true,
+            isLoading: false,
             isAdmin: false,
             isStaff: false,
             isUser: false,
@@ -45,8 +45,14 @@ class AppHandler {
     }
 
     public authenticateUser() {
-        // throw new Error("Method not implemented.");
-        useStore.getState().AppStore.actions.setAuth();
+        try {
+            // useStore.getState().AppStore.actions.setAuth();
+            console.log("user authenticated")
+        } catch (error) {
+            console.log("user NOT authenticated")
+            this.logout();
+            window.location.replace("/login");
+        }
     }
 
     public startAuthentication() {

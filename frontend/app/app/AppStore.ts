@@ -36,6 +36,7 @@ export function getAppActions(setLocal: any, getLocal: any): IAppActions {
             }), false, "finishLoading");
         },
         startAuthentication: (set: any = setLocal, get: any = getLocal) => {
+            console.log("changing isLoading to: ", true)
             set(produce((state: IStore) => {
                 state.AppStore.store.isLoading = true;
                 return state;

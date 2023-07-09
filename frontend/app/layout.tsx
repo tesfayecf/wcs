@@ -51,8 +51,10 @@ export default function RootLayout({ children }: IAppLayoutProps) {
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
                     <title>WCS</title>
                 </head>
-                <UseLoadingPage />
-                {children}
+                <body>
+                    <UseLoadingPage />
+                    {children}
+                </body>
             </html>
         </>
     )

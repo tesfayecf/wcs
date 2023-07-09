@@ -46,9 +46,8 @@ export default function RootLayout({ children }: IAppLayoutProps) {
     }, [])
 
     return (
-        <body>
-            <div id="authLayout"></div>
+        <div id="authLayout">
             {children}
-        </body>
+        </div>
     )
 }

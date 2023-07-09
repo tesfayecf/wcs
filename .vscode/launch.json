@@ -24,7 +24,7 @@
       "console": "integratedTerminal"
     },
     {
-      "name": "NextJS dev - start",
+      "name": "NextJS start",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/frontend",

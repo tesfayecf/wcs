@@ -164,6 +164,7 @@ class AuthHandler {
             // const response = await requestHandler.post<Partial<ILoginForm>>("/api/jwt/create/", { email, password })
             // console.log(response)
             console.log(useStore.getState().AppStore.actions)
+            useStore.getState().AppStore.store.isLoading ? useStore.getState().AppStore.actions.finishLoading() : useStore.getState().AppStore.actions.startLoading()
 
 
         } catch (error) {

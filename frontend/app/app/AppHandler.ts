@@ -21,9 +21,9 @@ class AppHandler {
 
     public getInitialStoreData = () => {
         return {
-            isAuthenticated: true,
+            isAuthenticated: false,
             isConnected: false,
-            isLoading: false,
+            isLoading: true,
             isAdmin: false,
             isStaff: false,
             isUser: false,
@@ -45,7 +45,8 @@ class AppHandler {
     }
 
     public authenticateUser() {
-
+        // throw new Error("Method not implemented.");
+        useStore.getState().AppStore.actions.setAuth();
     }
 
     public startAuthentication() {

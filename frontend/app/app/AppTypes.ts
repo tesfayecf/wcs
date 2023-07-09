@@ -37,6 +37,8 @@ export interface ISetterProps {
 }
 
 export interface IAppActions {
+    startLoading: (set?: any, get?: any) => void;
+    finishLoading: (set?: any, get?: any) => void;
     startAuthentication: (set?: any, get?: any) => void;
     finishAuthentication: (set?: any, get?: any) => void;
     setAuth: (set?: any, get?: any) => void;

@@ -23,6 +23,18 @@ export const AppStoreDefault: IAppStore = {
 
 export function getAppActions(setLocal: any, getLocal: any): IAppActions {
     return {
+        startLoading: (set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AppStore.store.isLoading = true;
+                return state;
+            }), false, "startLoading");
+        },
+        finishLoading: (set: any = setLocal, get: any = getLocal) => {
+            set(produce((state: IStore) => {
+                state.AppStore.store.isLoading = false;
+                return state;
+            }), false, "finishLoading");
+        },
         startAuthentication: (set: any = setLocal, get: any = getLocal) => {
             set(produce((state: IStore) => {
                 state.AppStore.store.isLoading = true;
@@ -33,7 +45,7 @@ export function getAppActions(setLocal: any, getLocal: any): IAppActions {
             set(produce((state: IStore) => {
                 state.AppStore.store.isLoading = false;
                 return state;
-            }), false, "finishInitialLoad");
+            }), false, "finishAuthentication");
         },
         setAuth: (set: any = setLocal, get: any = getLocal) => {
             set(produce((state: IStore) => {

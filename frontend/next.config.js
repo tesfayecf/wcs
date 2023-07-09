@@ -2,11 +2,6 @@
 path = require("path");
 
 const nextConfig = {
-    parameters: {
-        nextjs: {
-            appDirectory: true,
-        },
-    },
     async redirects() {
         return [
             {

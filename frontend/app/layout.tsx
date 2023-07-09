@@ -2,7 +2,7 @@
 import '@/styles/globals.scss'
 import React from 'react'
 
-import useLoadingPage from '@/app/components/loadingPage/useLoadingPage'
+import UseLoadingPage from '@/app/components/loadingPage/useLoadingPage'
 
 import { IAppStore } from '@/app/app/AppTypes'
 import { IAuthStore } from '@/app/(auth)/AuthTypes'
@@ -51,7 +51,7 @@ export default function RootLayout({ children }: IAppLayoutProps) {
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
                     <title>WCS</title>
                 </head>
-                {useLoadingPage()}
+                <UseLoadingPage />
                 {children}
             </html>
         </>

@@ -4,7 +4,7 @@ import React from 'react'
 
 import Footer from '@/app/components/fotter/Footer'
 import Navbar from '@/app/components/navbar/Navbar'
-import RequireAuth from '@/app/utils/RequireAuth'
+import RequireAuth from '@/app/utils/authentication/RequireAuth'
 
 
 type IAppLayoutProps = {

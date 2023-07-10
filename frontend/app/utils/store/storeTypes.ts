@@ -1,6 +1,6 @@
-import { IAppActions, IAppStore } from "../app/AppTypes";
-import { IAuthActions, IAuthStore } from "../(auth)/AuthTypes";
-import { IDashboardActions, IDashboardStore } from "../(pages)/dashboard/DashboardTypes";
+import { IAppActions, IAppStore } from "../../app/AppTypes";
+import { IAuthActions, IAuthStore } from "../../(auth)/AuthTypes";
+import { IDashboardActions, IDashboardStore } from "../../(pages)/dashboard/DashboardTypes";
 
 
 export interface IStore {

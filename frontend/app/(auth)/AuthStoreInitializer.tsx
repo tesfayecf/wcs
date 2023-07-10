@@ -1,7 +1,7 @@
 "use client"
 import { useRef } from "react";
 import { IAuthStore } from "./AuthTypes";
-import { useStore } from "../store/store";
+import { useStore } from "../utils/store/store";
 
 function AuthStoreInitializer(AuthStore: IAuthStore) {
     console.log("AuthStoreInitializer")

@@ -1,5 +1,5 @@
 import { produce } from "immer";
-import { IStore } from "../store/storeTypes";
+import { IStore } from "../utils/store/storeTypes";
 import { IAuthActions, IAuthStore, ILoginForm, IRegisterForm, IResetPasswordForm } from "./AuthTypes";
 import { ISetterProps } from "../app/AppTypes";
 

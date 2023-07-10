@@ -1,4 +1,4 @@
-import { IStore } from "@/app/store/storeTypes";
+import { IStore } from "@/app/utils/store/storeTypes";
 import { IDashboardStore, IDashboardActions, ITankCreationForm } from "./DashboardTypes";
 import { produce } from "immer";
 

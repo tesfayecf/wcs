@@ -2,7 +2,7 @@
 import React from "react";
 import styles from "./styles/Register.module.scss"
 import PopUpFormTemplate from "@/app/components/popUp/PopUpFormTemplate";
-import { useStore } from "@/app/store/store";
+import { useStore } from "@/app/utils/store/store";
 import AuthHandler from "../AuthHandler";
 
 const authHandler = AuthHandler.getInstance()

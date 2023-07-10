@@ -3,7 +3,7 @@ import React from "react";
 import styles from "./styles/Login.module.scss"
 import PopUpFormTemplate from "@/app/components/popUp/PopUpFormTemplate";
 import AuthHandler from "../AuthHandler";
-import { useStore } from "@/app/store/store";
+import { useStore } from "@/app/utils/store/store";
 
 const authHandler = AuthHandler.getInstance()
 

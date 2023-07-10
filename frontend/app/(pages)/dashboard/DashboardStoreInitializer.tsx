@@ -1,6 +1,6 @@
 "use client"
 import { useRef } from "react";
-import { useStore } from "@/app/store/store"
+import { useStore } from "@/app/utils/store/store"
 import { IDashboardStore } from "./DashboardTypes"
 
 

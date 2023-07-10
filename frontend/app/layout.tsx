@@ -2,7 +2,7 @@
 import '@/styles/globals.scss'
 import React from 'react'
 
-import UseLoadingPage from '@/app/components/loadingPage/useLoadingPage'
+import UseLoadingPage from '@/app/utils/loading/useLoadingPage'
 
 import { IAppStore } from '@/app/app/AppTypes'
 import { IAuthStore } from '@/app/(auth)/AuthTypes'
@@ -17,6 +17,7 @@ import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler'
 import AppStoreInitializer from '@/app/app/AppStoreInitializer'
 import AuthStoreInitializer from '@/app/(auth)/AuthStoreInitializer'
 import DashboardStoreInitializer from '@/app/(pages)/dashboard/DashboardStoreInitializer'
+import RequireAuth from './utils/authentication/RequireAuth'
 
 export const metadata = {
     title: 'WCS App',

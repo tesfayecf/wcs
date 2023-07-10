@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-import { AppStoreDefault, getAppActions } from '../app/AppStore';
-import { AuthStoreDefault, getAuthActions } from '../(auth)/AuthStore';
-import { DashboardStoreDefault, getDashboardActions } from '../(pages)/dashboard/DashboardStore';
+import { AppStoreDefault, getAppActions } from '../../app/AppStore';
+import { AuthStoreDefault, getAuthActions } from '../../(auth)/AuthStore';
+import { DashboardStoreDefault, getDashboardActions } from '../../(pages)/dashboard/DashboardStore';
 
 import { IStore } from './storeTypes';
 

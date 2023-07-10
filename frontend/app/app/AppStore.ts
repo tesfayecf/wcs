@@ -1,5 +1,5 @@
 import { produce } from "immer";
-import { IStore } from "../store/storeTypes";
+import { IStore } from "../utils/store/storeTypes";
 import { IAppActions, IAppStore } from "./AppTypes";
 
 export const AppStoreDefault: IAppStore = {
@@ -43,6 +43,7 @@ export function getAppActions(setLocal: any, getLocal: any): IAppActions {
             }), false, "startAuthentication");
         },
         finishAuthentication: (set: any = setLocal, get: any = getLocal) => {
+            console.log("changing isLoading to: ", false)
             set(produce((state: IStore) => {
                 state.AppStore.store.isLoading = false;
                 return state;

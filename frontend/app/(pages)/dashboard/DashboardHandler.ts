@@ -1,4 +1,4 @@
-import { useStore } from "@/app/store/store";
+import { useStore } from "@/app/utils/store/store";
 import { IDashboardStore, ITankCreationForm } from "./DashboardTypes";
 
 class DashboardHandler {

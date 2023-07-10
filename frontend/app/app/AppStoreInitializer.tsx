@@ -1,7 +1,7 @@
 "use client"
 import { useRef } from "react";
 import { IAppStore } from "./AppTypes";
-import { useStore } from "../store/store";
+import { useStore } from "../utils/store/store";
 
 function AppStoreInitializer(AppStore: IAppStore) {
     console.log("AppStoreInitializer")

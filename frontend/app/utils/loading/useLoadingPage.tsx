@@ -1,4 +1,5 @@
-import { useStore } from '@/app/store/store';
+'use client'
+import { useStore } from '@/app/utils/store/store';
 import LoadingPage from '@/app/components/loadingPage/LoadingPage';
 import React, { useEffect } from 'react';
 
@@ -11,8 +12,8 @@ const UseLoadingPage: React.FunctionComponent = () => {
         // Get loading animation params from app state
     }, [isLoading]);
 
-    // return isLoading ? <LoadingPage /> : null;
-    return <LoadingPage />;
+    return isLoading ? <LoadingPage /> : null;
+    // return <LoadingPage />;
 };
 
 export default UseLoadingPage;

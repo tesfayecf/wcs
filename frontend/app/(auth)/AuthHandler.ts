@@ -1,7 +1,7 @@
 import { randomInt } from "crypto";
-import { useStore } from "../store/store";
+import { useStore } from "../utils/store/store";
 import { ILoginForm, IRegisterForm, IResetPasswordForm } from "./AuthTypes";
-import { IStore } from "../store/storeTypes";
+import { IStore } from "../utils/store/storeTypes";
 import RequestHandler from "../utils/request/requestHandler";
 import { APIResponse } from "../utils/request/requestTypes";
 

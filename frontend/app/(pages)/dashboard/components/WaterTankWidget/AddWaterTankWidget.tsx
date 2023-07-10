@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import { useStore } from '@/app/store/store';
+import { useStore } from '@/app/utils/store/store';
 import styles from './styles/AddWaterTankWidget.module.scss';
 import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler';
 

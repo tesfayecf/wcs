@@ -1,6 +1,6 @@
 import { Mutex } from 'async-mutex';
-import { useStore } from '../store/store';
-
+import { useStore } from '../utils/store/store';
+import { usePathname, redirect } from 'next/navigation';
 class AppHandler {
     private static instance: AppHandler;
     private constructor() {
@@ -23,7 +23,7 @@ class AppHandler {
         return {
             isAuthenticated: false,
             isConnected: false,
-            isLoading: false,
+            isLoading: true,
             isAdmin: false,
             isStaff: false,
             isUser: false,
@@ -44,14 +44,36 @@ class AppHandler {
         return useStore.getState().AppStore.store;
     }
 
-    public authenticateUser() {
+    public async authenticateUser() {
         try {
-            // useStore.getState().AppStore.actions.setAuth();
-            console.log("user authenticated")
+            this.startAuthentication();
+            // const verification = this.verify()
+            const verification = true;
+            if (verification) {
+                this.setAuth();
+                console.log("user authenticated")
+                if (window.location.pathname === "/login") {
+                    window.location.replace("/dashboard");
+                } else {
+                    this.finishAuthentication();
+                }
+            } else {
+                this.logout();
+                console.log("user NOT authenticated")
+                if (window.location.pathname !== "/login") {
+                    window.location.replace("/login")
+                } else {
+                    this.finishAuthentication();
+                }
+            }
         } catch (error) {
-            console.log("user NOT authenticated")
             this.logout();
-            window.location.replace("/login");
+            console.log("user NOT authenticated -- Error")
+            if (window.location.pathname !== "/login") {
+                window.location.replace("/login")
+            } else {
+                this.finishAuthentication();
+            }
         }
     }
 
@@ -67,7 +89,11 @@ class AppHandler {
         useStore.getState().AppStore.actions.logout();
     }
 
-    public handleTokenRefresh = async () => {
+    public finishAuthentication() {
+        useStore.getState().AppStore.actions.finishAuthentication();
+    }
+
+    public verify = async () => {
         const mutex = new Mutex();
         const baseQuery = async (args: any, extraOptions: any) => {
             await mutex.acquire();

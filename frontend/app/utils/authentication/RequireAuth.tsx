@@ -3,6 +3,7 @@ import { useStore } from '@/app/utils/store/store';
 import AppHandler from '../../app/AppHandler';
 import React from 'react';
 import { usePathname } from 'next/navigation';
+import { Redirect } from '../redirect/redirect';
 
 const appHandler = AppHandler.getInstance();
 
@@ -11,13 +12,19 @@ interface Props {
 }
 
 export default function RequireAuth({ children }: Props) {
+    const [isAuthenticated, setIsAuthenticated] = React.useState(false);
     console.log("RequireAuth")
-    const { isAuthenticated } = useStore(state => state.AppStore.store);
+    const state = useStore(state => state.AppStore.store);
 
     React.useEffect(() => {
-        const authenticateUser = async () => await appHandler.authenticateUser();
+        appHandler.startAuthentication();
+        const authenticateUser = async () => {
+            const isAuthenticated = await appHandler.authenticateUser();
+            setIsAuthenticated(isAuthenticated);
+        }
         authenticateUser();
-    }, []);
+        appHandler.finishAuthentication();
+    }, [state.isAuthenticated])
 
-    return isAuthenticated ? <>{children}</> : null;
+    return state.isAuthenticated ? <>{children}</> : <Redirect to='./login' />;
 }

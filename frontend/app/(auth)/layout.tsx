@@ -1,8 +1,9 @@
 'use client'
 import React from "react";
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useStore } from "../utils/store/store";
 import AppHandler from '../app/AppHandler';
+import { Redirect } from "../utils/redirect/redirect";
 
 const appHandler = AppHandler.getInstance();
 
@@ -16,14 +17,24 @@ type IAppLayoutProps = {
 }
 
 export default function RootLayout({ children }: IAppLayoutProps) {
-    console.log("Auth layout")
+    const router = useRouter();
 
-    React.useEffect(() => {
-        appHandler.startAuthentication();
-        const authenticateUser = async () => await appHandler.authenticateUser();
-        authenticateUser();
-        appHandler.finishAuthentication();
-    }, [])
+    const state = useStore(state => state.AppStore.store);
+    console.log("RequireAuth ", state.isAuthenticated)
+
+    // React.useEffect(() => {
+    //     appHandler.startAuthentication();
+    //     const authenticateUser = async () => {
+    //         const isAuthenticated = await appHandler.authenticateUser();
+    //         // setIsAuthenticated(isAuthenticated);
+    //         if (isAuthenticated) {
+    //             router.replace("./dashboard");
+    //             router.refresh();
+    //         }
+    //     }
+    //     authenticateUser();
+    //     appHandler.finishAuthentication();
+    // }, [])
 
     return (
         <div id="authLayout">

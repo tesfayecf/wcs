@@ -12,17 +12,16 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 from os import getenv, path
-import dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-dotenv_file = BASE_DIR / '.env.local'
+# dotenv_file = BASE_DIR / '.env.local'
 
-if path.isfile(dotenv_file):
-    dotenv.load_dotenv(dotenv_file)
+# if path.isfile(dotenv_file):
+#     dotenv.load_dotenv(dotenv_file)
 
-DEVELOPMENT_MODE = getenv('DEVELOPMENT_MODE', 'False') == 'True'
+DEVELOPMENT_MODE = 'True'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -143,7 +142,7 @@ DJOSER ={
     'USER_CREATE_PASSWORD_RETYPE': True,
     'PASSWORD_RESET_CONFIRM_RETYPE': True,
     'TOKEN_MODEL': None,
-    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': getenv('REDIRECT_URLS').split(',')
+    # 'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': getenv('REDIRECT_URLS').split(',')
 }
 
 AUTH_COOKIE = "acces"

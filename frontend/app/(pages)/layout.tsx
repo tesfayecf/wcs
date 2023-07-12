@@ -22,9 +22,9 @@ export default function RootLayout({ children }: IAppLayoutProps) {
             </header>
             <noscript>You need to enable JavaScript to run this app.</noscript>
             <div>
-                <RequireAuth>
-                    {children}
-                </RequireAuth>
+                {/* <RequireAuth> */}
+                {children}
+                {/* </RequireAuth> */}
             </div>
             <Footer />
         </div >

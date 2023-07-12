@@ -1,6 +1,8 @@
+'use client'
 import { Mutex } from 'async-mutex';
 import { useStore } from '../utils/store/store';
-import { usePathname, redirect } from 'next/navigation';
+import { usePathname, redirect, useRouter } from 'next/navigation';
+
 class AppHandler {
     private static instance: AppHandler;
     private constructor() {
@@ -46,34 +48,41 @@ class AppHandler {
 
     public async authenticateUser() {
         try {
+
             this.startAuthentication();
             // const verification = this.verify()
-            const verification = true;
-            if (verification) {
+            const authenticated = true;
+            if (authenticated) {
                 this.setAuth();
                 console.log("user authenticated")
-                if (window.location.pathname === "/login") {
-                    window.location.replace("/dashboard");
-                } else {
-                    this.finishAuthentication();
-                }
+                // if (window.location.pathname === "/login") {
+                //     // window.location.replace("/dashboard");
+                //     // redirect("/dashboard");
+                //     // push("/dashboard");
+                // } else {
+                // this.finishAuthentication();
+                // }
             } else {
                 this.logout();
                 console.log("user NOT authenticated")
-                if (window.location.pathname !== "/login") {
-                    window.location.replace("/login")
-                } else {
-                    this.finishAuthentication();
-                }
+                // if (window.location.pathname !== "/login") {
+                //     // window.location.replace("/login");
+                //     // redirect("/login");
+                //     push("/login");
+                // } else {
+                //     this.finishAuthentication();
+                // }
             }
+            return authenticated
         } catch (error) {
             this.logout();
             console.log("user NOT authenticated -- Error")
-            if (window.location.pathname !== "/login") {
-                window.location.replace("/login")
-            } else {
-                this.finishAuthentication();
-            }
+            // if (window.location.pathname !== "/login") {
+            //     window.location.replace("/login")
+            // } else {
+            //     this.finishAuthentication();
+            // }
+            return false
         }
     }
 

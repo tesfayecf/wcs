@@ -17,7 +17,7 @@ import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler'
 import AppStoreInitializer from '@/app/app/AppStoreInitializer'
 import AuthStoreInitializer from '@/app/(auth)/AuthStoreInitializer'
 import DashboardStoreInitializer from '@/app/(pages)/dashboard/DashboardStoreInitializer'
-import RequireAuth from './utils/authentication/RequireAuth'
+import Providers from './utils/authentication/Providers'
 
 export const metadata = {
     title: 'WCS App',
@@ -53,8 +53,10 @@ export default function RootLayout({ children }: IAppLayoutProps) {
                     <title>WCS</title>
                 </head>
                 <body>
-                    <UseLoadingPage />
-                    {children}
+                    {/* <UseLoadingPage /> */}
+                    <Providers>
+                        {children}
+                    </Providers>
                 </body>
             </html>
         </>

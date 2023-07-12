@@ -160,11 +160,11 @@ class AuthHandler {
 
     public async login() {
         try {
-            // const { email, password } = useStore.getState().AuthStore.store.loginForm;
-            // const response = await requestHandler.post<Partial<ILoginForm>>("/api/jwt/create/", { email, password })
+            const { email, password } = useStore.getState().AuthStore.store.loginForm;
+            const response = await requestHandler.post<Partial<ILoginForm>>("/api/jwt/create/", { email, password })
             // console.log(response)
             console.log(useStore.getState().AppStore.actions)
-            useStore.getState().AppStore.store.isLoading ? useStore.getState().AppStore.actions.finishLoading() : useStore.getState().AppStore.actions.startLoading()
+            // useStore.getState().AppStore.store.isLoading ? useStore.getState().AppStore.actions.finishLoading() : useStore.getState().AppStore.actions.startLoading()
 
 
         } catch (error) {

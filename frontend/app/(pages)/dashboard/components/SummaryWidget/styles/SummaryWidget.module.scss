@@ -21,14 +21,14 @@
         // height: 100%;
 
         &_pie_chart {
-            z-index: 10;
+            z-index: 101;
             width: 50%;
             border-radius: 12px;
         }
 
         &_data {
             display: flex;
-            z-index: 20;
+            z-index: 101;
             padding: 4px;
             flex-direction: row;
             width: 100%;

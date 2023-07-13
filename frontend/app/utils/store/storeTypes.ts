@@ -1,19 +1,18 @@
-import { IAppActions, IAppStore } from "../../app/AppTypes";
-import { IAuthActions, IAuthStore } from "../../(auth)/AuthTypes";
-import { IDashboardActions, IDashboardStore } from "../../(pages)/dashboard/DashboardTypes";
-
+import { IAppStore, IAppActions } from '@/app/app/AppTypes';
+import { IAuthStore, IAuthActions } from '@/app/(auth)/AuthTypes';
+import { IDashboardStore, IDashboardActions } from '@/app/(pages)/dashboard/DashboardTypes';
 
 export interface IStore {
-    AppStore: {
-        store: IAppStore,
-        actions: IAppActions,
-    };
-    AuthStore: {
-        store: IAuthStore,
-        actions: IAuthActions,
-    };
-    DashboardStore: {
-        store: IDashboardStore,
-        actions: IDashboardActions,
-    }
+    app: IAppStore;
+    auth: IAuthStore;
+    dashboard: IDashboardStore;
 }
+
+// export type IAppStore = IAppStore;
+// export import IAppActions = IAppActions;
+
+// export type IAuthStore = IAuthStore;
+// export type IAuthActions = IAuthActions;
+
+// export type IDashboardStore = IDashboardStore;
+// export type IDashboardActions = IDashboardActions;

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IDashboardStore, IDashboardActions } from './DashboardTypes';
+import { IDashboardStore, IDashboardActions, ITankCreationForm } from './DashboardTypes';
 
 // Define the initial state
 const initialState: IDashboardStore = {
@@ -7,7 +7,7 @@ const initialState: IDashboardStore = {
     showAddTankMenu: false,
     tankCreationForm: {
         name: '',
-        type: '',
+        type: 'Storage',
         capacity: "",
         dimension: '',
         material: '',
@@ -23,7 +23,9 @@ const dashboardSlice = createSlice({
         setShowAddTankMenu: (state, action: PayloadAction<{ state: boolean }>) => {
             state.showAddTankMenu = action.payload.state;
         },
-        setTankCreationForm: (state, action: PayloadAction<{ form: IDashboardStore['tankCreationForm'] }>) => {
+
+        // TODO: Make request for each key
+        setTankCreationForm: (state, action: PayloadAction<{ form: ITankCreationForm }>) => {
             state.tankCreationForm = action.payload.form;
         }
     }

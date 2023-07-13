@@ -1,7 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import produce from 'immer';
-import { IStore } from '../utils/store/storeTypes';
-import { IAuthActions, IAuthStore, ILoginForm, IRegisterForm, IResetPasswordForm } from './AuthTypes';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { IAuthStore, ILoginForm, IRegisterForm, IResetPasswordForm } from './AuthTypes';
+
 
 // Define the initial state
 const initialState: IAuthStore = {
@@ -33,7 +32,6 @@ const initialState: IAuthStore = {
     },
 };
 
-// Create the slice
 const authSlice = createSlice({
     name: 'auth',
     initialState,

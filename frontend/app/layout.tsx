@@ -2,22 +2,12 @@
 import '@/styles/globals.scss'
 import React from 'react'
 
-import UseLoadingPage from '@/app/utils/loading/useLoadingPage'
-
-import { IAppStore } from '@/app/app/AppTypes'
-import { IAuthStore } from '@/app/(auth)/AuthTypes'
-import { IDashboardStore } from '@/app/(pages)/dashboard/DashboardTypes'
-
 import RequestHandler from '@/app/utils/request/requestHandler'
 
 import AppHandler from '@/app/app/AppHandler'
 import AuthHandler from '@/app/(auth)/AuthHandler'
 import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler'
-
-import AppStoreInitializer from '@/app/app/AppStoreInitializer'
-import AuthStoreInitializer from '@/app/(auth)/AuthStoreInitializer'
-import DashboardStoreInitializer from '@/app/(pages)/dashboard/DashboardStoreInitializer'
-import Providers from './utils/authentication/Providers'
+import CustomProvider from '@/app/utils/store/provider'
 
 export const metadata = {
     title: 'WCS App',
@@ -34,18 +24,10 @@ const appHandler: AppHandler = AppHandler.getInstance();
 const authHandler: AuthHandler = AuthHandler.getInstance();
 const dashboardHandler: DashboardHandler = DashboardHandler.getInstance();
 
-const initialAppStore: IAppStore = appHandler.setInitialAppInfo();
-const initialAuthStore: IAuthStore = authHandler.setInitialAuthInfo();
-const initailDasboardStore: IDashboardStore = dashboardHandler.setInitialDashboardInfo();
-
-
 export default function RootLayout({ children }: IAppLayoutProps) {
     console.log("Root layout")
     return (
         <>
-            <AppStoreInitializer {...initialAppStore} />
-            <AuthStoreInitializer {...initialAuthStore} />
-            <DashboardStoreInitializer {...initailDasboardStore} />
             <html lang="en">
                 <head>
                     <meta charSet="utf-8" />
@@ -53,10 +35,9 @@ export default function RootLayout({ children }: IAppLayoutProps) {
                     <title>WCS</title>
                 </head>
                 <body>
-                    {/* <UseLoadingPage /> */}
-                    <Providers>
+                    <CustomProvider>
                         {children}
-                    </Providers>
+                    </CustomProvider>
                 </body>
             </html>
         </>

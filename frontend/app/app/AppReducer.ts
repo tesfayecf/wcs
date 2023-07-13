@@ -31,12 +31,6 @@ const appSlice = createSlice({
         finishLoading: (state) => {
             state.isLoading = false;
         },
-        startAuthentication: (state) => {
-            state.isLoading = true;
-        },
-        finishAuthentication: (state) => {
-            state.isLoading = false;
-        },
         setAuth: (state) => {
             state.isAuthenticated = true;
         },

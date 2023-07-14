@@ -6,18 +6,7 @@ interface User {
     email: string;
 }
 
-interface SocialAuthArgs {
-    provider: string;
-    state: string;
-    code: string;
-}
-
-interface CreateUserResponse {
-    success: boolean;
-    user: User;
-}
-
-const authApiReducer = apiReducer.injectEndpoints({
+export const authApiReducer = apiReducer.injectEndpoints({
     endpoints: builder => ({
         retrieveUser: builder.query<User, void>({
             query: () => '/users/me/',
@@ -78,8 +67,10 @@ const authApiReducer = apiReducer.injectEndpoints({
     }),
 });
 
+export type authApiReducerEndpoints = typeof authApiReducer.endpoints;
+export type apiEnpoint = typeof authApiReducer.endpoints.verify;
 
-const {
+export const {
     useRetrieveUserQuery,
     useLoginMutation,
     useRegisterMutation,
@@ -90,12 +81,11 @@ const {
     useResetPasswordConfirmMutation,
 } = authApiReducer;
 
-
-export { useRetrieveUserQuery as RetrieveUser };
-export { useLoginMutation as Login };
-export { useRegisterMutation as Register };
-export { useVerifyMutation as Verify };
-export { useLogoutMutation as Logout };
-export { useActivationMutation as Activatio };
-export { useResetPasswordMutation as ResetPassword };
-export { useResetPasswordConfirmMutation as ResetPasswordConfirm };
+// export { useRetrieveUserQuery as RetrieveUser };
+// export { useLoginMutation as Login };
+// export { useRegisterMutation as Register };
+// export { useVerifyMutation as Verify };
+// export { useLogoutMutation as Logout };
+// export { useActivationMutation as Activatio };
+// export { useResetPasswordMutation as ResetPassword };
+// export { useResetPasswordConfirmMutation as ResetPasswordConfirm };

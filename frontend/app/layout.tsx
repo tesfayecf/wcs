@@ -2,7 +2,7 @@
 import '@/styles/globals.scss'
 import React from 'react'
 
-import RequestHandler from '@/app/utils/request/requestHandler'
+import { RequestManager } from './utils/request/requestManagerOLD'
 
 import AppHandler from '@/app/app/AppHandler'
 import AuthHandler from '@/app/(auth)/AuthHandler'
@@ -18,7 +18,8 @@ type IAppLayoutProps = {
     children: React.ReactNode[] | React.ReactNode | undefined | null;
 }
 
-const requestHandler: RequestHandler = RequestHandler.getInstance();
+// const requestHandler: RequestHandler = RequestHandler.getInstance();
+const requestManager: RequestManager = RequestManager.getInstance();
 
 const appHandler: AppHandler = AppHandler.getInstance();
 const authHandler: AuthHandler = AuthHandler.getInstance();

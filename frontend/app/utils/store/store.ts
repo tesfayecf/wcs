@@ -1,8 +1,9 @@
-import authReducer from '@/app/(auth)/authReducer';
 import { configureStore } from '@reduxjs/toolkit';
+
 import { apiReducer } from '../api/apiReducer';
-import DashboardReducer from '@/app/(pages)/dashboard/DashboardReducer';
-import AppReducer from '@/app/app/AppReducer';
+import appReducer from '@/app/app/AppReducer';
+import authReducer from '@/app/(auth)/AuthReducer';
+import dashboardReducer from '@/app/(pages)/dashboard/DashboardReducer';
 
 export const store = configureStore({
   reducer: {
@@ -10,18 +11,21 @@ export const store = configureStore({
     [apiReducer.reducerPath]: apiReducer.reducer,
 
     // App state managment
-    app: AppReducer,
+    app: appReducer,
     auth: authReducer,
-    dashboard: DashboardReducer,
+    dashboard: dashboardReducer,
 
 
   },
-  middleware: [],
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware().concat(apiReducer.middleware),
   devTools: process.env.NODE_ENV !== 'production',
 });
 
-export type RootState = ReturnType<(typeof store)['getState']>;
-export type AppDispatch = (typeof store)['dispatch'];
+export type IRootState = ReturnType<(typeof store)['getState']>;
+export type TStoreDispatch = (typeof store)['dispatch'];
+
+
 
 
 /**

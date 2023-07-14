@@ -1,4 +1,4 @@
-import { useStore } from "@/app/utils/store/store";
+// import { useStore } from "@/app/utils/store/store";
 import { IDashboardStore, ITankCreationForm } from "./DashboardTypes";
 
 class DashboardHandler {
@@ -35,25 +35,25 @@ class DashboardHandler {
         }
     }
 
-    public setInitialDashboardInfo() {
-        useStore.setState((state) => ({
-            DashboardStore: {
-                ...state.DashboardStore,
-                store: this.getInitialStoreData()
-            }
-        }));
-        return useStore.getState().DashboardStore.store;
-    }
+    // public setInitialDashboardInfo() {
+    //     useStore.setState((state) => ({
+    //         DashboardStore: {
+    //             ...state.DashboardStore,
+    //             store: this.getInitialStoreData()
+    //         }
+    //     }));
+    //     return useStore.getState().DashboardStore.store;
+    // }
 
-    public setShowAddTankMenu(showAddTankMenu: boolean) {
-        // check other things
-        useStore.getState().DashboardStore.actions.setShowAddTankMenu(showAddTankMenu);
+    // public setShowAddTankMenu(showAddTankMenu: boolean) {
+    //     // check other things
+    //     useStore.getState().DashboardStore.actions.setShowAddTankMenu(showAddTankMenu);
 
-    }
+    // }
 
-    public setTankCreationForm(tankCreationForm: ITankCreationForm) {
-        useStore.getState().DashboardStore.actions.setTankCreationForm(tankCreationForm);
-    }
+    // public setTankCreationForm(tankCreationForm: ITankCreationForm) {
+    //     useStore.getState().DashboardStore.actions.setTankCreationForm(tankCreationForm);
+    // }
 }
 
 export default DashboardHandler;

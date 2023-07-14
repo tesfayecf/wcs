@@ -1,11 +1,17 @@
 
 export interface ITankCreationForm {
     name: string;
+    nameError: boolean;
     capacity: string;
+    capacityError: boolean;
     type: string;
+    typeError: boolean;
     dimension: string;
+    dimensionError: boolean;
     material: string;
+    materialError: boolean;
     brand: string;
+    brandError: boolean;
 }
 
 export interface IDashboardStore {

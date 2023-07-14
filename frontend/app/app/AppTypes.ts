@@ -24,23 +24,3 @@ export interface IAppStore {
     checkValue: number;
     userInfo: IUserInfo;
 }
-
-///////////////
-//// ACTIONS
-///////////////
-
-export interface ISetterProps {
-    value: any;
-    error?: boolean;
-    set?: any;
-    get?: any;
-}
-
-export interface IAppActions {
-    startLoading: (set?: any, get?: any) => void;
-    finishLoading: (set?: any, get?: any) => void;
-    startAuthentication: (set?: any, get?: any) => void;
-    finishAuthentication: (set?: any, get?: any) => void;
-    setAuth: (set?: any, get?: any) => void;
-    logout: (set?: any, get?: any) => void;
-}

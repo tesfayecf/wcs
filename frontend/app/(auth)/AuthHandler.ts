@@ -1,3 +1,6 @@
+import { store } from "../utils/store/store";
+import { authActions } from "./AuthReducer";
+import { ILoginForm } from "./AuthTypes";
 
 class AuthHandler {
     private static instance: AuthHandler;
@@ -14,126 +17,61 @@ class AuthHandler {
         return AuthHandler.instance;
     }
 
-    public init(): void {
-        console.log("Initialising auth handler...");
+
+    // Login Form //
+    public setLoginForm(loginForm: ILoginForm) {
+        store.dispatch(authActions.setLoginForm(loginForm))
     }
 
-    // public getInitialStoreData = (state: IStore) => {
-    //     return {
+    // Login
+    public setLoginFormEmail(email: string) {
+        const error = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email);
+        store.dispatch(authActions.setLoginFormEmail({ email, error }));
+    }
 
-    //         loginForm: {
-    //             email: '',
-    //             emailError: false,
-    //             password: '',
-    //             passwordError: false,
-    //         },
-    //         registerForm: {
-    //             first_name: '',
-    //             first_nameError: false,
-    //             last_name: '',
-    //             last_nameError: false,
-    //             email: '',
-    //             emailError: false,
-    //             password: '',
-    //             passwordError: false,
-    //             re_password: '',
-    //             re_passwordError: false,
-    //         },
-    //         resetPasswordForm: {
-    //             old_password: '',
-    //             old_passwordError: false,
-    //             password: '',
-    //             passwordError: false,
-    //             re_password: '',
-    //             re_passwordError: false,
-    //         }
-    //     }
-    // }
+    public setLoginFormPassword(password: string) {
+        store.dispatch(authActions.setLoginFormPassword({ password, error: false }));
+    }
 
-    // public setInitialAuthInfo() {
-    //     useStore.setState((state) => ({
-    //         AuthStore: {
-    //             ...state.AuthStore,
-    //             store: this.getInitialStoreData(state)
-    //         }
-    //     }));
-    //     return useStore.getState().AuthStore.store;
-    // }
+    // Register
+    public setRegisterFormFirstName(firstName: string) {
+        // Validation or additional logic if needed
+        store.dispatch(authActions.setRegisterFormFirstName({ firstName, error: false }));
+    }
 
-    // // Login Form //
-    // public setLoginForm(loginForm: ILoginForm) {
-    //     useStore.getState().AuthStore.actions.setLoginForm(loginForm);
-    // }
+    public setRegisterFormLastName(lastName: string) {
+        // Validation or additional logic if needed
+        store.dispatch(authActions.setRegisterFormLastName({ lastName, error: false }));
+    }
 
-    // public setLoginFormEmail(email: string) {
-    //     const isValid = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email);
-    //     useStore.getState().AuthStore.actions.setLoginFormEmail(email);
-    //     useStore.getState().AuthStore.actions.setLoginFormEmailError(!isValid);
-    // }
+    public setRegisterFormEmail(email: string) {
+        const error = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email);
+        store.dispatch(authActions.setRegisterFormEmail({ email, error }));
+    }
 
-    // public setLoginFormPassword(password: string) {
-    //     useStore.getState().AuthStore.actions.setLoginFormPassword(password);
-    //     useStore.getState().AuthStore.actions.setLoginFormPasswordError(false);
-    // }
+    public setRegisterFormPassword(password: string) {
+        const error = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(password);
+        store.dispatch(authActions.setRegisterFormPassword({ password, error }));
+    }
 
+    public setRegisterFormRePassword(rePassword: string) {
+        store.dispatch(authActions.setRegisterFormRePassword({ rePassword, error: false }));
+    }
 
-    // // Register Form
-    // public setRegisterForm(registerForm: IRegisterForm) {
-    //     useStore.getState().AuthStore.actions.setRegisterForm(registerForm);
-    // }
+    // Reset
+    public setResetPasswordFormOldPassword(oldPassword: string) {
+        store.dispatch(authActions.setResetPasswordFormOldPassword({ oldPassword, error: false }));
+    }
 
-    // public setRegisterFormFirstName(first_name: string) {
-    //     const isValid = /^[A-Za-z]+$/.test(first_name);
-    //     useStore.getState().AuthStore.actions.setRegisterFormFirstName(first_name);
-    //     useStore.getState().AuthStore.actions.setRegisterFormFirstNameError(!isValid);
-    // }
+    public setResetPasswordFormPassword(password: string) {
+        const error = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(password);
+        store.dispatch(authActions.setResetPasswordFormPassword({ password, error: false }));
+    }
 
-    // public setRegisterFormLastName(last_name: string) {
-    //     const isValid = /^[A-Za-z]+$/.test(last_name);
-    //     useStore.getState().AuthStore.actions.setRegisterFormLastName(last_name);
-    //     useStore.getState().AuthStore.actions.setRegisterFormLastNameError(!isValid);
-    // }
-
-    // public setRegisterFormEmail(email: string) {
-    //     const isValid = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email);
-    //     useStore.getState().AuthStore.actions.setRegisterFormEmail(email);
-    //     useStore.getState().AuthStore.actions.setRegisterFormEmailError(!isValid);
-    // }
-
-    // public setRegisterFormPassword(password: string) {
-    //     const isValid = /^[A-Za-z0-9!@#$%^&*()_]{6,}$/.test(password);
-    //     useStore.getState().AuthStore.actions.setRegisterFormPassword(password);
-    //     useStore.getState().AuthStore.actions.setRegisterFormPasswordError(!isValid);
-    // }
-
-    // public setRegisterFormRePassword(re_password: string) {
-    //     const isValid = re_password === useStore.getState().AuthStore.store.registerForm.password;
-    //     useStore.getState().AuthStore.actions.setRegisterFormRePassword(re_password);
-    //     useStore.getState().AuthStore.actions.setRegisterFormRePasswordError(!isValid);
-    // }
-
-
-    // // Reset Password Form
-    // public setResetPasswordForm(resetPasswordForm: IResetPasswordForm) {
-    //     useStore.getState().AuthStore.actions.setResetPasswordForm(resetPasswordForm);
-    // }
-
-    // public setResetPasswordFormOldPassword(old_password: string) {
-    //     useStore.getState().AuthStore.actions.setResetPasswordFormOldPassword(old_password);
-    //     useStore.getState().AuthStore.actions.setResetPasswordFormOldPasswordError(false);
-    // }
-
-    // public setResetPasswordFormPassword(password: string) {
-    //     const isValid = /^[A-Za-z0-9!@#$%^&*()_]{6,}$/.test(password);
-    //     useStore.getState().AuthStore.actions.setResetPasswordFormPassword(password);
-    //     useStore.getState().AuthStore.actions.setResetPasswordFormPasswordError(!isValid);
-    // }
-
-    // public setResetPasswordFormRePassword(re_password: string) {
-    //     const isValid = re_password === useStore.getState().AuthStore.store.resetPasswordForm.password;
-    //     useStore.getState().AuthStore.actions.setResetPasswordFormRePassword(re_password);
-    //     useStore.getState().AuthStore.actions.setResetPasswordFormRePasswordError(!isValid);
-    // }
+    public setResetPasswordFormRePassword(rePassword: string) {
+        // Validation or additional logic if needed
+        store.dispatch(authActions.setResetPasswordFormRePassword({ rePassword, error: false }));
+    }
 
 
     // public async register() {
@@ -150,46 +88,46 @@ class AuthHandler {
     //     }
     // }
 
-    // public async login() {
-    //     try {
-    //         const { email, password } = useStore.getState().AuthStore.store.loginForm;
-    //         const response = await requestHandler.post<Partial<ILoginForm>>("/api/jwt/create/", { email, password })
-    //         // console.log(response)
-    //         console.log(useStore.getState().AppStore.actions)
-    //         // useStore.getState().AppStore.store.isLoading ? useStore.getState().AppStore.actions.finishLoading() : useStore.getState().AppStore.actions.startLoading()
+    public async login() {
+        try {
+            const state = store.getState();
+            const email = state.auth.loginForm.email;
+            const password = state.auth.loginForm.password;
 
+            // const response = await requestHandler.post<Partial<ILoginForm>>("/api/jwt/create/", { email, password })
 
-    //     } catch (error) {
-    //         // Log error
-    //         console.log(error)
-    //     }
-    // }
+            // manage response
 
-    // public async logout() {
-    //     try {
-    //         const response = await requestHandler.post<Partial<{}>>("/logout/", {})
-    //         if (response.status === 201) {
-    //             console.log("SUCCES", response);
-    //         } else {
-    //             console.log("ERROR", response);
-    //         }
-    //     } catch (error) {
-    //         // Log error
-    //     }
-    // }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
-    // public async verify(token: string) {
-    //     try {
-    //         const response = await requestHandler.post<Partial<any>>("/api/jwt/verify/", {})
-    //         // console.log("response", response);
-    //         return true
+    public async logout() {
+        try {
+            // const response = await requestHandler.post<Partial<{}>>("/logout/", {})
+            // if (response.status === 201) {
+            //     console.log("SUCCES", response);
+            // } else {
+            //     console.log("ERROR", response);
+            // }
+        } catch (error) {
+            // Log error
+        }
+    }
 
-    //     } catch (error) {
-    //         // Log error
-    //         console.log("error:", error);
-    //         return false
-    //     }
-    // }
+    public async verify(token: string) {
+        try {
+            // const response = await requestHandler.post<Partial<any>>("/api/jwt/verify/", {})
+            // console.log("response", response);
+            // return true
+
+        } catch (error) {
+            // Log error
+            // console.log("error:", error);
+            // return false
+        }
+    }
 
     // public async resetPassword() {
     //     try {

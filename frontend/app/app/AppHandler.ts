@@ -1,11 +1,8 @@
 'use client'
 
-import { verify } from "crypto";
-import { authActions } from "../(auth)/AuthReducer";
+import { store } from "../utils/store/store";
 import { appActions } from "./AppReducer";
-import { RequestManager } from "../utils/request/requestManagerOLD";
 
-const requestManager = RequestManager.getInstance();
 class AppHandler {
     private static instance: AppHandler;
     private constructor() {
@@ -24,14 +21,13 @@ class AppHandler {
         console.log("Initialising app handler...");
     }
 
-    // public async userVerify() {
-    //     // use request handler and avoid using try/catch
-    //     await requestManager.callEndpoint("AUTH", "login", {})
-    //     // await requestManager.callEndpoint('login', {
-    //     //     email: userSessionInfo.user.email,
-    //     //     password: 'XXXXXXXX'
-    //     // })
-    // }
+    public setAuth() {
+        store.dispatch(appActions.setAuth());
+    }
+
+    public logOut() {
+        store.dispatch(appActions.logout());
+    }
 }
 
 export default AppHandler;

@@ -2,12 +2,12 @@
 import '@/styles/globals.scss'
 import React from 'react'
 
-import { RequestManager } from './utils/request/requestManagerOLD'
 
 import AppHandler from '@/app/app/AppHandler'
 import AuthHandler from '@/app/(auth)/AuthHandler'
 import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler'
-import CustomProvider from '@/app/utils/store/provider'
+import { Provider } from 'react-redux'
+import { store } from './utils/store/store'
 
 export const metadata = {
     title: 'WCS App',
@@ -18,12 +18,9 @@ type IAppLayoutProps = {
     children: React.ReactNode[] | React.ReactNode | undefined | null;
 }
 
-// const requestHandler: RequestHandler = RequestHandler.getInstance();
-const requestManager: RequestManager = RequestManager.getInstance();
-
-const appHandler: AppHandler = AppHandler.getInstance();
-const authHandler: AuthHandler = AuthHandler.getInstance();
-const dashboardHandler: DashboardHandler = DashboardHandler.getInstance();
+AppHandler.getInstance();
+AuthHandler.getInstance();
+DashboardHandler.getInstance();
 
 export default function RootLayout({ children }: IAppLayoutProps) {
     console.log("Root layout")
@@ -36,9 +33,9 @@ export default function RootLayout({ children }: IAppLayoutProps) {
                     <title>WCS</title>
                 </head>
                 <body>
-                    <CustomProvider>
+                    <Provider store={store}>
                         {children}
-                    </CustomProvider>
+                    </Provider>
                 </body>
             </html>
         </>

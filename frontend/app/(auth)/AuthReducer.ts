@@ -39,72 +39,56 @@ const authSlice = createSlice({
         setLoginForm: (state, action: PayloadAction<ILoginForm>) => {
             state.loginForm = action.payload;
         },
-        setLoginFormEmail: (state, action: PayloadAction<string>) => {
-            state.loginForm.email = action.payload;
+        setLoginFormEmail: (state, action: PayloadAction<{ email: string, error: boolean }>) => {
+            state.loginForm.email = action.payload.email;
+            state.loginForm.emailError = action.payload.error;
         },
-        setLoginFormEmailError: (state, action: PayloadAction<boolean>) => {
-            state.loginForm.emailError = action.payload;
+
+        setLoginFormPassword: (state, action: PayloadAction<{ password: string, error: boolean }>) => {
+            state.loginForm.password = action.payload.password;
+            state.loginForm.passwordError = action.payload.error;
         },
-        setLoginFormPassword: (state, action: PayloadAction<string>) => {
-            state.loginForm.password = action.payload;
+
+        setRegisterFormFirstName: (state, action: PayloadAction<{ firstName: string, error: boolean }>) => {
+            state.registerForm.first_name = action.payload.firstName;
+            state.registerForm.first_nameError = action.payload.error;
         },
-        setLoginFormPasswordError: (state, action: PayloadAction<boolean>) => {
-            state.loginForm.passwordError = action.payload;
+
+        setRegisterFormLastName: (state, action: PayloadAction<{ lastName: string, error: boolean }>) => {
+            state.registerForm.last_name = action.payload.lastName;
+            state.registerForm.last_nameError = action.payload.error;
         },
-        setRegisterForm: (state, action: PayloadAction<IRegisterForm>) => {
-            state.registerForm = action.payload;
+
+        setRegisterFormEmail: (state, action: PayloadAction<{ email: string, error: boolean }>) => {
+            state.registerForm.email = action.payload.email;
+            state.registerForm.emailError = action.payload.error;
         },
-        setRegisterFormFirstName: (state, action: PayloadAction<string>) => {
-            state.registerForm.first_name = action.payload;
+
+        setRegisterFormPassword: (state, action: PayloadAction<{ password: string, error: boolean }>) => {
+            state.registerForm.password = action.payload.password;
+            state.registerForm.passwordError = action.payload.error;
         },
-        setRegisterFormFirstNameError: (state, action: PayloadAction<boolean>) => {
-            state.registerForm.first_nameError = action.payload;
+
+        setRegisterFormRePassword: (state, action: PayloadAction<{ rePassword: string, error: boolean }>) => {
+            state.registerForm.re_password = action.payload.rePassword;
+            state.registerForm.re_passwordError = action.payload.error;
         },
-        setRegisterFormLastName: (state, action: PayloadAction<string>) => {
-            state.registerForm.last_name = action.payload;
+
+        setResetPasswordFormOldPassword: (state, action: PayloadAction<{ oldPassword: string, error: boolean }>) => {
+            state.resetPasswordForm.old_password = action.payload.oldPassword;
+            state.resetPasswordForm.old_passwordError = action.payload.error;
         },
-        setRegisterFormLastNameError: (state, action: PayloadAction<boolean>) => {
-            state.registerForm.last_nameError = action.payload;
+
+        setResetPasswordFormPassword: (state, action: PayloadAction<{ password: string, error: boolean }>) => {
+            state.resetPasswordForm.password = action.payload.password;
+            state.resetPasswordForm.passwordError = action.payload.error;
         },
-        setRegisterFormEmail: (state, action: PayloadAction<string>) => {
-            state.registerForm.email = action.payload;
+
+        setResetPasswordFormRePassword: (state, action: PayloadAction<{ rePassword: string, error: boolean }>) => {
+            state.resetPasswordForm.re_password = action.payload.rePassword;
+            state.resetPasswordForm.re_passwordError = action.payload.error;
         },
-        setRegisterFormEmailError: (state, action: PayloadAction<boolean>) => {
-            state.registerForm.emailError = action.payload;
-        },
-        setRegisterFormPassword: (state, action: PayloadAction<string>) => {
-            state.registerForm.password = action.payload;
-        },
-        setRegisterFormPasswordError: (state, action: PayloadAction<boolean>) => {
-            state.registerForm.passwordError = action.payload;
-        },
-        setRegisterFormRePassword: (state, action: PayloadAction<string>) => {
-            state.registerForm.re_password = action.payload;
-        },
-        setRegisterFormRePasswordError: (state, action: PayloadAction<boolean>) => {
-            state.registerForm.re_passwordError = action.payload;
-        },
-        setResetPasswordForm: (state, action: PayloadAction<IResetPasswordForm>) => {
-            state.resetPasswordForm = action.payload;
-        },
-        setResetPasswordFormOldPassword: (state, action: PayloadAction<string>) => {
-            state.resetPasswordForm.old_password = action.payload;
-        },
-        setResetPasswordFormOldPasswordError: (state, action: PayloadAction<boolean>) => {
-            state.resetPasswordForm.old_passwordError = action.payload;
-        },
-        setResetPasswordFormPassword: (state, action: PayloadAction<string>) => {
-            state.resetPasswordForm.password = action.payload;
-        },
-        setResetPasswordFormPasswordError: (state, action: PayloadAction<boolean>) => {
-            state.resetPasswordForm.passwordError = action.payload;
-        },
-        setResetPasswordFormRePassword: (state, action: PayloadAction<string>) => {
-            state.resetPasswordForm.re_password = action.payload;
-        },
-        setResetPasswordFormRePasswordError: (state, action: PayloadAction<boolean>) => {
-            state.resetPasswordForm.re_passwordError = action.payload;
-        },
+
     },
 });
 

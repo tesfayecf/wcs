@@ -1,5 +1,7 @@
 // import { useStore } from "@/app/utils/store/store";
+import { store } from "@/app/utils/store/store";
 import { IDashboardStore, ITankCreationForm } from "./DashboardTypes";
+import { dashboardActions } from "./DashboardReducer";
 
 class DashboardHandler {
     private static instance: DashboardHandler;
@@ -16,24 +18,40 @@ class DashboardHandler {
         return DashboardHandler.instance;
     }
 
-    public init(): void {
-        // Get initial dasboard data 
-        console.log("Initialising dashboard...");
+    public setTankCreationForm(form: ITankCreationForm) {
+        store.dispatch(dashboardActions.setTankCreationForm({ form }))
     }
 
-    public getInitialStoreData: () => IDashboardStore = () => {
-        return {
-            showAddTankMenu: false,
-            tankCreationForm: {
-                name: '',
-                type: 'Storage',
-                capacity: "",
-                dimension: '',
-                material: '',
-                brand: '',
-            }
-        }
+    public setTankCreationFormName(name: string) {
+        const error = /^[a-zA-Z0-9_]*$/.test(name);
+        store.dispatch(dashboardActions.setTankCreationFormName({ name, error }))
     }
+
+    public setTankCreationFormCapacity(capacity: string) {
+        const error = false;
+        store.dispatch(dashboardActions.setTankCreationFormCapacity({ capacity, error }));
+    }
+
+    public setTankCreationFormType(type: string) {
+        const error = false;
+        store.dispatch(dashboardActions.setTankCreationFormType({ type, error }));
+    }
+
+    public setTankCreationFormDimension(dimension: string) {
+        const error = false;
+        store.dispatch(dashboardActions.setTankCreationFormDimension({ dimension, error }));
+    }
+
+    public setTankCreationFormMaterial(material: string) {
+        const error = false;
+        store.dispatch(dashboardActions.setTankCreationFormMaterial({ material, error }));
+    }
+
+    public setTankCreationFormBrand(brand: string) {
+        const error = false;
+        store.dispatch(dashboardActions.setTankCreationFormBrand({ brand, error }));
+    }
+
 
     // public setInitialDashboardInfo() {
     //     useStore.setState((state) => ({

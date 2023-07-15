@@ -2,7 +2,6 @@
 import '@/styles/globals.scss'
 import React from 'react'
 
-
 import AppHandler from '@/app/app/AppHandler'
 import AuthHandler from '@/app/(auth)/AuthHandler'
 import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler'

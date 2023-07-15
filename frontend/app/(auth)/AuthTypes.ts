@@ -6,16 +6,16 @@ export interface ILoginForm {
     passwordError: boolean;
 }
 export interface IRegisterForm {
-    first_name: string;
-    first_nameError: boolean;
-    last_name: string;
-    last_nameError: boolean;
+    firstName: string;
+    firstNameError: boolean;
+    lastName: string;
+    lastNameError: boolean;
     email: string;
     emailError: boolean;
     password: string;
     passwordError: boolean;
-    re_password: string;
-    re_passwordError: boolean;
+    rePassword: string;
+    rePasswordError: boolean;
 }
 
 export interface IResetPasswordForm {

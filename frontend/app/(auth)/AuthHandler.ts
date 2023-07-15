@@ -1,7 +1,10 @@
+import { appActions } from "../app/AppReducer";
 import { store } from "../utils/store/store";
 import { authActions } from "./AuthReducer";
 import { ILoginForm } from "./AuthTypes";
+import RequestManager from '@/app/utils/api/requestManager'
 
+const requestManager = RequestManager.getInstance();
 class AuthHandler {
     private static instance: AuthHandler;
     private constructor() {
@@ -26,7 +29,7 @@ class AuthHandler {
     // Login
     public setLoginFormEmail(email: string) {
         const error = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email);
-        store.dispatch(authActions.setLoginFormEmail({ email, error }));
+        store.dispatch(authActions.setLoginFormEmail({ email, error: !error }));
     }
 
     public setLoginFormPassword(password: string) {
@@ -46,16 +49,17 @@ class AuthHandler {
 
     public setRegisterFormEmail(email: string) {
         const error = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email);
-        store.dispatch(authActions.setRegisterFormEmail({ email, error }));
+        store.dispatch(authActions.setRegisterFormEmail({ email, error: !error }));
     }
 
     public setRegisterFormPassword(password: string) {
         const error = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(password);
-        store.dispatch(authActions.setRegisterFormPassword({ password, error }));
+        store.dispatch(authActions.setRegisterFormPassword({ password, error: !error }));
     }
 
     public setRegisterFormRePassword(rePassword: string) {
-        store.dispatch(authActions.setRegisterFormRePassword({ rePassword, error: false }));
+        const error = store.getState().auth.registerForm.password !== rePassword;
+        store.dispatch(authActions.setRegisterFormRePassword({ rePassword, error: error }));
     }
 
     // Reset
@@ -74,19 +78,26 @@ class AuthHandler {
     }
 
 
-    // public async register() {
-    //     try {
-    //         const { first_name, last_name, email, password, re_password } = useStore.getState().AuthStore.store.registerForm;
-    //         const response = await requestHandler.post<Partial<IRegisterForm>>("/api/users/", { first_name, last_name, email, password, re_password })
-    //         if (response.status === 201) {
-    //             console.log("SUCCES", response);
-    //         } else {
-    //             console.log("ERROR", response);
-    //         }
-    //     } catch (error) {
-    //         // Log error
-    //     }
-    // }
+    public async register() {
+        try {
+            const state = store.getState();
+            const firstName = state.auth.registerForm.firstName;
+            const lastName = state.auth.registerForm.lastName;
+            const email = state.auth.registerForm.email;
+            const password = state.auth.registerForm.password;
+            const rePassword = state.auth.registerForm.rePassword;
+
+            const response = await requestManager.request("auth", "register", [{ firstName, lastName, email, password, rePassword }])
+
+            if (response.status === 201) {
+                console.log("SUCCES", response);
+            } else {
+                console.log("ERROR", response);
+            }
+        } catch (error) {
+            // Log error
+        }
+    }
 
     public async login() {
         try {
@@ -94,9 +105,13 @@ class AuthHandler {
             const email = state.auth.loginForm.email;
             const password = state.auth.loginForm.password;
 
-            // const response = await requestHandler.post<Partial<ILoginForm>>("/api/jwt/create/", { email, password })
-
-            // manage response
+            const response = await requestManager.request("auth", "login", [email, password], false)
+            console.log(response)
+            if (response.status === 201) {
+                store.dispatch(appActions.setAuth())
+            } else {
+                // new Error();
+            }
 
         } catch (error) {
             console.log(error)

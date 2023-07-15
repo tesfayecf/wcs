@@ -11,16 +11,16 @@ const initialState: IAuthStore = {
         passwordError: false,
     },
     registerForm: {
-        first_name: '',
-        first_nameError: false,
-        last_name: '',
+        firstName: '',
+        firstNameError: false,
+        lastName: '',
         last_nameError: false,
         email: '',
         emailError: false,
         password: '',
         passwordError: false,
-        re_password: '',
-        re_passwordError: false,
+        rePassword: '',
+        rePasswordError: false,
     },
     resetPasswordForm: {
         old_password: '',
@@ -50,12 +50,12 @@ const authSlice = createSlice({
         },
 
         setRegisterFormFirstName: (state, action: PayloadAction<{ firstName: string, error: boolean }>) => {
-            state.registerForm.first_name = action.payload.firstName;
-            state.registerForm.first_nameError = action.payload.error;
+            state.registerForm.firstName = action.payload.firstName;
+            state.registerForm.firstNameError = action.payload.error;
         },
 
         setRegisterFormLastName: (state, action: PayloadAction<{ lastName: string, error: boolean }>) => {
-            state.registerForm.last_name = action.payload.lastName;
+            state.registerForm.lastName = action.payload.lastName;
             state.registerForm.last_nameError = action.payload.error;
         },
 
@@ -70,8 +70,8 @@ const authSlice = createSlice({
         },
 
         setRegisterFormRePassword: (state, action: PayloadAction<{ rePassword: string, error: boolean }>) => {
-            state.registerForm.re_password = action.payload.rePassword;
-            state.registerForm.re_passwordError = action.payload.error;
+            state.registerForm.rePassword = action.payload.rePassword;
+            state.registerForm.rePasswordError = action.payload.error;
         },
 
         setResetPasswordFormOldPassword: (state, action: PayloadAction<{ oldPassword: string, error: boolean }>) => {

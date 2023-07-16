@@ -3,6 +3,7 @@ import { store } from "../utils/store/store";
 import { authActions } from "./AuthReducer";
 import { ILoginForm } from "./AuthTypes";
 import RequestManager from '@/app/utils/api/requestManager'
+import { useRouter } from 'next/navigation';
 
 const requestManager = RequestManager.getInstance();
 class AuthHandler {
@@ -19,6 +20,10 @@ class AuthHandler {
         console.log("Auth handler getInstance()");
         return AuthHandler.instance;
     }
+
+    //////////////////
+    //// Setters /////
+    //////////////////
 
 
     // Login Form //
@@ -100,22 +105,12 @@ class AuthHandler {
     }
 
     public async login() {
-        try {
-            const state = store.getState();
-            const email = state.auth.loginForm.email;
-            const password = state.auth.loginForm.password;
+        const state = store.getState();
+        const email = state.auth.loginForm.email;
+        const password = state.auth.loginForm.password;
 
-            const response = await requestManager.request("auth", "login", [email, password], false)
-            console.log(response)
-            if (response.status === 201) {
-                store.dispatch(appActions.setAuth())
-            } else {
-                // new Error();
-            }
-
-        } catch (error) {
-            console.log(error)
-        }
+        const response = await requestManager.request("auth", "login", [email, password], false)
+        return response;
     }
 
     public async logout() {

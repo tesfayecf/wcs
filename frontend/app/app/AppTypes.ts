@@ -13,14 +13,20 @@ export interface IUserInfo {
 }
 
 export interface IAppStore {
-    isAuthenticated: boolean;
-    isLoading: boolean;
-    isConnected: boolean;
-
-    isAdmin: boolean;
-    isStaff: boolean;
-    isUser: boolean;
-
-    checkValue: number;
+    session: {
+        isAuthenticated: boolean;
+        isConnected: boolean;
+        isAdmin: boolean;
+        isStaff: boolean;
+        isUser: boolean;
+    };
+    auth: {
+        accesToken: string;
+        refreshToken: string;
+    }
+    loading: {
+        isLoading: boolean;
+        loadingText: string;
+    }
     userInfo: IUserInfo;
 }

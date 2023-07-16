@@ -1,12 +1,20 @@
+import { Mutex } from "async-mutex";
 import { APIInterface, APIResponse } from "./apiInterface";
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
+import { store } from "../store/store";
+import { appActions } from "@/app/app/AppReducer";
+const mutex = new Mutex();
 
 class RequestManager {
     private static instance: RequestManager;
     private BASE_URL = '127.0.0.1:8000';
+    private api: AxiosInstance;
     private constructor() {
         console.log("Auth handler constructor");
+        this.api = this.initApi();
     }
+
+
 
     public static getInstance(): RequestManager {
         if (!RequestManager.instance) {
@@ -32,24 +40,85 @@ class RequestManager {
         // @ts-expect-error
         const { endpoint, method, argsKeys } = APIInterface[appEventGroup][appEvent as string];
         const obj = Object.fromEntries(args.map((key, index) => [argsKeys[index], key]));
+        const reponse = await this.baseRequestWithReAuth_(method, endpoint, obj, isAuth, token);
+        if (process.env.NODE_ENV === "development") {
+            console.log(`[${appEventGroup}][${appEvent as string}]`, reponse);
+        }
+        return reponse;
+    }
+
+    private initApi() {
+        return axios.create({
+            baseURL: `http://${this.BASE_URL}`,
+            withCredentials: true,
+            headers: {
+                common: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        })
+    }
+
+
+    private async baseRequestWithReAuth_<
+        T extends keyof typeof APIInterface,
+        S extends keyof typeof APIInterface[T]
+    >(method: "GET" | "POST", endpoint: string, obj: any, isAuth: boolean = true, token: string = ""
+        // @ts-expect-error
+    ): Promise<ReturnType<typeof APIInterface[T][S]["args"]>> {
+
+        await mutex.waitForUnlock();
+        // @ts-expect-error
+        let response: ReturnType<typeof APIInterface[T][S]["args"]> = await this.baseRequest_(method, endpoint, obj, isAuth, token);
+        // @ts-expect-error
+        if (response.isFailure && response.status === 401) {
+            if (!mutex.isLocked()) {
+                const release = await mutex.acquire();
+                try {
+                    const refreshResponse: APIResponse<any> = await this.baseRequest_("POST", "/jwt/refresh/", obj, false);
+                    if (refreshResponse.data) {
+                        store.dispatch(appActions.setAuth());
+                        response = await this.baseRequest_(method, endpoint, obj, isAuth, token);
+                    } else {
+                        store.dispatch(appActions.logout());
+                    }
+                } finally {
+                    release();
+                }
+            } else {
+                await mutex.waitForUnlock();
+                response = await this.baseRequest_(method, endpoint, obj, isAuth, token);
+            }
+        }
+        return response;
+    }
+
+    private async baseRequest_<
+        T extends keyof typeof APIInterface,
+        S extends keyof typeof APIInterface[T]
+    >(method: "GET" | "POST", endpoint: string, obj: any, isAuth: boolean = true, token: string = ""
+        // @ts-expect-error
+    ): Promise<ReturnType<typeof APIInterface[T][S]["args"]>> {
         try {
-            const response: AxiosResponse = await axios({
+            const response: AxiosResponse = await this.api.request({
                 method,
-                url: `http://${this.BASE_URL}/${endpoint}`,
+                url: `/${endpoint}`,
                 data: obj,
                 headers: {
                     Authorization: isAuth ? `Bearer ${token}` : null,
                 },
+                withCredentials: true,
             });
             // @ts-expect-error
-            return await this.mapAxiosResponse(response) as Promise<ReturnType<typeof APIInterface[T][S]["args"]>>;
+            return await this.mapAxiosResponse_(response) as Promise<ReturnType<typeof APIInterface[T][S]["args"]>>;
         } catch (error) {
             // @ts-expect-error
-            return await this.mapAxiosError(error) as Promise<ReturnType<typeof APIInterface[T][S]["args"]>>;
+            return await this.mapAxiosError_(error) as Promise<ReturnType<typeof APIInterface[T][S]["args"]>>;
         }
     }
 
-    private async mapAxiosResponse<T>(response: AxiosResponse<T>): Promise<APIResponse<T>> {
+
+    private async mapAxiosResponse_<T>(response: AxiosResponse<T>): Promise<APIResponse<T>> {
         const apiResponse: APIResponse<T> = {
             data: response.data,
             request: response.request,
@@ -64,7 +133,7 @@ class RequestManager {
         return apiResponse;
     }
 
-    private async mapAxiosError<T>(error: AxiosError<T>): Promise<APIResponse<T>> {
+    private async mapAxiosError_<T>(error: AxiosError<T>): Promise<APIResponse<T>> {
         const apiResponse: APIResponse<T> = {
             error: error.response?.data ?? error.message,
             request: error.request,

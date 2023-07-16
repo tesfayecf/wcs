@@ -38,10 +38,10 @@ export const APIInterface = {
             argsKeys: []
         },
         verify: {
-            args: (token: string): APIResponse<void> => { return {} as APIResponse<void> },
+            args: (): APIResponse<void> => { return {} as APIResponse<void> },
             endpoint: "api/jwt/verify/",
             method: "POST",
-            argsKeys: ["token"],
+            argsKeys: [],
         }
     },
 } as const;

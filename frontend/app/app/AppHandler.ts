@@ -28,6 +28,11 @@ class AppHandler {
     public logOut() {
         store.dispatch(appActions.logout());
     }
+
+    public finishInitialLoad() {
+        console.log("Finish initial load");
+        store.dispatch(appActions.finishLoading());
+    }
 }
 
 export default AppHandler;

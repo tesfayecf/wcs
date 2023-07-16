@@ -3,13 +3,21 @@ import { IAppStore } from './AppTypes';
 
 // Define the initial state
 const initialState: IAppStore = {
-    isAuthenticated: false,
-    isLoading: false,
-    isConnected: false,
-    isAdmin: false,
-    isStaff: false,
-    isUser: false,
-    checkValue: 0,
+    session: {
+        isAuthenticated: false,
+        isConnected: false,
+        isAdmin: false,
+        isStaff: false,
+        isUser: false,
+    },
+    auth: {
+        accesToken: '',
+        refreshToken: '',
+    },
+    loading: {
+        isLoading: true,
+        loadingText: '',
+    },
     userInfo: {
         id: -1,
         name: '',
@@ -26,16 +34,16 @@ const appSlice = createSlice({
     initialState,
     reducers: {
         startLoading: (state) => {
-            state.isLoading = true;
+            state.loading.isLoading = true;
         },
         finishLoading: (state) => {
-            state.isLoading = false;
+            state.loading.isLoading = false;
         },
         setAuth: (state) => {
-            state.isAuthenticated = true;
+            state.session.isAuthenticated = true;
         },
         logout: (state) => {
-            state.isAuthenticated = false;
+            state.session.isAuthenticated = false;
         },
     },
 });

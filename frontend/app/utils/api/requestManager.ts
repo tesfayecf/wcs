@@ -31,13 +31,13 @@ class RequestManager {
     >(
         appEventGroup: T,
         appEvent: S,
-        // @ts-expect-error
+        // @ts-ignore
         args: Parameters<typeof APIInterface[T][S]["args"]>,
         isAuth: boolean = true,
-        // @ts-expect-error
+        // @ts-ignore
     ): Promise<ReturnType<typeof APIInterface[T][S]["args"]>> {
         const token = 'your-jwt-token'; // Replace with your JWT token
-        // @ts-expect-error
+        // @ts-ignore
         const { endpoint, method, argsKeys } = APIInterface[appEventGroup][appEvent as string];
         const obj = Object.fromEntries(args.map((key, index) => [argsKeys[index], key]));
         const reponse = await this.baseRequestWithReAuth_(method, endpoint, obj, isAuth, token);
@@ -64,13 +64,13 @@ class RequestManager {
         T extends keyof typeof APIInterface,
         S extends keyof typeof APIInterface[T]
     >(method: "GET" | "POST", endpoint: string, obj: any, isAuth: boolean = true, token: string = ""
-        // @ts-expect-error
+        // @ts-ignore
     ): Promise<ReturnType<typeof APIInterface[T][S]["args"]>> {
 
         await mutex.waitForUnlock();
-        // @ts-expect-error
+        // @ts-ignore
         let response: ReturnType<typeof APIInterface[T][S]["args"]> = await this.baseRequest_(method, endpoint, obj, isAuth, token);
-        // @ts-expect-error
+        // @ts-ignore
         if (response.isFailure && response.status === 401) {
             if (!mutex.isLocked()) {
                 const release = await mutex.acquire();
@@ -97,7 +97,7 @@ class RequestManager {
         T extends keyof typeof APIInterface,
         S extends keyof typeof APIInterface[T]
     >(method: "GET" | "POST", endpoint: string, obj: any, isAuth: boolean = true, token: string = ""
-        // @ts-expect-error
+        // @ts-ignore
     ): Promise<ReturnType<typeof APIInterface[T][S]["args"]>> {
         try {
             const response: AxiosResponse = await this.api.request({
@@ -109,10 +109,10 @@ class RequestManager {
                 },
                 withCredentials: true,
             });
-            // @ts-expect-error
+            // @ts-ignore
             return await this.mapAxiosResponse_(response) as Promise<ReturnType<typeof APIInterface[T][S]["args"]>>;
         } catch (error) {
-            // @ts-expect-error
+            // @ts-ignore
             return await this.mapAxiosError_(error) as Promise<ReturnType<typeof APIInterface[T][S]["args"]>>;
         }
     }

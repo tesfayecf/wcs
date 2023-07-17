@@ -84,25 +84,17 @@ class AuthHandler {
 
 
     public async register() {
-        try {
-            const state = store.getState();
-            const firstName = state.auth.registerForm.firstName;
-            const lastName = state.auth.registerForm.lastName;
-            const email = state.auth.registerForm.email;
-            const password = state.auth.registerForm.password;
-            const rePassword = state.auth.registerForm.rePassword;
+        const state = store.getState();
+        const firstName = state.auth.registerForm.firstName;
+        const lastName = state.auth.registerForm.lastName;
+        const email = state.auth.registerForm.email;
+        const password = state.auth.registerForm.password;
+        const rePassword = state.auth.registerForm.rePassword;
 
-            const response = await requestManager.request("auth", "register", [{ firstName, lastName, email, password, rePassword }])
-
-            if (response.status === 201) {
-                console.log("SUCCES", response);
-            } else {
-                console.log("ERROR", response);
-            }
-        } catch (error) {
-            // Log error
-        }
+        const response = await requestManager.request("auth", "register", [{ firstName, lastName, email, password, rePassword }])
+        return response;
     }
+
 
     public async login() {
         const state = store.getState();
@@ -126,18 +118,19 @@ class AuthHandler {
         }
     }
 
-    public async verify(token: string) {
-        try {
-            // const response = await requestHandler.post<Partial<any>>("/api/jwt/verify/", {})
-            // console.log("response", response);
-            // return true
+    // public async verify(token: string) {
+    //     try {
+    //         // const response = await requestHandler.post<Partial<any>>("/api/jwt/verify/", {})
+    //         // console.log("response", response);
+    //         // return true
 
-        } catch (error) {
-            // Log error
-            // console.log("error:", error);
-            // return false
-        }
-    }
+    //     } catch (error) {
+    //         // Log error
+    //         // console.log("error:", error);
+    //         // return false
+    //     }
+    // }
+
 
     // public async resetPassword() {
     //     try {

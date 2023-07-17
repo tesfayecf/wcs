@@ -12,8 +12,6 @@ type IAppLayoutProps = {
 }
 
 export default function RootLayout({ children }: IAppLayoutProps) {
-    console.log("Pages layout")
-
     return (
         <RequireAuth>
             <div id="pagesLayout">

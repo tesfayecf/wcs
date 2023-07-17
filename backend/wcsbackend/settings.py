@@ -30,7 +30,7 @@ DEVELOPMENT_MODE = 'True'
 SECRET_KEY = "django-insecure-07ibo1l0o)x+nr+t8x^(#5&^r&1v5y+4ecxg@ndbd@-wz=v+a8"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = getenv('DEBUG', 'False') == 'True'
+DEBUG = 'True'
 
 ALLOWED_HOSTS = getenv('DJANGO_ALLOWED_HOSTS',
                        '127.0.0.1,localhost').split(',')
@@ -142,7 +142,6 @@ DJOSER ={
     'USER_CREATE_PASSWORD_RETYPE': True,
     'PASSWORD_RESET_CONFIRM_RETYPE': True,
     'TOKEN_MODEL': None,
-    # 'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': getenv('REDIRECT_URLS').split(',')
 }
 
 AUTH_COOKIE = "acces"

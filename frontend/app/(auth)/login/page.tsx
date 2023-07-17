@@ -6,7 +6,7 @@ import AuthHandler from "../AuthHandler";
 import AppHandler from "@/app/app/AppHandler";
 import { IRootState } from "@/app/utils/store/store";
 import { connect } from "react-redux";
-import { redirect, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import CheckAuth from "@/app/utils/auth/checkAuth";
 
 const authHandler = AuthHandler.getInstance()
@@ -15,6 +15,7 @@ const appHandler = AppHandler.getInstance()
 interface ILoginProps extends ReturnType<typeof mapStateToProps> { }
 
 const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
+    const router = useRouter();
 
     const onEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         authHandler.setLoginFormEmail(event.target.value);
@@ -25,14 +26,12 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
     }
 
     const onLogin = async () => {
-        const router = useRouter();
         const response = await authHandler.login();
         if (response.status === 200) {
-            appHandler.setAuth();
             router.push('./dashboard');
-            // redirect('./dashboard')
+            appHandler.setAuth();
         } else {
-            console.log("Error")
+            console.log("Error") // Error handler
         }
     }
 
@@ -78,12 +77,11 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
     )
 }
 
-export default connect(mapStateToProps)(Login)
 
-
-
-function mapStateToProps(state: IRootState) {
+const mapStateToProps = (state: IRootState) => {
     return {
-        loginForm: state.auth.loginForm
+        loginForm: state.auth.loginForm,
     }
 }
+
+export default connect(mapStateToProps, {})(Login);

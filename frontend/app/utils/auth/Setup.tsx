@@ -8,8 +8,6 @@ const requestManager = RequestManager.getInstance();
 const appHandler = AppHandler.getInstance();
 
 export default function Setup() {
-    // useVerify();
-    console.log("Render Setup")
     React.useEffect(() => {
         const verify = async () => {
             return await requestManager.request("auth", "verify", []);
@@ -18,9 +16,7 @@ export default function Setup() {
             if (response.status === 200) {
                 appHandler.setAuth();
             } else {
-                if (process.env.NODE_ENV === "development") {
-                    console.log("Auth failed");
-                }
+                if (process.env.NODE_ENV === "development") console.log("Auth failed");
             }
         }).finally(() => {
             appHandler.finishInitialLoad();
@@ -29,26 +25,3 @@ export default function Setup() {
 
     return null;
 }
-
-// export default function Setup2() {
-//     // useVerify();
-//     console.log("Render Setup")
-//     React.useEffect(() => {
-//         const verify = async () => {
-//             return await requestManager.request("auth", "verify", []);
-//         }
-//         verify().then((response) => {
-//             if (response.status === 200) {
-//                 appHandler.setAuth();
-//             } else {
-//                 if (process.env.NODE_ENV === "development") {
-//                     console.log("Auth failed");
-//                 }
-//             }
-//         }).finally(() => {
-//             appHandler.finishInitialLoad();
-//         })
-//     }, []);
-
-//     return null;
-// }

@@ -23,7 +23,6 @@ AuthHandler.getInstance();
 DashboardHandler.getInstance();
 
 export default function RootLayout({ children }: IAppLayoutProps) {
-    console.log("Root layout")
     return (
         <>
             <html lang="en">

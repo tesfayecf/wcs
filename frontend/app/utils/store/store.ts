@@ -6,12 +6,11 @@ import dashboardReducer from '@/app/(pages)/dashboard/DashboardReducer';
 
 export const store = configureStore({
   reducer: {
-    // App state managment
     app: appReducer,
     auth: authReducer,
     dashboard: dashboardReducer,
   },
 });
 
-export type IRootState = ReturnType<(typeof store)['getState']>;
-export type TStoreDispatch = (typeof store)['dispatch'];
+export type IRootState = ReturnType<typeof store.getState>;
+export type TStoreDispatch = typeof store.dispatch;

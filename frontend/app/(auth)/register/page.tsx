@@ -103,10 +103,10 @@ const Register: React.FunctionComponent<IRegisterProps> = (props: IRegisterProps
     return null
 }
 
-export default connect(mapStateToProps)(Register)
-
 function mapStateToProps(state: IRootState) {
     return {
         registerForm: state.auth.registerForm
     }
 }
+
+export default connect(mapStateToProps, {})(Register)

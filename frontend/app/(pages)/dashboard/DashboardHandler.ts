@@ -18,6 +18,10 @@ class DashboardHandler {
         return DashboardHandler.instance;
     }
 
+    public setShowAddTankMenu(state: boolean) {
+        store.dispatch(dashboardActions.setShowAddTankMenu({ state }))
+    }
+
     public setTankCreationForm(form: ITankCreationForm) {
         store.dispatch(dashboardActions.setTankCreationForm({ form }))
     }

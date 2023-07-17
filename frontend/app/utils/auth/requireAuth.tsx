@@ -1,29 +1,19 @@
 'use client';
-
-import { redirect, useRouter } from 'next/navigation';
+import { connect } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import { IRootState } from '../store/store';
 import LoadingPage from '@/app/components/loadingPage/LoadingPage';
-import { connect } from 'react-redux';
 
 interface IProps extends ReturnType<typeof mapStateToProps> {
-    children: React.ReactNode;
+    children: React.JSX.Element;
 }
 
 const RequireAuth: React.FunctionComponent<IProps> = (props: IProps) => {
-    console.log("Render RequireAuth")
-
-    if (props.isLoading) {
-        return <LoadingPage />
-    }
-
-    if (!props.isAuthenticated) {
-        redirect('./login');
-    }
-
+    const router = useRouter();
+    if (props.isLoading) return <LoadingPage />
+    if (!props.isAuthenticated) router.push('./login');
     return <>{props.children}</>;
 }
-
-export default connect(mapStateToProps)(RequireAuth)
 
 function mapStateToProps(state: IRootState) {
     return {
@@ -31,3 +21,5 @@ function mapStateToProps(state: IRootState) {
         isAuthenticated: state.app.session.isAuthenticated,
     }
 }
+
+export default connect(mapStateToProps, {})(RequireAuth)

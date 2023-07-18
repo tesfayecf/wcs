@@ -3,7 +3,7 @@
     width: 100%;
     border-radius: 0.75rem;
 
-    &_title {
+    .title {
         margin-left: 24px;
         margin-right: 24px;
         margin-bottom: 8px;
@@ -14,19 +14,19 @@
         height: 24px;
     }
 
-    &_content {
+    .content {
         display: flex;
         flex-direction: row;
         gap: 24px;
         // height: 100%;
 
-        &_pie_chart {
+        .pie_chart {
             z-index: 101;
             width: 50%;
             border-radius: 12px;
         }
 
-        &_data {
+        .data {
             display: flex;
             z-index: 101;
             padding: 4px;
@@ -34,7 +34,7 @@
             width: 100%;
             // height: 100%;
 
-            &_card {
+            .card {
                 display: flex;
                 margin: 8px;
                 flex-direction: column;
@@ -51,7 +51,7 @@
                     box-shadow: 0 25px 50px -12px #171717;
                 }
 
-                &_title {
+                .title {
                     padding-top: 8px;
                     margin: 8px;
                     font-size: 18px;
@@ -61,11 +61,15 @@
                     height: 33.333333%;
                 }
 
-                &_element {
+                .element {
                     font-size: 12px;
                     line-height: 28px;
                     height: 33.333333%;
                 }
+            }
+
+            @media (max-width:700px) {
+                .card { display: none !important; }
             }
         }
     }

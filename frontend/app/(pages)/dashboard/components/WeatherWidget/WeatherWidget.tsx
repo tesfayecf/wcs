@@ -1,5 +1,6 @@
 import React, { SVGAttributes } from 'react';
 import styles from "./styles/WeatherWidget.module.scss"
+import { HEXToVBColor, VBColorToHEX } from '@/app/utils/lib/styles';
 // import getIcon from '../../data/icons/iconsMap';
 // import '../styles.css'
 type IWeatherWidgetProps = {}
@@ -70,23 +71,14 @@ type ICustomReactWeatherProps = {
 const CustomReactWeather: React.FunctionComponent<ICustomReactWeatherProps> = (props: ICustomReactWeatherProps) => {
     const { forecast, current } = props.data;
 
-    function HEXToVBColor(rrggbb: string) {
-        var bbggrr = rrggbb.substr(4, 2) + rrggbb.substr(2, 2) + rrggbb.substr(0, 2);
-        return parseInt(bbggrr, 16)
-    }
 
-    function VBColorToHEX(i: number) {
-        var bbggrr = ("000000" + i.toString(16)).slice(-6);
-        var rrggbb = bbggrr.substr(4, 2) + bbggrr.substr(2, 2) + bbggrr.substr(0, 2);
-        return "#" + rrggbb;
-    }
     const startColor = "#02c8d5";
     const startColorVB = HEXToVBColor("#02c8d5");
     const endColor = VBColorToHEX(startColorVB - 5);
     const gradient = "linear-gradient(90deg, " + startColor + " 0%, " + String(endColor) + " 100%)";
 
     return (
-        <div style={{ background: gradient }} className={styles.weather_content}>
+        <div style={{ background: gradient }} className={styles.content}>
             <Today current={current} unitsLabels={props.unitsLabels} locationLabel={props.locationLabel}></Today>
             {props.showForecast && <Forecast unitsLabels={props.unitsLabels} forecast={forecast} />}
         </div>
@@ -106,29 +98,29 @@ type ITodayProps = {
 const Today: React.FunctionComponent<ITodayProps> = (props: ITodayProps) => {
     const labels = { wind: "Wind", humidity: "Humidity" };
     return (
-        <div className={styles.weather_content_today}>
-            <div className={styles.weather_content_today_data}>
-                <h2 className={styles.weather_content_today_data_location}>{props.locationLabel}</h2>
-                <p className={styles.weather_content_today_data_date}>{props.current.date}</p>
-                <div className={styles.weather_content_today_data_division_line} />
-                <p className={styles.weather_content_today_data_temperature}>
+        <div className={styles.today}>
+            <div className={styles.data}>
+                <h2 className={styles.location}>{props.locationLabel}</h2>
+                <p className={styles.date}>{props.current.date}</p>
+                <div className={styles.division_line} />
+                <p className={styles.temperature}>
                     {props.current.temperature.current} {props.unitsLabels.temperature}
                 </p>
-                <p className={styles.weather_content_today_data_temperatureMM}>
+                <p className={styles.temperatureMM}>
                     {props.current.temperature.max} / {props.current.temperature.min}{' '}{props.unitsLabels.temperature}
                 </p>
-                <p className={styles.weather_content_today_data_description}>{props.current.description}</p>
-                <div className={styles.weather_content_today_data_division_line} />
-                <div className={styles.weather_content_today_data_wh}>
-                    <p className={styles.weather_content_today_data_wh_wind}>
+                <p className={styles.description}>{props.current.description}</p>
+                <div className={styles.division_line} />
+                <div className={styles.wh}>
+                    <p className={styles.wind}>
                         {labels.wind}: <b>{props.current.wind}</b> {props.unitsLabels.windSpeed}
                     </p>
-                    <p className={styles.weather_content_today_data_wh_humidity}>
+                    <p className={styles.humidity}>
                         {labels.humidity}: <b>{props.current.humidity}</b> %
                     </p>
                 </div>
             </div>
-            <div className={styles.weather_content_today_icon}>
+            <div className={styles.icon}>
                 <WeatherSVG path={props.current.icon} size={90} title={props.current.description} />
             </div>
         </div>
@@ -147,13 +139,13 @@ type IForecastProps = {
 const Forecast: React.FunctionComponent<IForecastProps> = (props: IForecastProps) => {
     // TODO: put min width
     return (
-        <div className={styles.weather_content_forecast}>
+        <div className={styles.forecast}>
             {props.forecast.map((day: any, i: any) => {
                 if (i > 0) {
                     return (
-                        <div key={day.date} className={styles.weather_content_forecast_data}>
-                            <p className={styles.weather_content_forecast_data_date}>{day.date}</p>
-                            <div className={styles.weather_content_forecast_data_icon}>
+                        <div key={day.date} className={styles.data}>
+                            <p className={styles.date}>{day.date}</p>
+                            <div className={styles.icon}>
                                 <WeatherSVG
                                     path={day.icon}
                                     size={60}
@@ -161,8 +153,8 @@ const Forecast: React.FunctionComponent<IForecastProps> = (props: IForecastProps
                                 // color={"black"}
                                 />
                             </div>
-                            <div className={styles.weather_content_forecast_data_description}>{day.description}</div>
-                            <div className={styles.weather_content_forecast_data_temperature}>
+                            <div className={styles.description}>{day.description}</div>
+                            <div className={styles.temperature}>
                                 {day.temperature.max} / {day.temperature.min}{' '}
                                 {props.unitsLabels.temperature}
                             </div>

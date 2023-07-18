@@ -26,7 +26,7 @@ const Test: React.FunctionComponent<ITestProps> = (props: ITestProps) => {
                     dimensions={"240x200x100"}
                     brand={'Acme'}
                     material={'stainless steel'}
-                    status={false}
+                    status={true}
                 />
             </ContentBox>
         </div>

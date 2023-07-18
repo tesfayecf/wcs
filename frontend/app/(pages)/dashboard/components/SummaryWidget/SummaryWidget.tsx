@@ -8,16 +8,16 @@ const SummaryWidget: React.FunctionComponent<ISummaryWidgetProps> = (props: ISum
   return (
 
     <div className={styles.summary}>
-      <div id="title-div" className={styles.summary_title}>
+      <div id="title-div" className={styles.title}>
         <p>Summary</p>
       </div>
-      <div id="content-div" className={styles.summary_content}>
-        <div id='piechart-div' className={styles.summary_content_pie_chart}>
+      <div id="content-div" className={styles.content}>
+        <div id='piechart-div' className={styles.chart}>
           📈
         </div>
-        <div className={styles.summary_content_data}>
-          <SummaryCard title='Inflows' quantity={900} unit='liter' percentage={30} />
-          <SummaryCard title='Outflows' quantity={500} unit='liter' percentage={-20} />
+        <div className={styles.data}>
+          <SummaryCard title='Inflows' quantity={900} unit='liter' percentage={30} className='hide' />
+          <SummaryCard title='Outflows' quantity={500} unit='liter' percentage={-20} className='hide' />
           <SummaryCard title='Savings' quantity={50} unit='liter' percentage={17} />
         </div>
       </div>
@@ -32,6 +32,7 @@ type ISummaryCardProps = {
   quantity: number,
   unit: "euro" | "liter"
   percentage: number
+  className?: string;
 }
 
 
@@ -51,10 +52,10 @@ const SummaryCard: React.FunctionComponent<ISummaryCardProps> = (props: ISummary
   }
 
   return (
-    <div className={styles.summary_content_data_card}>
-      <p className={styles.summary_content_data_card_title}> {props.title} </p>
-      <p className={styles.summary_content_data_card_element}> {quantityText}</p>
-      <p className={styles.summary_content_data_card_element}> {percentageText} </p>
-    </div>
+    <div className={`${styles.card} ${props.className}`}>
+      <p className={styles.title}> {props.title} </p>
+      <p className={styles.element}> {quantityText}</p>
+      <p className={styles.element}> {percentageText} </p>
+    </div >
   )
 }

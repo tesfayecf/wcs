@@ -7,7 +7,7 @@ type IAppLayoutProps = {
 
 export default function RootLayout({ children }: IAppLayoutProps) {
     return (
-        <div id="authLayout">
+        <div id="testLayout">
             {children}
         </div>
     )

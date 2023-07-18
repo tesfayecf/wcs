@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "djoser",
-    "users_auth"
+    "users_auth",
+    "tanks"
 ]
 
 MIDDLEWARE = [

@@ -3,11 +3,6 @@ from .views import tank, tank_group
 from .views import TanksViews, TankGroupsView, CreateTankView, CreateTankGroupView
 urlpatterns = [
 
-    # # USER MANAGMENT
-    # path("login/", views.login_user, name="login"),
-    # path("logout/", views.logout_user, name="logout"),
-
-
     # API
     path('tanks/', TanksViews.as_view()),
     path("tank/<int:tankId>", tank),

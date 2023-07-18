@@ -5,15 +5,15 @@ from .models import Tank, TankGroup
 class TankSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tank
-        fields = ('id', 'name', 'capacity', 'isActive', 'x', 'y', 'z',
-                  'material', 'brandName', 'tankGroup')
+        fields = ('id', 'name', 'capacity', 'isActive', 'dimensions',
+                  'material', 'brand', 'tankGroup')
 
 
 class CreateTankSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tank
-        fields = ('name', 'capacity', 'isActive', 'x', 'y', 'z',
-                  'material', 'brandName', 'tankGroup')
+        fields = ('name', 'capacity', 'isActive', 'dimensions',
+                  'material', 'brand', 'tankGroup')
 
 
 class TankGroupSerializer(serializers.ModelSerializer):

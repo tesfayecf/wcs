@@ -13,20 +13,25 @@ class TankGroup(models.Model):
 
 
 class Tank(models.Model):
-    # Model representing a single water tank
+    # Model representing a single tank
     name = models.CharField(max_length=50)
+    type_choices = [
+        ("Storage", "Storage"), 
+        ("Well", "Well"),
+        ("Reservoir", "Reservoir"),
+        ("Tank", "Tank"),
+        ("Other", "Other")
+    ]
+    type = models.CharField(max_length=50, choices=type_choices)
     capacity = models.PositiveIntegerField()
-    isActive = models.BooleanField()
-
-    x = models.IntegerField()
-    y = models.IntegerField()
-    z = models.IntegerField()
-    material = models.TextField()
-    brandName = models.TextField()
-
-    tankGroup = models.ForeignKey(TankGroup,on_delete=models.CASCADE, default=0)
+    is_active = models.BooleanField()
+    dimensions = models.CharField(max_length=100)
+    material = models.CharField(max_length=100)
+    brand = models.CharField(max_length=100)
+    tankGroup = models.ForeignKey(TankGroup, on_delete=models.CASCADE, related_name='tanks')
 
     def __str__(self):
         return self.name
+
 
 

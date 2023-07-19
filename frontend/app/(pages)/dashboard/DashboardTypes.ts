@@ -1,31 +1,23 @@
 
-export interface ITankCreationForm {
+export interface ITankGroupCreationForm {
     name: string;
     nameError: boolean;
-    capacity: string;
-    capacityError: boolean;
-    type: string;
-    typeError: boolean;
-    dimension: string;
-    dimensionError: boolean;
-    material: string;
-    materialError: boolean;
-    brand: string;
-    brandError: boolean;
+    location: string;
+    locationError: boolean;
 }
 
 export interface IDashboardStore {
-    showAddTankMenu: boolean;
-    tankCreationForm: ITankCreationForm;
+    tankGroups: ITankGroup[];
+    showEditTankGroupMenu: boolean;
+    showDeleteTankGroupMenu: boolean;
+    selectedTankGroup: number;
+
+    showAddTankGroupMenu: boolean;
+    tankGroupCreationForm: ITankGroupCreationForm;
 }
 
-
-///////////////
-//// ACTIONS
-///////////////
-
-export interface IDashboardActions {
-    setShowAddTankMenu: (showAddTankMenu: boolean, set?: any, get?: any) => void;
-    setTankCreationForm: (tankCreationForm: ITankCreationForm, set?: any, get?: any) => void
+export interface ITankGroup {
+    id: number;
+    name: string;
+    location: string;
 }
-

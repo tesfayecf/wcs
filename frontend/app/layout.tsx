@@ -1,13 +1,12 @@
 'use client'
-import '@/styles/globals.scss'
 import React from 'react'
-
+import { Provider } from 'react-redux'
+import { store } from '@/app/utils/store/store'
 import AppHandler from '@/app/app/AppHandler'
 import AuthHandler from '@/app/(auth)/AuthHandler'
 import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler'
-import { Provider } from 'react-redux'
-import { store } from './utils/store/store'
 import Setup from './utils/auth/Setup'
+import '@/styles/globals.scss'
 
 export const metadata = {
     title: 'WCS App',

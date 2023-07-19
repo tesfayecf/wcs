@@ -9,10 +9,11 @@ interface IProps extends ReturnType<typeof mapStateToProps> {
 }
 
 const CheckAuth: React.FunctionComponent<IProps> = (props: IProps) => {
-    if (process.env.NODE_ENV === "development") {
-        const router = useRouter()
-        if (props.isAuthenticated) router.push('./dashboard');
-    }
+    // if (process.env.NODE_ENV === "development") {
+    //     const router = useRouter()
+    //     if (props.isAuthenticated) router.push('./dashboard');
+    // }
+
     const router = useRouter()
     if (props.isLoading) return <LoadingPage />
     if (props.isAuthenticated) router.push('./dashboard');

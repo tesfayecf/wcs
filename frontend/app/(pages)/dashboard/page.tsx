@@ -1,23 +1,44 @@
+'use client'
 import React from "react";
-import styles from "./styles/Dashboard.module.scss"
+import { connect } from "react-redux";
+import { IRootState } from "@/app/utils/store/store";
 import DashboardHandler from "@/app/(pages)/dashboard/DashboardHandler";
 import contentBoxStyles from "@/app/components/contentBox/styles/ContentBox.module.scss";
 import SummaryWidget from "@/app/(pages)/dashboard/components/SummaryWidget/SummaryWidget"
 import WeatherWidget from "@/app/(pages)/dashboard/components/WeatherWidget/WeatherWidget";
 import ContentBox from "@/app/components/contentBox/ContentBox";
-import WaterTankWidget from "@/app/(pages)/dashboard/components/WaterTankWidget/WaterTankWidget";
-import WaterTankAddButton from "@/app/(pages)/dashboard/components/WaterTankWidget/AddWaterTankWidget";
-import AddWaterTankPopUp from "@/app/(pages)/dashboard/components/WaterTankWidget/AddWaterTankPopUp";
+import TankGroupWidget from "@/app/(pages)/dashboard/components/TankGroupWidget/TankGroupWidget";
+import AddTankGroupPopUp from "@/app/(pages)/dashboard/components/TankGroupWidget/AddTankGroupPopUp";
+import styles from "./styles/Dashboard.module.scss"
+import { ITankGroup } from "./DashboardTypes";
+import AddTankGroupWidget from "./components/TankGroupWidget/AddTankGroupWidget";
 
 const dashboarHandler = DashboardHandler.getInstance();
 
-type IDashboardProps = {}
+interface IDashboardProps extends ReturnType<typeof mapStateToProps> { }
 
 const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardProps) => {
 
+  React.useEffect(() => {
+    dashboarHandler.load();
+    return () => {
+      dashboarHandler.unload();
+    }
+  }, [])
+
+  const renderTanksInfo = React.useCallback((tankGroups: ITankGroup[]) => {
+
+    return tankGroups.map((tankInfo: ITankGroup, index: number) =>
+      <ContentBox key={index}>
+        <TankGroupWidget tankGroup={tankInfo} key={index} />
+      </ContentBox>
+    );
+  }, [props.tankGroups])
+
+
   return (
-    <div className={styles.dashboard_main}>
-      <div className={styles.dashboard_main_info}>
+    <div className={styles.dashboard}>
+      <div className={styles.info}>
         <div className={contentBoxStyles.content_box_summary}>
           <SummaryWidget />
         </div>
@@ -25,63 +46,22 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardPr
           <WeatherWidget />
         </div>
       </div>
-      <div className={styles.dashboard_main_tanks}>
-        {renderTanksInfo(waterTanksInfo)}
+      <div className={styles.tanks}>
+        {renderTanksInfo(props.tankGroups)}
         <ContentBox>
-          <WaterTankAddButton />
+          <AddTankGroupWidget />
         </ContentBox>
       </div>
-      <AddWaterTankPopUp />
+      <AddTankGroupPopUp />
     </div>
   )
 }
 
-export default Dashboard;
 
-
-const renderTanksInfo = (waterTanksInfo: any) => {
-
-  return waterTanksInfo.tanks.map((tankInfo: any, index: number) =>
-    <ContentBox key={index}>
-      <WaterTankWidget
-        id={tankInfo.id}
-        name={tankInfo.name}
-        brand={tankInfo.brand}
-        capacity={tankInfo.capacity}
-        dimensions={tankInfo.dimensions}
-        material={tankInfo.material}
-        status={tankInfo.status}
-        type={tankInfo.type}
-        key={tankInfo?.key}
-      />
-    </ContentBox>
-  );
+const mapStateToProps = (state: IRootState) => {
+  return {
+    tankGroups: state.dashboard.tankGroups,
+  }
 }
 
-
-
-
-const waterTanksInfo: any = {
-  tanks: [
-    {
-      id: 1,
-      name: 'Patio Tank',
-      type: 'storage',
-      capacity: 500,
-      dimensions: "240x200x100",
-      brand: 'Acme',
-      material: 'stainless steel',
-      status: false,
-    },
-    {
-      id: 2,
-      name: 'Deck Tank',
-      type: 'processing',
-      capacity: 1000,
-      dimensions: "120x100x100",
-      brand: 'XYZ',
-      material: 'aluminum',
-      status: true,
-    },
-  ]
-}
+export default connect(mapStateToProps, {})(Dashboard);

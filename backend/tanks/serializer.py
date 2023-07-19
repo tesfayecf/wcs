@@ -19,10 +19,10 @@ class CreateTankSerializer(serializers.ModelSerializer):
 class TankGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = TankGroup
-        fields = ('id', 'name', 'location', 'isActive')
+        fields = ('id', 'name', 'location')
 
 
 class CreateTankGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = TankGroup
-        fields = ('name', 'location', 'isActive')
+        fields = ('name', 'location')

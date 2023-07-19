@@ -1,4 +1,4 @@
-
+from django.conf import settings
 from django.http import HttpResponse
 from .models import Tank, TankGroup
 
@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .serializer import TankSerializer, TankGroupSerializer, CreateTankSerializer, CreateTankGroupSerializer
+
 
 
 class TanksViews(generics.ListAPIView):
@@ -65,28 +66,19 @@ def tank_group(request, tankGroupId):
 
 
 class CreateTankGroupView(APIView):
-
     serializer_class = CreateTankGroupSerializer
 
-    def post(self, request, format=None):
-        if not self.request.session.exists(self.request.session.session_key):
-            self.request.session.create()
-
+    def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            name = serializer.data.get('name'),
-            isActive = serializer.data.get('isActive'),
-            location = serializer.data.get('location'),
+            name = serializer.validated_data.get('name')
+            location = serializer.validated_data.get('location')
 
-            queryName = TankGroup.objects.filter(name=name)
+            query_name = TankGroup.objects.filter(name=name)
 
-            if len(queryName) == 0:
-                TankGroup = TankGroup(
-                    name=name,
-                    isActive=isActive,
-                    location=location,
-                )
-                TankGroup.save()
-                return Response(TankGroupSerializer(TankGroup).data, status=status.HTTP_201_CREATED)
-            return Response({'Bad Request': 'Invalid name...'}, status=status.HTTP_302_FOUND)
+            if not query_name.exists():
+                tank_group = TankGroup(name=name, location=location)
+                tank_group.save()
+                return Response(TankGroupSerializer(tank_group).data, status=status.HTTP_201_CREATED)
+            return Response({'Bad Request': 'Invalid name...'}, status=status.HTTP_400_BAD_REQUEST)
         return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)

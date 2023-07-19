@@ -45,7 +45,13 @@ const appSlice = createSlice({
         logout: (state) => {
             state.session.isAuthenticated = false;
         },
-    },
+        setAccessToken: (state, action: PayloadAction<string>) => {
+            state.auth.accesToken = action.payload;
+        },
+        setRefreshToken: (state, action: PayloadAction<string>) => {
+            state.auth.refreshToken = action.payload;
+        }
+    }
 });
 
 // Export the actions

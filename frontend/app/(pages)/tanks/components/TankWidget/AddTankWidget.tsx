@@ -1,9 +1,9 @@
 'use client'
 import React from 'react';
-import styles from './styles/AddWaterTankWidget.module.scss';
-import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler';
-import { IRootState } from '@/app/utils/store/store';
 import { connect } from 'react-redux';
+import { IRootState } from '@/app/utils/store/store';
+import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler';
+import styles from './styles/AddWaterTankGroupWidget.module.scss';
 
 const dashboardHandler = DashboardHandler.getInstance();
 
@@ -11,14 +11,14 @@ interface IAddWaterTankWidgetProps extends ReturnType<typeof mapStateToProps> { 
 
 const WaterTankAddButton: React.FunctionComponent<IAddWaterTankWidgetProps> = (props: IAddWaterTankWidgetProps) => {
 
-    const toggleAddTankMenu = React.useCallback(() => {
-        dashboardHandler.setShowAddTankMenu(!props.showAddTankMenu);
+    const toggleAddTankGroupMenu = React.useCallback(() => {
+        dashboardHandler.setShowCreateTankGroupMenu(!props.showAddTankMenu);
     }, [props.showAddTankMenu]);
 
     return (
         <div className={styles.main}>
             <div className={styles.main_content}>
-                <button onClick={toggleAddTankMenu} className={styles.main_content_button}>
+                <button onClick={toggleAddTankGroupMenu} className={styles.main_content_button}>
                     <span className={styles.main_content_button_icon}>+</span>
                 </button>
             </div>
@@ -30,7 +30,7 @@ const WaterTankAddButton: React.FunctionComponent<IAddWaterTankWidgetProps> = (p
 
 const mapStateToProps = (state: IRootState) => {
     return {
-        showAddTankMenu: state.dashboard.showAddTankMenu
+        showAddTankMenu: state.dashboard.showAddTankGroupMenu
     }
 }
 

@@ -6,7 +6,7 @@
     height: 100%;
     background-color: rgb(255, 255, 255);
     z-index: 800;
-  }
+}
 
 .loadingContainer {
     position: fixed;
@@ -20,20 +20,22 @@
 
     &_loading {
         z-index: 800;
-        display: inline; 
-        margin-right: 12px; 
-        animation: spin 1s linear infinite;
+        display: inline;
+        margin-right: 12px;
+        animation: spin 0.25s linear infinite;
 
         @keyframes spin {
             from {
                 transform: rotate(0deg);
             }
+
             to {
                 transform: rotate(360deg);
             }
-        }; 
-        color: #0088ff; 
-        width: 96px; 
-        height: 96px; 
+        }
+
+        color: #0088ff;
+        width: 96px;
+        height: 96px;
     }
 }

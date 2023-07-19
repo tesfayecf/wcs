@@ -26,6 +26,7 @@ interface IPopUpFormProps {
     fields: IField[];
     submitButtonText: string;
     onSubmit: () => void;
+    disableSubmit?: boolean | undefined;
     onCancel?: () => void;
     hideBackDrop?: boolean;
     hideCancelButton?: boolean;

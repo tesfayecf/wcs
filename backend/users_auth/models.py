@@ -54,8 +54,3 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-    
-# {
-#     "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4ODMyNTM3NSwiaWF0IjoxNjg4MjM4OTc1LCJqdGkiOiIwNWNjMDUyNjAwNzU0ZDJjODM0NDRiYzU5MWQwNDY4OCIsInVzZXJfaWQiOjJ9.nwo4D91J9KXVHLrNuHsE_xqG8ScWJZFud3hiMaeWtlk",
-#     "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjg4MjM5Mjc1LCJpYXQiOjE2ODgyMzg5NzUsImp0aSI6ImY2MmZjY2NhNTE3OTRjYWY5NTgwZGNhN2QzNGU4NDNkIiwidXNlcl9pZCI6Mn0.61FNZGuH3126R0luNDf4lWyXqhsNAjRXsIEswssPu88"
-# }

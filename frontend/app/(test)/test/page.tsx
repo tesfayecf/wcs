@@ -5,7 +5,7 @@ import AuthHandler from "@/app/(auth)/AuthHandler";
 import DashboardHandler from "@/app/(pages)/dashboard/DashboardHandler";
 import { IRootState } from "@/app/utils/store/store";
 import { connect } from "react-redux";
-import WaterTankWidget from "@/app/(pages)/dashboard/components/WaterTankWidget/WaterTankWidget";
+import TankGroupWidget from "@/app/(pages)/dashboard/components/TankGroupWidget/TankGroupWidget";
 import ContentBox from "@/app/components/contentBox/ContentBox";
 
 const authHandler = AuthHandler.getInstance()
@@ -18,7 +18,7 @@ const Test: React.FunctionComponent<ITestProps> = (props: ITestProps) => {
     return (
         <div style={{ padding: '200px', position: "relative", height: "100%" }}>
             <ContentBox>
-                <WaterTankWidget
+                <TankGroupWidget
                     id={1}
                     name={'Patio Tank'}
                     type={'storage'}

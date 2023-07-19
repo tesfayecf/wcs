@@ -1,7 +1,11 @@
 // import { useStore } from "@/app/utils/store/store";
 import { store } from "@/app/utils/store/store";
-import { IDashboardStore, ITankCreationForm } from "./DashboardTypes";
+import { ITankGroupCreationForm } from "./DashboardTypes";
 import { dashboardActions } from "./DashboardReducer";
+import RequestManager from "@/app/utils/api/requestManager";
+import { appActions } from "@/app/app/AppReducer";
+
+const requestManager = RequestManager.getInstance();
 
 class DashboardHandler {
     private static instance: DashboardHandler;
@@ -18,64 +22,63 @@ class DashboardHandler {
         return DashboardHandler.instance;
     }
 
-    public setShowAddTankMenu(state: boolean) {
-        store.dispatch(dashboardActions.setShowAddTankMenu({ state }))
+    public async load() {
+        // check use data
+        await this.getTankGroups();
     }
 
-    public setTankCreationForm(form: ITankCreationForm) {
-        store.dispatch(dashboardActions.setTankCreationForm({ form }))
+
+    public async unload() { }
+
+    public async getTankGroups() {
+        const response = await requestManager.request("dashboard", "getTankGroups", [])
+        if (response.status == 200) {
+            store.dispatch(dashboardActions.setTankGroups({ tankGroups: response.data }));
+        } else {
+            throw new Error(response.statusText);
+        }
     }
 
-    public setTankCreationFormName(name: string) {
-        const error = /^[a-zA-Z0-9_]*$/.test(name);
-        store.dispatch(dashboardActions.setTankCreationFormName({ name, error }))
+    public async createTankGroup() {
+        store.dispatch(appActions.startLoading())
+        // Check user is authorized
+        const state = store.getState().dashboard;
+        const { nameError, name, locationError, location } = state.tankGroupCreationForm;
+        if (nameError || locationError || name === "" || location === "" || !name || !location) {
+            throw new Error("Invalid form");
+        } else {
+            const response = await requestManager.request("dashboard", "createTankGroup", [name, location])
+            if (response.status == 201) {
+                console.log("Tank group created");
+            } else {
+                throw new Error(response.statusText);
+            }
+            this.setShowCreateTankGroupMenu(false);
+            this.setTankGroupCreationForm({ name: "", location: "", nameError: false, locationError: false });
+
+            // Update redux
+            this.getTankGroups();
+        }
+        store.dispatch(appActions.finishLoading())
     }
 
-    public setTankCreationFormCapacity(capacity: string) {
+    public setShowCreateTankGroupMenu(state: boolean) {
+        store.dispatch(dashboardActions.setShowCreateTankGroupMenu({ state }))
+    }
+
+    public setTankGroupCreationForm(form: ITankGroupCreationForm) {
+        store.dispatch(dashboardActions.setTankGroupCreationForm({ form }))
+    }
+
+    public setTankGroupCreationFormName(name: string) {
+        const error = !/^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$/.test(name);
+        store.dispatch(dashboardActions.setTankCreationFormName({ name, error: error }))
+    }
+
+    public setTankGroupCreationFormLocation(location: string) {
         const error = false;
-        store.dispatch(dashboardActions.setTankCreationFormCapacity({ capacity, error }));
+        store.dispatch(dashboardActions.setTankCreationFormLocation({ location, error: error }));
     }
-
-    public setTankCreationFormType(type: string) {
-        const error = false;
-        store.dispatch(dashboardActions.setTankCreationFormType({ type, error }));
-    }
-
-    public setTankCreationFormDimension(dimension: string) {
-        const error = false;
-        store.dispatch(dashboardActions.setTankCreationFormDimension({ dimension, error }));
-    }
-
-    public setTankCreationFormMaterial(material: string) {
-        const error = false;
-        store.dispatch(dashboardActions.setTankCreationFormMaterial({ material, error }));
-    }
-
-    public setTankCreationFormBrand(brand: string) {
-        const error = false;
-        store.dispatch(dashboardActions.setTankCreationFormBrand({ brand, error }));
-    }
-
-
-    // public setInitialDashboardInfo() {
-    //     useStore.setState((state) => ({
-    //         DashboardStore: {
-    //             ...state.DashboardStore,
-    //             store: this.getInitialStoreData()
-    //         }
-    //     }));
-    //     return useStore.getState().DashboardStore.store;
-    // }
-
-    // public setShowAddTankMenu(showAddTankMenu: boolean) {
-    //     // check other things
-    //     useStore.getState().DashboardStore.actions.setShowAddTankMenu(showAddTankMenu);
-
-    // }
-
-    // public setTankCreationForm(tankCreationForm: ITankCreationForm) {
-    //     useStore.getState().DashboardStore.actions.setTankCreationForm(tankCreationForm);
-    // }
 }
 
 export default DashboardHandler;

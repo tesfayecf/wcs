@@ -64,7 +64,7 @@ class AuthHandler {
 
     public setRegisterFormRePassword(rePassword: string) {
         const error = store.getState().auth.registerForm.password !== rePassword;
-        store.dispatch(authActions.setRegisterFormRePassword({ rePassword, error: error }));
+        store.dispatch(authActions.setRegisterFormRePassword({ rePassword, error: !error }));
     }
 
     // Reset
@@ -91,7 +91,7 @@ class AuthHandler {
         const password = state.auth.registerForm.password;
         const rePassword = state.auth.registerForm.rePassword;
 
-        const response = await requestManager.request("auth", "register", [{ firstName, lastName, email, password, rePassword }])
+        const response = await requestManager.request("auth", "register", [{ firstName, lastName, email, password, rePassword }], false)
         return response;
     }
 
@@ -102,17 +102,16 @@ class AuthHandler {
         const password = state.auth.loginForm.password;
 
         const response = await requestManager.request("auth", "login", [email, password], false)
+        if (response.status === 200) {
+            store.dispatch(appActions.setRefreshToken(response.data.refresh))
+            store.dispatch(appActions.setAccessToken(response.data.access))
+        }
         return response;
     }
 
     public async logout() {
         try {
-            // const response = await requestHandler.post<Partial<{}>>("/logout/", {})
-            // if (response.status === 201) {
-            //     console.log("SUCCES", response);
-            // } else {
-            //     console.log("ERROR", response);
-            // }
+            const response = await requestManager.request("auth", "logout", [], false)
         } catch (error) {
             // Log error
         }

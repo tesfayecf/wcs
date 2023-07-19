@@ -1,8 +1,7 @@
 'use client'
 import React from 'react';
-import styles from "./styles/WaterTankWidget.module.scss"
 import WatertankSVG from '@/public/svg/WaterTankSG';
-import { HEXToVBColor, VBColorToHEX } from '@/app/utils/lib/styles';
+import styles from "./styles/WaterTankGroupWidget.module.scss"
 
 type IWatertankProps = {
     id: number,
@@ -16,7 +15,7 @@ type IWatertankProps = {
 }
 
 
-const WaterTankWidget: React.FunctionComponent<IWatertankProps> = (props: IWatertankProps) => {
+const WaterTankGroupWidget: React.FunctionComponent<IWatertankProps> = (props: IWatertankProps) => {
     const size = 125;
 
     const status = props.status ? "ON" : "OFF";
@@ -28,10 +27,8 @@ const WaterTankWidget: React.FunctionComponent<IWatertankProps> = (props: IWater
     const stateColor = props.status ? "#96cfbb" : "#ff614d";
     const gradient = "linear-gradient(180deg, " + endColor + " 0%, " + endColor + " 90%, " + stateColor + " 100%";
 
-
-
     return (
-        <div className={styles.watertank}>
+        <div className={styles.group}>
             {/* {props.status ? " " : <div className={styles.disabled} />} */}
             <div className={styles.content} style={{ background: gradient }}>
                 <div className={styles.header}>
@@ -67,7 +64,7 @@ const WaterTankWidget: React.FunctionComponent<IWatertankProps> = (props: IWater
     )
 }
 
-export default WaterTankWidget;
+export default WaterTankGroupWidget;
 
 
 interface IDataListElementProps {

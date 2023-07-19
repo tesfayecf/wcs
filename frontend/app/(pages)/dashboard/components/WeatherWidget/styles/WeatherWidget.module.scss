@@ -143,8 +143,10 @@
             }
         }
 
-        @media (max-width:900px) {
-            .forecast { display: none !important; }
+        @media (max-width:1000px) {
+            .forecast {
+                display: none !important;
+            }
         }
     }
 }

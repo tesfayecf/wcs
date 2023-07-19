@@ -6,7 +6,6 @@ class TankGroup(models.Model):
     # Model representing a group of tanks
     name = models.CharField(max_length=50)
     location = models.TextField()
-    isActive = models.BooleanField()
 
     def __str__(self):
         return self.name

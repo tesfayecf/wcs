@@ -1,9 +1,9 @@
-.watertank {
+.group {
     position: relative;
     width: 450px;
     height: 300px;
     border-radius: 12px;
-    background-color: gray;
+    background-color: rgb(224, 255, 242);
 
     .disabled {
         position: absolute;

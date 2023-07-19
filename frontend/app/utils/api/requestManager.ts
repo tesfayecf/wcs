@@ -33,14 +33,13 @@ class RequestManager {
         appEvent: S,
         // @ts-ignore
         args: Parameters<typeof APIInterface[T][S]["args"]>,
-        isAuth: boolean = true,
+        authenticate: boolean = true,
         // @ts-ignore
     ): Promise<ReturnType<typeof APIInterface[T][S]["args"]>> {
-        const token = 'your-jwt-token'; // Replace with your JWT token
         // @ts-ignore
         const { endpoint, method, argsKeys } = APIInterface[appEventGroup][appEvent as string];
         const obj = Object.fromEntries(args.map((key, index) => [argsKeys[index], key]));
-        const reponse = await this.baseRequestWithReAuth_(method, endpoint, obj, isAuth, token);
+        const reponse = await this.baseRequestWithReAuth_(method, endpoint, obj, authenticate);
         if (process.env.NODE_ENV === "development") {
             console.log(`[${appEventGroup}][${appEvent as string}]`, reponse);
         }
@@ -54,6 +53,7 @@ class RequestManager {
             headers: {
                 common: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                 },
             }
         })
@@ -63,23 +63,25 @@ class RequestManager {
     private async baseRequestWithReAuth_<
         T extends keyof typeof APIInterface,
         S extends keyof typeof APIInterface[T]
-    >(method: "GET" | "POST", endpoint: string, obj: any, isAuth: boolean = true, token: string = ""
+    >(method: "GET" | "POST", endpoint: string, obj: any, authenticate: boolean = true
         // @ts-ignore
     ): Promise<ReturnType<typeof APIInterface[T][S]["args"]>> {
-
         await mutex.waitForUnlock();
         // @ts-ignore
-        let response: ReturnType<typeof APIInterface[T][S]["args"]> = await this.baseRequest_(method, endpoint, obj, isAuth, token);
+        let response: ReturnType<typeof APIInterface[T][S]["args"]> = await this.baseRequest_(method, endpoint, obj, authenticate);
         // @ts-ignore
         if (response.isFailure && response.status === 401) {
             if (!mutex.isLocked()) {
                 const release = await mutex.acquire();
                 try {
-                    const refreshResponse: APIResponse<any> = await this.baseRequest_("POST", "/jwt/refresh/", obj, false);
+                    const refreshResponse: APIResponse<any> = await this.baseRequest_("POST", "api/jwt/refresh/", obj, false);
                     if (refreshResponse.data) {
                         store.dispatch(appActions.setAuth());
-                        response = await this.baseRequest_(method, endpoint, obj, isAuth, token);
+                        store.dispatch(appActions.setAccessToken(refreshResponse.data.access));
+                        store.dispatch(appActions.setRefreshToken(refreshResponse.data.refresh));
+                        response = await this.baseRequest_(method, endpoint, obj, authenticate);
                     } else {
+                        response = await this.baseRequest_("POST", "api/logout/", {})
                         store.dispatch(appActions.logout());
                     }
                 } finally {
@@ -87,7 +89,7 @@ class RequestManager {
                 }
             } else {
                 await mutex.waitForUnlock();
-                response = await this.baseRequest_(method, endpoint, obj, isAuth, token);
+                response = await this.baseRequest_(method, endpoint, obj, authenticate);
             }
         }
         return response;
@@ -96,16 +98,18 @@ class RequestManager {
     private async baseRequest_<
         T extends keyof typeof APIInterface,
         S extends keyof typeof APIInterface[T]
-    >(method: "GET" | "POST", endpoint: string, obj: any, isAuth: boolean = true, token: string = ""
+    >(method: "GET" | "POST", endpoint: string, obj: any, authenticate: boolean = true
         // @ts-ignore
     ): Promise<ReturnType<typeof APIInterface[T][S]["args"]>> {
+        let token = undefined;
+        if (authenticate) token = store.getState().app.auth.accesToken
         try {
             const response: AxiosResponse = await this.api.request({
                 method,
                 url: `/${endpoint}`,
                 data: obj,
                 headers: {
-                    Authorization: isAuth ? `Bearer ${token}` : null,
+                    Authorization: authenticate ? `Bearer ${token}` : null,
                 },
                 withCredentials: true,
             });

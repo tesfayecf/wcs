@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "djoser",
-    "users_auth",
+    "users",
     "tanks"
 ]
 
@@ -129,7 +129,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'users_auth.authentication.CustomJWTAuthentication'
+        'users.authentication.CustomJWTAuthentication'
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -168,7 +168,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_USER_MODEL = 'users_auth.UserAccount'
+AUTH_USER_MODEL = 'users.UserAccount'
 
 # {
 # "first_name": "John",

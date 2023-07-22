@@ -7,9 +7,7 @@ class BaseManager {
     public BASE_URL = "127.0.0.1";
     public PORT = 8000;
     protected request_api: AxiosInstance;
-    // get request_api() { return this.request_api_ }
     protected ws_api: WebSocket;
-    // get ws_api() { return this.ws_api_; }
 
     constructor() {
         this.request_api = this.initApi();

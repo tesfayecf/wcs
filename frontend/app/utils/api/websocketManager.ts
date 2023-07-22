@@ -1,10 +1,16 @@
-import { store } from "../store/store";
-import BaseManager from "./baseManager";
-
-
+import { store } from '../store/store';
+import BaseManager from './baseManager';
 
 class WebSocketManager extends BaseManager {
     private static instance: WebSocketManager;
+    private wsConnections: {
+        [connection: string]: {
+            websocket: WebSocket
+            endpoint: string
+            properties: any
+        }
+    } = {};
+
     private constructor() {
         super();
         console.log("WebSocketManager constructor");
@@ -19,7 +25,8 @@ class WebSocketManager extends BaseManager {
     }
 
     private async initWS_(path: string): Promise<WebSocket> {
-        const url = `${this.WS_PROT}://${this.BASE_URL}:${this.PORT}/${path}`;
+        const access_token = store.getState().app.auth.accesToken;
+        const url = `${this.WS_PROT}://${this.BASE_URL}:${this.PORT}/${path}?token=${access_token}`;
         const ws = new WebSocket(url, []);
 
         await new Promise((resolve, reject) => {
@@ -34,20 +41,33 @@ class WebSocketManager extends BaseManager {
         return ws;
     }
 
-    public async initWS(): Promise<void> {
-        const ws = await this.initWS_("ws/sensor_data/");
-        this.ws_api = ws;
-    }
-
-    public async sendWebSocketData(data: any): Promise<void> {
-        if (this.ws_api.readyState === WebSocket.OPEN) {
-            this.ws_api.send(JSON.stringify(data));
+    public async initWS(endpoint: string): Promise<void> {
+        if (!this.wsConnections[`${endpoint}_conn`]) {
+            const ws = await this.initWS_("ws/sensor_data/");
+            this.wsConnections[`${endpoint}_conn`] = {
+                endpoint: endpoint,
+                websocket: ws,
+                properties: {}
+            };
         }
     }
 
-    public async receiveWebSocketData(): Promise<any> {
+    public async sendWebSocketData(endpoint: string, data: any): Promise<void> {
+        const ws = this.wsConnections[`${endpoint}_conn`].websocket;
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify(data));
+        }
+    }
+
+    public async receiveWebSocketData(endpoint: string): Promise<any> {
         return new Promise((resolve, reject) => {
-            this.ws_api.onmessage = (event) => {
+            const ws = this.wsConnections[`${endpoint}_conn`].websocket;
+            if (!ws) {
+                reject(new Error(`WebSocket connection for endpoint ${endpoint} not found.`));
+                return;
+            }
+
+            ws.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
                     console.log("receiveWebSocketData", data);
@@ -56,7 +76,7 @@ class WebSocketManager extends BaseManager {
                     reject(error);
                 }
             };
-            this.ws_api.onerror = (event) => {
+            ws.onerror = (event) => {
                 reject(event);
             };
         });

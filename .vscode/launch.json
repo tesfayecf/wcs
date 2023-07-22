@@ -2,16 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Django dev",
-      "type": "python",
-      "request": "launch",
-      "program": "${workspaceFolder}/backend/manage.py",
-      "args": ["runserver"],
-      "django": true,
-      "console": "integratedTerminal"
-    },
-    {
-      "name": "Daphne",
+      "name": "Django - Daphne",
       "type": "python",
       "request": "launch",
       "module": "daphne",
@@ -19,6 +10,28 @@
       "args": ["backend.asgi:application"],
       "django": true,
       "justMyCode": false
+    },
+    {
+      "name": "NextJS - turbo",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/frontend",
+      "runtimeExecutable": "npm",
+      "restart": true,
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "runtimeArgs": ["run-script", "dev - turbo", "--inspect"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Django dev",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/manage.py",
+      "args": ["runserver"],
+      "django": true,
+      "console": "integratedTerminal"
     },
     {
       "name": "NextJS dev",
@@ -31,19 +44,6 @@
         "NODE_ENV": "development"
       },
       "runtimeArgs": ["run-script", "dev", "--inspect"],
-      "console": "integratedTerminal"
-    },
-    {
-      "name": "NextJS start",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/frontend",
-      "runtimeExecutable": "npm",
-      "restart": true,
-      "env": {
-        "NODE_ENV": "development"
-      },
-      "runtimeArgs": ["run-script", "start", "--inspect"],
       "console": "integratedTerminal"
     },
     {
@@ -80,12 +80,8 @@
   ],
   "compounds": [
     {
-      "name": "NextJS debug",
-      "configurations": ["NextJS dev", "web-renderer"]
-    },
-    {
-      "name": "APP debug",
-      "configurations": ["NextJS dev", "web-renderer", "Django dev"]
+      "name": "APP dev",
+      "configurations": ["Django - Daphne", "NextJS - turbo", "web-renderer"]
     },
     {
       "name": "APP prod",

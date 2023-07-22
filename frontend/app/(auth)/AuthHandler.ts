@@ -21,6 +21,14 @@ class AuthHandler {
         return AuthHandler.instance;
     }
 
+    public async load() {
+        // check use data
+        store.dispatch(appActions.finishLoading())
+    }
+
+
+    public async unload() { }
+
     //////////////////
     //// Setters /////
     //////////////////

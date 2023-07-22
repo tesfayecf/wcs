@@ -1,27 +1,23 @@
 import { Mutex } from "async-mutex";
 import { APIInterface, APIResponse } from "./apiInterface";
-import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { store } from "../store/store";
 import { appActions } from "@/app/app/AppReducer";
+import BaseManager from "./baseManager";
 const mutex = new Mutex();
 
-class RequestManager {
+class RequestManager extends BaseManager {
     private static instance: RequestManager;
-    private BASE_URL = '127.0.0.1:8000';
-    private api: AxiosInstance;
     private constructor() {
-        console.log("Auth handler constructor");
-        this.api = this.initApi();
+        super();
+        console.log("RequestManager constructor");
     }
-
-
 
     public static getInstance(): RequestManager {
         if (!RequestManager.instance) {
             RequestManager.instance = new RequestManager();
         }
-
-        console.log("Auth handler getInstance()");
+        console.log("RequestManager getInstance()");
         return RequestManager.instance;
     }
 
@@ -45,20 +41,6 @@ class RequestManager {
         }
         return reponse;
     }
-
-    private initApi() {
-        return axios.create({
-            baseURL: `http://${this.BASE_URL}`,
-            withCredentials: true,
-            headers: {
-                common: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-            }
-        })
-    }
-
 
     private async baseRequestWithReAuth_<
         T extends keyof typeof APIInterface,
@@ -104,7 +86,7 @@ class RequestManager {
         let token = undefined;
         if (authenticate) token = store.getState().app.auth.accesToken
         try {
-            const response: AxiosResponse = await this.api.request({
+            const response: AxiosResponse = await this.request_api.request({
                 method,
                 url: `/${endpoint}`,
                 data: obj,

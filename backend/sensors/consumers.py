@@ -1,10 +1,13 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
+import asyncio
+
 
 class SensorDataConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         print('connection')
+        
         await self.accept()    
 
     async def disconnect(self, code):
@@ -22,9 +25,26 @@ class SensorDataConsumer(AsyncWebsocketConsumer):
             # Handle JSON decoding errors
             print('Error decoding JSON:', str(e))
 
-        await self.send(text_data=json.dumps({
-            'message': message,
-        }))
+        # await self.send(text_data=json.dumps({
+        #     'message': message,
+        # }))
+        asyncio.create_task(self.send_sensor_data())
+    
+    async def send_sensor_data(self):
+        # Simulate sending real-time sensor data to the client
+        # Replace this with actual logic to fetch sensor data from your database or sensors.
+        data = {
+            "sensor_id": 1,
+            "water_level": 75,
+            "temperature": 25.5,
+            "humidity": 60.0
+        }
+
+        # Continuously send sensor data to the client while the WebSocket connection is open
+        while self.websocket_connect:
+            await self.send(text_data=json.dumps(data))
+            # Add some delay (e.g., using asyncio.sleep) before sending the next data.
+            await asyncio.sleep(5)  # Send data every 5 seconds
 
 
 

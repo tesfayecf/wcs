@@ -2,7 +2,6 @@
 from django.contrib import admin
 from django.urls import path, include
 from channels.routing import ProtocolTypeRouter, URLRouter
-from sensors.routing import websocket_urlpatterns 
 
 urlpatterns = [
     path("admin/", admin.site.urls),

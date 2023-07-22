@@ -4,8 +4,10 @@ import { ITankGroupCreationForm } from "./DashboardTypes";
 import { dashboardActions } from "./DashboardReducer";
 import RequestManager from "@/app/utils/api/requestManager";
 import { appActions } from "@/app/app/AppReducer";
+import WebSocketManager from "@/app/utils/api/websocketManager";
 
 const requestManager = RequestManager.getInstance();
+const webSocketManager = WebSocketManager.getInstance();
 
 class DashboardHandler {
     private static instance: DashboardHandler;
@@ -23,8 +25,16 @@ class DashboardHandler {
     }
 
     public async load() {
-        // check use data
         await this.getTankGroups();
+        await this.startWS();
+        const message = {
+            message: "test",
+            sender: "test"
+        }
+        await webSocketManager.sendWebSocketData(message)
+        await webSocketManager.receiveWebSocketData();
+
+        store.dispatch(appActions.finishLoading())
     }
 
 
@@ -37,6 +47,10 @@ class DashboardHandler {
         } else {
             throw new Error(response.statusText);
         }
+    }
+
+    public async startWS() {
+        await webSocketManager.initWS();
     }
 
     public async createTankGroup() {

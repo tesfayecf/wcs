@@ -17,6 +17,13 @@ interface ILoginProps extends ReturnType<typeof mapStateToProps> { }
 const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
     const router = useRouter();
 
+    React.useEffect(() => {
+        authHandler.load();
+        return () => {
+            authHandler.unload();
+        }
+    }, [])
+
     const onEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         authHandler.setLoginFormEmail(event.target.value);
     }

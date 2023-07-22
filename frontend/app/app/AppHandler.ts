@@ -1,5 +1,4 @@
 'use client'
-
 import { store } from "../utils/store/store";
 import { appActions } from "./AppReducer";
 
@@ -30,7 +29,6 @@ class AppHandler {
     }
 
     public finishInitialLoad() {
-        console.log("Finish initial load");
         store.dispatch(appActions.finishLoading());
     }
 }

@@ -18,6 +18,17 @@
       },
       "isBackground": true,
       "problemMatcher": []
+    },
+    {
+      "label": "Run Daphne",
+      "type": "shell",
+      "command": "daphne",
+      "args": ["backend.asgi:application"],
+      "options": {
+        "cwd": "${workspaceFolder/backend}"
+      },
+      "isBackground": true,
+      "problemMatcher": []
     }
   ]
 }

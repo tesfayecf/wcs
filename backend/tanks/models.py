@@ -8,8 +8,8 @@ class TankGroup(models.Model):
     name = models.CharField(max_length=100, unique=True)
     location = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    date_created = models.DateTimeField(default=timezone.now())
-    date_modified = models.DateTimeField(default=timezone.now())
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
     user = models.ForeignKey("users.UserAccount", on_delete=models.CASCADE, default=None)
 
 
@@ -78,8 +78,8 @@ class Tank(models.Model):
     material = models.CharField(max_length=100)
     brand = models.CharField(max_length=100)
     tankGroup = models.ForeignKey(TankGroup, on_delete=models.CASCADE, related_name='tanks')
-    date_created = models.DateTimeField(default=timezone.now)
-    date_modified = models.DateTimeField(default=timezone.now)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
 
 
     def __str__(self):

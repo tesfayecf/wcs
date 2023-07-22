@@ -8,7 +8,17 @@
       "program": "${workspaceFolder}/backend/manage.py",
       "args": ["runserver"],
       "django": true,
-      "console": "internalConsole"
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Daphne",
+      "type": "python",
+      "request": "launch",
+      "module": "daphne",
+      "cwd": "${workspaceFolder}/backend",
+      "args": ["backend.asgi:application"],
+      "django": true,
+      "justMyCode": false
     },
     {
       "name": "NextJS dev",

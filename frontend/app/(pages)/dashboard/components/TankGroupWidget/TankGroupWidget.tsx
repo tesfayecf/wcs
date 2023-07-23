@@ -3,6 +3,8 @@ import React from 'react';
 import WatertankSVG from '@/public/svg/WaterTankSG';
 import styles from "./styles/TankGroupWidget.module.scss"
 import { ITankGroup } from '../../DashboardTypes';
+import navigate from 'next/navigation';
+import Link from 'next/link';
 
 type ITankGroupWidgetProps = {
     tankGroup: ITankGroup
@@ -13,35 +15,38 @@ const TankGroupWidget: React.FunctionComponent<ITankGroupWidgetProps> = (props: 
     const size = 125;
 
     return (
-        <div className={styles.group}>
-            <div className={styles.content}>
-                <div className={styles.header}>
-                    <div className={styles.name}>
-                        <p>{props.tankGroup.name}</p>
-                    </div>
-                    <div className={styles.status}>
-                        <p className={styles.text}>{props.tankGroup.id}</p>
-                    </div>
-                </div>
-                <div className={styles.data}>
-                    <div className={styles.svg}>
-                        <div className={styles.container} >
-                            <WatertankSVG height={size} width={size} />
+        <Link href={`/tanks/${props.tankGroup.id}`} style={{ textDecoration: 'none' }}>
+            <div className={styles.group}>
+                <div className={styles.content}>
+                    <div className={styles.header}>
+                        <div className={styles.name}>
+                            <p style={{ textTransform: "uppercase" }}>{props.tankGroup.name}</p>
                         </div>
-                        <div className={styles.volume}>
-                            <p className={styles.text}> {props.tankGroup.location}</p>
+                        <div className={styles.status}>
+                            <p className={styles.text}>{props.tankGroup.id}</p>
                         </div>
                     </div>
-                    <div className={styles.vl}></div>
-                    <div className={styles.properties}>
-                        <div className={styles.list}>
-                            <DataListElement keyName="Name" value={props.tankGroup.name} />
-                            <DataListElement keyName="Location" value={props.tankGroup.location} />
+                    <div className={styles.data}>
+                        <div className={styles.svg}>
+                            <div className={styles.container} >
+                                <WatertankSVG height={size} width={size} />
+                            </div>
+                            <div className={styles.volume}>
+                                <p className={styles.text}> {props.tankGroup.location}</p>
+                            </div>
+                        </div>
+                        <div className={styles.vl}></div>
+                        <div className={styles.properties}>
+                            <div className={styles.list}>
+                                <DataListElement keyName="Name" value={props.tankGroup.name} />
+                                <DataListElement keyName="Location" value={props.tankGroup.location} />
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </Link >
+
     )
 }
 

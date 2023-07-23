@@ -4,11 +4,11 @@ type Status = 'active' | 'inactive';
 
 export interface IUserInfo {
     id: number;
-    name: string;
+    first_name: string;
+    last_name: string;
     email: string;
     role: Role;
     status: Status;
-    lastLogin: string;
     avatar?: string;
 }
 

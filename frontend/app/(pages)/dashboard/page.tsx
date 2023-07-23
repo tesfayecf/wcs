@@ -27,7 +27,6 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardPr
   }, [])
 
   const renderTanksInfo = React.useCallback((tankGroups: ITankGroup[]) => {
-
     return tankGroups.map((tankInfo: ITankGroup, index: number) =>
       <ContentBox key={index}>
         <TankGroupWidget tankGroup={tankInfo} key={index} />

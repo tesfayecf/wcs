@@ -25,4 +25,4 @@ class TankGroupSerializer(serializers.ModelSerializer):
 class CreateTankGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = TankGroup
-        fields = ('name', 'location')
+        fields = ('name', 'location', "description")

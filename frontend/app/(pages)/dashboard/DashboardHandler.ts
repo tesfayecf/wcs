@@ -26,13 +26,13 @@ class DashboardHandler {
 
     public async load() {
         await this.getTankGroups();
-        await this.startWS();
+        // await this.startWS();
         const message = {
             message: "test",
             sender: "test"
         }
-        await webSocketManager.sendWebSocketData(message)
-        await webSocketManager.receiveWebSocketData();
+        // await webSocketManager.sendWebSocketData("prova", message)
+        // await webSocketManager.receiveWebSocketData("prova");
 
         store.dispatch(appActions.finishLoading())
     }
@@ -50,25 +50,25 @@ class DashboardHandler {
     }
 
     public async startWS() {
-        await webSocketManager.initWS();
+        await webSocketManager.initWS("prova");
     }
 
     public async createTankGroup() {
         store.dispatch(appActions.startLoading())
         // Check user is authorized
         const state = store.getState().dashboard;
-        const { nameError, name, locationError, location } = state.tankGroupCreationForm;
+        const { nameError, name, locationError, location, description } = state.tankGroupCreationForm;
         if (nameError || locationError || name === "" || location === "" || !name || !location) {
             throw new Error("Invalid form");
         } else {
-            const response = await requestManager.request("dashboard", "createTankGroup", [name, location])
+            const response = await requestManager.request("dashboard", "createTankGroup", [name, location, description])
             if (response.status == 201) {
                 console.log("Tank group created");
             } else {
                 throw new Error(response.statusText);
             }
             this.setShowCreateTankGroupMenu(false);
-            this.setTankGroupCreationForm({ name: "", location: "", nameError: false, locationError: false });
+            this.setTankGroupCreationForm({ name: "", location: "", nameError: false, locationError: false, description: "" });
 
             // Update redux
             this.getTankGroups();
@@ -92,6 +92,11 @@ class DashboardHandler {
     public setTankGroupCreationFormLocation(location: string) {
         const error = false;
         store.dispatch(dashboardActions.setTankCreationFormLocation({ location, error: error }));
+    }
+
+    public setTankGroupCreationFormDescription(description: string) {
+        const error = false;
+        store.dispatch(dashboardActions.setTankCreationFormDescription({ description }));
     }
 }
 

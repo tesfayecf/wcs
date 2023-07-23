@@ -15,6 +15,7 @@ export default function Setup() {
         verify().then((response) => {
             if (response.status === 200) {
                 appHandler.setAuth();
+                appHandler.getUserInfo();
             } else {
                 if (process.env.NODE_ENV === "development") console.log("Auth failed");
             }

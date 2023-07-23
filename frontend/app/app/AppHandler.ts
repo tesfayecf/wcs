@@ -1,7 +1,9 @@
 'use client'
 import { store } from "../utils/store/store";
 import { appActions } from "./AppReducer";
+import RequestManager from "@/app/utils/api/requestManager";
 
+const requestManager = RequestManager.getInstance();
 class AppHandler {
     private static instance: AppHandler;
     private constructor() {
@@ -16,8 +18,12 @@ class AppHandler {
         return AppHandler.instance;
     }
 
-    public init(): void {
-        console.log("Initialising app handler...");
+    public load() {
+
+    }
+
+    public unload() {
+
     }
 
     public setAuth() {
@@ -30,6 +36,18 @@ class AppHandler {
 
     public finishInitialLoad() {
         store.dispatch(appActions.finishLoading());
+    }
+
+    public async getUserInfo() {
+        const userInfo = await requestManager.request("app", "getUserInfo", []);
+        store.dispatch(appActions.setUserInfo({
+            id: userInfo.data.id,
+            email: userInfo.data.email,
+            first_name: userInfo.data.first_name,
+            role: userInfo.data.role,
+            last_name: userInfo.data.last_name,
+            status: "active"
+        }));
     }
 }
 

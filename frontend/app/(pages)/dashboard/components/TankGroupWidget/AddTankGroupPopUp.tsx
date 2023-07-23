@@ -24,6 +24,10 @@ const AddTankGroupPopUp: React.FunctionComponent<IAddWaterTankPopUpProps> = (pro
         dashboardHandler.setTankGroupCreationFormLocation(event.target.value);
     }
 
+    const onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        dashboardHandler.setTankGroupCreationFormDescription(event.target.value);
+    }
+
     const onCreate = () => {
         dashboardHandler.createTankGroup();
     }
@@ -54,6 +58,14 @@ const AddTankGroupPopUp: React.FunctionComponent<IAddWaterTankPopUpProps> = (pro
                         value: props.tankGroupCreationForm.location,
                         onChange: onLocationChange,
                         error: props.tankGroupCreationForm.locationError,
+                    },
+                    {
+                        name: "Description",
+                        type: "multiline",
+                        placeholder: "",
+                        value: props.tankGroupCreationForm.description,
+                        onChange: onDescriptionChange,
+                        error: false,
                     },
                 ]}
             />

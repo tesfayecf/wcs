@@ -50,21 +50,10 @@ INSTALLED_APPS = [
     "sensors"
 ]
 
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels.layers.InMemoryChannelLayer',
-#         # 'CONFIG': {
-#             # "hosts": [('127.0.0.1', 6379)],
-#         # },
-#     },
-# }
 
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels.layers.InMemoryChannelLayer',
-        # 'CONFIG': {
-        #     'expiry': 3600,  # Optional, set message expiry (default: 1 hour)
-        # },
     },
 }
 
@@ -97,10 +86,7 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = "backend.wsgi.application"
-# ASGI_APPLICATION = "backend.asgi.application"
 ASGI_APPLICATION = "backend.routing.application"
-
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -141,7 +127,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = '/static/'
+
+# Add the following if you want to collect static files during deployment
+STATIC_ROOT = path.join(BASE_DIR, 'static')
+
+# Additional static file directories for your apps (if needed)
+# STATICFILES_DIRS = [
+#     path.join(STATIC_ROOT, 'rest_framework'),
+#     path.join(STATIC_ROOT, 'admin'),
+#     # Add more directories as needed
+# ]
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

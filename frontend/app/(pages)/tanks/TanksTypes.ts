@@ -29,14 +29,3 @@ export interface ITank {
     material: string;
     brand: string;
 }
-
-
-///////////////
-//// ACTIONS
-///////////////
-
-export interface IDashboardActions {
-    setShowAddTankMenu: (showAddTankMenu: boolean, set?: any, get?: any) => void;
-    setTankCreationForm: (tankCreationForm: ITankCreationForm, set?: any, get?: any) => void
-}
-

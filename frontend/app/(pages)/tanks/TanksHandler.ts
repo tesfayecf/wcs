@@ -2,19 +2,27 @@ import { store } from "@/app/utils/store/store";
 import { ITankCreationForm } from "./TanksTypes";
 import { dashboardActions } from "./TanksReducer";
 
-class DashboardHandler {
-    private static instance: DashboardHandler;
+class TanksHandler {
+    private static instance: TanksHandler;
     private constructor() {
         console.log("Dashboard handler constructor");
     }
 
-    public static getInstance(): DashboardHandler {
-        if (!DashboardHandler.instance) {
-            DashboardHandler.instance = new DashboardHandler();
+    public static getInstance(): TanksHandler {
+        if (!TanksHandler.instance) {
+            TanksHandler.instance = new TanksHandler();
         }
 
         console.log("Dashboard handler getInstance()");
-        return DashboardHandler.instance;
+        return TanksHandler.instance;
+    }
+
+    public load() {
+
+    }
+
+    public unload() {
+
     }
 
     public setShowAddTankMenu(state: boolean) {
@@ -54,27 +62,6 @@ class DashboardHandler {
         const error = false;
         store.dispatch(dashboardActions.setTankCreationFormBrand({ brand, error }));
     }
-
-
-    // public setInitialDashboardInfo() {
-    //     useStore.setState((state) => ({
-    //         DashboardStore: {
-    //             ...state.DashboardStore,
-    //             store: this.getInitialStoreData()
-    //         }
-    //     }));
-    //     return useStore.getState().DashboardStore.store;
-    // }
-
-    // public setShowAddTankMenu(showAddTankMenu: boolean) {
-    //     // check other things
-    //     useStore.getState().DashboardStore.actions.setShowAddTankMenu(showAddTankMenu);
-
-    // }
-
-    // public setTankCreationForm(tankCreationForm: ITankCreationForm) {
-    //     useStore.getState().DashboardStore.actions.setTankCreationForm(tankCreationForm);
-    // }
 }
 
-export default DashboardHandler;
+export default TanksHandler;

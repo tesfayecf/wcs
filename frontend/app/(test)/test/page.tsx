@@ -18,7 +18,7 @@ const Test: React.FunctionComponent<ITestProps> = (props: ITestProps) => {
     return (
         <div style={{ padding: '200px', position: "relative", height: "100%" }}>
             <ContentBox>
-                <TankGroupWidget
+                {/* <TankGroupWidget
                     id={1}
                     name={'Patio Tank'}
                     type={'storage'}
@@ -27,7 +27,7 @@ const Test: React.FunctionComponent<ITestProps> = (props: ITestProps) => {
                     brand={'Acme'}
                     material={'stainless steel'}
                     status={true}
-                />
+                /> */}
             </ContentBox>
         </div>
     )

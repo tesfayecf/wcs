@@ -1,6 +1,7 @@
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.http import JsonResponse
 from rest_framework import status
 from djoser.social.views import ProviderAuthView
 from rest_framework_simplejwt.views import (
@@ -112,3 +113,18 @@ class LogoutView(APIView):
         response.delete_cookie('refresh')
 
         return response
+    
+class UserView(APIView):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        data = {
+            'id': user.id,
+            'email': user.email,
+            'firstName': user.first_name,
+            'lastName': user.last_name,
+        }
+        if (user.is_staff):
+            data["role"] = "staff"
+        if (user.is_superuser):
+            data["role"] = "admin"
+        return Response(data)

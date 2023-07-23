@@ -4,6 +4,7 @@ export interface ITankGroupCreationForm {
     nameError: boolean;
     location: string;
     locationError: boolean;
+    description: string;
 }
 
 export interface IDashboardStore {

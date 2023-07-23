@@ -1,52 +1,70 @@
-.container {
-    height: 50px;
-    position: relative;
-    padding: 10px;
-    margin: 40px;
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    background-color: white;
-    border-radius: 0.75rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    z-index: 500;
+.navbar {
+  height: 50px;
+  position: relative;
+  padding: 10px;
+  margin: 40px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  z-index: 500;
 
-    @media (min-width: 800px) {
-        position: static;
-    }
+  @media (min-width: 800px) {
+    position: static;
+  }
 }
 
-.navigation_buttons_container {
-    height: 100%;
-    // width: 40px;
-    display: flex;
-    justify-content: space-between;
-    gap: 15px;
-    margin-left: 50px;
-}
+.buttons {
+  height: 100%;
+  // width: 40px;
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-left: 50px;
 
-.navigation_button {
+  .button {
     appearance: none;
     width: 100px;
     height: 100%;
     border-width: 0px;
     border-radius: 5px;
-    // background-color: #edfaff;
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: space-around;
 
     &:hover {
-        background-color: #dbdbdb;
+      background-color: #dbdbdb;
     }
+  }
+
+  .button_selected {
+    appearance: none;
+    width: 100px;
+    height: 100%;
+    border-width: 0px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-around;
+    background-color: rgb(211, 255, 200);
+
+    &:hover {
+      background-color: #dbdbdb;
+    }
+  }
 }
 
+
+
 .navigation_button_text {
-    font-size: 14px;
-    font-weight: 600;
-    color: black;
-    line-height: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: black;
+  line-height: 20px;
 }
 
 /* CSS 

@@ -10,9 +10,47 @@ from .serializer import TankSerializer, TankGroupSerializer, CreateTankSerialize
 
 
 
-class TanksViews(generics.ListAPIView):
-    queryset = Tank.objects.all()
-    serializer_class = TankSerializer
+##################
+### TANK GROUP ###
+##################
+
+class CreateTankGroupView(APIView):
+    serializer_class = CreateTankGroupSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            name = serializer.validated_data.get('name')
+            location = serializer.validated_data.get('location')
+            description = serializer.validated_data.get('description')
+
+            query_name = TankGroup.objects.filter(name=name)
+
+            if not query_name.exists():
+                tank_group = TankGroup(name=name, location=location, description=description)
+                tank_group.save()
+                return Response(TankGroupSerializer(tank_group).data, status=status.HTTP_201_CREATED)
+            return Response({'Bad Request': 'Invalid name...'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
+
+class TankGroupsView(generics.ListAPIView):
+    serializer_class = TankGroupSerializer
+
+    def get(self, request):
+        user = request.user
+        userTankGroups = TankGroup.objects.filter(user=user)
+        userTankGroups_serializer = TankGroupSerializer(userTankGroups, many=True)
+        if userTankGroups_serializer.data:
+            return Response(userTankGroups_serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response([], status=status.HTTP_200_OK)
+############
+### TANK ###
+############
+
+# class TanksViews(generics.ListAPIView):
+#     queryset = Tank.objects.all()
+#     serializer_class = TankSerializer
 
 
 def tank(request, tankId):
@@ -54,31 +92,3 @@ class CreateTankView(APIView):
             return Response({'Bad Request': 'Invalid name...'}, status=status.HTTP_302_FOUND)
         return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
 
-
-class TankGroupsView(generics.ListAPIView):
-    queryset = TankGroup.objects.all()
-    serializer_class = TankGroupSerializer
-
-
-def tank_group(request, tankGroupId):
-    tg_list = TankGroup.objects.all()
-    return HttpResponse(tg_list, content_type="application/json")
-
-
-class CreateTankGroupView(APIView):
-    serializer_class = CreateTankGroupSerializer
-
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            name = serializer.validated_data.get('name')
-            location = serializer.validated_data.get('location')
-
-            query_name = TankGroup.objects.filter(name=name)
-
-            if not query_name.exists():
-                tank_group = TankGroup(name=name, location=location)
-                tank_group.save()
-                return Response(TankGroupSerializer(tank_group).data, status=status.HTTP_201_CREATED)
-            return Response({'Bad Request': 'Invalid name...'}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)

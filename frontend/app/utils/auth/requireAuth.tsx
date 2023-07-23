@@ -9,10 +9,6 @@ interface IProps extends ReturnType<typeof mapStateToProps> {
 }
 
 const RequireAuth: React.FunctionComponent<IProps> = (props: IProps) => {
-    // if (process.env.NODE_ENV === "development") {
-    //     return <>{props.children}</>;
-    // }
-
     const router = useRouter();
     if (props.isLoading) return <LoadingPage />
     if (!props.isAuthenticated) router.push('./login');

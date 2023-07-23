@@ -63,7 +63,7 @@ class RequestManager extends BaseManager {
                         store.dispatch(appActions.setRefreshToken(refreshResponse.data.refresh));
                         response = await this.baseRequest_(method, address, obj, authenticate);
                     } else {
-                        response = await this.baseRequest_("POST", "api/logout/", {})
+                        response = await this.baseRequest_("POST", "auth/logout/", {})
                         store.dispatch(appActions.logout());
                     }
                 } finally {

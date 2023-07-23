@@ -6,6 +6,8 @@ import AuthHandler from "../AuthHandler";
 import { connect } from "react-redux";
 import { IRootState } from "@/app/utils/store/store";
 
+// test register password: kcswOpy35P
+
 const authHandler = AuthHandler.getInstance()
 
 interface IRegisterProps extends ReturnType<typeof mapStateToProps> { }
@@ -51,7 +53,7 @@ const Register: React.FunctionComponent<IRegisterProps> = (props: IRegisterProps
                             name: "Frist Name",
                             type: "textInput",
                             placeholder: "Frist Name",
-                            value: props.registerForm.firstName,
+                            value: props.registerForm.first_name,
                             onChange: onFirstNameChange,
                             error: props.registerForm.firstNameError,
                             errorMessage: "Invalid name",
@@ -61,7 +63,7 @@ const Register: React.FunctionComponent<IRegisterProps> = (props: IRegisterProps
                             name: "Last Name",
                             type: "textInput",
                             placeholder: "Last Name",
-                            value: props.registerForm.lastName,
+                            value: props.registerForm.last_name,
                             onChange: onLastNameChange,
                             error: props.registerForm.lastNameError,
                             errorMessage: "Invalid name"

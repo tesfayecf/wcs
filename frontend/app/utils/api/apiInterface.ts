@@ -1,6 +1,7 @@
 import { IRegisterForm } from "@/app/(auth)/AuthTypes";
 import { ITankGroup } from "@/app/(pages)/dashboard/DashboardTypes";
 import { ITank } from "@/app/(pages)/tanks/TanksTypes";
+import { IUserInfo } from "@/app/app/AppTypes";
 
 export interface APIResponse<T> {
     data?: T;
@@ -18,12 +19,17 @@ export interface APIResponse<T> {
 
 export const APIInterface = {
     app: {
-
+        getUserInfo: {
+            args: (): APIResponse<Partial<IUserInfo>> => { return {} as APIResponse<Partial<IUserInfo>> },
+            address: "auth/user/",
+            method: "GET",
+            argsKeys: [],
+        }
     },
     auth: {
         register: {
             args: (args: Partial<IRegisterForm>): APIResponse<string> => { return {} as APIResponse<string> },
-            address: "users/",
+            address: "auth/users/",
             method: "POST",
             argsKeys: ["first_name", "last_name", "email", "password", "re_password"],
         },
@@ -35,7 +41,7 @@ export const APIInterface = {
         },
         logout: {
             args: (): APIResponse<void> => { return {} as APIResponse<void> },
-            address: "api/logout/",
+            address: "auth/logout/",
             method: "POST",
             argsKeys: []
         },
@@ -54,10 +60,10 @@ export const APIInterface = {
     },
     dashboard: {
         createTankGroup: {
-            args: (name: string, location: string): APIResponse<ITankGroup[]> => { return {} as APIResponse<ITankGroup[]> },
+            args: (name: string, location: string, description: string): APIResponse<ITankGroup[]> => { return {} as APIResponse<ITankGroup[]> },
             address: "api/create-tank-group/",
             method: "POST",
-            argsKeys: ["name", "location"],
+            argsKeys: ["name", "location", "description"],
         },
         getTankGroups: {
             args: (): APIResponse<ITankGroup[]> => { return {} as APIResponse<ITankGroup[]> },

@@ -72,7 +72,7 @@ class AuthHandler {
 
     public setRegisterFormRePassword(rePassword: string) {
         const error = store.getState().auth.registerForm.password !== rePassword;
-        store.dispatch(authActions.setRegisterFormRePassword({ rePassword, error: !error }));
+        store.dispatch(authActions.setRegisterFormRePassword({ rePassword, error: error }));
     }
 
     // Reset
@@ -93,13 +93,13 @@ class AuthHandler {
 
     public async register() {
         const state = store.getState();
-        const firstName = state.auth.registerForm.firstName;
-        const lastName = state.auth.registerForm.lastName;
+        const first_name = state.auth.registerForm.first_name;
+        const last_name = state.auth.registerForm.last_name;
         const email = state.auth.registerForm.email;
         const password = state.auth.registerForm.password;
         const rePassword = state.auth.registerForm.rePassword;
 
-        const response = await requestManager.request("auth", "register", [{ firstName, lastName, email, password, rePassword }], false)
+        const response = await requestManager.request("auth", "register", [{ first_name, last_name, email, password, rePassword }], false)
         return response;
     }
 

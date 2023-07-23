@@ -6,9 +6,9 @@ export interface ILoginForm {
     passwordError: boolean;
 }
 export interface IRegisterForm {
-    firstName: string;
+    first_name: string;
     firstNameError: boolean;
-    lastName: string;
+    last_name: string;
     lastNameError: boolean;
     email: string;
     emailError: boolean;

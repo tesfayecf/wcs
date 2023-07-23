@@ -4,7 +4,7 @@ import styles from "./styles/PopUpFormTemplate.module.scss";
 import LoadingSVG from "../loadingPage/LoadingSVG";
 
 interface IField {
-    type: "textInput" | "select";
+    type: "textInput" | "select" | "multiline";
     name: string;
     placeholder: string;
     value: string;
@@ -141,6 +141,24 @@ const PopUpFormTemplate: React.FC<IPopUpFormProps> = (props: IPopUpFormProps) =>
                         <MenuItem value="">None</MenuItem>
                         {selectItems}
                     </Select>
+                );
+            } else if (fieldData.type === "multiline") {
+                field = (
+                    <TextField
+                        id={fieldData.name}
+                        label={fieldData.name}
+                        variant="outlined"
+                        value={fieldData.value}
+                        onChange={(event) => { fieldData.onChange(event); }}
+                        error={props.fields[index].error}
+                        helperText={props.fields[index].error && props.fields[index].errorMessage}
+                        placeholder={fieldData.placeholder}
+                        fullWidth
+                        size="small"
+                        type={fieldData.password ? "password" : "text"}
+                        multiline={true}
+                        rows={4}
+                    />
                 );
             }
 

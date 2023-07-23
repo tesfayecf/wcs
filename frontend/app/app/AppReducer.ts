@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IAppStore } from './AppTypes';
+import { IAppStore, IUserInfo } from './AppTypes';
 
 // Define the initial state
 const initialState: IAppStore = {
@@ -20,11 +20,11 @@ const initialState: IAppStore = {
     },
     userInfo: {
         id: -1,
-        name: '',
+        first_name: '',
+        last_name: '',
         email: '',
         role: 'user',
         status: 'inactive',
-        lastLogin: '',
     },
 };
 
@@ -50,6 +50,9 @@ const appSlice = createSlice({
         },
         setRefreshToken: (state, action: PayloadAction<string>) => {
             state.auth.refreshToken = action.payload;
+        },
+        setUserInfo: (state, action: PayloadAction<IUserInfo>) => {
+            state.userInfo = action.payload;
         }
     }
 });

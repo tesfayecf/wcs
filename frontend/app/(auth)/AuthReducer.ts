@@ -11,9 +11,9 @@ const initialState: IAuthStore = {
         passwordError: false,
     },
     registerForm: {
-        firstName: '',
+        first_name: '',
         firstNameError: false,
-        lastName: '',
+        last_name: '',
         lastNameError: false,
         email: '',
         emailError: false,
@@ -50,12 +50,12 @@ const authSlice = createSlice({
         },
 
         setRegisterFormFirstName: (state, action: PayloadAction<{ firstName: string, error: boolean }>) => {
-            state.registerForm.firstName = action.payload.firstName;
+            state.registerForm.first_name = action.payload.firstName;
             state.registerForm.firstNameError = action.payload.error;
         },
 
         setRegisterFormLastName: (state, action: PayloadAction<{ lastName: string, error: boolean }>) => {
-            state.registerForm.lastName = action.payload.lastName;
+            state.registerForm.last_name = action.payload.lastName;
             state.registerForm.lastNameError = action.payload.error;
         },
 

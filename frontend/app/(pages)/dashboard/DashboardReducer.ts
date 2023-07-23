@@ -14,6 +14,7 @@ const initialState: IDashboardStore = {
         nameError: false,
         location: "",
         locationError: false,
+        description: "",
     }
 };
 
@@ -41,6 +42,9 @@ const dashboardSlice = createSlice({
         setTankCreationFormLocation: (state, action: PayloadAction<{ location: string, error: boolean }>) => {
             state.tankGroupCreationForm.location = action.payload.location;
             state.tankGroupCreationForm.locationError = action.payload.error;
+        },
+        setTankCreationFormDescription: (state, action: PayloadAction<{ description: string }>) => {
+            state.tankGroupCreationForm.description = action.payload.description;
         },
     }
 });

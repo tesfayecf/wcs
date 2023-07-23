@@ -59,10 +59,8 @@ class SensorDataConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_user(self):
         jwt_token = self.scope.get('query_string').decode().split('token=')[1]
-        print(jwt_token)
         try:
             validated_token = JWTAuthentication().get_validated_token(jwt_token)
-            # user, _ = JWTAuthentication().authenticate_credentials(jwt_token)
             user, _ = JWTAuthentication().get_user(validated_token), validated_token
             return user
         except:

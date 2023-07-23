@@ -1,7 +1,6 @@
 
 from django.contrib import admin
 from django.urls import path, include
-from channels.routing import ProtocolTypeRouter, URLRouter
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -10,4 +9,6 @@ urlpatterns = [
     path("api/", include('users.urls')),
     
     path("api/", include('djoser.urls')),
+
+    path("mqtt/", include('sensors.urls'))
 ]

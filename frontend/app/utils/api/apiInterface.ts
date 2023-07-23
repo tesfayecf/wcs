@@ -23,41 +23,47 @@ export const APIInterface = {
     auth: {
         register: {
             args: (args: Partial<IRegisterForm>): APIResponse<string> => { return {} as APIResponse<string> },
-            endpoint: "users/",
+            address: "users/",
             method: "POST",
             argsKeys: ["first_name", "last_name", "email", "password", "re_password"],
         },
         login: {
             args: (email: string, password: string): APIResponse<{ access: string, refresh: string }> => { return {} as APIResponse<{ access: string, refresh: string }> },
-            endpoint: "api/jwt/create/",
+            address: "auth/create/",
             method: "POST",
             argsKeys: ["email", "password"],
         },
         logout: {
             args: (): APIResponse<void> => { return {} as APIResponse<void> },
-            endpoint: "api/logout/",
+            address: "api/logout/",
             method: "POST",
             argsKeys: []
         },
         verify: {
             args: (): APIResponse<void> => { return {} as APIResponse<void> },
-            endpoint: "api/jwt/verify/",
+            address: "auth/verify/",
             method: "POST",
             argsKeys: [],
-        }
+        },
+        refresh: {
+            args: (obj: any): APIResponse<void> => { return {} as APIResponse<void> },
+            address: "auth/refresh/",
+            method: "POST",
+            argsKeys: []
+        },
     },
     dashboard: {
         createTankGroup: {
             args: (name: string, location: string): APIResponse<ITankGroup[]> => { return {} as APIResponse<ITankGroup[]> },
-            endpoint: "create-tank-group/",
+            address: "api/create-tank-group/",
             method: "POST",
             argsKeys: ["name", "location"],
         },
         getTankGroups: {
             args: (): APIResponse<ITankGroup[]> => { return {} as APIResponse<ITankGroup[]> },
-            endpoint: "tank-groups/",
+            address: "api/tank-groups/",
             method: "GET",
-            argsKeys: [""],
+            argsKeys: [],
         }
     }
 } as const;

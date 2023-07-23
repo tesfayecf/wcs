@@ -2,7 +2,7 @@
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from backend.backend.utils.mqttManager import MqttManager
+# from backend.utils.mqttManager import MqttManager
 
 @csrf_exempt  # Disable CSRF protection for simplicity. Handle CSRF in production.
 def subscribe_sensor(request):

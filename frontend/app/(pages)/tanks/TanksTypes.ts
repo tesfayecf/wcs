@@ -1,3 +1,4 @@
+import { ITankGroup } from "../dashboard/DashboardTypes";
 
 export interface ITankCreationForm {
     name: string;
@@ -15,9 +16,11 @@ export interface ITankCreationForm {
 }
 
 export interface ITanksStore {
+    tankGroupId: number;
     showAddTankMenu: boolean;
     tankCreationForm: ITankCreationForm;
     tanks: ITank[];
+    tankGroupInfo: ITankGroup;
 }
 
 export interface ITank {
@@ -28,4 +31,8 @@ export interface ITank {
     dimension: string;
     material: string;
     brand: string;
+}
+
+export interface ITanksParams {
+    tankGroupId: string;
 }

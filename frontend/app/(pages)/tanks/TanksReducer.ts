@@ -1,10 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ITanksStore, IDashboardActions, ITankCreationForm } from './TanksTypes';
+import { ITanksStore, ITankCreationForm, ITank, ITanksParams } from './TanksTypes';
+import { ITankGroup } from '../dashboard/DashboardTypes';
 
 // Define the initial state
 const initialState: ITanksStore = {
     // Add your initial state values here
+    tankGroupId: -1,
     showAddTankMenu: false,
+    tankGroupInfo: {
+        id: -1,
+        name: '',
+        location: '',
+        description: '',
+    },
     tanks: [],
     tankCreationForm: {
         name: '',
@@ -23,10 +31,19 @@ const initialState: ITanksStore = {
 };
 
 // Create the slice
-const dashboardSlice = createSlice({
-    name: 'dashboard',
+const tankSlice = createSlice({
+    name: 'tank',
     initialState,
     reducers: {
+        setParams: (state, action: PayloadAction<{ params: ITanksParams }>) => {
+            state.tankGroupId = parseInt(action.payload.params.tankGroupId);
+        },
+        setTanks: (state, action: PayloadAction<{ tanks: ITank[] }>) => {
+            state.tanks = action.payload.tanks;
+        },
+        setTankGroupInfo: (state, action: PayloadAction<{ tankGroupInfo: ITankGroup }>) => {
+            state.tankGroupInfo = action.payload.tankGroupInfo;
+        },
         setShowAddTankMenu: (state, action: PayloadAction<{ state: boolean }>) => {
             state.showAddTankMenu = action.payload.state;
         },
@@ -69,7 +86,7 @@ const dashboardSlice = createSlice({
 });
 
 // Export the actions
-export const dashboardActions = dashboardSlice.actions;
+export const tankActions = tankSlice.actions;
 
 // Export the reducer
-export default dashboardSlice.reducer;
+export default tankSlice.reducer;

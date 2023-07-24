@@ -18,22 +18,16 @@ interface IDashboardProps extends ReturnType<typeof mapStateToProps> {
 const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardProps) => {
 
     React.useEffect(() => {
+        tanksHandler.loadParams(props.params);
         tanksHandler.load();
         return () => {
             tanksHandler.unload();
         }
     }, [])
 
-    const getTankGroup = React.useCallback(() => {
-        const foundIndex = props.tankGroups.findIndex((tankGroup: ITankGroup) => tankGroup.id === parseInt(props.params.tankGroupId))
-        if (foundIndex === -1) throw new Error("TankGroup not found"); // got not found page
-        return props.tankGroups[foundIndex] as ITankGroup;
-    }, [])
-
-
     return (
         <div className={styles.tanks}>
-            <TankGroupWidget tankGroup={getTankGroup()} />
+            <TankGroupWidget tankGroup={props.tankGroupInfo} />
         </div>
     )
 }
@@ -41,7 +35,8 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardPr
 
 const mapStateToProps = (state: IRootState) => {
     return {
-        tankGroups: state.dashboard.tankGroups,
+        tankGroupInfo: state.tanks.tankGroupInfo,
+        tanks: state.tanks.tankGroupInfo
     }
 }
 

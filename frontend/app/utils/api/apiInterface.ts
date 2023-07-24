@@ -63,6 +63,12 @@ export const APIInterface = {
             method: "GET",
             argsKeys: [],
         },
+        getTankGroupTanks: {
+            args: (tankGroupId: number): APIResponse<{ tankGroup: ITankGroup, tanks: ITank[] }> => { return {} as APIResponse<{ tankGroup: ITankGroup, tanks: ITank[] }> },
+            address: "api/tank-group-tanks/",
+            method: "POST",
+            argsKeys: ["tankGroupId"],
+        },
         createTankGroup: {
             args: (name: string, location: string, description: string): APIResponse<ITankGroup[]> => { return {} as APIResponse<ITankGroup[]> },
             address: "api/create-tank-group/",

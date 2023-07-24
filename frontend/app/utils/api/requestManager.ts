@@ -6,6 +6,8 @@ import { appActions } from "@/app/app/AppReducer";
 import BaseManager from "./baseManager";
 const mutex = new Mutex();
 
+type TRequestMethods = "GET" | "POST" | "DELETE";
+
 class RequestManager extends BaseManager {
     private static instance: RequestManager;
     private constructor() {
@@ -45,7 +47,7 @@ class RequestManager extends BaseManager {
     private async baseRequestWithReAuth_<
         T extends keyof typeof APIInterface,
         S extends keyof typeof APIInterface[T]
-    >(method: "GET" | "POST", address: string, obj: any, authenticate: boolean = true
+    >(method: TRequestMethods, address: string, obj: any, authenticate: boolean = true
         // @ts-ignore
     ): Promise<ReturnType<typeof APIInterface[T][S]["args"]>> {
         await mutex.waitForUnlock();
@@ -80,7 +82,7 @@ class RequestManager extends BaseManager {
     private async baseRequest_<
         T extends keyof typeof APIInterface,
         S extends keyof typeof APIInterface[T]
-    >(method: "GET" | "POST", address: string, obj: any, authenticate: boolean = true
+    >(method: TRequestMethods, address: string, obj: any, authenticate: boolean = true
         // @ts-ignore
     ): Promise<ReturnType<typeof APIInterface[T][S]["args"]>> {
         let token = undefined;

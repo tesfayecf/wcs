@@ -15,8 +15,6 @@ export interface APIResponse<T> {
     isFailure?: boolean;
 }
 
-
-
 export const APIInterface = {
     app: {
         getUserInfo: {
@@ -59,17 +57,71 @@ export const APIInterface = {
         },
     },
     dashboard: {
+        getTankGroups: {
+            args: (): APIResponse<ITankGroup[]> => { return {} as APIResponse<ITankGroup[]> },
+            address: "api/tank-groups/",
+            method: "GET",
+            argsKeys: [],
+        },
         createTankGroup: {
             args: (name: string, location: string, description: string): APIResponse<ITankGroup[]> => { return {} as APIResponse<ITankGroup[]> },
             address: "api/create-tank-group/",
             method: "POST",
             argsKeys: ["name", "location", "description"],
         },
-        getTankGroups: {
-            args: (): APIResponse<ITankGroup[]> => { return {} as APIResponse<ITankGroup[]> },
-            address: "api/tank-groups/",
+        editTankGroup: {
+            args: (args: Partial<ITankGroup>): APIResponse<void> => { return {} as APIResponse<void> },
+            address: "api/edit-tank-groups/",
             method: "GET",
-            argsKeys: [],
+            argsKeys: ["name", "location", "description"],
+        },
+        deleteTankGroup: {
+            args: (tankGroupId: number): APIResponse<void> => { return {} as APIResponse<void> },
+            address: "api/delete-tank-group/",
+            method: "DELETE",
+            argsKeys: ["tankGroupId"],
+        },
+        getTankGroupStats: {
+            args: (tankGroupId: number): APIResponse<void> => { return {} as APIResponse<void> },
+            address: "api/delete-tank-group/",
+            method: "GET",
+            argsKeys: ["tankGroupId"],
+        },
+        getTank: {
+            args: (tankGroupId: number): APIResponse<ITank[]> => { return {} as APIResponse<ITank[]> },
+            address: "api/tanks/",
+            method: "GET",
+            argsKeys: ["tankGroupId"],
+        },
+        createTank: {
+            args: (args: Partial<ITank>): APIResponse<void> => { return {} as APIResponse<void> },
+            address: "api/create-tank/",
+            method: "POST",
+            argsKeys: ["tankGroupId", "name", "capacity", "type", "brand", "material"],
+        },
+        editTank: {
+            args: (args: Partial<ITank>): APIResponse<void> => { return {} as APIResponse<void> },
+            address: "api/edit-tank/",
+            method: "GET",
+            argsKeys: ["tankId", "tankGroupId", "name", "capacity", "type", "brand", "material"],
+        },
+        deleteTank: {
+            args: (tankId: number, tankGroupId: number): APIResponse<void> => { return {} as APIResponse<void> },
+            address: "api/delete-tank/",
+            method: "DELETE",
+            argsKeys: ["tankId", "tankGroupId"],
+        },
+        getTankStats: {
+            args: (tankId: number): APIResponse<any> => { return {} as APIResponse<any> },
+            address: "api/tank-stats/",
+            method: "GET",
+            argsKeys: ["tankId", "tankGroupId"],
+        },
+        getTankSensors: {
+            args: (tankId: number): APIResponse<any> => { return {} as APIResponse<any> },
+            address: "api/tank-sensors/",
+            method: "GET",
+            argsKeys: ["tankId", "tankGroupId"],
         }
     }
 } as const;

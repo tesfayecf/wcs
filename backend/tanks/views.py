@@ -14,6 +14,18 @@ from .serializer import TankSerializer, TankGroupSerializer, CreateTankSerialize
 ### TANK GROUP ###
 ##################
 
+class GetTankGroupsView(generics.ListAPIView):
+    serializer_class = TankGroupSerializer
+
+    def get(self, request):
+        user = request.user
+        userTankGroups = TankGroup.objects.filter(user=user)
+        userTankGroups_serializer = TankGroupSerializer(userTankGroups, many=True)
+        if userTankGroups_serializer.data:
+            return Response(userTankGroups_serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response([], status=status.HTTP_200_OK)
+        
 class CreateTankGroupView(APIView):
     serializer_class = CreateTankGroupSerializer
 
@@ -36,50 +48,21 @@ class CreateTankGroupView(APIView):
 
 class EditTankGroupView(APIView):
     def put(self, request):
-        try:
-            user = request.user
-            tankGroupId = request.data.get('tankGroupId')
-            tank_group = TankGroup.objects.get(pk=tankGroupId, user=user)
-            if tank_group.user != request.user:
-                return Response({"error": "You don't have permission to edit this TankGroup."},
-                                status=status.HTTP_403_FORBIDDEN)
-
-            serializer = TankGroupSerializer(tank_group, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except TankGroup.DoesNotExist:
-            return Response({"error": "TankGroup not found."}, status=status.HTTP_404_NOT_FOUND)
-
-
+        tank_group = getTankGroup(request=request)
+        serializer = TankGroupSerializer(tank_group, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({'Bad Request': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+            
 class DeleteTankGroupView(APIView):
     def delete(self, request, pk):
-        try:
-            user = request.user
-            tankGroupId = request.data.get('tankGroupId')
-            tank_group = TankGroup.objects.get(pk=tankGroupId, user=user)
-            if tank_group.user != request.user:
-                return Response({"error": "You don't have permission to delete this TankGroup."},
-                                status=status.HTTP_403_FORBIDDEN)
-
-            tank_group.delete()
-            return Response({"message": "TankGroup deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
-        except TankGroup.DoesNotExist:
-            return Response({"error": "TankGroup not found."}, status=status.HTTP_404_NOT_FOUND)
+        tank_group = getTankGroup(request=request)
+        tank_group.delete()
+        return Response({"message": "TankGroup deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        
 
 
-class GetUserTankGroupsView(generics.ListAPIView):
-    serializer_class = TankGroupSerializer
-
-    def get(self, request):
-        user = request.user
-        userTankGroups = TankGroup.objects.filter(user=user)
-        userTankGroups_serializer = TankGroupSerializer(userTankGroups, many=True)
-        if userTankGroups_serializer.data:
-            return Response(userTankGroups_serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response([], status=status.HTTP_200_OK)
 
 class GetTankGroupTanks(APIView):
     def get(self, request):
@@ -99,13 +82,7 @@ class GetTankGroupTanks(APIView):
 
 class GetTankGroupStatsView(APIView):
     def get(self, request):
-        user = request.user
-        tankGroupId = request.data.get('tankGroupId')
-        if tank_group.user != request.user:
-                return Response({"error": "You don't have permission to delete this TankGroup."},
-                                status=status.HTTP_403_FORBIDDEN)
-        tank_group = TankGroup.objects.get(pk=tankGroupId, user=user)
-
+        tank_group = getTankGroup(request=request)
         data = {
             'total_tanks': tank_group.total_tanks(),
             'average_water_level': tank_group.total_active_tanks(),
@@ -117,22 +94,49 @@ class GetTankGroupStatsView(APIView):
         }
         return Response(data, status=status.HTTP_200_OK)
 
+def getTankGroup(request):
+    user = request.user
+    tankGroupId = request.data.get('tankGroupId')
+    if tank_group.user != request.user:
+        return Response({"error": "You don't have permission to delete this TankGroup."},
+                        status=status.HTTP_403_FORBIDDEN)
+    if not tank_group:
+        return Response({"error": "TankGroup not found."}, status=status.HTTP_404_NOT_FOUND)
+    tank_group = TankGroup.objects.get(pk=tankGroupId, user=user)
+    return tank_group
+
 
 ############
 ### TANK ###
 ############
 
+
+class GetTankView(APIView):
+    def get(self, request):
+        tank, tank_group = getTank(request=request)
+        tank_s = TankSerializer(tank)
+        if tank_s.data and (tank.user != request.user or tank_group.user != request.user):
+            return Response(tank_s.data, status=status.HTTP_200_OK)
+        else:
+            return Response([], status=status.HTTP_404_NOT_FOUND)
+
 class CreateTankView(APIView):
     def post(self, request, format=None):
+        user = request.user
         data_s = CreateTankSerializer(data=request.data)
         if data_s.is_valid():
             name = data_s.data.get('name')
             capacity = data_s.data.get('capacity'),
-            isActive = data_s.data.get('isActive'),
+            isActive = True
             dimensions = data_s.data.get('dimensions'),
             material = data_s.data.get('material'),
             brand = data_s.data.get('brand'),
-            tankGroup = data_s.data.get('tankGroup')
+            tankGroupId = data_s.data.get('tankGroupId')
+
+            tank_group = TankGroup.objects.get(pk=tankGroupId, user=user)
+            if tank_group.user != request.user or not tank_group :
+                return Response({"error": "You don't have permission to delete this TankGroup."},
+                                status=status.HTTP_403_FORBIDDEN)
 
             queryName = Tank.objects.filter(name=name)
 
@@ -144,7 +148,7 @@ class CreateTankView(APIView):
                     dimensions=dimensions,
                     material=material,
                     brand=brand,
-                    tankGroup=tankGroup,
+                    tankGroup=tankGroupId,
                 )
                 tank.save()
                 return Response(TankSerializer(tank).data, status=status.HTTP_201_CREATED)
@@ -155,14 +159,7 @@ class CreateTankView(APIView):
 class EditTankView(APIView):
     def put(self, request):
         try:
-            tankId = request.data.get('tankId')
-            tankGroupId = request.data.get('tankGroupId')
-            tank_group = TankGroup.objects.get(id=tankGroupId)
-            tank = Tank.objects.get(pk=tankId, tankGroup=tank_group)            
-            if tank.user != request.user or tank_group.user != request.user:
-                return Response({"error": "You don't have permission to edit this Tank."},
-                                status=status.HTTP_403_FORBIDDEN)
-
+            tank, _ = getTank(request=request)
             serializer = TankSerializer(tank, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
@@ -172,40 +169,17 @@ class EditTankView(APIView):
             return Response({"error": "Tank not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class DeleteTankView(APIView):
-    def delete(self, request, pk):
+    def delete(self, request):
         try:
-            tankId = request.data.get('tankId')
-            tankGroupId = request.data.get('tankGroupId')
-            tank_group = TankGroup.objects.get(id=tankGroupId)
-            tank = Tank.objects.get(pk=tankId, tankGroup=tank_group)
-            if tank.user != request.user or tank_group.user != request.user:
-                return Response({"error": "You don't have permission to edit this Tank."},
-                                status=status.HTTP_403_FORBIDDEN)
-
+            tank, _ = getTank(request=request)
             tank.delete()
             return Response({"message": "Tank deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
         except Tank.DoesNotExist:
             return Response({"error": "Tank not found."}, status=status.HTTP_404_NOT_FOUND)
 
-class GetUserTanksView(generics.ListAPIView):
-    def get(self, request):
-        user = request.user
-        userTanks = Tank.objects.filter(user=user)
-        userTanks_serializer = TankSerializer(userTanks, many=True)
-        if userTanks_serializer.data:
-            return Response(userTanks_serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response([], status=status.HTTP_200_OK)
-
 class GetTankStatsView(APIView):
     def get(self, request):
-        user = request.user
-        tankId = request.data.get('tankId')
-        if tank.user != request.user:
-                return Response({"error": "You don't have permission to delete this Tank."},
-                                status=status.HTTP_403_FORBIDDEN)
-        tank = Tank.objects.get(pk=tankId, user=user)
-
+        tank, _ = getTank(request=request)
         data = {
             'total_sensor': tank.total_sensors(),
             'total_active_sensors': tank.total_active_sensors(),
@@ -219,14 +193,25 @@ class GetTankStatsView(APIView):
 
 class GetTankSensorsView(APIView):
     def get(self, request):
-        user = request.user
-        tankId = request.data.get('tankId')
-        if tank.user != request.user:
-                return Response({"error": "You don't have permission to delete this Tank."},
-                                status=status.HTTP_403_FORBIDDEN)
-        tank = Tank.objects.get(pk=tankId, user=user)
-
+        tank, _ = getTank(request=request)
         data = {
             'sensors': tank.sensors,
         }
         return Response(data, status=status.HTTP_200_OK)    
+
+def getTank(request):
+    user = request.user
+    tankId = request.data.get('tankId')
+    tankGroupId = request.data.get('tankGroupId')
+    tank_group = TankGroup.objects.get(pk=tankGroupId, user=user)
+    if not tank_group:
+        return Response({"error": "TankGroup not found."}, status=status.HTTP_404_NOT_FOUND)
+    tank = Tank.objects.get(pk=tankId, tankGroup=tank_group)
+    if not tank:
+        return Response({"error": "Tank not found."}, status=status.HTTP_404_NOT_FOUND)
+    if tank.tankGroup != tank_group:
+        return Response({"error": "Tank not found."}, status=status.HTTP_404_NOT_FOUND)
+    if tank_group.user != request.user:
+        return Response({"error": "You don't have permission to delete this TankGroup."},
+                        status=status.HTTP_403_FORBIDDEN)
+    return tank, tank_group

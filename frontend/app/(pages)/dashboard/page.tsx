@@ -45,7 +45,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardPr
           <WeatherWidget />
         </div>
       </div>
-      <div className={styles.tanks}>
+      <div className={styles.tankGroups}>
         {renderTanksInfo(props.tankGroups)}
         <ContentBox>
           <AddTankGroupWidget />

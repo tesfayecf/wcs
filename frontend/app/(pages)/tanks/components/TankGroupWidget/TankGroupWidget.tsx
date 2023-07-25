@@ -2,11 +2,11 @@
 import React from 'react';
 import WatertankSVG from '@/public/svg/WaterTankSG';
 import styles from "./styles/TankGroupWidget.module.scss"
-import { ITankGroup } from '@/app/(pages)/dashboard/DashboardTypes';
+import { ITankGroup, ITankGroupStats } from '@/app/(pages)/dashboard/DashboardTypes';
+import { IRootState } from '@/app/utils/store/store';
+import { connect } from 'react-redux';
 
-type ITankGroupWidgetProps = {
-    tankGroup: ITankGroup
-}
+interface ITankGroupWidgetProps extends ReturnType<typeof mapStateToProps> { }
 
 
 const TankGroupWidget: React.FunctionComponent<ITankGroupWidgetProps> = (props: ITankGroupWidgetProps) => {
@@ -36,6 +36,11 @@ const TankGroupWidget: React.FunctionComponent<ITankGroupWidgetProps> = (props: 
                         <div className={styles.list}>
                             <DataListElement keyName="Name" value={props.tankGroup.name} />
                             <DataListElement keyName="Location" value={props.tankGroup.location} />
+                            <DataListElement keyName="Capacity" value={props.tankGroupStats.totalCapacity} />
+                            <DataListElement keyName="Nº tanks" value={props.tankGroupStats.totalTanks} />
+                            <DataListElement keyName="Avg. level" value={props.tankGroupStats.averageWaterLevel} />
+                            <DataListElement keyName="Min. level" value={props.tankGroupStats.minWaterLevel} />
+                            <DataListElement keyName="Max. level" value={props.tankGroupStats.maxWaterLevel} />
                         </div>
                     </div>
                 </div>
@@ -44,7 +49,15 @@ const TankGroupWidget: React.FunctionComponent<ITankGroupWidgetProps> = (props: 
     )
 }
 
-export default TankGroupWidget;
+function mapStateToProps(state: IRootState) {
+    return {
+        tankGroup: state.tanks.tankGroupInfo,
+        tankGroupStats: state.tanks.tankGroupStats
+    }
+}
+
+export default connect(mapStateToProps, {})(TankGroupWidget)
+
 
 
 interface IDataListElementProps {

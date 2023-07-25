@@ -1,11 +1,4 @@
 
-export interface ITankGroupCreationForm {
-    name: string;
-    nameError: boolean;
-    location: string;
-    locationError: boolean;
-    description: string;
-}
 
 export interface IDashboardStore {
     tankGroups: ITankGroup[];
@@ -21,5 +14,21 @@ export interface ITankGroup {
     id: number;
     name: string;
     location: string;
+    description: string;
+}
+
+export interface ITankGroupStats {
+    totalTanks: number,
+    averageWaterLevel: number,
+    minWaterLevel: number,
+    maxWaterLevel: number,
+    totalCapacity: number,
+}
+
+export interface ITankGroupCreationForm {
+    name: string;
+    nameError: boolean;
+    location: string;
+    locationError: boolean;
     description: string;
 }

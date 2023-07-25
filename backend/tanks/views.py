@@ -41,7 +41,7 @@ class CreateTankGroupView(APIView):
             query_name = TankGroup.objects.filter(name=name)
 
             if not query_name.exists():
-                tank_group = TankGroup(name=name, location=location, description=description)
+                tank_group = TankGroup(name=name, location=location, description=description, user=request.user)
                 tank_group.save()
                 return Response(TankGroupSerializer(tank_group).data, status=status.HTTP_201_CREATED)
             return Response({'Bad Request': 'Invalid name...'}, status=status.HTTP_400_BAD_REQUEST)
@@ -76,6 +76,15 @@ class GetTankGroupTanks(APIView):
             "tankGroup": tank_group_s.data,
             'tanks': tank_group_tanks.data,
         }
+        # add stats data
+        data['tankGroupStats'] = {
+            'totalTanks': tank_group.total_tanks(),
+            'averageWaterLevel': tank_group.average_water_level(),
+            'minWaterLevel': tank_group.min_water_level,
+            'maxWaterLevel': tank_group.max_water_level,
+            'totalCapacity': tank_group.get_total_capacity(),
+        }
+
         return Response(data, status=status.HTTP_200_OK)
 
 class GetTankGroupStatsView(APIView):
@@ -94,16 +103,22 @@ class GetTankGroupStatsView(APIView):
 
 def getTankGroup(request):
     user = request.user
-    print(request.stream.read())
-    data = json.loads(request.body)
-    tankGroupId = data.get('tankGroupId')
+
+    # Read the request body and parse it as JSON
     try:
-        tank_group = TankGroup.objects.get(pk=tankGroupId)
-        if tank_group.user != user:
-            return None
-        return tank_group
-    except ObjectDoesNotExist:
-        return None
+        data = json.loads(request.body)
+        tankGroupId = data.get('tankGroupId')
+    except json.JSONDecodeError:
+        return Response({"error": "Invalid JSON data in the request body."}, status=400)
+
+    try:
+        tankGroup = TankGroup.objects.get(pk=tankGroupId)
+        if tankGroup.user != user:
+            return Response({"error": "You don't have permission to access this TankGroup."},
+                                status=403)
+        return tankGroup
+    except TankGroup.DoesNotExist:
+        return Response({"error": "TankGroup not found."}, status=404)
 
 
 ############

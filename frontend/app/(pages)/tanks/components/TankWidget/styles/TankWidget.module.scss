@@ -1,9 +1,9 @@
-.group {
+.tank {
     position: relative;
     width: 450px;
     height: 300px;
     border-radius: 12px;
-    background-color: gray;
+    background-color: rgb(255, 140, 253);
 
     .disabled {
         position: absolute;
@@ -20,7 +20,7 @@
         width: inherit;
         height: inherit;
         border-radius: inherit;
-        
+
         .header {
             display: flex;
             flex-direction: row;
@@ -28,7 +28,7 @@
             align-items: center;
             height: 15%;
             padding: 15px 50px 5px 50px;
-        
+
             .name {
                 font-size: 20px;
                 font-weight: bold;
@@ -51,7 +51,7 @@
             flex-direction: row;
             justify-content: space-between;
             height: auto;
-            
+
             .vl {
                 border-left: 2px solid gray;
                 position: relative;
@@ -117,7 +117,7 @@
 
                 }
             }
-        
+
         }
     }
 }

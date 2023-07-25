@@ -24,22 +24,21 @@ class TanksHandler {
         store.dispatch(tankActions.setParams({ params }));
     }
 
-
     public async load() {
-        await this.getTanks()
+        await this.getTanksGroupInfo()
     }
 
     public unload() {
 
     }
 
-    public async getTanks() {
+    public async getTanksGroupInfo() {
         const state = store.getState().tanks;
-        console.log(state.tankGroupId)
         const response = await requestManager.request("dashboard", "getTankGroupTanks", [state.tankGroupId])
         if (response.status == 200) {
             store.dispatch(tankActions.setTanks({ tanks: response.data.tanks }));
             store.dispatch(tankActions.setTankGroupInfo({ tankGroupInfo: response.data.tankGroup }));
+            store.dispatch(tankActions.setTankGroupStats({ tankGroupStats: response.data.tankGroupStats }));
         } else {
             throw new Error(response.statusText);
         }

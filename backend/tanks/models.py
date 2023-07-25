@@ -20,7 +20,7 @@ class TankGroup(models.Model):
         return self.tanks.count()
 
     def total_active_tanks(self):
-        return self.tanks.filter(is_active=True).count()
+        return self.tanks.filter(isActive=True).count()
 
     def total_sensor_data(self):
         return SensorData.objects.filter(sensor__tank__tankGroup=self).count()
@@ -37,6 +37,9 @@ class TankGroup(models.Model):
 
     def get_oldest_sensor_data(self):
         return SensorData.objects.filter(sensor__tank__tankGroup=self).earliest('timestamp')
+    
+    def get_total_capacity(self):
+        return self.tanks.aggregate(models.Sum('capacity'))['capacity__sum']
 
     @property
     def min_water_level(self):
@@ -73,7 +76,7 @@ class Tank(models.Model):
     ]
     type = models.CharField(max_length=50, choices=type_choices)
     capacity = models.PositiveIntegerField()
-    is_active = models.BooleanField(default=True)
+    isActive = models.BooleanField(default=True)
     dimensions = models.CharField(max_length=100)
     material = models.CharField(max_length=100)
     brand = models.CharField(max_length=100)

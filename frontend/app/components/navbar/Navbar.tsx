@@ -1,15 +1,13 @@
 import React from 'react'
 import Link from 'next/link'
 import styles from './styles/Navbar.module.scss'
-import { store } from '@/app/utils/store/store'
+import { IRootState, store } from '@/app/utils/store/store'
 import { usePathname } from 'next/navigation'
+import { connect } from 'react-redux'
 
-type INavbarProps = {}
+interface INavbarProps extends ReturnType<typeof mapStateToProps> { }
 
 const Navbar: React.FunctionComponent<INavbarProps> = (props: INavbarProps) => {
-
-    const data = store.getState().app.userInfo.name;
-
 
     return (
         <div id='navbar' className={styles.navbar}>
@@ -18,11 +16,19 @@ const Navbar: React.FunctionComponent<INavbarProps> = (props: INavbarProps) => {
                 <NavbarButton text='Analytics' index="/analytics" />
                 <NavbarButton text='Profile' index="/analytics" />
             </div>
+            <div className={styles.userInfo}>
+                {props.userInfo.first_name}
+            </div>
         </div>
     )
 }
 
-export default Navbar
+const mapStateToProps = (state: IRootState) => ({
+    userInfo: state.app.userInfo
+})
+
+export default connect(mapStateToProps, {})(Navbar)
+
 
 type INavbarButtonProps = {
     text: string;
@@ -43,3 +49,5 @@ const NavbarButton: React.FunctionComponent<INavbarButtonProps> = (props: INavba
         </Link >
     )
 }
+
+

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ITanksStore, ITankCreationForm, ITank, ITanksParams } from './TanksTypes';
-import { ITankGroup } from '../dashboard/DashboardTypes';
+import { ITankGroup, ITankGroupStats } from '../dashboard/DashboardTypes';
 
 // Define the initial state
 const initialState: ITanksStore = {
@@ -12,6 +12,13 @@ const initialState: ITanksStore = {
         name: '',
         location: '',
         description: '',
+    },
+    tankGroupStats: {
+        totalTanks: -1,
+        averageWaterLevel: -1,
+        minWaterLevel: -1,
+        maxWaterLevel: -1,
+        totalCapacity: -1,
     },
     tanks: [],
     tankCreationForm: {
@@ -43,6 +50,9 @@ const tankSlice = createSlice({
         },
         setTankGroupInfo: (state, action: PayloadAction<{ tankGroupInfo: ITankGroup }>) => {
             state.tankGroupInfo = action.payload.tankGroupInfo;
+        },
+        setTankGroupStats: (state, action: PayloadAction<{ tankGroupStats: ITankGroupStats }>) => {
+            state.tankGroupStats = action.payload.tankGroupStats;
         },
         setShowAddTankMenu: (state, action: PayloadAction<{ state: boolean }>) => {
             state.showAddTankMenu = action.payload.state;

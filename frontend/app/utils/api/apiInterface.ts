@@ -1,5 +1,5 @@
 import { IRegisterForm } from "@/app/(auth)/AuthTypes";
-import { ITankGroup } from "@/app/(pages)/dashboard/DashboardTypes";
+import { ITankGroup, ITankGroupStats } from "@/app/(pages)/dashboard/DashboardTypes";
 import { ITank } from "@/app/(pages)/tanks/TanksTypes";
 import { IUserInfo } from "@/app/app/AppTypes";
 
@@ -64,7 +64,7 @@ export const APIInterface = {
             argsKeys: [],
         },
         getTankGroupTanks: {
-            args: (tankGroupId: number): APIResponse<{ tankGroup: ITankGroup, tanks: ITank[] }> => { return {} as APIResponse<{ tankGroup: ITankGroup, tanks: ITank[] }> },
+            args: (tankGroupId: number): APIResponse<{ tankGroup: ITankGroup, tanks: ITank[], tankGroupStats: ITankGroupStats }> => { return {} as APIResponse<{ tankGroup: ITankGroup, tanks: ITank[], tankGroupStats: ITankGroupStats }> },
             address: "api/tank-group-tanks/",
             method: "POST",
             argsKeys: ["tankGroupId"],

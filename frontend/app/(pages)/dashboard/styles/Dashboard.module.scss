@@ -17,7 +17,7 @@
         gap: 24px;
     }
 
-    .tanks {
+    .tankGroups {
         display: grid;
         width: 100%;
         grid-template-columns: repeat(auto-fit, 450px);
@@ -25,19 +25,19 @@
     }
 
     @media (min-width: 700px) {
-        .tanks {
+        .tankGroups {
             grid-template-columns: repeat(2, 450px);
         }
     }
 
     @media (min-width: 1000px) {
-        .tanks {
+        .tankGroups {
             grid-template-columns: repeat(3, 450px);
         }
     }
 
     @media (min-width: 1700px) {
-        .tanks {
+        .tankGroups {
             grid-template-columns: repeat(4, 450px);
         }
     }

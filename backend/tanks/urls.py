@@ -15,6 +15,6 @@ urlpatterns = [
     path('edit-tank/', EditTankView.as_view()),
     path('delete-tank/', DeleteTankView.as_view()),
     path('tank-stats/', GetTankStatsView.as_view()),
-    path('tank-sensors/', GetTankSensorsView.as_view()),
+    path('tank-sensor/', GetTankSensorsView.as_view()),
     
 ]

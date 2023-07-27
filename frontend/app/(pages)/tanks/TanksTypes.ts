@@ -16,16 +16,19 @@ export interface ITankCreationForm {
 }
 
 export interface ITanksStore {
+    tankId: number;
     tankGroupId: number;
     showAddTankMenu: boolean;
     tankCreationForm: ITankCreationForm;
     tanks: ITank[];
+    sensors: ISensor[];
+    sensorsData: Record<string, any>;
     tankGroupInfo: ITankGroup;
     tankGroupStats: ITankGroupStats;
 }
 
 export interface ITank {
-    id: string;
+    id: number;
     name: string;
     capacity: number;
     type: string;
@@ -37,4 +40,18 @@ export interface ITank {
 
 export interface ITanksParams {
     tankGroupId: string;
+}
+
+export interface ISensor {
+    id: string;
+    name: string;
+    location: string;
+    serial_number: string;
+    manufacturer: string;
+    model: string;
+    is_active: boolean;
+    tank: {
+        id: number;
+        name: string;
+    },
 }

@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .serializer import TankSerializer, TankGroupSerializer, CreateTankSerializer, CreateTankGroupSerializer
-
+from utils.serialization.deserialize_model import deserialize_model
 
 
 ##################
@@ -129,11 +129,12 @@ def getTankGroup(request):
 class GetTankView(APIView):
     def get(self, request):
         tank, tank_group = getTank(request=request)
-        tank_s = TankSerializer(tank)
-        if tank_s.data and (tank.user != request.user or tank_group.user != request.user):
-            return Response(tank_s.data, status=status.HTTP_200_OK)
-        else:
-            return Response([], status=status.HTTP_404_NOT_FOUND)
+        # tank_s = TankSerializer(tank)
+        try:
+            data = deserialize_model(tank)
+            return Response(data, status=status.HTTP_200_OK)
+        except:
+            return Response([], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class CreateTankView(APIView):
     def post(self, request, format=None):
@@ -207,12 +208,13 @@ class GetTankStatsView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 class GetTankSensorsView(APIView):
-    def get(self, request):
+    def post(self, request):
         tank, _ = getTank(request=request)
-        data = {
-            'sensors': tank.sensors,
-        }
-        return Response(data, status=status.HTTP_200_OK)    
+        try: 
+            data = deserialize_model(tank.sensor, ["id", "name", "location", "serial_number", "manufacturer", "model", "is_active", "tank"])
+            return Response(data, status=status.HTTP_200_OK)    
+        except: 
+            return Response({}, status=status.HTTP_200_OK)
 
 def getTank(request):
     user = request.user
@@ -227,6 +229,6 @@ def getTank(request):
     if tank.tankGroup != tank_group:
         return Response({"error": "Tank not found."}, status=status.HTTP_404_NOT_FOUND)
     if tank_group.user != request.user:
-        return Response({"error": "You don't have permission to delete this TankGroup."},
+        return Response({"error": "You don't have permission to acces this tankGroup."},
                         status=status.HTTP_403_FORBIDDEN)
     return tank, tank_group

@@ -4,16 +4,24 @@ import WatertankSVG from '@/public/svg/WaterTankSG';
 import styles from "./styles/TankWidget.module.scss"
 import { IRootState } from '@/app/utils/store/store';
 import { connect } from 'react-redux';
-import { ITank } from '../../TanksTypes';
+import { ISensor, ITank } from '../../TanksTypes';
 
 interface ITankWidgetWidgetProps extends ReturnType<typeof mapStateToProps> {
-    tank: ITank
+    tank: ITank,
 }
 
 const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITankWidgetWidgetProps) => {
     const size = 125;
 
     const status = props.tank.isActive ? "ON" : "OFF"
+
+    const getSensorValue = () => {
+        const sensor = props.sensors.find(s => s.tank.id === props.tank.id)
+        if (!sensor) return "-"
+        const sensorData = props.sensorsData[sensor.id]
+        if (!sensorData) return "-"
+        return sensorData
+    }
 
     return (
         <div className={styles.tank}>
@@ -33,7 +41,7 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
                             <WatertankSVG height={size} width={size} />
                         </div>
                         <div className={styles.volume}>
-                            <p className={styles.text}> {"levelSataus"} / {props.tank.capacity} L</p>
+                            <p className={styles.text}> {getSensorValue()} / {props.tank.capacity} L</p>
                         </div>
                     </div>
                     <div className={styles.vl}></div>
@@ -55,6 +63,8 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
 
 function mapStateToProps(state: IRootState) {
     return {
+        sensorsData: state.tanks.sensorsData,
+        sensors: state.tanks.sensors,
     }
 }
 

@@ -15,12 +15,12 @@ class Sensor(models.Model):
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     elevation = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
     maintenance_interval = models.DurationField(null=True, blank=True)
-    tank = models.ForeignKey("tanks.Tank", on_delete=models.CASCADE)
+    tank = models.OneToOneField("tanks.Tank", on_delete=models.CASCADE)
     # Add more fields as needed
 
     def __str__(self):
         return self.name
-
+    
 class SensorData(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE, related_name='sensor_data')

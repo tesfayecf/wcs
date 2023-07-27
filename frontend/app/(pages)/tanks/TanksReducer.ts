@@ -5,8 +5,11 @@ import { ITankGroup, ITankGroupStats } from '../dashboard/DashboardTypes';
 // Define the initial state
 const initialState: ITanksStore = {
     // Add your initial state values here
+    tankId: -1,
     tankGroupId: -1,
-    showAddTankMenu: false,
+    tanks: [],
+    sensors: [],
+    sensorsData: [],
     tankGroupInfo: {
         id: -1,
         name: '',
@@ -20,7 +23,6 @@ const initialState: ITanksStore = {
         maxWaterLevel: -1,
         totalCapacity: -1,
     },
-    tanks: [],
     tankCreationForm: {
         name: '',
         nameError: false,
@@ -34,7 +36,8 @@ const initialState: ITanksStore = {
         materialError: false,
         brand: '',
         brandError: false,
-    }
+    },
+    showAddTankMenu: false,
 };
 
 // Create the slice
@@ -53,6 +56,12 @@ const tankSlice = createSlice({
         },
         setTankGroupStats: (state, action: PayloadAction<{ tankGroupStats: ITankGroupStats }>) => {
             state.tankGroupStats = action.payload.tankGroupStats;
+        },
+        setSensors: (state, action: PayloadAction<{ sensors: any }>) => {
+            state.sensors = action.payload.sensors;
+        },
+        setSensorsData: (state, action: PayloadAction<{ sensorsData: any }>) => {
+            state.sensorsData = action.payload.sensorsData;
         },
         setShowAddTankMenu: (state, action: PayloadAction<{ state: boolean }>) => {
             state.showAddTankMenu = action.payload.state;

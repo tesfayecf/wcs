@@ -16,8 +16,7 @@ interface IDashboardProps {
 const Tanks: React.FunctionComponent<IDashboardProps> = (props: IDashboardProps) => {
 
     React.useEffect(() => {
-        tanksHandler.loadParams(props.params);
-        tanksHandler.load();
+        tanksHandler.load(props.params);
         return () => {
             tanksHandler.unload();
         }

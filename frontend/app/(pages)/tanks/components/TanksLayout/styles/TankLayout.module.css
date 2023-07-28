@@ -1,0 +1,6 @@
+.tanks {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, 450px);
+  gap: 30px;
+}/*# sourceMappingURL=TankLayout.module.css.map */

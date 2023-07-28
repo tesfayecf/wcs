@@ -1,0 +1,98 @@
+.group {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  color: black;
+  position: relative;
+  width: 300px;
+  height: -moz-fit-content;
+  height: fit-content;
+  border-radius: 12px;
+  background-color: rgb(224, 255, 242);
+}
+.group .content {
+  display: flex;
+  flex-direction: column;
+  width: inherit;
+  height: inherit;
+  border-radius: inherit;
+  align-items: center;
+  justify-content: flex-start;
+}
+.group .content .header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.group .content .header .name {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0px 35px;
+}
+.group .content .header .status {
+  font-size: 17px;
+  line-height: 28px;
+  text-align: center;
+  align-items: center;
+  margin: 0px 35px;
+}
+.group .content .header .status .text {
+  font-weight: 700;
+}
+.group .content .data {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: auto;
+  width: 100%;
+}
+.group .content .data .svg {
+  display: flex;
+  flex-direction: column;
+}
+.group .content .data .svg .container {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  margin: 10px 0px;
+}
+.group .content .data .svg .volume {
+  margin-bottom: 4px;
+  font-size: 17px;
+  line-height: 28px;
+  text-align: center;
+  align-items: center;
+}
+.group .content .data .svg .volume .text {
+  font-weight: 700;
+}
+.group .content .data .properties {
+  display: flex;
+  flex-direction: column;
+  margin: 0px 25px;
+}
+.group .content .data .properties .list {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+.group .content .data .properties .list .element {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: 3px 15px;
+  padding: 5px;
+  font-size: 12px;
+  line-height: 20px;
+}
+.group .content .data .properties .list .element .key {
+  font-weight: 700;
+  color: gray;
+}
+.group .content .data .properties .list .element .value {
+  font-weight: 700;
+}/*# sourceMappingURL=TankGroupWidget.module.css.map */

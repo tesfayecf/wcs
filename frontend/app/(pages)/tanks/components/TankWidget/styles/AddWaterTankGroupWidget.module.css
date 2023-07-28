@@ -1,0 +1,33 @@
+.main {
+  position: relative;
+  width: 450px;
+  height: 300px;
+  border-radius: 12px;
+}
+.main_content {
+  display: flex;
+  background-color: rgba(0, 0, 0, 0);
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  justify-content: center;
+  align-items: center;
+}
+.main_content_button {
+  width: 70%;
+  height: 70%;
+  border-color: black;
+  border-width: 0px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+.main_content_button_icon {
+  font-size: 100px;
+}
+.main_content_button_text {
+  font-size: 10px;
+}/*# sourceMappingURL=AddWaterTankGroupWidget.module.css.map */

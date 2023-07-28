@@ -1,0 +1,57 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  margin: 5px;
+  padding: 5px;
+}
+.content_title {
+  min-width: 500px;
+  width: 50%;
+  text-align: center;
+  font-size: 10px;
+  align-items: center;
+  margin: 20px;
+  padding: 5px;
+}
+.content_fields {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin: 0px 25px;
+  padding: 5px;
+}
+.content_fields_field {
+  width: 90%;
+}
+.content_buttons {
+  margin: 15px;
+  padding: 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 25px;
+}
+.content_buttons_button {
+  display: inline-flex;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-right: 25px;
+  background-color: #178e61;
+  color: #ffffff;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 500;
+  text-align: center;
+  align-items: center;
+  border-radius: 8px;
+}
+.content_buttons_button:hover {
+  background-color: #1eb179;
+}/*# sourceMappingURL=PopUpFormTemplate.module.css.map */

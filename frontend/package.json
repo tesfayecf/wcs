@@ -3,14 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "dev - turbo": "next dev --turbo",
+    "dev:next": "next dev",
+    "turbo:next": "next dev --turbo",
     "build": "next build",
-    "start": "next start",
+    "start:dev": "next start",
     "lint": "next lint",
     "dev:ts": "yarn dev & yarn ts:watch",
     "ts": "tsc --noEmit --incremental",
-    "ts:watch": "npm ts --watch"
+    "ts:watch": "npm ts --watch",
+    "dev": "nodemon server.js",
+    "start": "pm2-runtime server.js --name frontend"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",

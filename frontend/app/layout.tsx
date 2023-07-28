@@ -1,52 +1,42 @@
-import '../styles/globals.scss'
-import Footer from './components/fotter/Footer'
-import Navbar from './components/navbar/Navbar'
-import AppStoreInitializer from './app/AppStoreInitializer'
-import AppHandler from './app/AppHandler'
-import { AppStore, DashboardStore } from './store/store'
-import DashboardHandler from './dashboard/DashboardHandler'
-import DashboardStoreInitializer from './dashboard/DashboardStoreInitializer'
+'use client'
+import React from 'react'
+import { Provider } from 'react-redux'
+import { store } from '@/app/utils/store/store'
+import AppHandler from '@/app/app/AppHandler'
+import AuthHandler from '@/app/(auth)/AuthHandler'
+import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler'
+import Setup from './utils/auth/Setup'
+import '@/styles/globals.scss'
 
 export const metadata = {
-  title: 'WCS App',
-  description: '',
+    title: 'WCS App',
+    description: 'Web app to control water resources',
 }
 
 type IAppLayoutProps = {
-  children: React.ReactNode[]
+    children: React.ReactNode[] | React.ReactNode | undefined | null;
 }
 
-const appHandler: AppHandler = AppHandler.getInstance();
-const initialAppStore: AppStore = appHandler.setInitialAppInfo();
-
-const dashboardHandler: DashboardHandler = DashboardHandler.getInstance();
-const initailDasboardStore: DashboardStore = dashboardHandler.setInitialDashboardInfo();
-
+AppHandler.getInstance();
+AuthHandler.getInstance();
+DashboardHandler.getInstance();
 
 export default function RootLayout({ children }: IAppLayoutProps) {
-
-
-  return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>WCS</title>
-      </head>
-      <body>
-        <AppStoreInitializer {...initialAppStore} />
-        <DashboardStoreInitializer {...initailDasboardStore} />
-        <header>
-          <nav>
-            <Navbar />
-          </nav>
-        </header>
-        <noscript>You need to enable JavaScript to run this app.</noscript>
-        <div id="rootLayout">
-          {children}
-        </div>
-        <Footer />
-      </body>
-    </html>
-  )
+    return (
+        <>
+            <html lang="en">
+                <head>
+                    <meta charSet="utf-8" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1" />
+                    <title>WCS</title>
+                </head>
+                <body>
+                    <Provider store={store}>
+                        <Setup />
+                        {children}
+                    </Provider>
+                </body>
+            </html>
+        </>
+    )
 }

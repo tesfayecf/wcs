@@ -11,8 +11,6 @@ const ContentBox: React.FunctionComponent<IContentBoxProps> = (props) => {
         <div id="content-box" className={styles.content_box} >
             {props.children}
         </div>
-        // <div id="content-box" className="content-box" style={props.sytles}>
-        // </div>
     )
 }
 

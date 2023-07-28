@@ -1,29 +1,34 @@
 import React from 'react'
 import Link from 'next/link'
-import { useStore } from '@/app/store/store'
 import styles from './styles/Navbar.module.scss'
+import { IRootState, store } from '@/app/utils/store/store'
+import { usePathname } from 'next/navigation'
+import { connect } from 'react-redux'
 
-type INavbarProps = {}
+interface INavbarProps extends ReturnType<typeof mapStateToProps> { }
 
 const Navbar: React.FunctionComponent<INavbarProps> = (props: INavbarProps) => {
 
-    // const userInfo = useStore.getState().AppStore.userInfo;
-    // console.log(userInfo);
-    const data = useStore.getState().AppStore.userInfo.name;
-    console.log("navbar data", data);
-
-
     return (
-        <div id='navbar' className={styles.container}>
-            <div id='navigation-buttons-container' className={styles.navigation_buttons_container}>
-                <NavbarButton text='Dashboard' index="./dashboard" />
-                <NavbarButton text='Analytics' index="./analytics" />
+        <div id='navbar' className={styles.navbar}>
+            <div id='navigation-buttons-container' className={styles.buttons}>
+                <NavbarButton text='Dashboard' index="/dashboard" />
+                <NavbarButton text='Analytics' index="/analytics" />
+                <NavbarButton text='Profile' index="/analytics" />
+            </div>
+            <div className={styles.userInfo}>
+                {props.userInfo.first_name}
             </div>
         </div>
     )
 }
 
-export default Navbar
+const mapStateToProps = (state: IRootState) => ({
+    userInfo: state.app.userInfo
+})
+
+export default connect(mapStateToProps, {})(Navbar)
+
 
 type INavbarButtonProps = {
     text: string;
@@ -31,14 +36,18 @@ type INavbarButtonProps = {
 }
 
 const NavbarButton: React.FunctionComponent<INavbarButtonProps> = (props: INavbarButtonProps) => {
-
+    const pathname = usePathname();
+    const selected = pathname.includes(props.index);
+    const buttonStyle = selected ? styles.button_selected : styles.button;
     return (
         <Link href={props.index} style={{ textDecoration: 'none' }}>
-            <div id='navbarButton' className={styles.navigation_button}>
+            <div id='navbarButton' className={buttonStyle}>
                 <span id='navbarButtonText' className={styles.navigation_button_text}>
                     {props.text}
                 </span>
             </div>
-        </Link>
+        </Link >
     )
 }
+
+

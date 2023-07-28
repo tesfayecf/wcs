@@ -2,11 +2,17 @@
 path = require("path");
 
 const nextConfig = {
-    // sassOptions: {
-    //     includePaths: [path.join(__dirname, 'styles')],
-    // },
     experimental: {
-        serverActions: true,
+        appDir: true,
+    },
+    async redirects() {
+        return [
+            {
+                source: '/',
+                destination: '/dashboard',
+                permanent: true,
+            },
+        ]
     },
 }
 

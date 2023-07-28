@@ -1,0 +1,34 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "NextJS:build --turbo",
+      "type": "shell",
+      "command": "npm",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "args": ["run", "dev - turbo"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "silent"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Daphne",
+      "type": "shell",
+      "command": "daphne",
+      "args": ["backend.asgi:application"],
+      "options": {
+        "cwd": "${workspaceFolder/backend}"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    }
+  ]
+}

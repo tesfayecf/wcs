@@ -18,4 +18,4 @@ RUN /opt/venv/bin/pip install pip --upgrade && \
     bash /app/backend/scripts/createsuperuser.sh
 
 
-CMD ["/app/web/scripts/entrypoint.sh"]
+CMD ["/app/backend/scripts/entrypoint.sh"]

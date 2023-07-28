@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     
     "corsheaders",
     "rest_framework",
+    "user_visit",
     
     "tanks",
     "users",
@@ -66,6 +67,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'user_visit.middleware.UserVisitMiddleware',
 ]
 
 ROOT_URLCONF = "backend.urls"

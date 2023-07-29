@@ -5,5 +5,6 @@ class SensorsConfig(AppConfig):
     name = "sensors"
     def ready(self):
         print("sensors app ready")
-        # mqqtManager = MqttManager()
-        # mqqtManager.subscribe("a", "test")
+        mqqtManager = MqttManager()
+        mqqtManager.subscribe("a", "esp8266/test")
+        mqqtManager.publish("a", "esp8266/test")

@@ -1,66 +1,65 @@
-#include <PubSubClient.h>
-#include <WiFi.h>
+#include "mqtt-connection.h"
 
-// MQTT broker details
-class MQTTConnectionManager {
-   private:
-    WiFiClient wifiClient;
-    PubSubClient mqttClient;
-    const char *clientId;
-    const char *topic;  // The MQTT topic to subscribe to (if needed)
+MQTTConnectionManager::MQTTConnectionManager() : wifiClient(wifiClient) {}
 
-   public:
-    MQTTConnectionManager(const char *clientId, const char *topic = nullptr)
-        : mqttClient(wifiClient), clientId(clientId), topic(topic) {}
+void MQTTConnectionManager::init() {
+    mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
+    mqttClient.setCallback(
+        [this](char* topic, byte* payload, unsigned int length) {
+            this->onMessageReceived(topic, payload, length);
+        });
 
-    void init() {
-        mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
-        mqttClient.setCallback(
-            [this](char *topic, byte *payload, unsigned int length) {
-                this->onMessageReceived(topic, payload, length);
-            });
+    connect();
+}
 
-        connectToMQTT();
+void MQTTConnectionManager::loop() {
+    if (!mqttClient.connected()) {
+        reconnect();
     }
 
-    void loop() {
-        if (!mqttClient.connected()) {
-            reconnectToMQTT();
-        }
+    mqttClient.loop();
+}
 
-        mqttClient.loop();
-    }
-
-    void publishMessage(const char *message) {
-        if (mqttClient.connected()) {
-            mqttClient.publish(topic, message);
+void MQTTConnectionManager::connect() {
+    while (!mqttClient.connected()) {
+        if (mqttClient.connect(clientId)) {
+            return;
+        } else {
+            delay(1000);
         }
     }
+}
 
-   private:
-    void connectToMQTT() {
-        while (!mqttClient.connected()) {
-            Serial.print("Attempting MQTT connection...");
-            if (mqttClient.connect(clientId)) {
-                Serial.println("connected to MQTT broker");
-                if (topic) {
-                    mqttClient.subscribe(topic);
-                }
-            } else {
-                Serial.print("failed, rc=");
-                Serial.print(mqttClient.state());
-                Serial.println(" try again in 5 seconds");
-                delay(5000);
-            }
+void MQTTConnectionManager::reconnect() {
+    mqttClient.disconnect();
+    connect();
+}
+
+void MQTTConnectionManager::onMessageReceived(char* topic, byte* payload,
+                                              unsigned int length) {
+    // Handle received MQTT messages here, if needed
+    Serial.print("Topic: ");
+    Serial.println(topic);
+    Serial.print("Message: ");
+    for (int i = 0; i < length; i++) {
+        Serial.print((char)payload[i]);
+        if (payload[i] == '\n') {
+            Serial.print("\n");
+            break;
         }
     }
+}
 
-    void reconnectToMQTT() {
-        mqttClient.disconnect();
-        connectToMQTT();
+void MQTTConnectionManager::subscribe(const char* topic) {
+    if (mqttClient.connected()) {
+        mqttClient.subscribe(topic);
+        Serial.println("Subscribed to: " + String(topic));
     }
+}
 
-    void onMessageReceived(char *topic, byte *payload, unsigned int length) {
-        // Handle received MQTT messages here, if needed
+void MQTTConnectionManager::publish(const char* message, const char* topic) {
+    if (mqttClient.connected()) {
+        mqttClient.publish(topic, message);
+        Serial.println("Published message: " + String(message));
     }
-};
+}

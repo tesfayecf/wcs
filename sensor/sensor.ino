@@ -1,8 +1,20 @@
+#include <ESP8266WiFi.h>
+
+#include "./connections/mqtt-connection/mqtt-connection.h"
+#include "./connections/wifi-connection/wifi-connection.h"
 #include "utils/constants.h"
 
-void setup() { Serial.begin(115200); }
+WiFiConnectionManager wifiManager;
+MQTTConnectionManager mqttManager;
+
+void setup() {
+    Serial.begin(115200);
+    wifiManager.init();
+    mqttManager.init();
+}
 
 void loop() {
-    Serial.println("Hello World");
-    Serial.println(WIFI_SSID);
+    mqttManager.loop();
+    mqttManager.publish("hello world", "test");
+    delay(1000);
 }

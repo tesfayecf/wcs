@@ -1,7 +1,8 @@
+#include "WiFiConnectionManager.h"
+
 #include <ESP8266WiFi.h>
 
-#include "./utils/constants.h"
-#include "wifi-connection.h"
+#include "../../utils/constants.h"
 
 WiFiConnectionManager::WiFiConnectionManager() {}
 

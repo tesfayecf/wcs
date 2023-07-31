@@ -2,7 +2,6 @@
 #define MQTT_CONNECTION_MANAGER_H
 
 #include <PubSubClient.h>
-#include <WiFi.h>
 
 class MQTTConnectionManager {
    private:
@@ -36,4 +35,5 @@ class MQTTConnectionManager {
     void onMessageReceived(char* topic, byte* payload, unsigned int length);
 };
 
+#include "MQTTConnectionManager.cpp"
 #endif  // MQTT_CONNECTION_MANAGER_H

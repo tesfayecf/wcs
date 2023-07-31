@@ -1,4 +1,8 @@
-#include "mqtt-connection.h"
+#include "MQTTConnectionManager.h"
+
+#include <ESP8266WiFi.h>
+
+#include "../../utils/constants.h"
 
 MQTTConnectionManager::MQTTConnectionManager() : wifiClient(wifiClient) {}
 
@@ -22,7 +26,7 @@ void MQTTConnectionManager::loop() {
 
 void MQTTConnectionManager::connect() {
     while (!mqttClient.connected()) {
-        if (mqttClient.connect(clientId)) {
+        if (mqttClient.connect(MQTT_CLIENT_ID)) {
             return;
         } else {
             delay(1000);

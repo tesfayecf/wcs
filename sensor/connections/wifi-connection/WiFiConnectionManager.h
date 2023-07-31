@@ -1,8 +1,6 @@
 #ifndef WIFI_CONNECTION_MANAGER_H
 #define WIFI_CONNECTION_MANAGER_H
 
-#include <ESP8266WiFi.h>
-
 class WiFiConnectionManager {
    public:
     // Constructor
@@ -18,4 +16,5 @@ class WiFiConnectionManager {
     wl_status_t getStatus();
 };
 
+#include "WiFiConnectionManager.cpp"
 #endif  // WIFI_CONNECTION_MANAGER_H

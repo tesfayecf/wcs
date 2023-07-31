@@ -1,7 +1,7 @@
 #include <ESP8266WiFi.h>
 
-#include "./connections/mqtt-connection/mqtt-connection.h"
-#include "./connections/wifi-connection/wifi-connection.h"
+#include "connections/mqtt-connection/MQTTConnectionManager.h"
+#include "connections/wifi-connection/WiFiConnectionManager.h"
 #include "utils/constants.h"
 
 WiFiConnectionManager wifiManager;

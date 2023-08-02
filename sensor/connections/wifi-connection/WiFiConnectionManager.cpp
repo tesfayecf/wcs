@@ -7,12 +7,33 @@
 WiFiConnectionManager::WiFiConnectionManager() {}
 
 void WiFiConnectionManager::init() {
-    WiFi.mode(WIFI_STA);
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    // Connect to WiFi
+    connect();
+}
 
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
+bool WiFiConnectionManager::connect() {
+    IPAddress local_IP(192, 168, 1, 101);
+    IPAddress gateway(192, 168, 1, 1);
+    IPAddress subnet(255, 255, 0, 0);
+    if (!WiFi.config(local_IP, gateway, subnet)) {
+        return false;
     }
+    WiFi.disconnect();
+    WiFi.mode(WIFI_OFF);
+    delay(500);
+    WiFi.mode(WIFI_STA);
+    int r = 0;
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);  // Connect to your WiFi router
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(100);
+        r++;
+        if (r == 150) break;
+    }
+    if (r == 150) {
+        return false;
+    }
+    Serial.println("Connected to WiFi");
+    return true;
 }
 
 bool WiFiConnectionManager::isConnected() {

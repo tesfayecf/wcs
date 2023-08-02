@@ -1,12 +1,15 @@
 #ifndef MQTT_CONNECTION_MANAGER_H
 #define MQTT_CONNECTION_MANAGER_H
 
+// #include <ArduinoMqttClient.h>
+#include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
 class MQTTConnectionManager {
    private:
     WiFiClient wifiClient;
     PubSubClient mqttClient;
+    // MqttClient mqttClient;
 
    public:
     // Constructor
@@ -22,11 +25,11 @@ class MQTTConnectionManager {
     void subscribe(const char* topic);
 
     // Publish an MQTT message
-    void publish(const char* message, const char* topic);
+    void publish(char* message, const char* topic);
 
    private:
     // Connect to the MQTT broker
-    void connect();
+    void connectMQTT();
 
     // Reconnect to the MQTT broker
     void reconnect();

@@ -70,6 +70,11 @@ enum LOG_CODE {
 #define MQTT_USERNAME ""
 #define MQTT_PASSWORD ""
 
+// HARDWARE
+#define TRIGGER_PIN D5  // RX
+#define ECHO_PIN D6     // TX
+#define MAX_DISTANCE 450
+
 // time request
 #define __request_host__ \
     "http://worldtimeapi.org/api/timezone/Europe/Madrid"  //"api.timezonedb.com"

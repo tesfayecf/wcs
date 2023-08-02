@@ -4,29 +4,32 @@
 
 #include "../../utils/constants.h"
 
-MQTTConnectionManager::MQTTConnectionManager() : wifiClient(wifiClient) {}
+MQTTConnectionManager::MQTTConnectionManager() : mqttClient(wifiClient) {}
 
 void MQTTConnectionManager::init() {
-    mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
-    mqttClient.setCallback(
-        [this](char* topic, byte* payload, unsigned int length) {
-            this->onMessageReceived(topic, payload, length);
-        });
+    // mqttClient.setId("clientId");
+    // mqttClient.setUsernamePassword("username", "password");
 
-    connect();
+    mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
+    // mqttClient.setCallback(
+    //     [this](char* topic, byte* payload, unsigned int length) {
+    //         this->onMessageReceived(topic, payload, length);
+    //     });
+
+    connectMQTT();
 }
 
 void MQTTConnectionManager::loop() {
-    if (!mqttClient.connected()) {
-        reconnect();
-    }
+    // if (!mqttClient.connected()) {
+    //     reconnect();
+    // }
 
     mqttClient.loop();
 }
 
-void MQTTConnectionManager::connect() {
+void MQTTConnectionManager::connectMQTT() {
     while (!mqttClient.connected()) {
-        if (mqttClient.connect(MQTT_CLIENT_ID)) {
+        if (mqttClient.connect("userID")) {
             return;
         } else {
             delay(1000);
@@ -35,35 +38,36 @@ void MQTTConnectionManager::connect() {
 }
 
 void MQTTConnectionManager::reconnect() {
-    mqttClient.disconnect();
-    connect();
+    // mqttClient.disconnect();
+    // connectMQTT();
 }
 
 void MQTTConnectionManager::onMessageReceived(char* topic, byte* payload,
                                               unsigned int length) {
     // Handle received MQTT messages here, if needed
-    Serial.print("Topic: ");
-    Serial.println(topic);
-    Serial.print("Message: ");
-    for (int i = 0; i < length; i++) {
-        Serial.print((char)payload[i]);
-        if (payload[i] == '\n') {
-            Serial.print("\n");
-            break;
-        }
-    }
+    // Serial.print("Topic: ");
+    // Serial.println(topic);
+    // Serial.print("Message: ");
+    // for (int i = 0; i < length; i++) {
+    //     Serial.print((char)payload[i]);
+    //     if (payload[i] == '\n') {
+    //         Serial.print("\n");
+    //         break;
+    //     }
+    // }
 }
 
 void MQTTConnectionManager::subscribe(const char* topic) {
-    if (mqttClient.connected()) {
-        mqttClient.subscribe(topic);
-        Serial.println("Subscribed to: " + String(topic));
-    }
+    // if (mqttClient.connected()) {
+    //     mqttClient.subscribe(topic);
+    //     Serial.println("Subscribed to: " + String(topic));
+    // }
 }
 
-void MQTTConnectionManager::publish(const char* message, const char* topic) {
+void MQTTConnectionManager::publish(char* message, const char* topic) {
     if (mqttClient.connected()) {
-        mqttClient.publish(topic, message);
         Serial.println("Published message: " + String(message));
+        mqttClient.publish(topic, message);
+        //     Serial.println("Published message: " + String(message));
     }
 }

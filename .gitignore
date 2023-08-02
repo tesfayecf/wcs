@@ -165,3 +165,5 @@ Control.system-ca-bundle
 GitHub.sublime-settings 
 
 /sensor/build/
+
+/sensor/libraries/

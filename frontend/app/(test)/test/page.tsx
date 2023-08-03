@@ -7,6 +7,7 @@ import { IRootState } from "@/app/utils/store/store";
 import { connect } from "react-redux";
 import TankGroupWidget from "@/app/(pages)/dashboard/components/TankGroupWidget/TankGroupWidget";
 import ContentBox from "@/app/components/contentBox/ContentBox";
+import NavbarNew from "@/app/components/navbar/NavbarNew";
 
 const authHandler = AuthHandler.getInstance()
 const appHandler = AppHandler.getInstance()
@@ -16,19 +17,8 @@ interface ITestProps extends ReturnType<typeof mapStateToProps> { }
 
 const Test: React.FunctionComponent<ITestProps> = (props: ITestProps) => {
     return (
-        <div style={{ padding: '200px', position: "relative", height: "100%" }}>
-            <ContentBox>
-                {/* <TankGroupWidget
-                    id={1}
-                    name={'Patio Tank'}
-                    type={'storage'}
-                    capacity={500}
-                    dimensions={"240x200x100"}
-                    brand={'Acme'}
-                    material={'stainless steel'}
-                    status={true}
-                /> */}
-            </ContentBox>
+        <div >
+            <NavbarNew />
         </div>
     )
 }

@@ -3,8 +3,9 @@ import '@/styles/globals.scss'
 import React from 'react'
 
 import Footer from '@/app/components/fotter/Footer'
-import Navbar from '@/app/components/navbar/Navbar'
+// import Navbar from '@/app/components/navbar/Navbar'
 import RequireAuth from '../utils/auth/requireAuth'
+import NavbarNew from '../components/navbar/NavbarNew'
 
 
 type IAppLayoutProps = {
@@ -17,7 +18,7 @@ export default function RootLayout({ children }: IAppLayoutProps) {
             <div id="pagesLayout">
                 <header>
                     <nav>
-                        <Navbar />
+                        <NavbarNew />
                     </nav>
                 </header>
                 <noscript>You need to enable JavaScript to run this app.</noscript>

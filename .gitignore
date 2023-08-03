@@ -167,3 +167,5 @@ GitHub.sublime-settings
 /sensor/build/
 
 /sensor/libraries/
+
+/backend/static

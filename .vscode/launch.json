@@ -2,16 +2,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Django - Daphne",
-      "type": "python",
-      "request": "launch",
-      "module": "daphne",
-      "cwd": "${workspaceFolder}/backend",
-      "args": ["backend.asgi:application"],
-      "django": true,
-      "justMyCode": false
-    },
-    {
       "name": "NextJS - turbo",
       "type": "node",
       "request": "launch",
@@ -21,16 +11,7 @@
       "env": {
         "NODE_ENV": "development"
       },
-      "runtimeArgs": ["run-script", "dev - turbo", "--inspect"],
-      "console": "integratedTerminal"
-    },
-    {
-      "name": "Django dev",
-      "type": "python",
-      "request": "launch",
-      "program": "${workspaceFolder}/backend/manage.py",
-      "args": ["runserver"],
-      "django": true,
+      "runtimeArgs": ["run", "dev::next::turbo", "--inspect"],
       "console": "integratedTerminal"
     },
     {
@@ -43,11 +24,20 @@
       "env": {
         "NODE_ENV": "development"
       },
-      "runtimeArgs": ["run-script", "dev", "--inspect"],
+      "runtimeArgs": ["run-script", "dev::next", "--inspect"],
       "console": "integratedTerminal"
     },
     {
-      "name": "Django prod",
+      "name": "Django - Daphne",
+      "type": "python",
+      "request": "launch",
+      "module": "daphne",
+      "cwd": "${workspaceFolder}/backend",
+      "args": ["backend.asgi:application"],
+      "django": true
+    },
+    {
+      "name": "Django dev",
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}/backend/manage.py",
@@ -62,10 +52,16 @@
       "cwd": "${workspaceFolder}/frontend",
       "runtimeExecutable": "npm",
       "restart": true,
-      "env": {
-        "NODE_ENV": "development"
-      },
-      "runtimeArgs": ["run-script", "start"],
+      "runtimeArgs": ["run-script", "dev::start"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Django prod",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/manage.py",
+      "args": ["runserver"],
+      "django": true,
       "console": "integratedTerminal"
     },
     {
@@ -81,6 +77,10 @@
   "compounds": [
     {
       "name": "APP dev",
+      "configurations": ["Django - Daphne", "NextJS - turbo"]
+    },
+    {
+      "name": "APP dev - web",
       "configurations": ["Django - Daphne", "NextJS - turbo", "web-renderer"]
     },
     {

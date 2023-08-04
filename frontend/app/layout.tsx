@@ -8,7 +8,7 @@ import AuthHandler from '@/app/(auth)/AuthHandler'
 import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler'
 
 import Setup from './utils/auth/Setup'
-import styles from "@/styles/App.module.scss"
+import styles from "@/app/app/styles/App.module.scss"
 
 export const metadata = {
     title: 'WCS App',

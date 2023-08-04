@@ -3,7 +3,6 @@ import React from 'react';
 import WatertankSVG from '@/public/svg/WaterTankSG';
 import styles from "./styles/TankGroupWidget.module.scss"
 import { ITankGroup } from '../../DashboardTypes';
-import navigate from 'next/navigation';
 import Link from 'next/link';
 import ContentBox from '@/app/components/contentBox/ContentBox';
 
@@ -16,7 +15,6 @@ const TankGroupWidget: React.FunctionComponent<ITankGroupWidgetProps> = (props: 
     const size = 125;
 
     return (
-
         <ContentBox customBoxClass={styles.group}>
             <Link href={`/tanks/${props.tankGroup.id}`} style={{ textDecoration: 'none' }}>
                 <div className={styles.content}>

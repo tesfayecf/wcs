@@ -3,15 +3,16 @@ import React from "react";
 import { connect } from "react-redux";
 import { IRootState } from "@/app/utils/store/store";
 import DashboardHandler from "@/app/(pages)/dashboard/DashboardHandler";
-import contentBoxStyles from "@/app/components/contentBox/styles/ContentBox.module.scss";
+
+import styles from "./styles/Dashboard.module.scss"
+
 import SummaryWidget from "@/app/(pages)/dashboard/components/SummaryWidget/SummaryWidget"
 import WeatherWidget from "@/app/(pages)/dashboard/components/WeatherWidget/WeatherWidget";
-import ContentBox from "@/app/components/contentBox/ContentBox";
 import TankGroupWidget from "@/app/(pages)/dashboard/components/TankGroupWidget/TankGroupWidget";
-import AddTankGroupPopUp from "@/app/(pages)/dashboard/components/TankGroupWidget/AddTankGroupPopUp";
-import styles from "./styles/Dashboard.module.scss"
+import AddTankGroupWidget from "@/app/(pages)/dashboard/components/AddTankGroupWidget/AddTankGroupWidget";
+import AddTankGroupPopUp from "@/app/(pages)/dashboard/components/AddTankGroupWidget/AddTankGroupPopUp";
+
 import { ITankGroup } from "./DashboardTypes";
-import AddTankGroupWidget from "./components/TankGroupWidget/AddTankGroupWidget";
 
 const dashboarHandler = DashboardHandler.getInstance();
 
@@ -32,13 +33,6 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardPr
     );
   }, [props.tankGroups])
 
-  const renderAddTankGroupWidget = React.useCallback(() => {
-    return (
-      <AddTankGroupWidget />
-    );
-  }, [])
-
-
   return (
     <div id="dashboard" className={styles.dashboard}>
       <div id="dashboardInfo" className={styles.info}>
@@ -47,7 +41,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardPr
       </div>
       <div id="dashboardTanks" className={styles.tankGroups}>
         {renderTanksInfo(props.tankGroups)}
-        {renderAddTankGroupWidget()}
+        <AddTankGroupWidget />
       </div>
       <AddTankGroupPopUp />
     </div>

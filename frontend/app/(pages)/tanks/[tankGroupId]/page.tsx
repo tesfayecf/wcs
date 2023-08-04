@@ -1,9 +1,10 @@
 'use client'
 import React from "react";
-import TankGroupWidget from "@/app/(pages)/tanks/components/TankGroupWidget/TankGroupWidget";
+import TankGroupInfoWidget from "@/app/(pages)/tanks/components/TankGroupInfoWidget/TankGroupInfoWidget";
 import styles from "./styles/Tanks.module.scss"
 import TanksHandler from "../TanksHandler";
 import TanksLayout from "../components/TanksLayout/TanksLayout";
+import AddTankWidget from "../components/AddTankWidget/AddTankWidget";
 
 const tanksHandler = TanksHandler.getInstance();
 
@@ -23,11 +24,14 @@ const Tanks: React.FunctionComponent<IDashboardProps> = (props: IDashboardProps)
     }, [])
 
     return (
-        <div className={styles.tanks}>
-            <div>
-                <TankGroupWidget />
+        <div id={"tanksPage"} className={styles.tanks}>
+            <div id={"tankGroupMenu"}>
+                <TankGroupInfoWidget />
+                <AddTankWidget />
             </div>
-            <TanksLayout />
+            <div id={"tanks"}>
+                <TanksLayout />
+            </div>
         </div>
     )
 }

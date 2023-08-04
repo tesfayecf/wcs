@@ -1,17 +1,11 @@
 .group {
     appearance: none;
-    color: black;
     position: relative;
     width: 300px;
-    height: fit-content;
-    // border-radius: 12px;
-    background-color: rgb(224, 255, 242);
 
     .content {
         display: flex;
         flex-direction: column;
-        width: inherit;
-        height: inherit;
         border-radius: inherit;
         align-items: center;
         justify-content: flex-start;
@@ -24,6 +18,7 @@
             align-items: center;
 
             .name {
+                // TODO: set default styles for title, subtitle...
                 font-size: 20px;
                 font-weight: bold;
                 margin: 0px 35px;
@@ -46,13 +41,11 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: auto;
             width: 100%;
 
             .svg {
                 display: flex;
                 flex-direction: column;
-                // width: 50%;
 
                 .container {
                     align-items: center;

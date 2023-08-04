@@ -1,7 +1,7 @@
 'use client'
 import React from 'react';
 import WatertankSVG from '@/public/svg/WaterTankSG';
-import styles from "./styles/TankGroupWidget.module.scss"
+import styles from "./styles/TankGroupInfoWidget.module.scss"
 import { ITankGroup, ITankGroupStats } from '@/app/(pages)/dashboard/DashboardTypes';
 import { IRootState } from '@/app/utils/store/store';
 import { connect } from 'react-redux';
@@ -10,7 +10,7 @@ import ContentBox from '@/app/components/contentBox/ContentBox';
 interface ITankGroupWidgetProps extends ReturnType<typeof mapStateToProps> { }
 
 
-const TankGroupWidget: React.FunctionComponent<ITankGroupWidgetProps> = (props: ITankGroupWidgetProps) => {
+const TankGroupInfoWidget: React.FunctionComponent<ITankGroupWidgetProps> = (props: ITankGroupWidgetProps) => {
     const size = 125;
 
     return (
@@ -58,7 +58,7 @@ function mapStateToProps(state: IRootState) {
     }
 }
 
-export default connect(mapStateToProps, {})(TankGroupWidget)
+export default connect(mapStateToProps, {})(TankGroupInfoWidget)
 
 
 

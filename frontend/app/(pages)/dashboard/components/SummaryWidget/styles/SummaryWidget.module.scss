@@ -1,13 +1,8 @@
 .summary {
-    background-color: #ffffff;
     width: 100%;
-    border-radius: 0.75rem;
 
     .title {
-        margin-left: 24px;
-        margin-right: 24px;
-        margin-bottom: 8px;
-        margin-top: 16px;
+        margin: 16px 24px 8px 24px;
         font-size: 20px;
         line-height: 28px;
         font-weight: 700;
@@ -19,6 +14,7 @@
         flex-direction: row;
         gap: 24px;
         // height: 100%;
+        font-size: 150px;
 
         .pie_chart {
             z-index: 101;

@@ -5,6 +5,7 @@ import styles from "./styles/TankGroupWidget.module.scss"
 import { ITankGroup } from '../../DashboardTypes';
 import navigate from 'next/navigation';
 import Link from 'next/link';
+import ContentBox from '@/app/components/contentBox/ContentBox';
 
 type ITankGroupWidgetProps = {
     tankGroup: ITankGroup
@@ -15,8 +16,9 @@ const TankGroupWidget: React.FunctionComponent<ITankGroupWidgetProps> = (props: 
     const size = 125;
 
     return (
-        <Link href={`/tanks/${props.tankGroup.id}`} style={{ textDecoration: 'none' }}>
-            <div className={styles.group}>
+
+        <ContentBox customBoxClass={styles.group}>
+            <Link href={`/tanks/${props.tankGroup.id}`} style={{ textDecoration: 'none' }}>
                 <div className={styles.content}>
                     <div className={styles.header}>
                         <div className={styles.name}>
@@ -44,8 +46,8 @@ const TankGroupWidget: React.FunctionComponent<ITankGroupWidgetProps> = (props: 
                         </div>
                     </div>
                 </div>
-            </div>
-        </Link >
+            </Link >
+        </ContentBox>
 
     )
 }

@@ -1,12 +1,11 @@
 .dashboard {
-    margin: 40px;
-    margin-top: 100px;
+    margin-left: 20px;
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 35px; // based on template
     z-index: 100;
-    width: calc(100vw - 300px);
+    width: 100%;
 
     .info {
         display: flex;
@@ -14,31 +13,29 @@
         justify-content: space-between;
         width: 100%;
         height: 288;
-        gap: 35px;
     }
 
     .tankGroups {
         display: grid;
         width: 100%;
-        grid-template-columns: repeat(auto-fit, 450px);
-        gap: 35px;
+        grid-template-columns: repeat("auto-fit");
     }
 
     @media (min-width: 700px) {
         .tankGroups {
-            grid-template-columns: repeat(2, 450px);
+            grid-template-columns: 1fr 1fr;
         }
     }
 
     @media (min-width: 1000px) {
         .tankGroups {
-            grid-template-columns: repeat(3, 450px);
+            grid-template-columns: 1fr 1fr 1fr;
         }
     }
 
     @media (min-width: 1700px) {
         .tankGroups {
-            grid-template-columns: repeat(4, 450px);
+            grid-template-columns: 1fr 1fr 1fr 1fr;
         }
     }
 

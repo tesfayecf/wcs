@@ -28,17 +28,13 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardPr
 
   const renderTanksInfo = React.useCallback((tankGroups: ITankGroup[]) => {
     return tankGroups.map((tankInfo: ITankGroup, index: number) =>
-      <ContentBox key={index}>
-        <TankGroupWidget tankGroup={tankInfo} key={index} />
-      </ContentBox>
+      <TankGroupWidget tankGroup={tankInfo} key={index} />
     );
   }, [props.tankGroups])
 
   const renderAddTankGroupWidget = React.useCallback(() => {
     return (
-      <ContentBox>
-        <AddTankGroupWidget />
-      </ContentBox>
+      <AddTankGroupWidget />
     );
   }, [])
 
@@ -46,12 +42,8 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardPr
   return (
     <div id="dashboard" className={styles.dashboard}>
       <div id="dashboardInfo" className={styles.info}>
-        <div id="dashboardSummary" className={contentBoxStyles.content_box_summary}>
-          <SummaryWidget />
-        </div>
-        <div id="dashboardWeather" className={contentBoxStyles.content_box_weather}>
-          <WeatherWidget />
-        </div>
+        <SummaryWidget />
+        <WeatherWidget />
       </div>
       <div id="dashboardTanks" className={styles.tankGroups}>
         {renderTanksInfo(props.tankGroups)}

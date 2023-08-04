@@ -1,10 +1,11 @@
 .main {
     position: relative;
-    width: 450px;
+    // width: calc(100vw / 3 - 150px);
+    width: 1fr;
     height: 300px;
     border-radius: 12px;
 
-    &_content {
+    .content {
         display: flex;
         background-color: rgba(0, 0, 0, 0);
         flex-direction: row;
@@ -14,7 +15,7 @@
         justify-content: center;
         align-items: center;
 
-        &_button {
+        .button {
             width: 70%;
             height: 70%;
             border-color: black;
@@ -25,11 +26,11 @@
             justify-content: space-around;
             align-items: center;
 
-            &_icon {
+            .icon {
                 font-size: 100px;
             }
 
-            &_text {
+            .text {
                 font-size: 10px;
             }
         }

@@ -1,6 +1,7 @@
 import React, { SVGAttributes } from 'react';
 import styles from "./styles/WeatherWidget.module.scss"
 import { HEXToVBColor, VBColorToHEX } from '@/app/utils/lib/styles';
+import ContentBox from '@/app/components/contentBox/ContentBox';
 // import getIcon from '../../data/icons/iconsMap';
 // import '../styles.css'
 type IWeatherWidgetProps = {}
@@ -27,15 +28,14 @@ const WeatherWidget: React.FunctionComponent<IWeatherWidgetProps> = (props: IWea
     // }, []);
 
     return (
-        <div className={styles.weather}>
+        <ContentBox customBoxClass={styles.weather}>
             <CustomReactWeather
                 data={dummyWeatherData}
                 locationLabel="Girona"
                 unitsLabels={{ temperature: 'ºC', windSpeed: 'Km/h' }}
                 showForecast={true}
             />
-        </div>
-
+        </ContentBox>
     );
 };
 

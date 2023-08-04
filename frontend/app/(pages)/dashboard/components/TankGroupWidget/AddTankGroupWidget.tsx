@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { IRootState } from '@/app/utils/store/store';
 import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler';
 import styles from './styles/AddTankGroupWidget.module.scss';
+import ContentBox from '@/app/components/contentBox/ContentBox';
 
 const dashboardHandler = DashboardHandler.getInstance();
 
@@ -16,13 +17,13 @@ const AddTankGroupButton: React.FunctionComponent<IAddTankGroupButtonProps> = (p
     }, [props.showAddTankMenu]);
 
     return (
-        <div className={styles.main}>
-            <div className={styles.main_content}>
-                <button onClick={toggleAddTankGroupMenu} className={styles.main_content_button}>
-                    <span className={styles.main_content_button_icon}>+</span>
+        <ContentBox customBoxClass={styles.main}>
+            <div className={styles.content}>
+                <button onClick={toggleAddTankGroupMenu} className={styles.button}>
+                    <span className={styles.icon}>+</span>
                 </button>
             </div>
-        </div>
+        </ContentBox>
     )
 };
 

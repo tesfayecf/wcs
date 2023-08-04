@@ -1,13 +1,13 @@
 import React from 'react'
 import styles from './styles/SummaryWidget.module.scss'
+import ContentBox from '@/app/components/contentBox/ContentBox'
 
 type ISummaryWidgetProps = {}
 
 
 const SummaryWidget: React.FunctionComponent<ISummaryWidgetProps> = (props: ISummaryWidgetProps) => {
   return (
-
-    <div className={styles.summary}>
+    <ContentBox customBoxClass={styles.summary}>
       <div id="title-div" className={styles.title}>
         <p>Summary</p>
       </div>
@@ -21,7 +21,8 @@ const SummaryWidget: React.FunctionComponent<ISummaryWidgetProps> = (props: ISum
           <SummaryCard title='Savings' quantity={50} unit='liter' percentage={17} />
         </div>
       </div>
-    </div>
+    </ContentBox>
+
   )
 }
 

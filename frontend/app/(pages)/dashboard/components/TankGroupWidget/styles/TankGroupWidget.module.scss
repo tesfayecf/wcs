@@ -2,7 +2,8 @@
     appearance: none;
     color: black;
     position: relative;
-    width: 450px;
+    // width: calc(100vw / 3 - 150px);
+    width: 1fr;
     height: 300px;
     border-radius: 12px;
     background-color: rgb(224, 255, 242);

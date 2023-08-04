@@ -1,6 +1,8 @@
 .pagesLayout {
-    display: flex;
-    flex-direction: row;
+    // display: flex;
+    // flex-direction: row;
+    // justify-content: flex-start;
+    width: calc(100vw - 60px);
 
     .pagesContent {
         margin-left: 200px;

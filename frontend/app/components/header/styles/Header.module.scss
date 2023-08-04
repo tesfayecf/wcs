@@ -1,0 +1,16 @@
+.header {
+    width: 100%;
+    height: 70px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: 20px;
+
+    .headerCard {
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        border-radius: 0px 0px 14px 14px;
+    }
+}

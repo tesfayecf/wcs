@@ -1,11 +1,10 @@
 'use client'
 import '@/styles/globals.scss'
 import React from 'react'
-
+import styles from "./Layout.module.scss"
 import Footer from '@/app/components/fotter/Footer'
-// import Navbar from '@/app/components/navbar/Navbar'
 import RequireAuth from '../utils/auth/requireAuth'
-import NavbarNew from '../components/navbar/NavbarNew'
+import Navbar from '../components/navbar/Navbar'
 
 
 type IAppLayoutProps = {
@@ -15,17 +14,12 @@ type IAppLayoutProps = {
 export default function RootLayout({ children }: IAppLayoutProps) {
     return (
         <RequireAuth>
-            <div id="pagesLayout">
-                <header>
-                    <nav>
-                        <NavbarNew />
-                    </nav>
-                </header>
-                <noscript>You need to enable JavaScript to run this app.</noscript>
-                <div>
+            <div id="pagesLayout" className={styles.pagesLayout}>
+                <Navbar />
+                <div id='pagesContent' className={styles.pagesContent}>
                     {children}
+                    <Footer />
                 </div>
-                <Footer />
             </div >
         </RequireAuth>
     )

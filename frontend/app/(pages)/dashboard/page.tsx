@@ -34,22 +34,28 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardPr
     );
   }, [props.tankGroups])
 
+  const renderAddTankGroupWidget = React.useCallback(() => {
+    return (
+      <ContentBox>
+        <AddTankGroupWidget />
+      </ContentBox>
+    );
+  }, [])
+
 
   return (
-    <div className={styles.dashboard}>
-      <div className={styles.info}>
-        <div className={contentBoxStyles.content_box_summary}>
+    <div id="dashboard" className={styles.dashboard}>
+      <div id="dashboardInfo" className={styles.info}>
+        <div id="dashboardSummary" className={contentBoxStyles.content_box_summary}>
           <SummaryWidget />
         </div>
-        <div className={contentBoxStyles.content_box_weather}>
+        <div id="dashboardWeather" className={contentBoxStyles.content_box_weather}>
           <WeatherWidget />
         </div>
       </div>
-      <div className={styles.tankGroups}>
+      <div id="dashboardTanks" className={styles.tankGroups}>
         {renderTanksInfo(props.tankGroups)}
-        <ContentBox>
-          <AddTankGroupWidget />
-        </ContentBox>
+        {renderAddTankGroupWidget()}
       </div>
       <AddTankGroupPopUp />
     </div>

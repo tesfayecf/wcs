@@ -7,7 +7,7 @@ import { IRootState } from "@/app/utils/store/store";
 import { connect } from "react-redux";
 import TankGroupWidget from "@/app/(pages)/dashboard/components/TankGroupWidget/TankGroupWidget";
 import ContentBox from "@/app/components/contentBox/ContentBox";
-import NavbarNew from "@/app/components/navbar/NavbarNew";
+import Navbar from "@/app/components/navbar/Navbar";
 
 const authHandler = AuthHandler.getInstance()
 const appHandler = AppHandler.getInstance()
@@ -18,7 +18,7 @@ interface ITestProps extends ReturnType<typeof mapStateToProps> { }
 const Test: React.FunctionComponent<ITestProps> = (props: ITestProps) => {
     return (
         <div >
-            <NavbarNew />
+            <Navbar />
         </div>
     )
 }

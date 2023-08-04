@@ -1,12 +1,12 @@
 .dashboard {
-
+    margin: 40px;
+    margin-top: 100px;
     display: flex;
-    margin-right: 40px;
-    margin-left: 40px;
     flex-direction: column;
     justify-content: space-between;
-    gap: 24px;
+    gap: 35px; // based on template
     z-index: 100;
+    width: calc(100vw - 300px);
 
     .info {
         display: flex;
@@ -14,14 +14,14 @@
         justify-content: space-between;
         width: 100%;
         height: 288;
-        gap: 24px;
+        gap: 35px;
     }
 
     .tankGroups {
         display: grid;
         width: 100%;
         grid-template-columns: repeat(auto-fit, 450px);
-        gap: 20px;
+        gap: 35px;
     }
 
     @media (min-width: 700px) {

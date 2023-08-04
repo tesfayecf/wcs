@@ -1,9 +1,14 @@
 import React from 'react'
 import Link from 'next/link'
 import styles from './styles/Navbar.module.scss'
-import { IRootState, store } from '@/app/utils/store/store'
+import { IRootState } from '@/app/utils/store/store'
 import { usePathname } from 'next/navigation'
 import { connect } from 'react-redux'
+import LogoIcon from '@/public/svg/logoIcon'
+import DashboardIcon from '@/public/svg/DashboardIcon'
+import AnalyticsIcon from '@/public/svg/AnalyticsIcon'
+import SettingsIcon from '@/public/svg/SettingsIcon'
+import ProfileIcon from '@/public/svg/ProfileIcon'
 
 interface INavbarProps extends ReturnType<typeof mapStateToProps> { }
 
@@ -11,42 +16,53 @@ const Navbar: React.FunctionComponent<INavbarProps> = (props: INavbarProps) => {
 
     return (
         <div id='navbar' className={styles.navbar}>
-            <div id='navigation-buttons-container' className={styles.buttons}>
-                <NavbarButton text='Dashboard' index="/dashboard" />
-                <NavbarButton text='Analytics' index="/analytics" />
-                <NavbarButton text='Profile' index="/analytics" />
+            <div id='logo' className={styles.logo}>
+                <LogoIcon stroke='#55dc9e' size={75} />
             </div>
-            <div className={styles.userInfo}>
-                {props.userInfo.first_name}
+            <div id='navkeys' className={styles.navkeys}>
+                <NavKey text='Dashboard' index='/dashboard' icon={<DashboardIcon size={25} strokeWidth={1.2} />} />
+                <NavKey text='Analytics' index='/analytics' icon={<AnalyticsIcon size={25} strokeWidth={1.2} />} />
+                <NavKey text='Settings' index='/settings' icon={<SettingsIcon size={25} strokeWidth={1.2} />} />
+                <NavKey text='Profile' index='/about' icon={<ProfileIcon size={25} strokeWidth={1.2} />} />
             </div>
-        </div>
+        </div >
     )
 }
 
 const mapStateToProps = (state: IRootState) => ({
-    userInfo: state.app.userInfo
+
 })
 
 export default connect(mapStateToProps, {})(Navbar)
 
 
-type INavbarButtonProps = {
+type INavKeyProps = {
     text: string;
     index: string;
+    icon?: JSX.Element;
 }
 
-const NavbarButton: React.FunctionComponent<INavbarButtonProps> = (props: INavbarButtonProps) => {
+const NavKey: React.FunctionComponent<INavKeyProps> = (props: INavKeyProps) => {
     const pathname = usePathname();
     const selected = pathname.includes(props.index);
-    const buttonStyle = selected ? styles.button_selected : styles.button;
+    const selectedSytle = selected ? `${styles.selected}` : '';
+    const contClass = `${selectedSytle} ${styles.navkey_cont}`
+    const textClass = `${selectedSytle} ${styles.navkey_text}`
+    const iconClass = `${selectedSytle} ${styles.navkey_icon}`
     return (
-        <Link href={props.index} style={{ textDecoration: 'none' }}>
-            <div id='navbarButton' className={buttonStyle}>
-                <span id='navbarButtonText' className={styles.navigation_button_text}>
-                    {props.text}
-                </span>
-            </div>
-        </Link >
+        <div className={contClass} >
+            <Link href={props.index} style={{ textDecoration: 'none' }}>
+                <div id='navkey' className={styles.navkey}>
+                    <div id='navkey-icon' className={iconClass}>
+                        {props.icon}
+                    </div>
+                    <span id='navkey-text' className={styles.navkey_text} style={{ textDecoration: 'none' }}>
+                        {props.text}
+                    </span>
+                </div>
+            </Link >
+        </div>
+
     )
 }
 

@@ -1,0 +1,14 @@
+.pagesLayout {
+    display: flex;
+    flex-direction: row;
+
+    .pagesContent {
+        margin-left: 200px;
+    }
+
+    @media (max-width: 800px) {
+        .pagesContent {
+            margin-left: 75px;
+        }
+    }
+}

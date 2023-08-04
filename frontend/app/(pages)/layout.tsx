@@ -1,5 +1,4 @@
 'use client'
-import '@/styles/globals.scss'
 import React from 'react'
 import styles from "./Layout.module.scss"
 import Footer from '@/app/components/fotter/Footer'

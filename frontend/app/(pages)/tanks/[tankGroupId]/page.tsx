@@ -1,7 +1,7 @@
 'use client'
 import React from "react";
 import TankGroupWidget from "@/app/(pages)/tanks/components/TankGroupWidget/TankGroupWidget";
-import styles from "./../styles/Tanks.module.scss"
+import styles from "./styles/Tanks.module.scss"
 import TanksHandler from "../TanksHandler";
 import TanksLayout from "../components/TanksLayout/TanksLayout";
 

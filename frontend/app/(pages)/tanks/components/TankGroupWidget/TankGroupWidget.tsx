@@ -5,6 +5,7 @@ import styles from "./styles/TankGroupWidget.module.scss"
 import { ITankGroup, ITankGroupStats } from '@/app/(pages)/dashboard/DashboardTypes';
 import { IRootState } from '@/app/utils/store/store';
 import { connect } from 'react-redux';
+import ContentBox from '@/app/components/contentBox/ContentBox';
 
 interface ITankGroupWidgetProps extends ReturnType<typeof mapStateToProps> { }
 
@@ -13,7 +14,7 @@ const TankGroupWidget: React.FunctionComponent<ITankGroupWidgetProps> = (props: 
     const size = 125;
 
     return (
-        <div className={styles.group}>
+        <ContentBox customBoxClass={styles.group}>
             <div className={styles.content}>
                 <div className={styles.header}>
                     <div className={styles.name}>
@@ -45,7 +46,8 @@ const TankGroupWidget: React.FunctionComponent<ITankGroupWidgetProps> = (props: 
                     </div>
                 </div>
             </div>
-        </div>
+        </ContentBox>
+
     )
 }
 

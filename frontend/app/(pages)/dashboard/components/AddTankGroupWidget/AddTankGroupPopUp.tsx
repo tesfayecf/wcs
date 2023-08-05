@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { IRootState } from '@/app/utils/store/store';
 import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler';
-import PopUpFormTemplate from '@/app/components/popUp/PopUpFormTemplate';
+import PopUpFormTemplate from '@/app/components/popUpFormTemplate/PopUpFormTemplate';
 
 const dashboardHandler = DashboardHandler.getInstance();
 

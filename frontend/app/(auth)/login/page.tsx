@@ -1,7 +1,7 @@
 'use client'
 import React from "react";
 import styles from "./styles/Login.module.scss"
-import PopUpFormTemplate from "@/app/components/popUp/PopUpFormTemplate";
+import PopUpFormTemplate from "@/app/components/popUpFormTemplate/PopUpFormTemplate";
 import AuthHandler from "../AuthHandler";
 import AppHandler from "@/app/app/AppHandler";
 import { IRootState } from "@/app/utils/store/store";

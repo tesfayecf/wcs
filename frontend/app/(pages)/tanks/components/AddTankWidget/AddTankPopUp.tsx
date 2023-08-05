@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { IRootState } from '@/app/utils/store/store';
-import PopUpFormTemplate from '@/app/components/popUp/PopUpFormTemplate';
+import PopUpFormTemplate from '@/app/components/popUpFormTemplate/PopUpFormTemplate';
 import TanksHandler from '../../TanksHandler';
 
 const tanksHandler = TanksHandler.getInstance();

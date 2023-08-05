@@ -104,16 +104,22 @@ export const APIInterface = {
             argsKeys: ["tankId", "tankGroupId"],
         },
         createTank: {
-            args: (args: Partial<ITank>): APIResponse<void> => { return {} as APIResponse<void> },
+            args: (
+                tankGroupId: number, name: string, capacity: number, type: string,
+                dimensions: string, brand: string, material: string
+            ): APIResponse<void> => { return {} as APIResponse<void> },
             address: "api/create-tank/",
             method: "POST",
-            argsKeys: ["tankGroupId", "name", "capacity", "type", "brand", "material"],
+            argsKeys: ["tankGroupId", "name", "capacity", "type", "dimensions", "brand", "material"],
         },
         editTank: {
-            args: (args: Partial<ITank>): APIResponse<void> => { return {} as APIResponse<void> },
+            args: (
+                tankId: number, tankGroupId: number, name: string, capacity: number,
+                type: string, dimensions: string, brand: string, material: string
+            ): APIResponse<void> => { return {} as APIResponse<void> },
             address: "api/edit-tank/",
             method: "POST",
-            argsKeys: ["tankId", "tankGroupId", "name", "capacity", "type", "brand", "material"],
+            argsKeys: ["tankId", "tankGroupId", "name", "capacity", "type", "dimensions", "brand", "material"],
         },
         deleteTank: {
             args: (tankId: number, tankGroupId: number): APIResponse<void> => { return {} as APIResponse<void> },
@@ -122,7 +128,7 @@ export const APIInterface = {
             argsKeys: ["tankId", "tankGroupId"],
         },
         getTankStats: {
-            args: (tankId: number): APIResponse<any> => { return {} as APIResponse<any> },
+            args: (tankId: number, tankGroupId: number): APIResponse<any> => { return {} as APIResponse<any> },
             address: "api/tank-stats/",
             method: "POST",
             argsKeys: ["tankId", "tankGroupId"],

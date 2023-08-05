@@ -68,7 +68,7 @@ class DashboardHandler {
                 throw new Error(response.statusText);
             }
             this.setShowCreateTankGroupMenu(false);
-            this.setTankGroupCreationForm({ name: "", location: "", nameError: false, locationError: false, description: "" });
+            this.setTankGroupCreationForm({ name: "", location: "", nameError: false, locationError: false, description: "", descriptionError: false });
 
             // Update redux
             this.getTankGroups();
@@ -85,18 +85,18 @@ class DashboardHandler {
     }
 
     public setTankGroupCreationFormName(name: string) {
-        const error = !/^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$/.test(name);
-        store.dispatch(dashboardActions.setTankCreationFormName({ name, error: error }))
+        const nameError = !/^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$/.test(name);
+        store.dispatch(dashboardActions.setTankGroupCreationForm({ name, nameError }))
     }
 
     public setTankGroupCreationFormLocation(location: string) {
-        const error = false;
-        store.dispatch(dashboardActions.setTankCreationFormLocation({ location, error: error }));
+        const locationError = false;
+        store.dispatch(dashboardActions.setTankGroupCreationForm({ location, locationError }));
     }
 
     public setTankGroupCreationFormDescription(description: string) {
-        const error = false;
-        store.dispatch(dashboardActions.setTankCreationFormDescription({ description }));
+        const descriptionError = false;
+        store.dispatch(dashboardActions.setTankGroupCreationForm({ description, descriptionError }));
     }
 }
 

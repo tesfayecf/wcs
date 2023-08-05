@@ -28,10 +28,10 @@ const initialState: ITanksStore = {
         nameError: false,
         type: 'Storage',
         typeError: false,
-        capacity: "",
+        capacity: 0,
         capacityError: false,
-        dimension: '',
-        dimensionError: false,
+        dimensions: '',
+        dimensionsError: false,
         material: '',
         materialError: false,
         brand: '',
@@ -63,44 +63,29 @@ const tankSlice = createSlice({
         setSensorsData: (state, action: PayloadAction<{ sensorsData: any }>) => {
             state.sensorsData = action.payload.sensorsData;
         },
+
+        // POPUP
         setShowAddTankMenu: (state, action: PayloadAction<{ state: boolean }>) => {
             state.showAddTankMenu = action.payload.state;
         },
-
-        setTankCreationForm: (state, action: PayloadAction<{ form: ITankCreationForm }>) => {
-            state.tankCreationForm = action.payload.form;
+        setTankCreationForm: (state, action: PayloadAction<{
+            name?: string, nameError?: boolean, type?: string, typeError?: boolean,
+            capacity?: number, capacityError?: boolean, dimensions?: string, dimensionsError?: boolean,
+            material?: string, materialError?: boolean, brand?: string, brandError?: boolean
+        }>) => {
+            if (action.payload.name) state.tankCreationForm.name = action.payload.name;
+            if (action.payload.nameError) state.tankCreationForm.nameError = action.payload.nameError;
+            if (action.payload.type) state.tankCreationForm.type = action.payload.type;
+            if (action.payload.typeError) state.tankCreationForm.typeError = action.payload.typeError;
+            if (action.payload.capacity) state.tankCreationForm.capacity = action.payload.capacity;
+            if (action.payload.capacityError) state.tankCreationForm.capacityError = action.payload.capacityError;
+            if (action.payload.dimensions) state.tankCreationForm.dimensions = action.payload.dimensions;
+            if (action.payload.dimensionsError) state.tankCreationForm.dimensionsError = action.payload.dimensionsError;
+            if (action.payload.material) state.tankCreationForm.material = action.payload.material;
+            if (action.payload.materialError) state.tankCreationForm.materialError = action.payload.materialError;
+            if (action.payload.brand) state.tankCreationForm.brand = action.payload.brand;
+            if (action.payload.brandError) state.tankCreationForm.brandError = action.payload.brandError;
         },
-
-        setTankCreationFormName: (state, action: PayloadAction<{ name: string, error: boolean }>) => {
-            state.tankCreationForm.name = action.payload.name;
-            state.tankCreationForm.nameError = action.payload.error;
-        },
-
-        setTankCreationFormCapacity: (state, action: PayloadAction<{ capacity: string, error: boolean }>) => {
-            state.tankCreationForm.capacity = action.payload.capacity;
-            state.tankCreationForm.capacityError = action.payload.error;
-        },
-
-        setTankCreationFormType: (state, action: PayloadAction<{ type: string, error: boolean }>) => {
-            state.tankCreationForm.type = action.payload.type;
-            state.tankCreationForm.typeError = action.payload.error;
-        },
-
-        setTankCreationFormDimension: (state, action: PayloadAction<{ dimension: string, error: boolean }>) => {
-            state.tankCreationForm.dimension = action.payload.dimension;
-            state.tankCreationForm.dimensionError = action.payload.error;
-        },
-
-        setTankCreationFormMaterial: (state, action: PayloadAction<{ material: string, error: boolean }>) => {
-            state.tankCreationForm.material = action.payload.material;
-            state.tankCreationForm.materialError = action.payload.error;
-        },
-
-        setTankCreationFormBrand: (state, action: PayloadAction<{ brand: string, error: boolean }>) => {
-            state.tankCreationForm.brand = action.payload.brand;
-            state.tankCreationForm.brandError = action.payload.error;
-        },
-
     }
 });
 

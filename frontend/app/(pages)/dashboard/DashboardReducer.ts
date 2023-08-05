@@ -15,6 +15,7 @@ const initialState: IDashboardStore = {
         location: "",
         locationError: false,
         description: "",
+        descriptionError: false
     }
 };
 
@@ -26,26 +27,21 @@ const dashboardSlice = createSlice({
         setTankGroups: (state, action: PayloadAction<{ tankGroups: ITankGroup[] }>) => {
             state.tankGroups = action.payload.tankGroups;
         },
+
         setShowCreateTankGroupMenu: (state, action: PayloadAction<{ state: boolean }>) => {
             state.showAddTankGroupMenu = action.payload.state;
         },
-
-        setTankGroupCreationForm: (state, action: PayloadAction<{ form: ITankGroupCreationForm }>) => {
-            state.tankGroupCreationForm = action.payload.form;
-        },
-
-        setTankCreationFormName: (state, action: PayloadAction<{ name: string, error: boolean }>) => {
-            state.tankGroupCreationForm.name = action.payload.name;
-            state.tankGroupCreationForm.nameError = action.payload.error;
-        },
-
-        setTankCreationFormLocation: (state, action: PayloadAction<{ location: string, error: boolean }>) => {
-            state.tankGroupCreationForm.location = action.payload.location;
-            state.tankGroupCreationForm.locationError = action.payload.error;
-        },
-        setTankCreationFormDescription: (state, action: PayloadAction<{ description: string }>) => {
-            state.tankGroupCreationForm.description = action.payload.description;
-        },
+        setTankGroupCreationForm: (state, action: PayloadAction<{
+            name?: string, nameError?: boolean, location?: string, locationError?: boolean,
+            description?: string, descriptionError?: boolean
+        }>) => {
+            if (action.payload.name) state.tankGroupCreationForm.name = action.payload.name;
+            if (action.payload.nameError) state.tankGroupCreationForm.nameError = action.payload.nameError;
+            if (action.payload.location) state.tankGroupCreationForm.location = action.payload.location;
+            if (action.payload.locationError) state.tankGroupCreationForm.locationError = action.payload.locationError;
+            if (action.payload.description) state.tankGroupCreationForm.description = action.payload.description;
+            if (action.payload.descriptionError) state.tankGroupCreationForm.descriptionError = action.payload.descriptionError;
+        }
     }
 });
 

@@ -5,6 +5,7 @@ import styles from "./styles/TankWidget.module.scss"
 import { IRootState } from '@/app/utils/store/store';
 import { connect } from 'react-redux';
 import { ISensor, ITank } from '../../TanksTypes';
+import ContentBox from '@/app/components/contentBox/ContentBox';
 
 interface ITankWidgetWidgetProps extends ReturnType<typeof mapStateToProps> {
     tank: ITank,
@@ -13,7 +14,11 @@ interface ITankWidgetWidgetProps extends ReturnType<typeof mapStateToProps> {
 const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITankWidgetWidgetProps) => {
     const size = 125;
 
-    const status = props.tank.isActive ? "ON" : "OFF"
+    const getStatus = () => {
+        const sensor = props.sensors.find(s => s.tank.id === props.tank.id)
+        if (!sensor) return "OFF"
+        else return "ON"
+    }
 
     const getSensorValue = () => {
         const sensor = props.sensors.find(s => s.tank.id === props.tank.id)
@@ -24,7 +29,7 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
     }
 
     return (
-        <div className={styles.tank}>
+        <ContentBox customBoxClass={styles.tank}>
             {/* {props.status ? " " : <div className={styles.disabled} />} */}
             <div className={styles.content}>
                 <div className={styles.header}>
@@ -32,7 +37,7 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
                         <p>{props.tank.name}</p>
                     </div>
                     <div className={styles.status}>
-                        <p className={styles.text}> Status {status}</p>
+                        <p className={styles.text}> Status {getStatus()}</p>
                     </div>
                 </div>
                 <div className={styles.data}>
@@ -56,7 +61,8 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
                     </div>
                 </div>
             </div>
-        </div >
+        </ContentBox>
+
     )
 }
 

@@ -3,12 +3,12 @@ import { ITankGroup, ITankGroupStats } from "../dashboard/DashboardTypes";
 export interface ITankCreationForm {
     name: string;
     nameError: boolean;
-    capacity: string;
+    capacity: number;
     capacityError: boolean;
     type: string;
     typeError: boolean;
-    dimension: string;
-    dimensionError: boolean;
+    dimensions: string;
+    dimensionsError: boolean;
     material: string;
     materialError: boolean;
     brand: string;

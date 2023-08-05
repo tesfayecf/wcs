@@ -1,9 +1,6 @@
 .tank {
     position: relative;
-    width: 450px;
     height: 300px;
-    border-radius: 12px;
-    background-color: rgb(255, 140, 253);
 
     .disabled {
         position: absolute;
@@ -17,9 +14,6 @@
     .content {
         display: flex;
         flex-direction: column;
-        width: inherit;
-        height: inherit;
-        border-radius: inherit;
 
         .header {
             display: flex;

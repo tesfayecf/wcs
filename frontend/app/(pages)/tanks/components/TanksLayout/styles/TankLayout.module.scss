@@ -1,6 +1,4 @@
 .tanks {
-    display: grid;
+    display: flex;
     width: 100%;
-    grid-template-columns: repeat(auto-fit, 450px);
-    gap: 30px;
 }

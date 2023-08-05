@@ -3,6 +3,7 @@ import { ISensor, ITankCreationForm, ITanksParams } from "./TanksTypes";
 import { tankActions } from "./TanksReducer";
 import RequestManager from "@/app/utils/api/requestManager";
 import WebSocketManager2 from "@/app/utils/api/websocketManager2";
+import { appActions } from "@/app/app/AppReducer";
 
 const requestManager = RequestManager.getInstance();
 const websocketManager2 = WebSocketManager2.getInstance();
@@ -19,6 +20,46 @@ class TanksHandler {
 
         console.log("Dashboard handler getInstance()");
         return TanksHandler.instance;
+    }
+
+    // ACTIONS
+
+    public async createTank() {
+        store.dispatch(appActions.startLoading())
+        // Check user is authorized
+        const state = store.getState().tanks;
+        // const { nameError, name, locationError, location, description } = state.tankGroupCreationForm;
+        const {
+            name, nameError,
+            capacity, capacityError,
+            type, typeError,
+            dimensions, dimensionsError,
+            material, materialError,
+            brand, brandError,
+        } = state.tankCreationForm;
+
+        if (nameError || capacityError || typeError || dimensionsError || materialError || brandError) {
+            throw new Error("Invalid form");
+        } else {
+            const response = await requestManager.request("dashboard", "createTank", [state.tankGroupId, name, capacity, type, dimensions, brand, material])
+            if (response.status == 201) {
+                console.log("Tank created");
+            } else {
+                store.dispatch(appActions.finishLoading())
+                throw new Error(response.statusText);
+            }
+            this.setShowAddTankMenu(false);
+            this.setTankCreationForm({
+                name: "", nameError: false, capacity: 0, capacityError: false,
+                brand: "", brandError: false, material: "", materialError: false,
+                dimensions: "", dimensionsError: false, type: "", typeError: false,
+            });
+
+            // Update redux
+            this.getTanksGroupInfo();
+        }
+
+        store.dispatch(appActions.finishLoading())
     }
 
     // LOADERS
@@ -131,33 +172,34 @@ class TanksHandler {
     }
 
     public setTankCreationFormName(name: string) {
-        const error = /^[a-zA-Z0-9_]*$/.test(name);
-        store.dispatch(tankActions.setTankCreationFormName({ name, error }))
+        // const nameError = /^[a-zA-Z0-9_]*$/.test(name);
+        const nameError = false;
+        store.dispatch(tankActions.setTankCreationForm({ name, nameError }))
     }
 
-    public setTankCreationFormCapacity(capacity: string) {
-        const error = false;
-        store.dispatch(tankActions.setTankCreationFormCapacity({ capacity, error }));
+    public setTankCreationFormCapacity(capacity: number) {
+        const capacityError = false;
+        store.dispatch(tankActions.setTankCreationForm({ capacity, capacityError }));
     }
 
     public setTankCreationFormType(type: string) {
-        const error = false;
-        store.dispatch(tankActions.setTankCreationFormType({ type, error }));
+        const typeError = false;
+        store.dispatch(tankActions.setTankCreationForm({ type, typeError }));
     }
 
-    public setTankCreationFormDimension(dimension: string) {
-        const error = false;
-        store.dispatch(tankActions.setTankCreationFormDimension({ dimension, error }));
+    public setTankCreationFormDimension(dimensions: string) {
+        const dimensionsError = false;
+        store.dispatch(tankActions.setTankCreationForm({ dimensions, dimensionsError }));
     }
 
     public setTankCreationFormMaterial(material: string) {
-        const error = false;
-        store.dispatch(tankActions.setTankCreationFormMaterial({ material, error }));
+        const materialError = false;
+        store.dispatch(tankActions.setTankCreationForm({ material, materialError }));
     }
 
     public setTankCreationFormBrand(brand: string) {
-        const error = false;
-        store.dispatch(tankActions.setTankCreationFormBrand({ brand, error }));
+        const brandError = false;
+        store.dispatch(tankActions.setTankCreationForm({ brand, brandError }));
     }
 }
 

@@ -137,22 +137,17 @@ class GetTankView(APIView):
             return Response([], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class CreateTankView(APIView):
-    def post(self, request, format=None):
-        user = request.user
+    def post(self, request):
+        tank_group = getTankGroup(request=request)
         data_s = CreateTankSerializer(data=request.data)
         if data_s.is_valid():
             name = data_s.data.get('name')
-            capacity = data_s.data.get('capacity'),
+            capacity = data_s.data.get('capacity')
+            dimensions = data_s.data.get('dimensions')
+            type = data_s.data.get('type')
+            material = data_s.data.get('material')
+            brand = data_s.data.get('brand')
             isActive = True
-            dimensions = data_s.data.get('dimensions'),
-            material = data_s.data.get('material'),
-            brand = data_s.data.get('brand'),
-            tankGroupId = data_s.data.get('tankGroupId')
-
-            tank_group = TankGroup.objects.get(pk=tankGroupId, user=user)
-            if tank_group.user != request.user or not tank_group :
-                return Response({"error": "You don't have permission to delete this TankGroup."},
-                                status=status.HTTP_403_FORBIDDEN)
 
             queryName = Tank.objects.filter(name=name)
 
@@ -160,11 +155,12 @@ class CreateTankView(APIView):
                 tank = Tank(
                     name=name,
                     capacity=capacity,
-                    isActive=isActive,
                     dimensions=dimensions,
                     material=material,
                     brand=brand,
-                    tankGroup=tankGroupId,
+                    type=type,
+                    tankGroup=tank_group,
+                    isActive=isActive,
                 )
                 tank.save()
                 return Response(TankSerializer(tank).data, status=status.HTTP_201_CREATED)

@@ -4,13 +4,15 @@ import { connect } from 'react-redux';
 import { IRootState } from '@/app/utils/store/store';
 import styles from './styles/AddTankWidget.module.scss';
 import ContentBox from '@/app/components/contentBox/ContentBox';
-
+import TanksHandler from '../../TanksHandler';
+const tanksHandler = TanksHandler.getInstance();
 
 interface IAddWaterTankWidgetProps extends ReturnType<typeof mapStateToProps> { }
 
 const AddTankWidget: React.FunctionComponent<IAddWaterTankWidgetProps> = (props: IAddWaterTankWidgetProps) => {
 
     const toggleAddTankMenu = React.useCallback(() => {
+        tanksHandler.setShowAddTankMenu(true)
     }, []);
 
     return (

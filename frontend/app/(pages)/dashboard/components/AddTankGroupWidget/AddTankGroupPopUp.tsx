@@ -14,6 +14,14 @@ const AddTankGroupPopUp: React.FunctionComponent<IAddWaterTankPopUpProps> = (pro
 
     const onClose = () => {
         dashboardHandler.setShowCreateTankGroupMenu(false);
+        dashboardHandler.setTankGroupCreationForm({
+            name: "",
+            nameError: false,
+            location: "",
+            locationError: false,
+            description: "",
+            descriptionError: false,
+        })
     }
 
     const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {

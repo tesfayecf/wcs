@@ -28,7 +28,7 @@ const TanksLayout: React.FunctionComponent<ITankLayoutProps> = (props: ITankLayo
         return props.tanks.map((tank, index) => {
             console.log(tank)
             tanksHandler.getTankSensor(tank.id);
-            const sensor = props.sensors.find(s => s.tank.id === tank.id);
+            // const sensor = props.sensors.find(s => s.tank.id === tank.id);
             return (
                 <TankWidget tank={tank} key={index} />
             )
@@ -37,9 +37,9 @@ const TanksLayout: React.FunctionComponent<ITankLayoutProps> = (props: ITankLayo
     }, [props.tanks])
 
     return (
-        <div className={style.tanks}>
+        <>
             {renderTanks()}
-        </div>
+        </>
     )
 }
 

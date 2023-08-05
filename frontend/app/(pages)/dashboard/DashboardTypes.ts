@@ -31,4 +31,5 @@ export interface ITankGroupCreationForm {
     location: string;
     locationError: boolean;
     description: string;
+    descriptionError: boolean;
 }

@@ -18,7 +18,6 @@
     .tankGroups {
         display: grid;
         width: 100%;
-        grid-template-columns: repeat("auto-fit");
     }
 
     @media (min-width: 700px) {

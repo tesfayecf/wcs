@@ -2,6 +2,7 @@ import json
 from django.conf import settings
 from django.http import HttpResponse
 from .models import Tank, TankGroup
+from sensors.models import TankSensor, Sensor
 from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import generics, status
@@ -211,6 +212,24 @@ class GetTankSensorsView(APIView):
             return Response(data, status=status.HTTP_200_OK)    
         except: 
             return Response({}, status=status.HTTP_200_OK)
+
+
+class AssignTankSensorView(APIView):
+    # each tank can only have one sensor assigned. We create a row in the table were one column is a tank and the other a sensor.
+    def post(self, request):
+        tank, _ = getTank(request=request)
+        serialNumber = request.data.get('serialNumber')
+        sensor = Sensor.objects.get(serial_number=serialNumber)
+        if not sensor:
+            return Response({"error": "Sensor not found."}, status=status.HTTP_404_NOT_FOUND)
+        relation = TankSensor.objects.filter(tank=tank) | TankSensor.objects.filter(sensor=sensor)
+        if relation:
+            return Response({"error": "This sensor is already assigned to this tank."}, status=status.HTTP_400_BAD_REQUEST)
+        tanksensor = TankSensor(sensor=sensor, tank=tank)
+        tanksensor.save()
+        return Response({}, status=status.HTTP_200_OK)
+
+
 
 def getTank(request):
     user = request.user

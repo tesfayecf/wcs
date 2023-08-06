@@ -6,8 +6,8 @@
 #include "connections/wifi-connection/WiFiConnectionManager.h"
 #include "utils/constants.h"
 
-// E8:9F:6D:93:59:B3 wemos d1 r2
-// 48:55:19:C8:87:7A wemos d1 mini
+// E8:9F:6D:93:59:B3 wemos d1 r2 base64: RTg6OUY6NkQ6OTM6NTk6QjM=
+// 48:55:19:C8:87:7A wemos d1 mini base64: NDg6NTU6MTk6Qzg6ODc6N0E=
 
 WiFiConnectionManager wifiManager;
 MQTTConnectionManager mqttManager;

@@ -28,11 +28,10 @@ class MqttManager:
         payload = message.payload.decode('utf-8')
         topic = message.topic
         print(f'Received message: {payload} on topic: {topic}')
-        # Process the message as needed
 
-    def subscribe(self, sensor_id, topic):
+    def subscribe(self, topic):
         self.mqtt_client.subscribe(topic)
-        print(f'Sensor {sensor_id} subscribed to topic {topic}')
+        print(f'Subscribed to topic {topic}')
         # You can save the subscriptions in a database or dictionary if needed
         # Example: self.subscriptions[sensor_id] = topic
 

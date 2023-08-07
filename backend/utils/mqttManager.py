@@ -16,7 +16,7 @@ class MqttManager:
     def __init__(self):
         if self._initialized:
             return
-        self.mqtt_client = mqtt.Client()
+        self.mqtt_client = mqtt.Client(client_id="server", clean_session=True)
         self.mqtt_client.user_data_set(userdata={'username': "server"})
         self.mqtt_client.on_message = self.on_message
         self.mqtt_client.connect(self.host, self.port)

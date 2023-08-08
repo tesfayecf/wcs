@@ -2,21 +2,24 @@
 
 #include <ESP8266WiFi.h>
 
+#include "../../utils/App/App.h"
 #include "../../utils/constants.h"
+#include "MQTTConnectionManager.h"
 
-MQTTConnectionManager::MQTTConnectionManager() : mqttClient(wifiClient) {}
+MQTTConnectionManager::MQTTConnectionManager(App& app)
+    : appInstance(app), mqttClient(wifiClient) {}
 
 void MQTTConnectionManager::init() {
     // mqttClient.setId("clientId");
     // mqttClient.setUsernamePassword("username", "password");
-
-    mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
+    Serial.println("Connecting to MQTT...");
+    // mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
     // mqttClient.setCallback(
     //     [this](char* topic, byte* payload, unsigned int length) {
     //         this->onMessageReceived(topic, payload, length);
     //     });
 
-    connectMQTT();
+    // connectMQTT();
 }
 
 void MQTTConnectionManager::loop() {
@@ -24,7 +27,7 @@ void MQTTConnectionManager::loop() {
     //     reconnect();
     // }
 
-    mqttClient.loop();
+    // mqttClient.loop();
 }
 
 void MQTTConnectionManager::connectMQTT() {
@@ -65,9 +68,10 @@ void MQTTConnectionManager::subscribe(const char* topic) {
 }
 
 void MQTTConnectionManager::publish(char* message, const char* topic) {
-    if (mqttClient.connected()) {
-        Serial.println("Published message: " + String(message));
-        mqttClient.publish(topic, message);
-        //     Serial.println("Published message: " + String(message));
-    }
+    // if (mqttClient.connected()) {
+    //     Serial.println("Published message: " + String(message));
+    //     mqttClient.publish(topic, message);
+    //     //     Serial.println("Published message: " + String(message));
+    // }
+    appInstance.getHWManager().getDistance();
 }

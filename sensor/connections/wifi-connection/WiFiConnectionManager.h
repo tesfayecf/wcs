@@ -2,13 +2,21 @@
 #define WIFI_CONNECTION_MANAGER_H
 #include <ESP8266WiFi.h>
 
+#include "../../utils/App/App.h"
+class App;  // Forward declaration of App
+
 class WiFiConnectionManager {
+   private:
+    App& appInstance;
+
    public:
     // Constructor
-    WiFiConnectionManager();
+    WiFiConnectionManager(App& app);
 
     // Initialize WiFi connection
     void init();
+
+    void loop();
 
     boolean connect();
 

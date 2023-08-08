@@ -5,17 +5,21 @@
 #include <Wire.h>
 
 #include "../../utils/constants.h"
+class App;  // Forward declaration of App
 
 class HWConnectionManager {
    private:
     NewPing sonar;
+    App& appInstance;
 
    public:
     // Constructor
-    HWConnectionManager();
+    HWConnectionManager(App& app);
 
     // Initialize IR connection
     void init();
+
+    void loop();
 
     // Get distance from IR
     unsigned int getDistance();

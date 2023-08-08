@@ -5,15 +5,18 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
+class App;  // Forward declaration of App
+
 class MQTTConnectionManager {
    private:
     WiFiClient wifiClient;
     PubSubClient mqttClient;
-    // MqttClient mqttClient;
+
+    App& appInstance;
 
    public:
     // Constructor
-    MQTTConnectionManager();
+    MQTTConnectionManager(App& app);
 
     // Initialize MQTT connection
     void init();

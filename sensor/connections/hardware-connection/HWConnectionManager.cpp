@@ -4,10 +4,12 @@
 
 #include "../../utils/constants.h"
 
-HWConnectionManager::HWConnectionManager()
-    : sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE) {}
+HWConnectionManager::HWConnectionManager(App& app)
+    : appInstance(app), sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE) {}
 
 void HWConnectionManager::init() {}
+
+void HWConnectionManager::loop() {}
 
 unsigned int HWConnectionManager::getDistance() {
     unsigned int distance = sonar.ping(450);

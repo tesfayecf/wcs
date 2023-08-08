@@ -4,12 +4,14 @@
 
 #include "../../utils/constants.h"
 
-WiFiConnectionManager::WiFiConnectionManager() {}
+WiFiConnectionManager::WiFiConnectionManager(App& app) : appInstance(app) {}
 
 void WiFiConnectionManager::init() {
     // Connect to WiFi
-    connect();
+    // connect();
 }
+
+void WiFiConnectionManager::loop() {}
 
 bool WiFiConnectionManager::connect() {
     IPAddress local_IP(192, 168, 1, 101);

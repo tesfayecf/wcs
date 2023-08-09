@@ -8,7 +8,7 @@
 
 class App;  // Forward declaration of App
 
-class MQTTConnectionManager {
+class MQTTManager {
    private:
     App& appInstance;
 
@@ -19,7 +19,7 @@ class MQTTConnectionManager {
 
    public:
     // Constructor
-    MQTTConnectionManager(App& app);
+    MQTTManager(App& app);
 
     // Initialize MQTT connection
     void setup();
@@ -54,5 +54,5 @@ class MQTTConnectionManager {
     String getSensorID();
 };
 
-#include "MQTTConnectionManager.cpp"
+#include "MQTTManager.cpp"
 #endif  // MQTT_CONNECTION_MANAGER_H

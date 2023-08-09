@@ -1,4 +1,4 @@
-#include "MQTTConnectionManager.h"
+#include "MQTTManager.h"
 
 #include <ArduinoJson.h>
 #include <Base64.h>
@@ -7,12 +7,11 @@
 
 #include "../../utils/App/App.h"
 #include "../../utils/constants.h"
-#include "MQTTConnectionManager.h"
+#include "MQTTManager.h"
 
-MQTTConnectionManager::MQTTConnectionManager(App& app)
-    : appInstance(app), mqttClient(wifiClient) {}
+MQTTManager::MQTTManager(App& app) : appInstance(app), mqttClient(wifiClient) {}
 
-void MQTTConnectionManager::setup() {
+void MQTTManager::setup() {
     mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
     // mqttClient.setCallback(
     //     [this](char* topic, uint8_t* payload, unsigned int length) {
@@ -23,7 +22,7 @@ void MQTTConnectionManager::setup() {
     // TODO: subscribe to server topics: sensorID/status, sensorID/timer, ...
 }
 
-void MQTTConnectionManager::loop() {
+void MQTTManager::loop() {
     if (!mqttClient.connected()) {
         reconnect();
     }
@@ -31,7 +30,7 @@ void MQTTConnectionManager::loop() {
     mqttClient.loop();
 }
 
-void MQTTConnectionManager::connectMQTT() {
+void MQTTManager::connectMQTT() {
     String clientId_64 = this->getSensorID();
     while (!mqttClient.connected()) {
         if (mqttClient.connect(clientId_64.c_str())) {
@@ -43,25 +42,24 @@ void MQTTConnectionManager::connectMQTT() {
     }
 }
 
-void MQTTConnectionManager::reconnect() {
+void MQTTManager::reconnect() {
     mqttClient.disconnect();
     connectMQTT();
 }
 
-void MQTTConnectionManager::onMessageReceived(char* topic, byte* payload,
-                                              unsigned int length) {
+void MQTTManager::onMessageReceived(char* topic, byte* payload,
+                                    unsigned int length) {
     // Handle received MQTT messages here. Used to check status from server and
     // sync timers
 }
 
-void MQTTConnectionManager::subscribe(const char* topic) {
+void MQTTManager::subscribe(const char* topic) {
     if (mqttClient.connected()) {
         mqttClient.subscribe(topic);
     }
 }
 
-void MQTTConnectionManager::publishReadings(unsigned int readingRAW,
-                                            float readingCM) {
+void MQTTManager::publishReadings(unsigned int readingRAW, float readingCM) {
     StaticJsonDocument<200> jsonDoc;
     JsonObject jsonObj = jsonDoc.to<JsonObject>();
     // Add message data
@@ -74,8 +72,8 @@ void MQTTConnectionManager::publishReadings(unsigned int readingRAW,
     this->basePublish(jsonObj, topic);
 }
 
-void MQTTConnectionManager::basePublish(
-    ArduinoJson::V6213PB2::JsonObject& dataObject, const char* topic) {
+void MQTTManager::basePublish(ArduinoJson::V6213PB2::JsonObject& dataObject,
+                              const char* topic) {
     // Add sensor metadata
     this->addMetadata(dataObject);
     // Get max size of websocket message
@@ -89,8 +87,7 @@ void MQTTConnectionManager::basePublish(
     Serial.println(websocketMessageChar);
 }
 
-void MQTTConnectionManager::addMetadata(
-    ArduinoJson::V6213PB2::JsonObject& dataObject) {
+void MQTTManager::addMetadata(ArduinoJson::V6213PB2::JsonObject& dataObject) {
     dataObject["sensorID"] = this->getSensorID();
     dataObject["sensorTime"] = millis() / 1000;
     // dataObject["serverTime"] = this->appInstance.serverTime;
@@ -99,7 +96,7 @@ void MQTTConnectionManager::addMetadata(
     // dataObject["sensorName"] = this->appInstance.sensorName;
 }
 
-String MQTTConnectionManager::getSensorID() {
+String MQTTManager::getSensorID() {
     // Get device mac from WiFi
     // byte mac[6];
     // WiFi.macAddress(mac);

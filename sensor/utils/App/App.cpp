@@ -2,10 +2,10 @@
 
 #include <EEPROM.h>
 
-#include "../../connections/hardware-connection/HWConnectionManager.h"
-#include "../../connections/mqtt-connection/MQTTConnectionManager.h"
-#include "../../connections/webserver-connection/WebServerConnectionManager.h"
-#include "../../connections/wifi-connection/WiFiConnectionManager.h"
+#include "../../managers/hardware-manager/HWManager.h"
+#include "../../managers/mqtt-manager/MQTTManager.h"
+#include "../../managers/webserver-manager/WebServerManager.h"
+#include "../../managers/wifi-manager/WiFiManager.h"
 #include "../AppConfig.h"
 
 App::App(const AppConfig& config)
@@ -15,21 +15,19 @@ App::App(const AppConfig& config)
       webServerManager_(nullptr),
       appConfig(config) {}
 
-WiFiConnectionManager& App::wifiManager() { return *wifiManager_; }
+WiFiManager& App::wifiManager() { return *wifiManager_; }
 
-MQTTConnectionManager& App::mqttManager() { return *mqttManager_; }
+MQTTManager& App::mqttManager() { return *mqttManager_; }
 
-HWConnectionManager& App::hwManager() { return *hwManager_; }
+HWManager& App::hwManager() { return *hwManager_; }
 
-WebServerConnectionManager& App::webServerManager() {
-    return *webServerManager_;
-}
+WebServerManager& App::webServerManager() { return *webServerManager_; }
 
 void App::setup() {
-    wifiManager_ = new WiFiConnectionManager(*this);
-    mqttManager_ = new MQTTConnectionManager(*this);
-    hwManager_ = new HWConnectionManager(*this);
-    webServerManager_ = new WebServerConnectionManager(*this);
+    wifiManager_ = new WiFiManager(*this);
+    mqttManager_ = new MQTTManager(*this);
+    hwManager_ = new HWManager(*this);
+    webServerManager_ = new WebServerManager(*this);
 
     wifiManager_->setup();
     mqttManager_->setup();

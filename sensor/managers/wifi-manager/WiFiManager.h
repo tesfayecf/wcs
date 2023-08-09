@@ -4,13 +4,13 @@
 
 class App;  // Forward declaration of App
 
-class WiFiConnectionManager {
+class WiFiManager {
    private:
     App& appInstance;
 
    public:
     // Constructor
-    WiFiConnectionManager(App& app);
+    WiFiManager(App& app);
 
     // Initialize WiFi connection
     void setup();
@@ -27,5 +27,5 @@ class WiFiConnectionManager {
     boolean connect();
 };
 
-#include "WiFiConnectionManager.cpp"
+#include "WiFiManager.cpp"
 #endif  // WIFI_CONNECTION_MANAGER_H

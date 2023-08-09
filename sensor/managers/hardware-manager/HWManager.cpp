@@ -1,22 +1,21 @@
-#include "HWConnectionManager.h"
-
 #include <ESP8266WiFi.h>
 
 #include "../../utils/constants.h"
+#include "HWManager.h"
 
-HWConnectionManager::HWConnectionManager(App& app)
+HWManager::HWManager(App& app)
     : appInstance(app), sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE) {}
 
-void HWConnectionManager::setup() {}
+void HWManager::setup() {}
 
-void HWConnectionManager::loop() {}
+void HWManager::loop() {}
 
-unsigned int HWConnectionManager::getDistance() {
+unsigned int HWManager::getDistance() {
     unsigned int distance = sonar.ping(450);
     return distance;
 }
 
-float HWConnectionManager::convertToCm(unsigned int distance) {
+float HWManager::convertToCm(unsigned int distance) {
     // calculate time basad on humidity and temperature
     return distance / 57;
 }

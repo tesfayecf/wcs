@@ -7,14 +7,14 @@
 #include "../../utils/constants.h"
 class App;  // Forward declaration of App
 
-class HWConnectionManager {
+class HWManager {
    private:
     NewPing sonar;
     App& appInstance;
 
    public:
     // Constructor
-    HWConnectionManager(App& app);
+    HWManager(App& app);
 
     // Initialize IR connection
     void setup();
@@ -27,5 +27,5 @@ class HWConnectionManager {
     float convertToCm(unsigned int distance);
 };
 
-#include "HWConnectionManager.cpp"
+#include "HWManager.cpp"
 #endif  // HW_CONNECTION_MANAGER_H

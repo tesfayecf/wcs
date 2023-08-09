@@ -1,10 +1,10 @@
 #ifndef APP_H
 #define APP_H
 
-class WiFiConnectionManager;
-class MQTTConnectionManager;
-class HWConnectionManager;
-class WebServerConnectionManager;
+class WiFiManager;
+class MQTTManager;
+class HWManager;
+class WebServerManager;
 
 #include "../AppConfig.h"
 
@@ -12,18 +12,18 @@ class App {
    public:
     App(const AppConfig& config);
 
-    WiFiConnectionManager& wifiManager();
-    MQTTConnectionManager& mqttManager();
-    HWConnectionManager& hwManager();
-    WebServerConnectionManager& webServerManager();
+    WiFiManager& wifiManager();
+    MQTTManager& mqttManager();
+    HWManager& hwManager();
+    WebServerManager& webServerManager();
 
     AppConfig appConfig;
 
    private:
-    WiFiConnectionManager* wifiManager_;
-    MQTTConnectionManager* mqttManager_;
-    HWConnectionManager* hwManager_;
-    WebServerConnectionManager* webServerManager_;
+    WiFiManager* wifiManager_;
+    MQTTManager* mqttManager_;
+    HWManager* hwManager_;
+    WebServerManager* webServerManager_;
 
    public:
     void setup();

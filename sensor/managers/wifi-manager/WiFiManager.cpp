@@ -1,12 +1,12 @@
-#include "WiFiConnectionManager.h"
+#include "WiFiManager.h"
 
 #include <ESP8266WiFi.h>
 
 #include "../../utils/constants.h"
 
-WiFiConnectionManager::WiFiConnectionManager(App& app) : appInstance(app) {}
+WiFiManager::WiFiManager(App& app) : appInstance(app) {}
 
-void WiFiConnectionManager::setup() {
+void WiFiManager::setup() {
     // Connect to WiFi
     if (!this->connect()) {
         Serial.println("WiFi connection failed");
@@ -15,7 +15,7 @@ void WiFiConnectionManager::setup() {
     }
 }
 
-void WiFiConnectionManager::loop() {
+void WiFiManager::loop() {
     // check wifi is connected and continue loop
     if (!this->isConnected()) {
         Serial.println("WiFi connection lost");
@@ -24,7 +24,7 @@ void WiFiConnectionManager::loop() {
     }
 }
 
-bool WiFiConnectionManager::connect() {
+bool WiFiManager::connect() {
     IPAddress local_IP(192, 168, 1, 101);
     IPAddress gateway(192, 168, 1, 1);
     IPAddress subnet(255, 255, 0, 0);
@@ -49,8 +49,8 @@ bool WiFiConnectionManager::connect() {
     return true;
 }
 
-bool WiFiConnectionManager::isConnected() {
+bool WiFiManager::isConnected() {
     return WiFi.status() == WL_CONNECTED;
 }
 
-wl_status_t WiFiConnectionManager::getStatus() { return WiFi.status(); }
+wl_status_t WiFiManager::getStatus() { return WiFi.status(); }

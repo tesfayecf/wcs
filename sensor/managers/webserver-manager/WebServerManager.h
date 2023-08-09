@@ -2,16 +2,16 @@
 #define WEBSERVER_CONNECTION_MANAGER_H
 class App;  // Forward declaration of App
 
-class WebServerConnectionManager {
+class WebServerManager {
    private:
     App& appInstance;
 
    public:
-    WebServerConnectionManager(App& app);
+    WebServerManager(App& app);
 
     void init();
     void loop();
 };
 
-#include "WebServerConnectionManager.cpp"
+#include "WebServerManager.cpp"
 #endif  // WEBSERVER_CONNECTION_MANAGER_H

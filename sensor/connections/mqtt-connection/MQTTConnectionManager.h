@@ -2,6 +2,7 @@
 #define MQTT_CONNECTION_MANAGER_H
 
 // #include <ArduinoMqttClient.h>
+#include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
@@ -9,17 +10,19 @@ class App;  // Forward declaration of App
 
 class MQTTConnectionManager {
    private:
+    App& appInstance;
+
     WiFiClient wifiClient;
     PubSubClient mqttClient;
 
-    App& appInstance;
+    const String senosorId = WiFi.macAddress();
 
    public:
     // Constructor
     MQTTConnectionManager(App& app);
 
     // Initialize MQTT connection
-    void init();
+    void setup();
 
     // Main loop to handle MQTT events
     void loop();
@@ -27,8 +30,8 @@ class MQTTConnectionManager {
     // Subscribe to an MQTT topic
     void subscribe(const char* topic);
 
-    // Publish an MQTT message
-    void publish(char* message, const char* topic);
+    // Publish a sensor readings
+    void publishReadings(unsigned int readingRAW, float readingCM);
 
    private:
     // Connect to the MQTT broker
@@ -37,8 +40,18 @@ class MQTTConnectionManager {
     // Reconnect to the MQTT broker
     void reconnect();
 
+    // Publish an MQTT message
+    void basePublish(ArduinoJson::V6213PB2::JsonObject& dataObject,
+                     const char* topic);
+
+    // Add metadata to the MQTT message
+    void addMetadata(ArduinoJson::V6213PB2::JsonObject& dataObject);
+
     // Callback function for handling received MQTT messages
     void onMessageReceived(char* topic, byte* payload, unsigned int length);
+
+    // Get sensor ID from MAC address
+    String getSensorID();
 };
 
 #include "MQTTConnectionManager.cpp"

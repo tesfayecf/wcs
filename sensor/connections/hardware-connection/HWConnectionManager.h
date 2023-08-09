@@ -17,7 +17,7 @@ class HWConnectionManager {
     HWConnectionManager(App& app);
 
     // Initialize IR connection
-    void init();
+    void setup();
 
     void loop();
 

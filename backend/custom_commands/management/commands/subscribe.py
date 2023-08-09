@@ -9,10 +9,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             mqqtManager = MqttManager()
-            mqqtManager.get_instance()
             tankSensorRelation = TankSensor.objects.all()
             for tankSensor in tankSensorRelation:
-                mqqtManager.subscribe(tankSensor.sensor.serial_number)
+                mqqtManager.subscribe(tankSensor.sensor.serial_number + "/reading")
         except Exception as e:
             raise CommandError(e)
 

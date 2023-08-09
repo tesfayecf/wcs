@@ -9,10 +9,7 @@ App app(appConfig);
 
 void setup() {
     Serial.begin(115200);
-    app.init();
+    app.setup();
 }
 
-void loop() {
-    app.loop();
-    delay(10000);
-}
+void loop() { app.loop(); }

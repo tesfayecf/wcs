@@ -11,13 +11,13 @@ class WebServerConnectionManager;
 class App {
    public:
     App(const AppConfig& config);
-    void init();
-    void loop();
 
-    WiFiConnectionManager& getWiFiManager();
-    MQTTConnectionManager& getMQTTManager();
-    HWConnectionManager& getHWManager();
-    WebServerConnectionManager& getWebServerManager();
+    WiFiConnectionManager& wifiManager();
+    MQTTConnectionManager& mqttManager();
+    HWConnectionManager& hwManager();
+    WebServerConnectionManager& webServerManager();
+
+    AppConfig appConfig;
 
    private:
     WiFiConnectionManager* wifiManager_;
@@ -25,7 +25,14 @@ class App {
     HWConnectionManager* hwManager_;
     WebServerConnectionManager* webServerManager_;
 
-    AppConfig appConfig;
+   public:
+    void setup();
+    void loop();
+    void stop();
+    void restart();
+
+    bool getWifiCredentials();
+    unsigned sensorTime = 0;
 };
 
 #include "App.cpp"

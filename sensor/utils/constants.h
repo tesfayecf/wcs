@@ -58,6 +58,12 @@ enum LOG_CODE {
 /// APP CONFIG ////
 ///////////////////
 
+#define APP_NAME "Sensor"
+#define APP_VERSION "0.1"
+#define APP_AUTHOR "Tesfaye Carreras"
+
+#define EEPROM_SIZE 512
+
 /// CONNECTIONS ///
 
 //  WIFI
@@ -76,5 +82,8 @@ enum LOG_CODE {
 #define TRIGGER_PIN D5  // RX
 #define ECHO_PIN D6     // TX
 #define MAX_DISTANCE 450
+
+// WEBSERVER
+#define WEB_SERVER_PORT 80
 
 #endif  // CONSTANTS_H

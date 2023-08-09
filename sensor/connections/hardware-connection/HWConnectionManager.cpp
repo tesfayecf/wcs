@@ -7,7 +7,7 @@
 HWConnectionManager::HWConnectionManager(App& app)
     : appInstance(app), sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE) {}
 
-void HWConnectionManager::init() {}
+void HWConnectionManager::setup() {}
 
 void HWConnectionManager::loop() {}
 

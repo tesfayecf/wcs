@@ -6,12 +6,23 @@
 
 WiFiConnectionManager::WiFiConnectionManager(App& app) : appInstance(app) {}
 
-void WiFiConnectionManager::init() {
+void WiFiConnectionManager::setup() {
     // Connect to WiFi
-    // connect();
+    if (!this->connect()) {
+        Serial.println("WiFi connection failed");
+        appInstance.stop();
+        return;
+    }
 }
 
-void WiFiConnectionManager::loop() {}
+void WiFiConnectionManager::loop() {
+    // check wifi is connected and continue loop
+    if (!this->isConnected()) {
+        Serial.println("WiFi connection lost");
+        this->connect();
+        return;
+    }
+}
 
 bool WiFiConnectionManager::connect() {
     IPAddress local_IP(192, 168, 1, 101);
@@ -23,7 +34,7 @@ bool WiFiConnectionManager::connect() {
     WiFi.disconnect();
     WiFi.mode(WIFI_OFF);
     delay(500);
-    WiFi.mode(WIFI_STA);
+    WiFi.mode(WIFI_AP_STA);
     int r = 0;
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);  // Connect to your WiFi router
     while (WiFi.status() != WL_CONNECTED) {

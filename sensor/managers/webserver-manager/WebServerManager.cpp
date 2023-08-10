@@ -2,7 +2,7 @@
 
 WebServerManager::WebServerManager(App& app) : appInstance(app) {}
 
-void WebServerManager::init() {
+void WebServerManager::setup() {
     Serial.println("Initializing WebServerManager");
 }
 

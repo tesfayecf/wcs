@@ -4,6 +4,7 @@
 
 #include "../../managers/hardware-manager/HWManager.h"
 #include "../../managers/mqtt-manager/MQTTManager.h"
+#include "../../managers/pump-manager/PumpManager.h"
 #include "../../managers/webserver-manager/WebServerManager.h"
 #include "../../managers/wifi-manager/WiFiManager.h"
 #include "../AppConfig.h"
@@ -13,6 +14,7 @@ App::App(const AppConfig& config)
       mqttManager_(nullptr),
       hwManager_(nullptr),
       webServerManager_(nullptr),
+      pumpManager_(nullptr),
       appConfig(config) {}
 
 WiFiManager& App::wifiManager() { return *wifiManager_; }
@@ -23,34 +25,42 @@ HWManager& App::hwManager() { return *hwManager_; }
 
 WebServerManager& App::webServerManager() { return *webServerManager_; }
 
+PumpManager& App::pumpManager() { return *pumpManager_; }
+
 void App::setup() {
     wifiManager_ = new WiFiManager(*this);
     mqttManager_ = new MQTTManager(*this);
     hwManager_ = new HWManager(*this);
     webServerManager_ = new WebServerManager(*this);
 
-    wifiManager_->setup();
-    mqttManager_->setup();
-    hwManager_->setup();
+    // wifiManager_->setup();
+    // mqttManager_->setup();
+    // hwManager_->setup();
+    // webServerManager_->setup();
+    pumpManager_->setup();
 }
 void App::loop() {
     sensorTime = millis();
 
-    // Send sensor readings every minute
-    if (sensorTime % 10000 == 0) {
-        // Get sensor data
-        unsigned int value = hwManager_->getDistance();
-        // Convert data to cm
-        float distance = hwManager_->convertToCm(value);
-        // Publish data
-        mqttManager_->publishReadings(value, distance);
-    }
+    // // Send sensor readings every minute
+    // if (sensorTime % 10000 == 0) {
+    //     // Get sensor data
+    //     unsigned int value = hwManager_->getDistance();
+    //     // Convert data to cm
+    //     float distance = hwManager_->convertToCm(value);
+    //     // Publish data
+    //     mqttManager_->publishReadings(value, distance);
+    // }
 
     if (sensorTime % 1000 == 0) {
-        wifiManager_->loop();       // check wifi connection
-        mqttManager_->loop();       // check mqtt messages
-        hwManager_->loop();         // check hardware connection
-        webServerManager_->loop();  // check webserver requests
+        // wifiManager_->loop();       // check wifi connection
+        // mqttManager_->loop();       // check mqtt messages
+        // hwManager_->loop();         // check hardware connection
+        // webServerManager_->loop();  // check webserver requests
+    }
+
+    if (sensorTime % 100 == 0) {
+        pumpManager_->loop();
     }
 }
 

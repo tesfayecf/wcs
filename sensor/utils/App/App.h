@@ -5,7 +5,7 @@ class WiFiManager;
 class MQTTManager;
 class HWManager;
 class WebServerManager;
-
+class PumpManager;
 #include "../AppConfig.h"
 
 class App {
@@ -16,6 +16,7 @@ class App {
     MQTTManager& mqttManager();
     HWManager& hwManager();
     WebServerManager& webServerManager();
+    PumpManager& pumpManager();
 
     AppConfig appConfig;
 
@@ -24,6 +25,7 @@ class App {
     MQTTManager* mqttManager_;
     HWManager* hwManager_;
     WebServerManager* webServerManager_;
+    PumpManager* pumpManager_;
 
    public:
     void setup();

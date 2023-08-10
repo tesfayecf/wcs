@@ -9,7 +9,7 @@ class WebServerManager {
    public:
     WebServerManager(App& app);
 
-    void init();
+    void setup();
     void loop();
 };
 

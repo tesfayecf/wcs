@@ -74,16 +74,20 @@ enum LOG_CODE {
 // MQTT
 #define MQTT_BROKER "192.168.1.13"
 #define MQTT_PORT 1883
-#define MQTT_CLIENT_ID ""
-#define MQTT_USERNAME ""
-#define MQTT_PASSWORD ""
 
 // HARDWARE
-#define TRIGGER_PIN D5  // RX
-#define ECHO_PIN D6     // TX
+#define TRIGGER_PIN RX  // RX -> D5
+#define ECHO_PIN TX     // TX -> D6
 #define MAX_DISTANCE 450
 
 // WEBSERVER
 #define WEB_SERVER_PORT 80
+
+// PUMP
+#define RELE_PIN D8
+#define START_PIN D1
+#define START_LED_PIN D0
+#define STOP_PIN D2
+#define STOP_LED_PIN D5
 
 #endif  // CONSTANTS_H

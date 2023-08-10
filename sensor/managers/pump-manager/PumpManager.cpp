@@ -70,3 +70,12 @@ void PumpManager::loop() {
         digitalWrite(START_LED_PIN, LOW);
     }
 }
+
+void turnOnPump() {
+    if (!PumpManager::stopButtonState) {
+        PumpManager::pumpActive = true;
+    }
+}
+void turnOffPump() { PumpManager::pumpActive = false; }
+
+bool getPumpStatus() { return PumpManager::pumpActive; }

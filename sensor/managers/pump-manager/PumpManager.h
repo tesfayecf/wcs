@@ -15,6 +15,10 @@ class PumpManager {
 
     void setup();
     void loop();
+
+    void turnOnPump();
+    void turnOffPump();
+    bool getPumpStatus();
 };
 
 #include "PumpManager.cpp"

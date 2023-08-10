@@ -33,10 +33,10 @@ void App::setup() {
     hwManager_ = new HWManager(*this);
     webServerManager_ = new WebServerManager(*this);
 
-    // wifiManager_->setup();
+    wifiManager_->setup();
     // mqttManager_->setup();
-    // hwManager_->setup();
-    // webServerManager_->setup();
+    hwManager_->setup();
+    webServerManager_->setup();
     pumpManager_->setup();
 }
 void App::loop() {
@@ -53,10 +53,13 @@ void App::loop() {
     // }
 
     if (sensorTime % 1000 == 0) {
-        // wifiManager_->loop();       // check wifi connection
+        wifiManager_->loop();  // check wifi connection
         // mqttManager_->loop();       // check mqtt messages
-        // hwManager_->loop();         // check hardware connection
-        // webServerManager_->loop();  // check webserver requests
+        hwManager_->loop();  // check hardware connection
+    }
+
+    if (sensorTime % 1000 == 0) {
+        webServerManager_->loop();  // check webserver requests
     }
 
     if (sensorTime % 100 == 0) {

@@ -82,6 +82,7 @@ enum LOG_CODE {
 
 // WEBSERVER
 #define WEB_SERVER_PORT 80
+#define WEBSOCKET_PORT 80
 
 // PUMP
 #define RELE_PIN D8

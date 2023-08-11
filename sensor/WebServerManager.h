@@ -5,30 +5,26 @@
 #include <ESP8266WiFi.h>
 #include <WebSocketsServer.h>
 
-#include "../../utils/constants.h"
-
-class App;  // Forward declaration of App
+#include "Arduino.h"
+#include "utils/constants.h"
 
 class WebServerManager {
    private:
-    App& appInstance;
-
     static ESP8266WebServer webserver;
-    static WebSocketsServer webSocket;
+    WebSocketsServer webSocket;
 
+    // HTTP
     static void renderMainPage();
-    void turnON();
-    void turnOFF();
+    static void turnON();
+    static void turnOFF();
+    // WS
     void sendWSMessage();
 
    public:
-    WebServerManager(App& app);
+    WebServerManager();
 
     void setup();
     void loop();
-
-    WebServerManager::sendWSMessage();
 };
 
-#include "WebServerManager.cpp"
 #endif  // WEBSERVER_CONNECTION_MANAGER_H

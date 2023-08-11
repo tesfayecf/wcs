@@ -5,11 +5,10 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-#include "../../utils/App/App.h"
-#include "../../utils/constants.h"
 #include "MQTTManager.h"
+#include "utils/constants.h"
 
-MQTTManager::MQTTManager(App& app) : appInstance(app), mqttClient(wifiClient) {}
+MQTTManager::MQTTManager() : mqttClient(wifiClient) {}
 
 void MQTTManager::setup() {
     mqttClient.setServer(MQTT_BROKER, MQTT_PORT);

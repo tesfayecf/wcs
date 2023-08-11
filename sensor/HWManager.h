@@ -4,17 +4,16 @@
 #include <NewPing.h>
 #include <Wire.h>
 
-#include "../../utils/constants.h"
-class App;  // Forward declaration of App
+#include "Arduino.h"
+#include "utils/constants.h"
 
 class HWManager {
    private:
     NewPing sonar;
-    App& appInstance;
 
    public:
     // Constructor
-    HWManager(App& app);
+    HWManager();
 
     // Initialize IR connection
     void setup();
@@ -27,5 +26,4 @@ class HWManager {
     float convertToCm(unsigned int distance);
 };
 
-#include "HWManager.cpp"
 #endif  // HW_CONNECTION_MANAGER_H

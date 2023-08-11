@@ -1,12 +1,8 @@
 #include "PumpManager.h"
 
-#include "../../utils/constants.h"
+#include "utils/constants.h"
 
-PumpManager::PumpManager(App& app) : appInstance(app) {}
-
-bool PumpManager::pumpActive = false;
-bool PumpManager::startButtonState = false;
-bool PumpManager::stopButtonState = false;
+PumpManager::PumpManager() {}
 
 void PumpManager::setup() {
     Serial.println("Initializing PumpManager");
@@ -31,30 +27,30 @@ void PumpManager::loop() {
     start = digitalRead(START_PIN);
     stop = digitalRead(STOP_PIN);
 
-    if (start != PumpManager::startButtonState) {
+    if (start != startButtonState) {
         if (start == HIGH) {
-            if (!PumpManager::pumpActive) {
+            if (!pumpActive) {
                 digitalWrite(RELE_PIN, HIGH);
-                PumpManager::pumpActive = true;
+                pumpActive = true;
             }
-            PumpManager::startButtonState = true;
+            startButtonState = true;
         }
         if (start == LOW) {
-            PumpManager::startButtonState = false;
+            startButtonState = false;
         }
     }
 
-    if (stop != PumpManager::stopButtonState) {
+    if (stop != stopButtonState) {
         if (stop == HIGH) {
             if (pumpActive) {
                 digitalWrite(RELE_PIN, LOW);
                 pumpActive = false;
             }
-            PumpManager::stopButtonState = true;
+            stopButtonState = true;
         }
 
         if (stop == LOW) {
-            PumpManager::stopButtonState = false;
+            stopButtonState = false;
         }
     }
 
@@ -62,7 +58,7 @@ void PumpManager::loop() {
         digitalWrite(START_LED_PIN, HIGH);
         digitalWrite(STOP_LED_PIN, LOW);
     } else {
-        if (PumpManager::stopButtonState) {
+        if (stopButtonState) {
             digitalWrite(STOP_LED_PIN, HIGH);
         } else {
             digitalWrite(STOP_LED_PIN, LOW);
@@ -71,11 +67,11 @@ void PumpManager::loop() {
     }
 }
 
-void turnOnPump() {
-    if (!PumpManager::stopButtonState) {
-        PumpManager::pumpActive = true;
+void PumpManager::turnOnPump() {
+    if (!stopButtonState) {
+        pumpActive = true;
     }
 }
-void turnOffPump() { PumpManager::pumpActive = false; }
+void PumpManager::turnOffPump() { pumpActive = false; }
 
-bool getPumpStatus() { return PumpManager::pumpActive; }
+bool PumpManager::getPumpStatus() { return pumpActive; }

@@ -1,10 +1,10 @@
-#include <ESP8266WiFi.h>
-
-#include "../../utils/constants.h"
 #include "HWManager.h"
 
-HWManager::HWManager(App& app)
-    : appInstance(app), sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE) {}
+#include <ESP8266WiFi.h>
+
+#include "utils/constants.h"
+
+HWManager::HWManager() : sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE) {}
 
 void HWManager::setup() {}
 

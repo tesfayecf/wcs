@@ -6,12 +6,10 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-class App;  // Forward declaration of App
+#include "Arduino.h"
 
 class MQTTManager {
    private:
-    App& appInstance;
-
     WiFiClient wifiClient;
     PubSubClient mqttClient;
 
@@ -19,7 +17,7 @@ class MQTTManager {
 
    public:
     // Constructor
-    MQTTManager(App& app);
+    MQTTManager();
 
     // Initialize MQTT connection
     void setup();
@@ -54,5 +52,4 @@ class MQTTManager {
     String getSensorID();
 };
 
-#include "MQTTManager.cpp"
 #endif  // MQTT_CONNECTION_MANAGER_H

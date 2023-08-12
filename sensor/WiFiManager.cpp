@@ -12,6 +12,7 @@ void WiFiManager::init(AppConfig* config_, Managers* managers_) {
     managers = managers_;
     appConfig = config_;
 }
+
 void WiFiManager::setup() {
     // Connect to WiFi
     if (!this->connect()) {

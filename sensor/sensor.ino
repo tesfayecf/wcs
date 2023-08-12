@@ -32,14 +32,14 @@ void setup() {
     wifiManager.init(&appConfig, &managers);
     // mqttManager.init();
     // hwManager.init();
-    // webServerManager.init();
+    webServerManager.init(&appConfig, &managers);
     // pumpManager.init();
 
     wifiManager.setup();
     // mqttManager.setup();
-    hwManager.setup();
+    // hwManager.setup();
     webServerManager.setup();
-    pumpManager.setup();
+    // pumpManager.setup();
 }
 
 void loop() {

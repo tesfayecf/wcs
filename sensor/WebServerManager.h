@@ -17,11 +17,11 @@ class WebServerManager {
     Managers* managers;
 
    private:
-    static ESP8266WebServer webserver;
-    WebSocketsServer webSocket;
+    ESP8266WebServer webserver;
+    // WebSocketsServer webSocket;
 
     // HTTP
-    static void renderMainPage(Managers* managers);
+    void renderMainPage(Managers* managers);
     void turnON(Managers* managers);
     void turnOFF(Managers* managers);
     // WS

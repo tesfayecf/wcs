@@ -9,11 +9,13 @@
 WiFiManager::WiFiManager() {}
 
 void WiFiManager::init(AppConfig* config_, Managers* managers_) {
+    Serial.println("WiFiManager init");
     managers = managers_;
     appConfig = config_;
 }
 
 void WiFiManager::setup() {
+    Serial.println("Initializing WiFiManager");
     // Connect to WiFi
     if (!this->connect()) {
         Serial.println("WiFi connection failed");

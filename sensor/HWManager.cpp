@@ -2,11 +2,20 @@
 
 #include <ESP8266WiFi.h>
 
+#include "utils/AppConfig.h"
 #include "utils/constants.h"
+// #include "utils/types.h"
+struct Managers;
 
 HWManager::HWManager() : sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE) {}
 
-void HWManager::setup() {}
+void HWManager::init(AppConfig* config_, Managers* managers_) {
+    Serial.println("HWManager init");
+    managers = managers_;
+    appConfig = config_;
+}
+
+void HWManager::setup() { Serial.println("Initializing HWManager"); }
 
 void HWManager::loop() {}
 

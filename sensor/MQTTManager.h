@@ -7,9 +7,16 @@
 #include <PubSubClient.h>
 
 #include "Arduino.h"
+#include "utils/AppConfig.h"
+#include "utils/constants.h"
+// #include "utils/types.h"
+struct Managers;
 
 class MQTTManager {
    private:
+    AppConfig* appConfig;
+    Managers* managers;
+
     WiFiClient wifiClient;
     PubSubClient mqttClient;
 
@@ -19,7 +26,10 @@ class MQTTManager {
     // Constructor
     MQTTManager();
 
-    // Initialize MQTT connection
+    // Initialize manager
+    void init(AppConfig* config_, Managers* managers_);
+
+    // Setup MQTT connection
     void setup();
 
     // Main loop to handle MQTT events

@@ -5,17 +5,26 @@
 #include <Wire.h>
 
 #include "Arduino.h"
+#include "utils/AppConfig.h"
 #include "utils/constants.h"
+// #include "utils/types.h"
+struct Managers;
 
 class HWManager {
    private:
+    AppConfig* appConfig;
+    Managers* managers;
+
     NewPing sonar;
 
    public:
     // Constructor
     HWManager();
 
-    // Initialize IR connection
+    // Initialize manager
+    void init(AppConfig* config_, Managers* managers_);
+
+    // Setup IR connection
     void setup();
 
     void loop();

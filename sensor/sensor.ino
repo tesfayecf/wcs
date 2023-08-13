@@ -1,6 +1,7 @@
 // // E8:9F:6D:93:59:B3 wemos d1 r2 base64: RTg6OUY6NkQ6OTM6NTk6QjM=
 // // 48:55:19:C8:87:7A wemos d1 mini base64: NDg6NTU6MTk6Qzg6ODc6N0E=
 
+#include <Arduino.h>
 #include <EEPROM.h>
 
 #include "HWManager.h"
@@ -30,16 +31,16 @@ void setup() {
                          &webServerManager, &pumpManager};
 
     wifiManager.init(&appConfig, &managers);
-    // mqttManager.init();
-    // hwManager.init();
+    mqttManager.init(&appConfig, &managers);
+    hwManager.init(&appConfig, &managers);
     webServerManager.init(&appConfig, &managers);
-    // pumpManager.init();
+    pumpManager.init(&appConfig, &managers);
 
     wifiManager.setup();
-    // mqttManager.setup();
-    // hwManager.setup();
+    mqttManager.setup();
+    hwManager.setup();
     webServerManager.setup();
-    // pumpManager.setup();
+    pumpManager.setup();
 }
 
 void loop() {
@@ -57,8 +58,8 @@ void loop() {
 
     if (sensorTime % 1000 == 0) {
         wifiManager.loop();  // check wifi connection
-        // mqttManager.loop();       // check mqtt messages
-        hwManager.loop();  // check hardware connection
+        mqttManager.loop();  // check mqtt messages
+        hwManager.loop();    // check hardware connection
     }
 
     if (sensorTime % 1000 == 0) {
@@ -66,6 +67,6 @@ void loop() {
     }
 
     if (sensorTime % 100 == 0) {
-        pumpManager.loop();
+        pumpManager.loop();  // check pump state
     }
 }

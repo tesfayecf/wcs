@@ -5,12 +5,21 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-#include "MQTTManager.h"
+#include "utils/AppConfig.h"
 #include "utils/constants.h"
+// #include "utils/types.h"
+struct Managers;
 
 MQTTManager::MQTTManager() : mqttClient(wifiClient) {}
 
+void MQTTManager::init(AppConfig* config_, Managers* managers_) {
+    Serial.println("MQTTManager init");
+    managers = managers_;
+    appConfig = config_;
+}
+
 void MQTTManager::setup() {
+    Serial.println("Initializing MQTTManager");
     mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
     // mqttClient.setCallback(
     //     [this](char* topic, uint8_t* payload, unsigned int length) {
@@ -39,6 +48,7 @@ void MQTTManager::connectMQTT() {
             delay(1000);
         }
     }
+    Serial.println("MQTT connection failed");
 }
 
 void MQTTManager::reconnect() {

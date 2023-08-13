@@ -18,16 +18,12 @@ class WebServerManager {
 
    private:
     ESP8266WebServer webserver;
-    // WebSocketsServer webSocket;
 
     // HTTP
-    void renderMainPage(Managers* managers);
-    void turnON(Managers* managers);
-    void turnOFF(Managers* managers);
-    // WS
-    // void webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload,
-    //                     size_t length, Managers* managers);
-    void sendWSMessage();
+    void renderMainPage();
+    void turnON();
+    void turnOFF();
+    void sendData();
 
    public:
     WebServerManager();

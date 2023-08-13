@@ -124,6 +124,6 @@ String MQTTManager::getSensorID() {
     // char sensorID_64[encodedLength + 1];
     // Base64.encode(sensorID_64, sensorID, inputStringLength);
     // return String(sensorID_64);
-    String sensorID = "RTg6OUY6NkQ6OTM6NTk6QjM=";
+    String sensorID = "NDg6NTU6MTk6Qzg6ODc6N0E=";
     return sensorID;
 }

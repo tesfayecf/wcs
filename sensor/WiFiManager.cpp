@@ -54,8 +54,6 @@ bool WiFiManager::connect() {
         return false;
     }
     Serial.println("Connected to WiFi");
-    managers->mqttManager->subscribe("fadf");
-
     return true;
 }
 

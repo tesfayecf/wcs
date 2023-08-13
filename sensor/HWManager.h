@@ -15,9 +15,8 @@ class HWManager {
     AppConfig* appConfig;
     Managers* managers;
 
-    NewPing sonar;
-
    public:
+    static NewPing sonar;
     // Constructor
     HWManager();
 
@@ -31,8 +30,7 @@ class HWManager {
 
     // Get distance from IR
     unsigned int getDistance();
-
-    float convertToCm(unsigned int distance);
+    float getDistanceCm();
 };
 
 #endif  // HW_CONNECTION_MANAGER_H

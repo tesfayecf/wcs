@@ -17,30 +17,36 @@ AppConfig appConfig;
 
 unsigned sensorTime = 0;
 
-WiFiManager wifiManager;
-MQTTManager mqttManager;
-HWManager hwManager;
-WebServerManager webServerManager;
-PumpManager pumpManager;
+// WiFiManager wifiManager;
+// MQTTManager mqttManager;
+// HWManager hwManager;
+// WebServerManager webServerManager;
+// PumpManager pumpManager;
+
+WiFiManager* wifiManager = new WiFiManager();
+MQTTManager* mqttManager = new MQTTManager();
+HWManager* hwManager = new HWManager();
+WebServerManager* webServerManager = new WebServerManager();
+PumpManager* pumpManager = new PumpManager();
 
 void setup() {
     Serial.begin(115200);
 
     // App managers
-    Managers managers = {&wifiManager, &mqttManager, &hwManager,
-                         &webServerManager, &pumpManager};
+    Managers managers = {wifiManager, mqttManager, hwManager, webServerManager,
+                         pumpManager};
 
-    wifiManager.init(&appConfig, &managers);
-    mqttManager.init(&appConfig, &managers);
-    hwManager.init(&appConfig, &managers);
-    webServerManager.init(&appConfig, &managers);
-    pumpManager.init(&appConfig, &managers);
+    wifiManager->init(&appConfig, &managers);
+    // mqttManager->init(&appConfig, &managers);
+    hwManager->init(&appConfig, &managers);
+    webServerManager->init(&appConfig, &managers);
+    pumpManager->init(&appConfig, &managers);
 
-    wifiManager.setup();
-    mqttManager.setup();
-    hwManager.setup();
-    webServerManager.setup();
-    pumpManager.setup();
+    wifiManager->setup();
+    // mqttManager->setup();
+    hwManager->setup();
+    webServerManager->setup();
+    pumpManager->setup();
 }
 
 void loop() {
@@ -49,24 +55,24 @@ void loop() {
     // // Send sensor readings every minute
     // if (sensorTime % 10000 == 0) {
     //     // Get sensor data
-    //     unsigned int value = hwManager_->getDistance();
+    //     unsigned int value = hwManager->getDistance();
     //     // Convert data to cm
-    //     float distance = hwManager_->convertToCm(value);
+    //     float distance = hwManager->convertToCm(value);
     //     // Publish data
-    //     mqttManager_->publishReadings(value, distance);
+    //     mqttManager->publishReadings(value, distance);
     // }
 
     if (sensorTime % 1000 == 0) {
-        wifiManager.loop();  // check wifi connection
-        mqttManager.loop();  // check mqtt messages
-        hwManager.loop();    // check hardware connection
+        wifiManager->loop();  // check wifi connection
+        // mqttManager->loop();  // check mqtt messages
+        hwManager->loop();  // check hardware connection
     }
 
     if (sensorTime % 1000 == 0) {
-        webServerManager.loop();  // check webserver requests
+        webServerManager->loop();  // check webserver requests
     }
 
     if (sensorTime % 100 == 0) {
-        pumpManager.loop();  // check pump state
+        pumpManager->loop();  // check pump state
     }
 }

@@ -83,8 +83,12 @@ void PumpManager::loop() {
 void PumpManager::turnOnPump() {
     if (!PumpManager::stopButtonState) {
         PumpManager::pumpActive = true;
+        digitalWrite(RELE_PIN, HIGH);
     }
 }
-void PumpManager::turnOffPump() { PumpManager::pumpActive = false; }
+void PumpManager::turnOffPump() {
+    PumpManager::pumpActive = false;
+    digitalWrite(RELE_PIN, LOW);
+}
 
 bool PumpManager::getPumpStatus() { return PumpManager::pumpActive; }

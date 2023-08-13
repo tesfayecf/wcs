@@ -21,34 +21,16 @@ void WebServerManager::init(AppConfig* config_, Managers* managers_) {
 void WebServerManager::setup() {
     Serial.println("Initializing WebServerManager");
     // Webserver
-    webserver.on("/", [this]() { this->renderMainPage(this->managers); });
-    // WebServerManager::webserver.on("/ON",
-    //                                [this]() { this->turnON(this->managers);
-    //                                });
-    // WebServerManager::webserver.on("/OFF",
-    //                                [this]() { this->turnOFF(this->managers);
-    //                                });
+    webserver.on("/", [this]() { this->renderMainPage(); });
+    webserver.on("/ON", [this]() { this->turnON(); });
+    webserver.on("/OFF", [this]() { this->turnOFF(); });
+    webserver.on("/DATA", [this]() { this->sendData(); });
     webserver.begin();
-
-    // // Websocket
-    // // webSocket.onEvent(
-    // //     [this](uint8_t num, WStype_t type, uint8_t* payload, size_t
-    // length) {
-    // //         this->webSocketEvent(num, type, payload, length,
-    // this->managers);
-    // //     });
-
-    // webSocket.begin();
 };
 
-void WebServerManager::loop() {
-    // webSocket.loop();
-    webserver.handleClient();
+void WebServerManager::loop() { webserver.handleClient(); }
 
-    // sendWSMessage();
-}
-
-void WebServerManager::renderMainPage(Managers* managers) {
+void WebServerManager::renderMainPage() {
     String content = main_page;
     Serial.println("Rendering main page");
     unsigned int fileSize = content.length();
@@ -57,28 +39,51 @@ void WebServerManager::renderMainPage(Managers* managers) {
     webserver.send(200, "text/html", content);
 }
 
-void WebServerManager::turnON(Managers* managers) {
+void WebServerManager::turnON() {
+    Serial.println("Turning ON");
     managers->pumpManager->turnOnPump();
     webserver.sendHeader("Access-Control-Allow-Origin", "*");
     webserver.sendHeader("Content-Length", "2");
     webserver.send(200, "text/plain", "ON");
 }
 
-void WebServerManager::turnOFF(Managers* managers) {
+void WebServerManager::turnOFF() {
+    Serial.println("Turning OFF");
     managers->pumpManager->turnOffPump();
     webserver.sendHeader("Access-Control-Allow-Origin", "*");
-    webserver.sendHeader("Content-Length", "2");
+    webserver.sendHeader("Content-Length", "3");
     webserver.send(200, "text/plain", "OFF");
 }
 
-void WebServerManager::sendWSMessage() {
-    // char message[200];
-    // unsigned time = millis() / 1000;
-    // unsigned int sensorValue = this->managers->hwManager->getDistance();
+void WebServerManager::sendData() {
+    unsigned int time = millis() / 1000;
+    float sensorValue = this->managers->hwManager->getDistanceCm();
     // float sensorValueCM =
-    // this->managers->hwManager->convertToCm(sensorValue); bool pumpStatus =
-    // this->managers->pumpManager->getPumpStatus(); sprintf(message,
-    // "{\"serverTime\":%d,\"pumpStatus\":%d,\"sensorValue\":%d}",
-    //         time, sensorValueCM, pumpStatus);
-    // webSocket.broadcastTXT(message);
+    // this->managers->hwManager->convertToCm(sensorValue);
+    bool pumpStatus = this->managers->pumpManager->getPumpStatus();
+    // unsigned int sensorValue = 35;
+    // float sensorValueCM = 35;
+    // bool pumpStatus = false;
+    int pumpStatusInt = 0;
+
+    if (pumpStatus) {
+        pumpStatusInt = 1;
+    } else {
+        pumpStatusInt = 0;
+    }
+
+    // Create a char array for the JSON message
+    char message[100];
+    snprintf(message, sizeof(message),
+             "{\"serverTime\":%d,\"pumpStatus\":%d,\"sensorValue\":%d}", time,
+             pumpStatusInt, sensorValue);
+
+    // Send the data
+    webserver.sendHeader("Access-Control-Allow-Origin", "*");
+    webserver.send(200, "application/json", message);
 }
+
+// Give a clear response to this issue pointing to the specific files that
+// should be modified. Give the corrected code and explain the problem and the
+// solution. Also give multiple solutions to the problem and explain why i
+// should use one instead of another

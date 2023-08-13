@@ -6,21 +6,16 @@ class MQTTManager;
 class HWManager;
 class WebServerManager;
 class PumpManager;
-#include "../AppConfig.h"
+
+#include "../utils/AppConfig.h"
+#include "../utils/types.h"
 
 class App {
    public:
     App(const AppConfig& config);
-
-    WiFiManager& wifiManager();
-    MQTTManager& mqttManager();
-    HWManager& hwManager();
-    WebServerManager& webServerManager();
-    PumpManager& pumpManager();
-
     AppConfig appConfig;
+    Managers managers;
 
-   private:
     WiFiManager* wifiManager_;
     MQTTManager* mqttManager_;
     HWManager* hwManager_;
@@ -37,5 +32,4 @@ class App {
     unsigned sensorTime = 0;
 };
 
-#include "App.cpp"
 #endif  // APP_H

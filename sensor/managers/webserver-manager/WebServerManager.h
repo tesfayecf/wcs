@@ -5,30 +5,35 @@
 #include <ESP8266WiFi.h>
 #include <WebSocketsServer.h>
 
+#include "../../utils/AppConfig.h"
 #include "../../utils/constants.h"
-
-class App;  // Forward declaration of App
+// #include "../../utils/types.h"
+struct Managers;
 
 class WebServerManager {
    private:
-    App& appInstance;
+    AppConfig* appConfig;
+    Managers* managers;
 
-    static ESP8266WebServer webserver;
-    static WebSocketsServer webSocket;
+   private:
+    ESP8266WebServer webserver;
+    WebSocketsServer webSocket;
 
-    static void renderMainPage();
-    void turnON();
-    void turnOFF();
+    // HTTP
+    void renderMainPage(Managers* managers);
+    void turnON(Managers* managers);
+    void turnOFF(Managers* managers);
+    // WS
     void sendWSMessage();
 
    public:
-    WebServerManager(App& app);
+    WebServerManager();
+
+    // Initialize manager
+    void init(AppConfig* config_, Managers* managers_);
 
     void setup();
     void loop();
-
-    WebServerManager::sendWSMessage();
 };
 
-#include "WebServerManager.cpp"
 #endif  // WEBSERVER_CONNECTION_MANAGER_H

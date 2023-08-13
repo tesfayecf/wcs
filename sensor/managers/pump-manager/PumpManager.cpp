@@ -1,8 +1,16 @@
 #include "PumpManager.h"
 
+#include "../../utils/AppConfig.h"
 #include "../../utils/constants.h"
+// #include "../../utils/types.h"
+struct Managers;
 
-PumpManager::PumpManager(App& app) : appInstance(app) {}
+PumpManager::PumpManager() {}
+
+void PumpManager::init(AppConfig* config_, Managers* managers_) {
+    managers = managers_;
+    appConfig = config_;
+}
 
 bool PumpManager::pumpActive = false;
 bool PumpManager::startButtonState = false;
@@ -71,11 +79,11 @@ void PumpManager::loop() {
     }
 }
 
-void turnOnPump() {
+void PumpManager::turnOnPump() {
     if (!PumpManager::stopButtonState) {
         PumpManager::pumpActive = true;
     }
 }
-void turnOffPump() { PumpManager::pumpActive = false; }
+void PumpManager::turnOffPump() { PumpManager::pumpActive = false; }
 
-bool getPumpStatus() { return PumpManager::pumpActive; }
+bool PumpManager::getPumpStatus() { return PumpManager::pumpActive; }

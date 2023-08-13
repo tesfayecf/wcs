@@ -2,17 +2,24 @@
 #define WIFI_CONNECTION_MANAGER_H
 #include <ESP8266WiFi.h>
 
-class App;  // Forward declaration of App
+#include "../../utils/AppConfig.h"
+#include "../../utils/constants.h"
+// #include "../../utils/types.h"
+struct Managers;
 
 class WiFiManager {
    private:
-    App& appInstance;
+    AppConfig* appConfig;
+    Managers* managers;
 
    public:
     // Constructor
-    WiFiManager(App& app);
+    WiFiManager();
 
-    // Initialize WiFi connection
+    // Initialize manager
+    void init(AppConfig* config_, Managers* managers_);
+
+    // Setup WiFi connection
     void setup();
 
     void loop();
@@ -27,5 +34,4 @@ class WiFiManager {
     boolean connect();
 };
 
-#include "WiFiManager.cpp"
 #endif  // WIFI_CONNECTION_MANAGER_H

@@ -2,12 +2,18 @@
 
 #include <EEPROM.h>
 
+#include "../../managers/hardware-manager/HWManager.cpp"
 #include "../../managers/hardware-manager/HWManager.h"
+#include "../../managers/mqtt-manager/MQTTManager.cpp"
 #include "../../managers/mqtt-manager/MQTTManager.h"
+#include "../../managers/pump-manager/PumpManager.cpp"
 #include "../../managers/pump-manager/PumpManager.h"
+#include "../../managers/webserver-manager/WebServerManager.cpp"
 #include "../../managers/webserver-manager/WebServerManager.h"
+#include "../../managers/wifi-manager/WiFiManager.cpp"
 #include "../../managers/wifi-manager/WiFiManager.h"
-#include "../AppConfig.h"
+#include "../utils/AppConfig.h"
+#include "../utils/types.h"
 
 App::App(const AppConfig& config)
     : wifiManager_(nullptr),
@@ -15,27 +21,30 @@ App::App(const AppConfig& config)
       hwManager_(nullptr),
       webServerManager_(nullptr),
       pumpManager_(nullptr),
-      appConfig(config) {}
-
-WiFiManager& App::wifiManager() { return *wifiManager_; }
-
-MQTTManager& App::mqttManager() { return *mqttManager_; }
-
-HWManager& App::hwManager() { return *hwManager_; }
-
-WebServerManager& App::webServerManager() { return *webServerManager_; }
-
-PumpManager& App::pumpManager() { return *pumpManager_; }
+      appConfig(config) {
+    managers.wifiManager = wifiManager_;
+    managers.mqttManager = mqttManager_;
+    managers.hwManager = hwManager_;
+    managers.webServerManager = webServerManager_;
+    managers.pumpManager = pumpManager_;
+}
 
 void App::setup() {
-    wifiManager_ = new WiFiManager(*this);
-    mqttManager_ = new MQTTManager(*this);
-    hwManager_ = new HWManager(*this);
-    webServerManager_ = new WebServerManager(*this);
+    wifiManager_ = new WiFiManager();
+    // mqttManager_ = new MQTTManager();
+    // hwManager_ = new HWManager();
+    webServerManager_ = new WebServerManager();
+    pumpManager_ = new PumpManager();
+
+    wifiManager_->init(&appConfig, &this->managers);
+    // mqttManager_->init(&this->appConfig, &this->managers);
+    // hwManager_->init(&this->appConfig, &this->managers);
+    webServerManager_->init(&this->appConfig, &this->managers);
+    pumpManager_->init(&this->appConfig, &this->managers);
 
     wifiManager_->setup();
     // mqttManager_->setup();
-    hwManager_->setup();
+    // hwManager_->setup();
     webServerManager_->setup();
     pumpManager_->setup();
 }
@@ -55,11 +64,11 @@ void App::loop() {
     if (sensorTime % 1000 == 0) {
         wifiManager_->loop();  // check wifi connection
         // mqttManager_->loop();       // check mqtt messages
-        hwManager_->loop();  // check hardware connection
+        // hwManager_->loop();  // check hardware connection
     }
 
     if (sensorTime % 1000 == 0) {
-        webServerManager_->loop();  // check webserver requests
+        webServerManager_->loop();
     }
 
     if (sensorTime % 100 == 0) {

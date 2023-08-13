@@ -2,15 +2,22 @@
 
 #include <ESP8266WiFi.h>
 
+#include "../../utils/AppConfig.h"
 #include "../../utils/constants.h"
+// #include "../../utils/types.h"
+struct Managers;
 
-WiFiManager::WiFiManager(App& app) : appInstance(app) {}
+WiFiManager::WiFiManager() {}
+
+void WiFiManager::init(AppConfig* config_, Managers* managers_) {
+    managers = managers_;
+    appConfig = config_;
+}
 
 void WiFiManager::setup() {
     // Connect to WiFi
     if (!this->connect()) {
         Serial.println("WiFi connection failed");
-        appInstance.stop();
         return;
     }
 }
@@ -45,12 +52,12 @@ bool WiFiManager::connect() {
     if (r == 150) {
         return false;
     }
-    Serial.println("Connected to WiFi");
+
+    managers->mqttManager->subscribe("fadf");
+
     return true;
 }
 
-bool WiFiManager::isConnected() {
-    return WiFi.status() == WL_CONNECTED;
-}
+bool WiFiManager::isConnected() { return WiFi.status() == WL_CONNECTED; }
 
 wl_status_t WiFiManager::getStatus() { return WiFi.status(); }

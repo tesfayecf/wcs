@@ -6,11 +6,15 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-class App;  // Forward declaration of App
+#include "../../utils/AppConfig.h"
+#include "../../utils/constants.h"
+// #include "../../utils/types.h"
+struct Managers;
 
 class MQTTManager {
    private:
-    App& appInstance;
+    AppConfig* appConfig;
+    Managers* managers;
 
     WiFiClient wifiClient;
     PubSubClient mqttClient;
@@ -19,9 +23,12 @@ class MQTTManager {
 
    public:
     // Constructor
-    MQTTManager(App& app);
+    MQTTManager();
 
-    // Initialize MQTT connection
+    // Initialize manager
+    void init(AppConfig* config_, Managers* managers_);
+
+    // Setup MQTT connection
     void setup();
 
     // Main loop to handle MQTT events
@@ -54,5 +61,4 @@ class MQTTManager {
     String getSensorID();
 };
 
-#include "MQTTManager.cpp"
 #endif  // MQTT_CONNECTION_MANAGER_H

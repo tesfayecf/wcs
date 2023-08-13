@@ -152,7 +152,14 @@ const char main_page[] PROGMEM = R"=====(
       position: fixed;
       z-index: 100;
     }
-      
+    
+    .servertime {
+        color: white;
+        position: absolute;
+        right: 5%;
+        top: -11px;
+        font-size: 15px;
+    }
     </style>
     </head>
   <body> 
@@ -178,6 +185,94 @@ const char main_page[] PROGMEM = R"=====(
             <div id="water_tank" class="tank_water" ></div>
         </div>
     </div>
+
+    <div class="section" style="height: 35px;background:rgb(0, 0, 0)">
+        <button class="download" type="button" onclick="downlaodLogFile(false)">TXT</button>
+        <button class="download" type="button" style="left: 20px;" onclick="downlaodLogFile(true)">CSV</button>
+        <h3 style="position: absolute;top: -12px;text-align: center;color:white;width: 500px;left:222.5px;">Copyright 2022 by Tesfaye. All Rights Reserved.</h3>
+        <h4 id="serverTime" class="servertime">Server Time: LOADING...</h4>
+      </div>
   </body>
 </html>
+<script>
+    const mainpath = "192.168.1.101";
+    const socketpath = "ws://" + mainpath + ":81";
+    const minLevelSensor = 0;
+    const maxLevelSensor = 100;
+    var socketConnection = false;
+
+    (function startWS()  {
+        let socket = new WebSocket(socketpath);
+        socket.onopen = (e) => {  
+            socketConnection = true;
+            removeLoading();
+        };
+        socket.onerror = function(e) { 
+            setTimeout(startWS(), 10000)
+        };
+        socket.onmessage = (e) => {  
+            data = JSON.parse(e.data);
+            console.log(data);
+            document.getElementById("serverTime").innerHTML = "Server Time: " + SecondToDay(data.serverTime);
+            updateLevel(data.sensorValue);
+            checkStatus();
+        };
+    })();
+
+    function removeLoading() {
+        var child = document.getElementById("loadingScreen");
+        child.parentNode.removeChild(child);
+    }
+
+    function updateLevel(level) {
+        level = (Number(level) - minLevelSensor)/(maxLevelSensor - minLevelSensor)*100;
+        if (level <= 0) level = 0;
+        if (level >= 100) level = 100;
+        level = parseInt(level);
+        document.getElementById('water_tank').style.height = level+"%";
+        document.getElementById('level_indicator').innerHTML = level+"%";
+    }
+
+    function checkStatus() {
+      if (data.pumpStatus == '1') {
+        document.getElementById('bomba').innerHTML = "ENCESA";
+      } else if (data.pumpStatus == '0') {
+          document.getElementById('bomba').innerHTML = "APAGADA";
+      }
+  } 
+
+    function requestData(path) {
+      var oReq = new XMLHttpRequest();
+      oReq.addEventListener("load", action);
+      webpath = "http://" + mainpath + "/" + path;
+      oReq.open("GET", webpath);
+      oReq.send();
+  }
+
+    function encendre() {
+        if (data.pumpState == '1') {
+            alert("Pump already ON"); 
+        } else if (!socketConnection) {
+            alert("Waiting for connection");
+        } else {
+            var password = prompt("Password: ");
+            if (password === "1234") requestData("ON");
+        }
+        checkStatus();
+    }
+    
+    function apagar() {
+        if (data.pumpState == '0') {
+            alert("Pump already OFF"); 
+        } else if (!socketConnection) {
+            alert("Waiting for connection");
+        } else {
+            var confirmation = confirm("Are you sure you want to turn off the pump?");
+            if (confirmation) {
+                requestData("OFF");
+            }
+        }
+        checkStatus();
+    }
+</script>
 )=====";

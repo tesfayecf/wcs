@@ -1,17 +1,21 @@
 #ifndef PUMPMANAGER_CONNECTION_MANAGER_H
 #define PUMPMANAGER_CONNECTION_MANAGER_H
-class App;  // Forward declaration of App
+
+#include "../../utils/AppConfig.h"
+#include "../../utils/constants.h"
+// #include "../../utils/types.h"
+struct Managers;
 
 class PumpManager {
    private:
-    App& appInstance;
-
-    static bool pumpActive;
-    static bool startButtonState;
-    static bool stopButtonState;
+    AppConfig* appConfig;
+    Managers* managers;
 
    public:
-    PumpManager(App& app);
+    PumpManager();
+
+    // Initialize manager
+    void init(AppConfig* config_, Managers* managers_);
 
     void setup();
     void loop();
@@ -19,7 +23,10 @@ class PumpManager {
     void turnOnPump();
     void turnOffPump();
     bool getPumpStatus();
+
+    static bool pumpActive;
+    static bool startButtonState;
+    static bool stopButtonState;
 };
 
-#include "PumpManager.cpp"
 #endif  // PUMPMANAGER_CONNECTION_MANAGER_H

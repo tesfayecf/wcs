@@ -4,19 +4,26 @@
 #include <NewPing.h>
 #include <Wire.h>
 
+#include "../../utils/AppConfig.h"
 #include "../../utils/constants.h"
-class App;  // Forward declaration of App
+// #include "../../utils/types.h"
+struct Managers;
 
 class HWManager {
    private:
+    AppConfig* appConfig;
+    Managers* managers;
+
     NewPing sonar;
-    App& appInstance;
 
    public:
     // Constructor
-    HWManager(App& app);
+    HWManager();
 
-    // Initialize IR connection
+    // Initialize manager
+    void init(AppConfig* config_, Managers* managers_);
+
+    // Setup IR connection
     void setup();
 
     void loop();
@@ -27,5 +34,4 @@ class HWManager {
     float convertToCm(unsigned int distance);
 };
 
-#include "HWManager.cpp"
 #endif  // HW_CONNECTION_MANAGER_H

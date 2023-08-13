@@ -64,7 +64,7 @@ enum LOG_CODE {
 
 #define EEPROM_SIZE 512
 
-/// CONNECTIONS ///
+/// MANAGERS ///
 
 //  WIFI
 #define WIFI_SSID "ONO1D77"

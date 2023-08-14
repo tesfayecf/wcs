@@ -8,8 +8,8 @@
 
 #include "../../utils/AppConfig.h"
 #include "../../utils/constants.h"
-// #include "../../utils/types.h"
-struct Managers;
+#include "../../utils/types.h"
+#include "Arduino.h"
 
 class MQTTManager {
    private:

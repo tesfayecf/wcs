@@ -7,17 +7,18 @@
 
 #include "../../utils/AppConfig.h"
 #include "../../utils/constants.h"
-// #include "../../utils/types.h"
-struct Managers;
+#include "../../utils/types.h"
 
 MQTTManager::MQTTManager() : mqttClient(wifiClient) {}
 
 void MQTTManager::init(AppConfig* config_, Managers* managers_) {
+    Serial.println("MQTTManager init");
     managers = managers_;
     appConfig = config_;
 }
 
 void MQTTManager::setup() {
+    Serial.println("Initializing MQTTManager");
     mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
     // mqttClient.setCallback(
     //     [this](char* topic, uint8_t* payload, unsigned int length) {
@@ -46,6 +47,7 @@ void MQTTManager::connectMQTT() {
             delay(1000);
         }
     }
+    Serial.println("MQTT connection failed");
 }
 
 void MQTTManager::reconnect() {
@@ -121,6 +123,6 @@ String MQTTManager::getSensorID() {
     // char sensorID_64[encodedLength + 1];
     // Base64.encode(sensorID_64, sensorID, inputStringLength);
     // return String(sensorID_64);
-    String sensorID = "RTg6OUY6NkQ6OTM6NTk6QjM=";
+    String sensorID = "NDg6NTU6MTk6Qzg6ODc6N0E=";
     return sensorID;
 }

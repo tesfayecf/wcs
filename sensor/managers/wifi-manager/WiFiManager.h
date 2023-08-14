@@ -3,9 +3,8 @@
 #include <ESP8266WiFi.h>
 
 #include "../../utils/AppConfig.h"
-#include "../../utils/constants.h"
-// #include "../../utils/types.h"
-struct Managers;
+#include "../../utils/types.h"
+#include "Arduino.h"
 
 class WiFiManager {
    private:
@@ -19,7 +18,7 @@ class WiFiManager {
     // Initialize manager
     void init(AppConfig* config_, Managers* managers_);
 
-    // Setup WiFi connection
+    // Initialize WiFi connection
     void setup();
 
     void loop();

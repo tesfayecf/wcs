@@ -1,10 +1,9 @@
 #ifndef PUMPMANAGER_CONNECTION_MANAGER_H
 #define PUMPMANAGER_CONNECTION_MANAGER_H
-
 #include "../../utils/AppConfig.h"
 #include "../../utils/constants.h"
-// #include "../../utils/types.h"
-struct Managers;
+#include "../../utils/types.h"
+#include "Arduino.h"
 
 class PumpManager {
    private:

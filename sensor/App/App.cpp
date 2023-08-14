@@ -31,20 +31,20 @@ App::App(const AppConfig& config)
 
 void App::setup() {
     wifiManager_ = new WiFiManager();
-    // mqttManager_ = new MQTTManager();
-    // hwManager_ = new HWManager();
+    mqttManager_ = new MQTTManager();
+    hwManager_ = new HWManager();
     webServerManager_ = new WebServerManager();
     pumpManager_ = new PumpManager();
 
     wifiManager_->init(&appConfig, &this->managers);
-    // mqttManager_->init(&this->appConfig, &this->managers);
-    // hwManager_->init(&this->appConfig, &this->managers);
+    mqttManager_->init(&this->appConfig, &this->managers);
+    hwManager_->init(&this->appConfig, &this->managers);
     webServerManager_->init(&this->appConfig, &this->managers);
     pumpManager_->init(&this->appConfig, &this->managers);
 
     wifiManager_->setup();
-    // mqttManager_->setup();
-    // hwManager_->setup();
+    mqttManager_->setup();
+    hwManager_->setup();
     webServerManager_->setup();
     pumpManager_->setup();
 }

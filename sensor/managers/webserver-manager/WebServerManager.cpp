@@ -1,15 +1,16 @@
 #include "WebServerManager.h"
 
-#include "../../utils/AppConfig.h"
 #include "../../utils/constants.h"
-// #include "../../utils/types.h"
-struct Managers;
+#include "../../utils/types.h"
 #include "webpage.h"
 
-WebServerManager::WebServerManager()
-    : webSocket(WEBSOCKET_PORT), webserver(WEB_SERVER_PORT) {}
+// ESP8266WebServer WebServerManager::webserver(WEB_SERVER_PORT);
+// WebSocketsServer WebServerManager::webSocket(WEBSOCKET_PORT);
+
+WebServerManager::WebServerManager() : webserver(WEB_SERVER_PORT) {}
 
 void WebServerManager::init(AppConfig* config_, Managers* managers_) {
+    Serial.println("WebServerManager init");
     managers = managers_;
     appConfig = config_;
 }
@@ -17,52 +18,64 @@ void WebServerManager::init(AppConfig* config_, Managers* managers_) {
 void WebServerManager::setup() {
     Serial.println("Initializing WebServerManager");
     // Webserver
-    WebServerManager::webserver.on(
-        "/", [this]() { this->renderMainPage(this->managers); });
-    WebServerManager::webserver.on("/ON",
-                                   [this]() { this->turnON(this->managers); });
-    WebServerManager::webserver.on("/OFF",
-                                   [this]() { this->turnOFF(this->managers); });
-    WebServerManager::webserver.begin();
-
-    webSocket.begin();
+    webserver.on("/", [this]() { this->renderMainPage(); });
+    webserver.on("/ON", [this]() { this->turnON(); });
+    webserver.on("/OFF", [this]() { this->turnOFF(); });
+    webserver.on("/DATA", [this]() { this->sendData(); });
+    webserver.begin();
 };
 
-void WebServerManager::loop() {
-    webSocket.loop();
-    WebServerManager::webserver.handleClient();
+void WebServerManager::loop() { webserver.handleClient(); }
 
-    sendWSMessage();
-}
-
-void WebServerManager::renderMainPage(Managers* managers) {
+void WebServerManager::renderMainPage() {
     String content = main_page;
+    Serial.println("Rendering main page");
     unsigned int fileSize = content.length();
-    WebServerManager::webserver.sendHeader("Access-Control-Allow-Origin", "*");
-    WebServerManager::webserver.sendHeader("Content-Length", String(fileSize));
-    WebServerManager::webserver.send(200, "text/html", content);
+    webserver.sendHeader("Access-Control-Allow-Origin", "*");
+    webserver.sendHeader("Content-Length", String(fileSize));
+    webserver.send(200, "text/html", content);
 }
 
-void WebServerManager::turnON(Managers* managers) {
+void WebServerManager::turnON() {
+    Serial.println("Turning ON");
     managers->pumpManager->turnOnPump();
-    WebServerManager::webserver.sendHeader("Access-Control-Allow-Origin", "*");
-    WebServerManager::webserver.sendHeader("Content-Length", "2");
-    WebServerManager::webserver.send(200, "text/plain", "ON");
+    webserver.sendHeader("Access-Control-Allow-Origin", "*");
+    webserver.sendHeader("Content-Length", "2");
+    webserver.send(200, "text/plain", "ON");
 }
 
-void WebServerManager::turnOFF(Managers* managers) {
+void WebServerManager::turnOFF() {
+    Serial.println("Turning OFF");
     managers->pumpManager->turnOffPump();
-    WebServerManager::webserver.sendHeader("Access-Control-Allow-Origin", "*");
-    WebServerManager::webserver.sendHeader("Content-Length", "2");
-    WebServerManager::webserver.send(200, "text/plain", "OFF");
+    webserver.sendHeader("Access-Control-Allow-Origin", "*");
+    webserver.sendHeader("Content-Length", "3");
+    webserver.send(200, "text/plain", "OFF");
 }
 
-void WebServerManager::sendWSMessage() {
-    char message[200];
-    unsigned time = millis() / 1000;
-    unsigned int sensorValue = this->managers->hwManager->getDistance();
-    float sensorValueCM = this->managers->hwManager->convertToCm(sensorValue);
+void WebServerManager::sendData() {
+    unsigned int time = millis() / 1000;
+    float sensorValue = this->managers->hwManager->getDistanceCm();
+    // float sensorValueCM =
+    // this->managers->hwManager->convertToCm(sensorValue);
     bool pumpStatus = this->managers->pumpManager->getPumpStatus();
-    sprintf(message, "{\"serverTime\":%d,\"pumpStatus\":%d,\"sensorValue\":%d}",
-            time, sensorValueCM, pumpStatus);
+    // unsigned int sensorValue = 35;
+    // float sensorValueCM = 35;
+    // bool pumpStatus = false;
+    int pumpStatusInt = 0;
+
+    if (pumpStatus) {
+        pumpStatusInt = 1;
+    } else {
+        pumpStatusInt = 0;
+    }
+
+    // Create a char array for the JSON message
+    char message[100];
+    snprintf(message, sizeof(message),
+             "{\"serverTime\":%d,\"pumpStatus\":%d,\"sensorValue\":%d}", time,
+             pumpStatusInt, sensorValue);
+
+    // Send the data
+    webserver.sendHeader("Access-Control-Allow-Origin", "*");
+    webserver.send(200, "application/json", message);
 }

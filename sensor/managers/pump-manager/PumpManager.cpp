@@ -2,12 +2,12 @@
 
 #include "../../utils/AppConfig.h"
 #include "../../utils/constants.h"
-// #include "../../utils/types.h"
-struct Managers;
+#include "../../utils/types.h"
 
 PumpManager::PumpManager() {}
 
 void PumpManager::init(AppConfig* config_, Managers* managers_) {
+    Serial.println("PumpManager init");
     managers = managers_;
     appConfig = config_;
 }
@@ -82,8 +82,12 @@ void PumpManager::loop() {
 void PumpManager::turnOnPump() {
     if (!PumpManager::stopButtonState) {
         PumpManager::pumpActive = true;
+        digitalWrite(RELE_PIN, HIGH);
     }
 }
-void PumpManager::turnOffPump() { PumpManager::pumpActive = false; }
+void PumpManager::turnOffPump() {
+    PumpManager::pumpActive = false;
+    digitalWrite(RELE_PIN, LOW);
+}
 
 bool PumpManager::getPumpStatus() { return PumpManager::pumpActive; }

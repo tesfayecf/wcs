@@ -4,17 +4,18 @@
 
 #include "../../utils/AppConfig.h"
 #include "../../utils/constants.h"
-// #include "../../utils/types.h"
-struct Managers;
+#include "../../utils/types.h"
 
 WiFiManager::WiFiManager() {}
 
 void WiFiManager::init(AppConfig* config_, Managers* managers_) {
+    Serial.println("WiFiManager init");
     managers = managers_;
     appConfig = config_;
 }
 
 void WiFiManager::setup() {
+    Serial.println("Initializing WiFiManager");
     // Connect to WiFi
     if (!this->connect()) {
         Serial.println("WiFi connection failed");
@@ -52,9 +53,7 @@ bool WiFiManager::connect() {
     if (r == 150) {
         return false;
     }
-
-    managers->mqttManager->subscribe("fadf");
-
+    Serial.println("Connected to WiFi");
     return true;
 }
 

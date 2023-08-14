@@ -4,26 +4,25 @@
 
 #include "../../utils/AppConfig.h"
 #include "../../utils/constants.h"
-// #include "../../utils/types.h"
-struct Managers;
+#include "../../utils/types.h"
 
-HWManager::HWManager() : sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE) {}
+NewPing HWManager::sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
+
+HWManager::HWManager() {}
 
 void HWManager::init(AppConfig* config_, Managers* managers_) {
+    Serial.println("HWManager init");
     managers = managers_;
     appConfig = config_;
 }
 
-void HWManager::setup() {}
+void HWManager::setup() { Serial.println("Initializing HWManager"); }
 
 void HWManager::loop() {}
 
-unsigned int HWManager::getDistance() {
-    unsigned int distance = sonar.ping(450);
-    return distance;
-}
+unsigned int HWManager::getDistance() { return HWManager::sonar.ping(450); }
 
-float HWManager::convertToCm(unsigned int distance) {
+float HWManager::getDistanceCm() {
     // calculate time basad on humidity and temperature
-    return distance / 57;
+    return HWManager::sonar.ping(450) / 57;
 }

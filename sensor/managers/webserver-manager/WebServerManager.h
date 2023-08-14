@@ -7,8 +7,8 @@
 
 #include "../../utils/AppConfig.h"
 #include "../../utils/constants.h"
-// #include "../../utils/types.h"
-struct Managers;
+#include "../../utils/types.h"
+#include "Arduino.h"
 
 class WebServerManager {
    private:
@@ -17,14 +17,12 @@ class WebServerManager {
 
    private:
     ESP8266WebServer webserver;
-    WebSocketsServer webSocket;
 
     // HTTP
-    void renderMainPage(Managers* managers);
-    void turnON(Managers* managers);
-    void turnOFF(Managers* managers);
-    // WS
-    void sendWSMessage();
+    void renderMainPage();
+    void turnON();
+    void turnOFF();
+    void sendData();
 
    public:
     WebServerManager();

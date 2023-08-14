@@ -140,17 +140,6 @@
        background-color:rgb(209 125 124); 
        color:black;
     }
-  
-    .loadingScreen {
-      background: rgba(208, 216, 228, 0.9) url(http://192.168.1.101/loadingGif.gif) no-repeat center center; /* http://192.168.1.101/loadingGif.gif */
-      background-size: 40%;
-      height: 100vh;
-      width: 100%;
-      left: 0px;
-      top: 0px;
-      position: fixed;
-      z-index: 100;
-    }
     
     .servertime {
         color: white;
@@ -162,18 +151,16 @@
     </style>
     </head>
   <body> 
-    <div id="loadingScreen" class="loadingScreen"></div>
-  
     <h1>SISTEMA DE CONTROL</h1>
   
     <div class="section" style="height: 400px;">
       <h2 class="h2_control">CONTROL</h2>
       <h3 id="bomba" class="text_bomba">LOADING...</h3>
       <div class="control_buttons">
-          <button class='button_right' type="button" onclick="encendre()">START</button>
+          <button class='button_right' type="button" onclick={startPump()}>START</button>
       </div>
       <div class="control_buttons">
-        <button class='button_left' type="button" onclick="apagar()">STOP</button>  
+        <button class='button_left' type="button" onclick={stopPump()}>STOP</button>  
       </div>
     </div>
     
@@ -186,41 +173,72 @@
     </div>
 
     <div class="section" style="height: 35px;background:rgb(0, 0, 0)">
-        <button class="download" type="button" onclick="downlaodLogFile(false)">TXT</button>
-        <button class="download" type="button" style="left: 20px;" onclick="downlaodLogFile(true)">CSV</button>
-        <h3 style="position: absolute;top: -12px;text-align: center;color:white;width: 500px;left:222.5px;">Copyright 2022 by Tesfaye. All Rights Reserved.</h3>
+        <h3 style="position: absolute;top: -12px;text-align: center;color:white;width: 500px;left:222.5px;">Copyright 2023 by Tesfaye. All Rights Reserved.</h3>
         <h4 id="serverTime" class="servertime">Server Time: LOADING...</h4>
       </div>
   </body>
 </html>
 <script>
     const mainpath = "192.168.1.101";
-    const socketpath = "ws://" + mainpath + ":81";
     const minLevelSensor = 0;
     const maxLevelSensor = 100;
-    var socketConnection = false;
+    let data = {}
 
-    (function startWS()  {
-        let socket = new WebSocket(socketpath);
-        socket.onopen = (e) => {  
-            socketConnection = true;
-            removeLoading();
-        };
-        socket.onerror = function(e) { 
-            setTimeout(startWS(), 10000)
-        };
-        socket.onmessage = (e) => {  
-            data = JSON.parse(e.data);
-            console.log(data);
-            document.getElementById("serverTime").innerHTML = "Server Time: " + SecondToDay(data.serverTime);
-            updateLevel(data.sensorValue);
-            checkStatus();
-        };
-    })();
+    function sendRequest(path, method) {
+      const webpath = `http://${mainpath}/${path}`;
+      return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.addEventListener('load', () => {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                  resolve(xhr.responseText);
+              } else {
+                  reject(`Request failed with status ${xhr.status}`);
+              }
+          });
+          xhr.addEventListener('error', () => {
+              reject('Request error');
+          });
+          xhr.open(method, webpath);
+          xhr.send();
+      });
+    }
 
-    function removeLoading() {
-        var child = document.getElementById("loadingScreen");
-        child.parentNode.removeChild(child);
+    async function post(path) {
+        try {
+            const responseText = await sendRequest(path, 'POST');
+            return responseText;
+        } catch (error) {
+            console.error('Request error:', error);
+            throw error;
+        }
+    }
+
+    async function get(path) {
+        try {
+            const responseText = await sendRequest(path, 'GET');
+            return responseText;
+        } catch (error) {
+            console.error('Request error:', error);
+            throw error;
+        }
+    }
+
+    getData();
+    const timer = setInterval(getData, 60 * 1000)
+
+    async function getData() {
+      const newData = await get("DATA");
+      const json = JSON.parse(newData);
+      data = json;
+      updateServerTime(data.serverTime);
+      updateLevel(data.sensorValue);
+      updateStatus(data.pumpStatus);
+    }
+
+    function updateServerTime(serverTime) {
+      if (serverTime >= 0) {
+        document.getElementById("serverTime").innerHTML = "Server Time: " + SecondToDay(data.serverTime);
+      }
     }
 
     function updateLevel(level) {
@@ -232,45 +250,46 @@
         document.getElementById('level_indicator').innerHTML = level+"%";
     }
 
-    function checkStatus() {
-      if (data.pumpStatus == '1') {
+    function updateStatus(status) {
+      if (status == '1') {
         document.getElementById('bomba').innerHTML = "ENCESA";
-      } else if (data.pumpStatus == '0') {
+      } else if (status == '0') {
           document.getElementById('bomba').innerHTML = "APAGADA";
       }
-  } 
+    } 
 
-    function requestData(path) {
-      var oReq = new XMLHttpRequest();
-      oReq.addEventListener("load", action);
-      webpath = "http://" + mainpath + "/" + path;
-      oReq.open("GET", webpath);
-      oReq.send();
-  }
-
-    function encendre() {
-        if (data.pumpState == '1') {
+    function startPump() {
+        if (data.pumpStatus == '1') {
             alert("Pump already ON"); 
-        } else if (!socketConnection) {
-            alert("Waiting for connection");
         } else {
             var password = prompt("Password: ");
-            if (password === "1234") requestData("ON");
+            if (password === "1234") post("ON");
         }
-        checkStatus();
+        getData();
     }
     
-    function apagar() {
-        if (data.pumpState == '0') {
+    function stopPump() {
+        if (data.pumpStatus == '0') {
             alert("Pump already OFF"); 
-        } else if (!socketConnection) {
-            alert("Waiting for connection");
         } else {
             var confirmation = confirm("Are you sure you want to turn off the pump?");
             if (confirmation) {
-                requestData("OFF");
+                post("OFF");
             }
         }
-        checkStatus();
+        getData();
     }
+
+    function SecondToDay(seconds) {
+      seconds = parseInt(seconds)
+      var days = Math.floor(seconds / 86400);
+      var hours = Math.floor((seconds - (days * 86400)) / 3600);
+      var minutes = Math.floor((seconds - (days * 86400) - (hours * 3600)) / 60);
+      var seconds = seconds - (days * 86400) - (hours * 3600) - (minutes * 60);
+      if (days < 10) { days = "0" + days} 
+      if (hours < 10) { hours = "0" + hours; }
+      if (minutes < 10) { minutes = "0" + minutes; }
+      if (seconds < 10) { seconds = "0" + seconds; }
+      return days + ':' + hours + ':' + minutes + ':' + seconds;
+  }
 </script>

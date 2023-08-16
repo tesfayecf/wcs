@@ -39,20 +39,37 @@ bool WiFiManager::connect() {
     if (!WiFi.config(local_IP, gateway, subnet)) {
         return false;
     }
+
+    // First WiFi network
     WiFi.disconnect();
     WiFi.mode(WIFI_OFF);
     delay(500);
-    WiFi.mode(WIFI_AP_STA);
+    WiFi.mode(WIFI_STA);
     int r = 0;
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);  // Connect to your WiFi router
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
     while (WiFi.status() != WL_CONNECTED) {
         delay(100);
         r++;
         if (r == 150) break;
     }
     if (r == 150) {
-        return false;
+        // First WiFi network connection failed, let's try the second one
+        WiFi.disconnect();
+        WiFi.mode(WIFI_OFF);
+        delay(500);
+        WiFi.mode(WIFI_STA);
+        r = 0;
+        WiFi.begin(WIFI_SSID_P, WIFI_PASSWORD_P);
+        while (WiFi.status() != WL_CONNECTED) {
+            delay(100);
+            r++;
+            if (r == 150) {
+                Serial.println("Failed to connect to any WiFi network");
+                return false;
+            }
+        }
     }
+
     Serial.println("Connected to WiFi");
     return true;
 }

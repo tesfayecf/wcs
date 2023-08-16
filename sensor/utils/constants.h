@@ -60,7 +60,6 @@ enum LOG_CODE {
 
 #define APP_NAME "Sensor"
 #define APP_VERSION "0.1"
-#define APP_AUTHOR "Tesfaye Carreras"
 
 #define EEPROM_SIZE 512
 
@@ -69,6 +68,9 @@ enum LOG_CODE {
 //  WIFI
 #define WIFI_SSID "ONO1D77"
 #define WIFI_PASSWORD "dVy68naGZU5d"
+#define WIFI_SSID_P "MOVISTAR_7DD9"
+#define WIFI_PASSWORD_P "W9GHdRn49sjdcXxxkhry"
+
 #define PUBLIC_IP "2.152.26.61"
 
 // MQTT

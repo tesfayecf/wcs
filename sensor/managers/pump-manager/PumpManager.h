@@ -22,6 +22,7 @@ class PumpManager {
     void turnOnPump();
     void turnOffPump();
     bool getPumpStatus();
+    void blink();
 
     static bool pumpActive;
     static bool startButtonState;

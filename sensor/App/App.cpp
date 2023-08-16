@@ -13,6 +13,7 @@
 #include "../../managers/wifi-manager/WiFiManager.cpp"
 #include "../../managers/wifi-manager/WiFiManager.h"
 #include "../utils/AppConfig.h"
+#include "../utils/constants.h"
 #include "../utils/types.h"
 
 App::App(const AppConfig& config)
@@ -30,6 +31,9 @@ App::App(const AppConfig& config)
 }
 
 void App::setup() {
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN, HIGH);
+
     wifiManager_ = new WiFiManager();
     mqttManager_ = new MQTTManager();
     hwManager_ = new HWManager();
@@ -37,21 +41,31 @@ void App::setup() {
     pumpManager_ = new PumpManager();
 
     wifiManager_->init(&appConfig, &this->managers);
-    mqttManager_->init(&this->appConfig, &this->managers);
+    // mqttManager_->init(&this->appConfig, &this->managers);
     hwManager_->init(&this->appConfig, &this->managers);
     webServerManager_->init(&this->appConfig, &this->managers);
     pumpManager_->init(&this->appConfig, &this->managers);
 
     wifiManager_->setup();
-    mqttManager_->setup();
+    blink();
+
+    // mqttManager_->setup();
+    blink();
+
     hwManager_->setup();
+
     webServerManager_->setup();
+    blink();
+
     pumpManager_->setup();
+    blink();
+
+    digitalWrite(LED_BUILTIN, LOW);
 }
 void App::loop() {
     sensorTime = millis();
 
-    // // Send sensor readings every minute
+    // // Send sensor readings every minute pass to manager
     // if (sensorTime % 10000 == 0) {
     //     // Get sensor data
     //     unsigned int value = hwManager_->getDistance();
@@ -64,7 +78,7 @@ void App::loop() {
     if (sensorTime % 1000 == 0) {
         wifiManager_->loop();  // check wifi connection
         // mqttManager_->loop();       // check mqtt messages
-        // hwManager_->loop();  // check hardware connection
+        hwManager_->loop();  // check hardware connection
     }
 
     if (sensorTime % 1000 == 0) {
@@ -103,4 +117,11 @@ bool App::getWifiCredentials() {
         Serial.println("Wifi credentials not found");
         return false;
     }
+}
+
+void App::blink() {
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(100);
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(500);
 }

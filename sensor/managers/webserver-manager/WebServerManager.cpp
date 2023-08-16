@@ -54,13 +54,8 @@ void WebServerManager::turnOFF() {
 
 void WebServerManager::sendData() {
     unsigned int time = millis() / 1000;
-    float sensorValue = this->managers->hwManager->getDistanceCm();
-    // float sensorValueCM =
-    // this->managers->hwManager->convertToCm(sensorValue);
+    unsigned int sensorValue = this->managers->hwManager->getDistanceCm();
     bool pumpStatus = this->managers->pumpManager->getPumpStatus();
-    // unsigned int sensorValue = 35;
-    // float sensorValueCM = 35;
-    // bool pumpStatus = false;
     int pumpStatusInt = 0;
 
     if (pumpStatus) {

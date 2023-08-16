@@ -182,7 +182,7 @@ const char main_page[] PROGMEM = R"=====(
 <script>
     const mainpath = "192.168.1.101";
     const minLevelSensor = 0;
-    const maxLevelSensor = 100;
+    const maxLevelSensor = 50;
     let data = {}
 
     function sendRequest(path, method) {

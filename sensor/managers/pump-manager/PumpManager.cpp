@@ -31,6 +31,8 @@ void PumpManager::setup() {
     digitalWrite(RELE_PIN, LOW);
     digitalWrite(START_LED_PIN, LOW);
     digitalWrite(STOP_LED_PIN, LOW);
+
+    blink();
 }
 
 void PumpManager::loop() {
@@ -91,3 +93,20 @@ void PumpManager::turnOffPump() {
 }
 
 bool PumpManager::getPumpStatus() { return PumpManager::pumpActive; }
+
+void PumpManager::blink() {
+    digitalWrite(START_LED_PIN, LOW);
+    digitalWrite(STOP_LED_PIN, LOW);
+    delay(50);
+    digitalWrite(START_LED_PIN, HIGH);
+    digitalWrite(STOP_LED_PIN, HIGH);
+    delay(200);
+    digitalWrite(START_LED_PIN, LOW);
+    digitalWrite(STOP_LED_PIN, LOW);
+    delay(500);
+    digitalWrite(START_LED_PIN, HIGH);
+    digitalWrite(STOP_LED_PIN, HIGH);
+    delay(200);
+    digitalWrite(START_LED_PIN, LOW);
+    digitalWrite(STOP_LED_PIN, LOW);
+}

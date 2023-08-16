@@ -22,7 +22,7 @@ void HWManager::loop() {}
 
 unsigned int HWManager::getDistance() { return HWManager::sonar.ping(450); }
 
-float HWManager::getDistanceCm() {
+unsigned int HWManager::getDistanceCm() {
     // calculate time basad on humidity and temperature
     return HWManager::sonar.ping(450) / 57;
 }

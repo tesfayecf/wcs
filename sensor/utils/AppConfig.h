@@ -20,10 +20,6 @@ class AppConfig {
     class HardwareManager {
        public:
     };
-
-    class WebServerManager {
-       public:
-    };
 };
 
 #endif  // APPCONFIG_H

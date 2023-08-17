@@ -34,6 +34,31 @@ void MQTTManager::loop() {
         reconnect();
     }
 
+    if (millis() % 10000 == 0) {
+        unsigned int distanceRaw;
+        unsigned long distanceCM;
+
+        for (size_t i = 0; i < 10; i++) {
+            distanceRaw = managers->hwManager->getDistance();
+            distanceCM = managers->hwManager->getDistanceCm();
+            Serial.print(".");
+            delay(10);
+            if (distanceRaw >= 200 || distanceCM >= 3) {
+                break;
+            }
+        }
+        Serial.println();
+
+        if (distanceRaw <= 200) {
+            distanceRaw = distanceCM * 57.0;
+        } else if (distanceCM <= 3) {
+            distanceCM = distanceRaw / 57.0;
+        }
+
+        // Publish data
+        publishReadings(distanceRaw, distanceCM);
+    }
+
     mqttClient.loop();
 }
 
@@ -67,7 +92,8 @@ void MQTTManager::subscribe(const char* topic) {
     }
 }
 
-void MQTTManager::publishReadings(unsigned int readingRAW, float readingCM) {
+void MQTTManager::publishReadings(unsigned int readingRAW,
+                                  unsigned long readingCM) {
     StaticJsonDocument<200> jsonDoc;
     JsonObject jsonObj = jsonDoc.to<JsonObject>();
     // Add message data
@@ -93,6 +119,7 @@ void MQTTManager::basePublish(ArduinoJson::V6213PB2::JsonObject& dataObject,
 
     Serial.println(topic);
     Serial.println(websocketMessageChar);
+    Serial.println();
 }
 
 void MQTTManager::addMetadata(ArduinoJson::V6213PB2::JsonObject& dataObject) {

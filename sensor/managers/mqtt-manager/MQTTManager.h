@@ -38,7 +38,7 @@ class MQTTManager {
     void subscribe(const char* topic);
 
     // Publish a sensor readings
-    void publishReadings(unsigned int readingRAW, float readingCM);
+    void publishReadings(unsigned int readingRAW, unsigned long readingCM);
 
    private:
     // Connect to the MQTT broker

@@ -20,9 +20,12 @@ void HWManager::setup() { Serial.println("Initializing HWManager"); }
 
 void HWManager::loop() {}
 
-unsigned int HWManager::getDistance() { return HWManager::sonar.ping(450); }
+unsigned int HWManager::getDistance() {
+    unsigned int distance = HWManager::sonar.ping(100);
+    return distance;
+}
 
-unsigned int HWManager::getDistanceCm() {
-    // calculate time basad on humidity and temperature
-    return HWManager::sonar.ping(450) / 57;
+unsigned long HWManager::getDistanceCm() {
+    unsigned long distance = HWManager::sonar.ping_cm(100);
+    return distance;
 }

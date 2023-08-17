@@ -29,7 +29,7 @@ class HWManager {
 
     // Get distance from IR
     unsigned int getDistance();
-    unsigned int getDistanceCm();
+    unsigned long getDistanceCm();
 };
 
 #endif  // HW_CONNECTION_MANAGER_H

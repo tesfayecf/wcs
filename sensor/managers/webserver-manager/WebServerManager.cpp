@@ -53,22 +53,32 @@ void WebServerManager::turnOFF() {
 }
 
 void WebServerManager::sendData() {
+    unsigned int distanceCM;
+    unsigned int distanceRaw;
     unsigned int time = millis() / 1000;
-    unsigned int sensorValue = this->managers->hwManager->getDistanceCm();
     bool pumpStatus = this->managers->pumpManager->getPumpStatus();
     int pumpStatusInt = 0;
 
-    if (pumpStatus) {
-        pumpStatusInt = 1;
-    } else {
-        pumpStatusInt = 0;
+    for (size_t i = 0; i < 10; i++) {
+        distanceRaw = managers->hwManager->getDistance();
+        distanceCM = managers->hwManager->getDistanceCm();
+        Serial.print(".");
+        delay(10);
+        if (distanceRaw >= 200 || distanceCM >= 3) {
+            break;
+        }
+    }
+    Serial.println();
+
+    if (distanceCM <= 3) {
+        distanceCM = distanceRaw / 57.0;
     }
 
     // Create a char array for the JSON message
     char message[100];
     snprintf(message, sizeof(message),
              "{\"serverTime\":%d,\"pumpStatus\":%d,\"sensorValue\":%d}", time,
-             pumpStatusInt, sensorValue);
+             pumpStatusInt, distanceCM);
 
     // Send the data
     webserver.sendHeader("Access-Control-Allow-Origin", "*");

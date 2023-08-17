@@ -16,7 +16,9 @@ void setup() {
 
 void loop() { app.loop(); }
 
-// Give a clear response to this issue pointing to the specific files that
-// should be modified. Give the corrected code and explain the problem and the
-// solution. Also give multiple solutions to the problem and explain why i
-// should use one instead of another
+/*
+Give a clear response to this issue pointing to the specific files that
+should be modified. Give the corrected code and explain the problem and the
+solution. Also give multiple solutions to the problem and explain why i
+should use one instead of another
+*/

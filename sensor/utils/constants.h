@@ -78,9 +78,9 @@ enum LOG_CODE {
 #define MQTT_PORT 1883
 
 // HARDWARE
-#define TRIGGER_PIN RX  // RX -> D5
-#define ECHO_PIN TX     // TX -> D6
-#define MAX_DISTANCE 450
+#define TRIGGER_PIN D3  // RX
+#define ECHO_PIN D4     // TX
+#define MAX_DISTANCE 100
 
 // WEBSERVER
 #define WEB_SERVER_PORT 80

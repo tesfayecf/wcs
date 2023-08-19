@@ -18,7 +18,7 @@ const SummaryWidget: React.FunctionComponent<ISummaryWidgetProps> = (props: ISum
       </div>
       <div id="content-div" className={styles.content}>
         <div id='piechart-div' className={styles.chart}>
-          📈
+          {/* 📈 */}
         </div>
         <div className={styles.data}>
           {/* <SummaryCard title='Inflows' quantity={900} unit='liter' percentage={30} className='hide' /> */}

@@ -9,6 +9,7 @@ const initialState: IDashboardStore = {
     showEditTankGroupMenu: false,
     tankGroups: [],
     showAddTankGroupMenu: false,
+    summary: {},
     tankGroupCreationForm: {
         name: '',
         nameError: false,
@@ -24,6 +25,10 @@ const dashboardSlice = createSlice({
     name: 'dashboard',
     initialState,
     reducers: {
+        setSummary: (state, action: PayloadAction<{ summary: any }>) => {
+            state.summary = action.payload.summary;
+        },
+
         setTankGroups: (state, action: PayloadAction<{ tankGroups: ITankGroup[] }>) => {
             state.tankGroups = action.payload.tankGroups;
         },

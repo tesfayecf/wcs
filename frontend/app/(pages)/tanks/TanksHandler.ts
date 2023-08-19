@@ -22,7 +22,35 @@ class TanksHandler {
         return TanksHandler.instance;
     }
 
-    // ACTIONS
+    /// LOADER \\\
+
+    public async load(params: ITanksParams) {
+        await this.loadParams(params);
+        await this.getTanksInfo();
+        await this.getSensorsInfo();
+        await this.initializeWSConnections();
+    }
+
+    public async loadParams(params: ITanksParams) {
+        store.dispatch(tankActions.setParams({ params }));
+    }
+
+
+
+    /// TANKS HANDLER \\\
+
+    public async getTanksInfo() {
+        const state = store.getState().tanks;
+        const response = await requestManager.request("tanks", "getTanks", [state.tankGroupId])
+        console.log(response)
+        if (response.status == 200) {
+            store.dispatch(tankActions.setTanks({ tanks: response.data.tanks }));
+            store.dispatch(tankActions.setTankGroupInfo({ tankGroupInfo: response.data.tankGroup }));
+            store.dispatch(tankActions.setTankGroupStats({ tankGroupStats: response.data.tankGroupStats }));
+        } else {
+            throw new Error(response.statusText);
+        }
+    }
 
     public async createTank() {
         store.dispatch(appActions.startLoading())
@@ -41,7 +69,7 @@ class TanksHandler {
         if (nameError || capacityError || typeError || dimensionsError || materialError || brandError) {
             throw new Error("Invalid form");
         } else {
-            const response = await requestManager.request("dashboard", "createTank", [state.tankGroupId, name, capacity, type, dimensions, brand, material])
+            const response = await requestManager.request("tanks", "createTank", [state.tankGroupId, name, capacity, type, dimensions, brand, material])
             if (response.status == 201) {
                 console.log("Tank created");
             } else {
@@ -56,112 +84,11 @@ class TanksHandler {
             });
 
             // Update redux
-            this.getTanksGroupInfo();
+            this.getTanksInfo();
         }
 
         store.dispatch(appActions.finishLoading())
     }
-
-    // LOADERS
-
-    public async load(params: ITanksParams) {
-        await this.loadParams(params);
-        await this.loadTanks();
-        await this.loadSensors();
-        await this.initializeWSConnections();
-    }
-    public async loadParams(params: ITanksParams) {
-        store.dispatch(tankActions.setParams({ params }));
-    }
-
-    public async loadTanks() {
-        await this.getTanksGroupInfo()
-    }
-
-    public async loadSensors() {
-        const tanks = store.getState().tanks.tanks;
-        let sensors: ISensor[] = []
-        await Promise.all(tanks.map(async (tank) => {
-            const sensor = await this.getTankSensor(tank.id)
-            console.log(sensor)
-            if (Object.keys(sensor).length !== 0)
-                sensors.push(sensor)
-        }))
-        console.log(sensors)
-        store.dispatch(tankActions.setSensors({ sensors }));
-    }
-
-    public async initializeWSConnections() {
-        const sensors = store.getState().tanks.sensors;
-        Promise.all(sensors.map(async (sensor) => {
-            await websocketManager2.connect(sensor.id, this.handleWsConnection, this.handleWsMessage, this.handleWsError)
-        }))
-    }
-
-    public async closeWSConnections() {
-        const sensors = store.getState().tanks.sensors;
-        Promise.all(sensors.map(async (sensor) => {
-            await websocketManager2.close(sensor.id)
-        }))
-    }
-
-    private async handleWsConnection(event) {
-        console.log("event", event);
-    }
-
-    private async handleWsMessage(message, sensorId) {
-        const sensorsData = store.getState().tanks.sensorsData;
-        let sensorsDataEdit = { ...sensorsData };
-        sensorsDataEdit[sensorId] = message.water_level;
-        store.dispatch(tankActions.setSensorsData({ sensorsData: sensorsDataEdit }));
-    }
-
-    private async handleWsError(message) {
-        console.log("message", message);
-    }
-
-
-    public unload() {
-        // TODO: set debounced time out. If user enter the page again no need to reconnect.
-        this.closeWSConnections();
-        // store.dispatch(tankActions.unload());
-    }
-
-    // GETTER
-
-    public async getTanksGroupInfo() {
-        const state = store.getState().tanks;
-        const response = await requestManager.request("dashboard", "getTankGroupTanks", [state.tankGroupId])
-        if (response.status == 200) {
-            store.dispatch(tankActions.setTanks({ tanks: response.data.tanks }));
-            store.dispatch(tankActions.setTankGroupInfo({ tankGroupInfo: response.data.tankGroup }));
-            store.dispatch(tankActions.setTankGroupStats({ tankGroupStats: response.data.tankGroupStats }));
-        } else {
-            throw new Error(response.statusText);
-        }
-    }
-
-    public async getTankInfo(tankId: number) {
-        const state = store.getState().tanks;
-        const response = await requestManager.request("dashboard", "getTank", [tankId, state.tankGroupId])
-        if (response.status == 200) {
-        } else {
-            throw new Error(response.statusText);
-        }
-    }
-
-    public async getTankSensor(tankId: number) {
-        const state = store.getState().tanks;
-        const response = await requestManager.request("dashboard", "getTankSensor", [tankId, state.tankGroupId]);
-        if (response.status == 200) {
-            return response.data;
-        } else {
-            throw new Error(response.statusText);
-        }
-    }
-
-
-    // SETTERS
 
     public setShowAddTankMenu(state: boolean) {
         store.dispatch(tankActions.setShowAddTankMenu({ state }))
@@ -200,6 +127,77 @@ class TanksHandler {
     public setTankCreationFormBrand(brand: string) {
         const brandError = false;
         store.dispatch(tankActions.setTankCreationForm({ brand, brandError }));
+    }
+
+    /// SENSOR HANDLER \\\
+
+    public async getSensor(tankId: number) {
+        const state = store.getState().tanks;
+        const response = await requestManager.request("tanks", "getSensor", [tankId, state.tankGroupId]);
+        if (response.status == 200) {
+            return response.data;
+        } else {
+            throw new Error(response.statusText);
+        }
+    }
+
+    public async getSensorsInfo() {
+        const tanks = store.getState().tanks.tanks;
+        let sensors: ISensor[] = []
+        await Promise.all(tanks.map(async (tank) => {
+            const sensor = await this.getSensor(tank.id)
+            console.log(sensor)
+            if (Object.keys(sensor).length !== 0)
+                sensors.push(sensor)
+        }))
+        console.log(sensors)
+        store.dispatch(tankActions.setSensors({ sensors }));
+    }
+
+    public async initializeWSConnections() {
+        const sensors = store.getState().tanks.sensors;
+        Promise.all(sensors.map(async (sensor) => {
+            await websocketManager2.connect(sensor.id, this.handleWsConnection, this.handleWsMessage, this.handleWsError)
+        }))
+    }
+
+    public async closeWSConnections() {
+        const sensors = store.getState().tanks.sensors;
+        Promise.all(sensors.map(async (sensor) => {
+            await websocketManager2.close(sensor.id)
+        }))
+    }
+
+    private async handleWsConnection(event) {
+        console.log("event", event);
+    }
+
+    private async handleWsMessage(message, sensorId) {
+        const sensorsData = store.getState().tanks.sensorsData;
+        let sensorsDataEdit = { ...sensorsData };
+        sensorsDataEdit[sensorId] = message.water_level;
+        store.dispatch(tankActions.setSensorsData({ sensorsData: sensorsDataEdit }));
+    }
+
+    private async handleWsError(message) {
+        console.log("message", message);
+    }
+
+    public unload() {
+        // TODO: set debounced time out. If user enter the page again no need to reconnect.
+        this.closeWSConnections();
+        // store.dispatch(tankActions.unload());
+    }
+
+    /// TANK HANDLER \\\
+
+    public async getTankInfo(tankId: number) {
+        const state = store.getState().tanks;
+        const response = await requestManager.request("tanks", "getTank", [tankId, state.tankGroupId])
+        if (response.status == 200) {
+        } else {
+            throw new Error(response.statusText);
+        }
     }
 }
 

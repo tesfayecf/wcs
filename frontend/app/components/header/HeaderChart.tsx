@@ -1,0 +1,37 @@
+import { connect } from "react-redux"
+import styles from './styles/Header.module.scss'
+import {
+    Chart as ChartJS, CategoryScale, LinearScale,
+    PointElement, LineElement, Title, Tooltip, Legend, Filler, ChartData, ChartOptions
+} from 'chart.js';
+
+import { Line } from 'react-chartjs-2';
+
+import { IRootState } from "@/app/utils/store/store";
+
+ChartJS.register(CategoryScale, LinearScale, PointElement,
+    LineElement, Title, Legend, Tooltip, Filler
+);
+
+interface IheaderChartProps {
+    data: ChartData<'line'>;
+    options: ChartOptions<'line'>;
+}
+
+const HeaderChart: React.FunctionComponent<IheaderChartProps> = (props: IheaderChartProps) => {
+
+    return (
+        <div className={styles.chartContainer} >
+            <Line id={"headerChart"} data={props.data} options={props.options} className={styles.chart} />
+        </div>
+    )
+}
+
+
+const mapStateToProps = (state: IRootState) => {
+    return {}
+}
+
+export default connect(mapStateToProps, {})(HeaderChart)
+
+

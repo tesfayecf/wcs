@@ -16,7 +16,7 @@ const TankGroupWidget: React.FunctionComponent<ITankGroupWidgetProps> = (props: 
 
     return (
         <ContentBox customBoxClass={styles.group}>
-            <Link href={`/tanks/${props.tankGroup.id}`} style={{ textDecoration: 'none' }}>
+            <Link href={`/tanks/${props.tankGroup.id}`} style={{ color: 'inherit', textDecoration: 'inherit' }}>
                 <div className={styles.content}>
                     <div className={styles.header}>
                         <div className={styles.name}>

@@ -5,7 +5,7 @@ export interface IDashboardStore {
     showEditTankGroupMenu: boolean;
     showDeleteTankGroupMenu: boolean;
     selectedTankGroup: number;
-
+    summary: any;
     showAddTankGroupMenu: boolean;
     tankGroupCreationForm: ITankGroupCreationForm;
 }

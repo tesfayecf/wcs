@@ -26,6 +26,7 @@ class DashboardHandler {
 
     public async load() {
         await this.getTankGroups();
+        await this.getSummaryData();
         // await this.startWS();
         const message = {
             message: "test",
@@ -40,6 +41,30 @@ class DashboardHandler {
 
     public async unload() { }
 
+    public async startWS() {
+        await webSocketManager.initWS("prova");
+    }
+
+    /// TANK GROUP HANDLER \\\
+
+    public async getSummaryData() {
+        // const response = await requestManager.request("dashboard", "getSummary", [])
+        const response = {
+            statusText: "OK",
+            status: 200,
+            data: {
+
+            }
+        }
+        if (response.status == 200) {
+            store.dispatch(dashboardActions.setSummary({ summary: response.data }));
+        } else {
+            throw new Error(response.statusText);
+        }
+    }
+
+    /// TANK GROUP HANDLER \\\
+
     public async getTankGroups() {
         const response = await requestManager.request("dashboard", "getTankGroups", [])
         if (response.status == 200) {
@@ -49,8 +74,12 @@ class DashboardHandler {
         }
     }
 
-    public async startWS() {
-        await webSocketManager.initWS("prova");
+    public setShowCreateTankGroupMenu(state: boolean) {
+        store.dispatch(dashboardActions.setShowCreateTankGroupMenu({ state }))
+    }
+
+    public setTankGroupCreationForm(form: ITankGroupCreationForm) {
+        store.dispatch(dashboardActions.setTankGroupCreationForm({ form }))
     }
 
     public async createTankGroup() {
@@ -74,14 +103,6 @@ class DashboardHandler {
             this.getTankGroups();
         }
         store.dispatch(appActions.finishLoading())
-    }
-
-    public setShowCreateTankGroupMenu(state: boolean) {
-        store.dispatch(dashboardActions.setShowCreateTankGroupMenu({ state }))
-    }
-
-    public setTankGroupCreationForm(form: ITankGroupCreationForm) {
-        store.dispatch(dashboardActions.setTankGroupCreationForm({ form }))
     }
 
     public setTankGroupCreationFormName(name: string) {

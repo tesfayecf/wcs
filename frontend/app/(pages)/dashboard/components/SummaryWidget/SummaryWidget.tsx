@@ -1,11 +1,16 @@
 import React from 'react'
 import styles from './styles/SummaryWidget.module.scss'
 import ContentBox from '@/app/components/contentBox/ContentBox'
+import { connect } from 'react-redux'
+import { IRootState } from '@/app/utils/store/store'
+
+
 
 type ISummaryWidgetProps = {}
 
 
 const SummaryWidget: React.FunctionComponent<ISummaryWidgetProps> = (props: ISummaryWidgetProps) => {
+
   return (
     <ContentBox customBoxClass={styles.summary}>
       <div id="title-div" className={styles.title}>
@@ -26,37 +31,11 @@ const SummaryWidget: React.FunctionComponent<ISummaryWidgetProps> = (props: ISum
   )
 }
 
-export default SummaryWidget;
-
-type ISummaryCardProps = {
-  title: string,
-  quantity: number,
-  unit: "euro" | "liter"
-  percentage: number
-  className?: string;
+const mapStateToProps = (state: IRootState) => {
+  return {
+    summaryData: state.dashboard.summary
+  }
 }
 
 
-const SummaryCard: React.FunctionComponent<ISummaryCardProps> = (props: ISummaryCardProps) => {
-  var percentageText = ""
-  if (props.percentage <= 0) {
-    percentageText = "↓ " + -1 * props.percentage + " %";
-  } else {
-    percentageText = "↑ " + props.percentage + " %";
-  }
-
-  var quantityText = String(props.quantity);
-  if (props.unit === "euro") {
-    quantityText += " €"
-  } else if (props.unit === "liter") {
-    quantityText += " L"
-  }
-
-  return (
-    <div className={`${styles.card} ${props.className}`}>
-      <p className={styles.title}> {props.title} </p>
-      <p className={styles.element}> {quantityText}</p>
-      <p className={styles.element}> {percentageText} </p>
-    </div >
-  )
-}
+export default connect(mapStateToProps, {})(SummaryWidget)

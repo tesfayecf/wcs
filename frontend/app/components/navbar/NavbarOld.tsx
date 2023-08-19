@@ -40,7 +40,7 @@ const NavbarButton: React.FunctionComponent<INavbarButtonProps> = (props: INavba
     const selected = pathname.includes(props.index);
     const buttonStyle = selected ? styles.button_selected : styles.button;
     return (
-        <Link href={props.index} style={{ textDecoration: 'none' }}>
+        <Link href={props.index} style={{ color: 'inherit', textDecoration: 'inherit' }}>
             <div id='navbarButton' className={buttonStyle}>
                 <span id='navbarButtonText' className={styles.navigation_button_text}>
                     {props.text}

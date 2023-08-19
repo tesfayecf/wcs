@@ -51,7 +51,7 @@ const NavKey: React.FunctionComponent<INavKeyProps> = (props: INavKeyProps) => {
     const iconClass = `${selectedSytle} ${styles.navkey_icon}`
     return (
         <div className={contClass} >
-            <Link href={props.index} style={{ textDecoration: 'none' }}>
+            <Link href={props.index} style={{ color: 'inherit', textDecoration: 'inherit' }}>
                 <div id='navkey' className={styles.navkey}>
                     <div id='navkey-icon' className={iconClass}>
                         {props.icon}

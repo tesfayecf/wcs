@@ -1,10 +1,10 @@
 'use client'
 import React from 'react'
 import styles from "./Layout.module.scss"
-import Footer from '@/app/components/fotter/Footer'
+import Footer from '@/app/components/footer/Footer'
 import RequireAuth from '../utils/auth/requireAuth'
 import Navbar from '../components/navbar/Navbar'
-import Header from '../components/header/header'
+import Header from '@/app/components/header/Header'
 
 
 type IAppLayoutProps = {

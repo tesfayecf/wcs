@@ -10,7 +10,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .serializer import TankSerializer, TankGroupSerializer, CreateTankSerializer, CreateTankGroupSerializer
-from utils.serialization.deserialize_model import deserialize_model
+from utils.serialization.serialize_model import serialize_model
+
+
+class GetSummaryView(generics.ListAPIView):
+    serializer_class = TankSerializer
+
+    def post(self, request):
+        return Response({}, status=status.HTTP_200_OK)
 
 
 ##################
@@ -20,7 +27,7 @@ from utils.serialization.deserialize_model import deserialize_model
 class GetTankGroupsView(generics.ListAPIView):
     serializer_class = TankGroupSerializer
 
-    def get(self, request):
+    def post(self, request):
         user = request.user
         userTankGroups = TankGroup.objects.filter(user=user)
         userTankGroups_s = TankGroupSerializer(userTankGroups, many=True)
@@ -44,13 +51,13 @@ class CreateTankGroupView(APIView):
             if not query_name.exists():
                 tank_group = TankGroup(name=name, location=location, description=description, user=request.user)
                 tank_group.save()
-                return Response(TankGroupSerializer(tank_group).data, status=status.HTTP_201_CREATED)
+                return Response(serialize_model(tank_group, ['id', 'name', 'location']), status=status.HTTP_201_CREATED)
             return Response({'Bad Request': 'Invalid name...'}, status=status.HTTP_400_BAD_REQUEST)
         return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class EditTankGroupView(APIView):
-    def put(self, request):
+    def post(self, request):
         tank_group = getTankGroup(request=request)
         serializer = TankGroupSerializer(tank_group, data=request.data, partial=True)
         if serializer.is_valid():
@@ -59,37 +66,44 @@ class EditTankGroupView(APIView):
         return Response({'Bad Request': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)
             
 class DeleteTankGroupView(APIView):
-    def delete(self, request, pk):
+    def post(self, request, pk):
         tank_group = getTankGroup(request=request)
         tank_group.delete()
         return Response({"message": "TankGroup deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
 
 
-class GetTankGroupTanks(APIView):
+class GetTankGroupTanksView(APIView):
     def post(self, request):
         tank_group = getTankGroup(request=request)
-        if tank_group is None:
-            return Response({"error": "TankGroup not found."}, status=status.HTTP_400_BAD_REQUEST)
+        tank_group_data = serialize_model(tank_group, ['id', 'name', 'location'])
 
-        tank_group_s = TankGroupSerializer(tank_group)
-        tank_group_tanks = TankSerializer(tank_group.tanks, many=True)
+        tanks = tank_group.tanks.all()
+        tanks_data = []
+        for tank in tanks:
+            tank_data = serialize_model(tank, ['id', 'name', 'capacity', 'isActive', 'dimensions', 'material', 'brand', 'type'])
+            tank_data['hasSensor'] = tank.has_sensor_assigned()
+            tanks_data.append(tank_data)
+        
         data = {
-            "tankGroup": tank_group_s.data,
-            'tanks': tank_group_tanks.data,
+            "tankGroup": tank_group_data,
+            'tanks': tanks_data,
         }
-        # add stats data
+        # # add stats data
         data['tankGroupStats'] = {
             'totalTanks': tank_group.total_tanks(),
-            'averageWaterLevel': tank_group.average_water_level(),
-            'minWaterLevel': tank_group.min_water_level,
-            'maxWaterLevel': tank_group.max_water_level,
+            'averageWaterLevel': 0,
+        #     'minWaterLevel': tank_group.min_water_level,
+            'minWaterLevel': 0,
+        #     'maxWaterLevel': tank_group.max_water_level,
+            'maxWaterLevel': 0,
             'totalCapacity': tank_group.get_total_capacity(),
+            # 'totalCapacity': 0,
         }
 
         return Response(data, status=status.HTTP_200_OK)
 
 class GetTankGroupStatsView(APIView):
-    def get(self, request):
+    def post(self, request):
         tank_group = getTankGroup(request=request)
         data = {
             'total_tanks': tank_group.total_tanks(),
@@ -104,35 +118,26 @@ class GetTankGroupStatsView(APIView):
 
 def getTankGroup(request):
     user = request.user
-
-    # Read the request body and parse it as JSON
-    try:
-        data = json.loads(request.body)
-        tankGroupId = data.get('tankGroupId')
-    except json.JSONDecodeError:
-        return Response({"error": "Invalid JSON data in the request body."}, status=400)
-
-    try:
-        tankGroup = TankGroup.objects.get(pk=tankGroupId)
-        if tankGroup.user != user:
-            return Response({"error": "You don't have permission to access this TankGroup."},
-                                status=403)
-        return tankGroup
-    except TankGroup.DoesNotExist:
-        return Response({"error": "TankGroup not found."}, status=404)
+    tankGroupId = request.data.get('tankGroupId')
+    tank_group = TankGroup.objects.get(pk=tankGroupId, user=user)
+    if not tank_group:
+        return Response({"error": "TankGroup not found."}, status=status.HTTP_404_NOT_FOUND)
+    if tank_group.user != request.user:
+        return Response({"error": "You don't have permission to acces this tankGroup."},
+                        status=status.HTTP_403_FORBIDDEN)
+    return tank_group
 
 
 ############
 ### TANK ###
 ############
 
-
 class GetTankView(APIView):
-    def get(self, request):
+    def post(self, request):
         tank, tank_group = getTank(request=request)
         # tank_s = TankSerializer(tank)
         try:
-            data = deserialize_model(tank)
+            data = serialize_model(tank)
             return Response(data, status=status.HTTP_200_OK)
         except:
             return Response([], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -170,7 +175,7 @@ class CreateTankView(APIView):
 
 
 class EditTankView(APIView):
-    def put(self, request):
+    def post(self, request):
         try:
             tank, _ = getTank(request=request)
             serializer = TankSerializer(tank, data=request.data, partial=True)
@@ -182,7 +187,7 @@ class EditTankView(APIView):
             return Response({"error": "Tank not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class DeleteTankView(APIView):
-    def delete(self, request):
+    def post(self, request):
         try:
             tank, _ = getTank(request=request)
             tank.delete()
@@ -191,27 +196,45 @@ class DeleteTankView(APIView):
             return Response({"error": "Tank not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class GetTankStatsView(APIView):
-    def get(self, request):
+    def post(self, request):
         tank, _ = getTank(request=request)
         data = {
-            'total_sensor': tank.total_sensors(),
-            'total_active_sensors': tank.total_active_sensors(),
-            'average_water_level': tank.average_water_level,
-            'min_water_level': tank.min_water_level,
-            'max_water_level': tank.max_water_level,
-            'get_latest_sensor_data': tank.get_latest_sensor_data(),
-            'get_oldest_sensor_data': tank.get_oldest_sensor_data(),
+            # 'total_sensor': tank.total_sensors(),
+            # 'total_active_sensors': tank.total_active_sensors(),
+            # 'average_water_level': tank.average_water_level,
+            # 'min_water_level': tank.min_water_level,
+            # 'max_water_level': tank.max_water_level,
+            # 'get_latest_sensor_data': tank.get_latest_sensor_data(),
+            # 'get_oldest_sensor_data': tank.get_oldest_sensor_data(),
         }
         return Response(data, status=status.HTTP_200_OK)
 
-class GetTankSensorsView(APIView):
+class GetTankSensorView(APIView):
     def post(self, request):
         tank, _ = getTank(request=request)
         try: 
-            data = deserialize_model(tank.sensor, ["id", "name", "location", "serial_number", "manufacturer", "model", "is_active", "tank"])
-            return Response(data, status=status.HTTP_200_OK)    
+            if tank.has_sensor_assigned():
+                relation = tank.tank_sensor.filter(is_active=True).first()
+                data = serialize_model(relation.sensor, ["id", "serial_number", "manufacturer", "model", "is_active"])
+                if data:
+                    data['tank'] = {
+                        'name': tank.name,
+                        'id': tank.id,
+                    }
+                    return Response(data, status=status.HTTP_200_OK)   
+                else:
+                    raise Exception("Serilization error")
+            else:
+                raise Exception("Sensor not found")
         except: 
-            return Response({}, status=status.HTTP_200_OK)
+            data = {
+                'id': "-1",
+                'serial_number': "-1",
+                'manufacturer': "",
+                'model': "",
+                'is_active': False,
+            }
+            return Response(data, status=status.HTTP_200_OK)
 
 
 class AssignTankSensorView(APIView):

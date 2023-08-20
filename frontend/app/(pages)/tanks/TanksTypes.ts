@@ -36,16 +36,17 @@ export interface ITank {
     material: string;
     brand: string;
     isActive: boolean;
+    hasSensor: boolean;
 }
 
 export interface ITanksParams {
     tankGroupId: string;
 }
 
+export type ITankStatus = "ACTIVE" | "UNACTIVE" | "UNDEFINED"
+
 export interface ISensor {
     id: string;
-    name: string;
-    location: string;
     serial_number: string;
     manufacturer: string;
     model: string;

@@ -3,7 +3,7 @@ import React from "react";
 import TankGroupInfoWidget from "@/app/(pages)/tanks/components/TankGroupInfoWidget/TankGroupInfoWidget";
 import styles from "./styles/Tanks.module.scss"
 import TanksHandler from "../TanksHandler";
-import TanksLayout from "../components/TanksLayout/TanksLayout";
+import TankElements from "../components/TankElements/TankElements";
 import AddTankWidget from "../components/AddTankWidget/AddTankWidget";
 import AddTankPopUp from "../components/AddTankWidget/AddTankPopUp";
 
@@ -30,9 +30,7 @@ const Tanks: React.FunctionComponent<IDashboardProps> = (props: IDashboardProps)
                 <TankGroupInfoWidget />
                 <AddTankWidget />
             </div>
-            <div id={"tanksLayout"} className={styles.tanksLayout}>
-                <TanksLayout />
-            </div>
+            <TankElements />
             <AddTankPopUp />
         </div>
     )

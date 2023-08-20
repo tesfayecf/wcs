@@ -42,7 +42,6 @@ class TanksHandler {
     public async getTanksInfo() {
         const state = store.getState().tanks;
         const response = await requestManager.request("tanks", "getTanks", [state.tankGroupId])
-        console.log(response)
         if (response.status == 200) {
             store.dispatch(tankActions.setTanks({ tanks: response.data.tanks }));
             store.dispatch(tankActions.setTankGroupInfo({ tankGroupInfo: response.data.tankGroup }));
@@ -143,22 +142,23 @@ class TanksHandler {
 
     public async getSensorsInfo() {
         const tanks = store.getState().tanks.tanks;
-        let sensors: ISensor[] = []
+        let sensors: ISensor[] = [];
         await Promise.all(tanks.map(async (tank) => {
-            const sensor = await this.getSensor(tank.id)
-            console.log(sensor)
-            if (Object.keys(sensor).length !== 0)
-                sensors.push(sensor)
+            if (tank.hasSensor) {
+                const sensor: ISensor = await this.getSensor(tank.id)
+                if (sensor.id !== "-1") {
+                    sensors.push(sensor)
+                }
+            }
         }))
-        console.log(sensors)
         store.dispatch(tankActions.setSensors({ sensors }));
     }
 
     public async initializeWSConnections() {
-        const sensors = store.getState().tanks.sensors;
-        Promise.all(sensors.map(async (sensor) => {
-            await websocketManager2.connect(sensor.id, this.handleWsConnection, this.handleWsMessage, this.handleWsError)
-        }))
+        // const sensors = store.getState().tanks.sensors;
+        // Promise.all(sensors.map(async (sensor) => {
+        //     await websocketManager2.connect(sensor.id, this.handleWsConnection, this.handleWsMessage, this.handleWsError)
+        // }))
     }
 
     public async closeWSConnections() {

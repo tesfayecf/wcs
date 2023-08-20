@@ -2,31 +2,27 @@ import { IRootState } from '@/app/utils/store/store'
 import React from 'react'
 import { connect } from 'react-redux'
 import TankWidget from '../TankWidget/TankWidget'
-import style from './styles/TankLayout.module.scss'
+import styles from './styles/TankElements.module.scss'
 import TanksHandler from '../../TanksHandler'
 
 const tanksHandler = TanksHandler.getInstance();
 
-interface ITankLayoutProps extends ReturnType<typeof mapStateToProps> { }
+interface ITankElementsProps extends ReturnType<typeof mapStateToProps> { }
 
 
-const TanksLayout: React.FunctionComponent<ITankLayoutProps> = (props: ITankLayoutProps) => {
+const TankElements: React.FunctionComponent<ITankElementsProps> = (props: ITankElementsProps) => {
 
     const renderTanks = React.useCallback(() => {
-        if (!props.tanks) {
-            return null
-        }
 
-        if (props.tanks.length === 0) {
+        if (props.tanks.length === 0 || !props.tanks) {
             return (
-                <div className={style.empty}>
-                    <span>No tanks yet</span>
+                <div className={styles.empty}>
+                    <span className={styles.emptyText}>NO TANKS CREATED</span>
                 </div>
             )
         }
 
         return props.tanks.map((tank, index) => {
-            console.log(tank)
             tanksHandler.getSensor(tank.id);
             // const sensor = props.sensors.find(s => s.tank.id === tank.id);
             return (
@@ -37,9 +33,9 @@ const TanksLayout: React.FunctionComponent<ITankLayoutProps> = (props: ITankLayo
     }, [props.tanks])
 
     return (
-        <>
+        <div id={"tankElements"} className={props.tanks.length === 0 || !props.tanks ? `${styles.tankElementsEmpty}` : `${styles.tankElements}`}>
             {renderTanks()}
-        </>
+        </div>
     )
 }
 
@@ -49,4 +45,4 @@ const mapStateToProps = (state: IRootState) => ({
 })
 
 
-export default connect(mapStateToProps, {})(TanksLayout)
+export default connect(mapStateToProps, {})(TankElements)

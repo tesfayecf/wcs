@@ -115,7 +115,7 @@ class LogoutView(APIView):
         return response
     
 class UserView(APIView):
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         user = request.user
         data = {
             'id': user.id,

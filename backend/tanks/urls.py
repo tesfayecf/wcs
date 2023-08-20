@@ -2,20 +2,28 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    # API: /api/...
+    # summary
+    path('summary/', GetSummaryView.as_view()),
+
+    # tank group
     path('tank-groups/', GetTankGroupsView.as_view()),
     path('create-tank-group/', CreateTankGroupView.as_view()),
     path('edit-tank-group/', EditTankGroupView.as_view()),
     path('delete-tank-group/', DeleteTankGroupView.as_view()),
-    path('tank-group-tanks/', GetTankGroupTanks.as_view()),
     path('tank-groups-stats/', GetTankGroupStatsView.as_view()),
 
-    path('tanks/', GetTankView.as_view()),
+    # tanks
+    path('tanks/', GetTankGroupTanksView.as_view()),
+    
+    # tank
+    path('tank/', GetTankView.as_view()),
     path('create-tank/', CreateTankView.as_view()),
     path('edit-tank/', EditTankView.as_view()),
     path('delete-tank/', DeleteTankView.as_view()),
     path('tank-stats/', GetTankStatsView.as_view()),
-    path('tank-sensor/', GetTankSensorsView.as_view()),
-    path('assign-tank-sensor/', AssignTankSensorView.as_view()),
+
+    # sensor
+    path('sensor/', GetTankSensorView.as_view()),
+    path('assign-sensor/', AssignTankSensorView.as_view()),
     # path('tank-sensor-data/', GetTankSensorDataView.as_view()),
 ]

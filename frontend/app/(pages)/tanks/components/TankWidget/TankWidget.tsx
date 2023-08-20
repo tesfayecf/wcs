@@ -4,7 +4,7 @@ import WatertankSVG from '@/public/svg/WaterTankSG';
 import styles from "./styles/TankWidget.module.scss"
 import { IRootState } from '@/app/utils/store/store';
 import { connect } from 'react-redux';
-import { ISensor, ITank } from '../../TanksTypes';
+import { ISensor, ITank, ITankStatus } from '../../TanksTypes';
 import ContentBox from '@/app/components/contentBox/ContentBox';
 
 interface ITankWidgetWidgetProps extends ReturnType<typeof mapStateToProps> {
@@ -15,9 +15,20 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
     const size = 125;
 
     const getStatus = () => {
-        const sensor = props.sensors.find(s => s.tank.id === props.tank.id)
-        if (!sensor) return "OFF"
-        else return "ON"
+        let text: ITankStatus = "UNDEFINED";
+        let color: string = "#f69c68";
+        const hasSensor = props.tank.hasSensor;
+        if (hasSensor) {
+            const sensor = props.sensors.find(s => s.tank.id === props.tank.id)
+            if (sensor) {
+                text = sensor.is_active ? "ACTIVE" : "UNACTIVE"
+                color = sensor.is_active ? "#3de198" : "#e07159"
+            }
+        }
+
+        return (
+            <p className={styles.text} style={{ color: color }}>{text}</p>
+        )
     }
 
     const getSensorValue = () => {
@@ -37,7 +48,7 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
                         <p>{props.tank.name}</p>
                     </div>
                     <div className={styles.status}>
-                        <p className={styles.text}> Status {getStatus()}</p>
+                        {getStatus()}
                     </div>
                 </div>
                 <div className={styles.data}>

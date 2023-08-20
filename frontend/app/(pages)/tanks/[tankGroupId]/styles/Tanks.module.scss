@@ -8,14 +8,6 @@
         margin-right: 10px;
     }
 
-    .tanksLayout {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        margin-left: 10px;
-        width: calc(100% - 10px);
-        height: 100%;
-    }
-
     .tanksLayoutExtended {
         display: flex;
         flex-direction: row;

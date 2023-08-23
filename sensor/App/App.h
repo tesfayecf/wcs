@@ -3,7 +3,7 @@
 
 #include "../../managers/hardware-manager/HWManager.h"
 #include "../../managers/mqtt-manager/MQTTManager.h"
-#include "../../managers/wifi-manager/WiFiManager.h"
+#include "../../managers/wifi-manager/WifiManager.h"
 #include "../utils/AppConfig.h"
 #include "../utils/types.h"
 
@@ -13,7 +13,7 @@ class App {
     AppConfig appConfig;
     Managers managers;
 
-    WiFiManager* wifiManager_;
+    WifiManager* wifiManager_;
     MQTTManager* mqttManager_;
     HWManager* hwManager_;
 

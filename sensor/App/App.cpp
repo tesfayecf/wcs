@@ -6,8 +6,8 @@
 #include "../../managers/hardware-manager/HWManager.h"
 #include "../../managers/mqtt-manager/MQTTManager.cpp"
 #include "../../managers/mqtt-manager/MQTTManager.h"
-#include "../../managers/wifi-manager/WiFiManager.cpp"
-#include "../../managers/wifi-manager/WiFiManager.h"
+#include "../../managers/wifi-manager/WifiManager.cpp"
+#include "../../managers/wifi-manager/WifiManager.h"
 #include "../utils/AppConfig.h"
 #include "../utils/constants.h"
 #include "../utils/types.h"
@@ -26,7 +26,7 @@ void App::setup() {
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, HIGH);
 
-    wifiManager_ = new WiFiManager();
+    wifiManager_ = new WifiManager();
     mqttManager_ = new MQTTManager();
     hwManager_ = new HWManager();
 

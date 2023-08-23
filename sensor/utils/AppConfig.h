@@ -9,7 +9,7 @@ class AppConfig {
        public:
     };
 
-    class WiFiManager {
+    class WifiManager {
        public:
     };
 

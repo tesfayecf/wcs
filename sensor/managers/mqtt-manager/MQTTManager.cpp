@@ -24,9 +24,11 @@ void MQTTManager::setup() {
     //     [this](char* topic, uint8_t* payload, unsigned int length) {
     //         this->onMessageReceived(topic, payload, length);
     //     });
+    Serial.println("MQTT server set");
 
     connectMQTT();
     // TODO: subscribe to server topics: sensorID/status, sensorID/timer, ...
+    Serial.println("MQTTManager Initialized");
 }
 
 void MQTTManager::loop() {
@@ -64,12 +66,14 @@ void MQTTManager::loop() {
 
 void MQTTManager::connectMQTT() {
     String clientId_64 = this->getSensorID();
+    Serial.print("Connecting to MQTT broker: ");
     while (!mqttClient.connected()) {
         if (mqttClient.connect(clientId_64.c_str())) {
             Serial.println("MQTT connected");
             return;
         } else {
-            delay(1000);
+            Serial.print(".");
+            delay(100);
         }
     }
     Serial.println("MQTT connection failed");

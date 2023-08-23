@@ -1,6 +1,7 @@
 {
   "C_Cpp.errorSquiggles": "disabled",
   "C_Cpp.codeAnalysis.clangTidy.checks.disabled": ["clang-diagnostic-error"],
+  "C_Cpp.clang_format_fallbackStyle": "Google",
   "vsmqtt.brokerProfiles": [
     {
       "name": "loacal_test",

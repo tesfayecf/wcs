@@ -1,12 +1,12 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-class WiFiManager;
+class WifiManager;
 class MQTTManager;
 class HWManager;
 
 struct Managers {
-    WiFiManager* wifiManager;
+    WifiManager* wifiManager;
     MQTTManager* mqttManager;
     HWManager* hwManager;
 };

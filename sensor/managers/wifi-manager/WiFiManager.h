@@ -1,36 +1,59 @@
 #ifndef WIFI_CONNECTION_MANAGER_H
 #define WIFI_CONNECTION_MANAGER_H
+
+#include <DNSServer.h>
+#include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h>
+#include <WiFiManager.h>
+#include <EEPROM.h>
 
 #include "../../utils/AppConfig.h"
 #include "../../utils/types.h"
 #include "Arduino.h"
 
-class WiFiManager {
-   private:
-    AppConfig* appConfig;
-    Managers* managers;
+class WifiManager {
+ private:
+  AppConfig* appConfig;
+  Managers* managers;
 
-   public:
-    // Constructor
-    WiFiManager();
+ private:
+  WiFiManager wiFiManager;
+  ESP8266WebServer server;
+  String ssid;
+  String password;
+  boolean connected;
+  boolean configPortalActive;
 
-    // Initialize manager
-    void init(AppConfig* config_, Managers* managers_);
+ public:
+  // Constructor
+  WifiManager();
 
-    // Initialize WiFi connection
-    void setup();
+  // Initialize manager
+  void init(AppConfig* config_, Managers* managers_);
 
-    void loop();
+  // Initialize WiFi connection
+  void setup();
 
-    // Check if WiFi is connected
-    bool isConnected();
+  void loop();
 
-    // Get the WiFi connection status
-    wl_status_t getStatus();
+  // Check if WiFi is connected
+  bool isConnected();
 
-   private:
-    boolean connect();
+  // Get the WiFi connection status
+  wl_status_t getStatus();
+
+ private:
+  boolean autoConnect();
+
+  boolean connect();
+
+  boolean startConfigPortal();
+  void renderMainPage();
+  void receiveCredentials();
+
+  boolean getWifiCredentials();
+  boolean storeWifiCredentials(const String &ssid, const String &password);
+  String toStringIp(IPAddress ip);
 };
 
 #endif  // WIFI_CONNECTION_MANAGER_H

@@ -39,15 +39,14 @@
                 "C:\\Users\\tesfa\\Documents\\Programming\\WaterControlSystem_project\\Code\\MAIN\\WCS-APP\\sensor\\build\\core",
                 "C:\\Users\\tesfa\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\3.1.1\\cores\\esp8266",
                 "C:\\Users\\tesfa\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\3.1.1\\variants\\d1_mini",
+                "C:\\Users\\tesfa\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\3.1.1\\libraries\\EEPROM",
                 "C:\\Users\\tesfa\\OneDrive\\Documentos\\Arduino\\libraries\\NewPing\\src",
                 "C:\\Users\\tesfa\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\3.1.1\\libraries\\Wire",
-                "C:\\Users\\tesfa\\OneDrive\\Documentos\\Arduino\\libraries\\ArduinoJson\\src",
                 "C:\\Users\\tesfa\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\3.1.1\\libraries\\ESP8266WiFi\\src",
+                "C:\\Users\\tesfa\\OneDrive\\Documentos\\Arduino\\libraries\\ArduinoJson\\src",
                 "C:\\Users\\tesfa\\OneDrive\\Documentos\\Arduino\\libraries\\PubSubClient\\src",
                 "C:\\Users\\tesfa\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\3.1.1\\libraries\\DNSServer\\src",
-                "C:\\Users\\tesfa\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\3.1.1\\libraries\\ESP8266WebServer\\src",
-                "C:\\Users\\tesfa\\OneDrive\\Documentos\\Arduino\\libraries\\WiFiManager",
-                "C:\\Users\\tesfa\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\3.1.1\\libraries\\EEPROM"
+                "C:\\Users\\tesfa\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\3.1.1\\libraries\\ESP8266WebServer\\src"
             ],
             "forcedInclude": [
                 "C:\\Users\\tesfa\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\3.1.1\\cores\\esp8266\\Arduino.h"

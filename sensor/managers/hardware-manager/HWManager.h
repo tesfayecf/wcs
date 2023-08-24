@@ -10,26 +10,28 @@
 #include "Arduino.h"
 
 class HWManager {
-   private:
-    AppConfig* appConfig;
-    Managers* managers;
+ private:
+  AppConfig* appConfig;
+  Managers* managers;
 
-   public:
-    static NewPing sonar;
-    // Constructor
-    HWManager();
+ public:
+  static NewPing sonar;
+  // Constructor
+  HWManager();
 
-    // Initialize manager
-    void init(AppConfig* config_, Managers* managers_);
+  // Initialize manager
+  void init(AppConfig* config_, Managers* managers_);
 
-    // Setup IR connection
-    void setup();
+  // Setup IR connection
+  void setup();
 
-    void loop();
+  void loop();
 
-    // Get distance from IR
-    unsigned int getDistance();
-    unsigned long getDistanceCm();
+  void readSensorValues(unsigned int& distanceRaw, unsigned long& distanceCm);
+
+  // Get distance from IR
+  unsigned int getDistance();
+  unsigned long getDistanceCm();
 };
 
 #endif  // HW_CONNECTION_MANAGER_H

@@ -4,7 +4,6 @@
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h>
-#include <WiFiManager.h>
 #include <EEPROM.h>
 
 #include "../../utils/AppConfig.h"
@@ -17,12 +16,10 @@ class WifiManager {
   Managers* managers;
 
  private:
-  WiFiManager wiFiManager;
   ESP8266WebServer server;
   String ssid;
   String password;
   boolean connected;
-  boolean configPortalActive;
 
  public:
   // Constructor
@@ -44,7 +41,6 @@ class WifiManager {
 
  private:
   boolean autoConnect();
-
   boolean connect();
 
   boolean startConfigPortal();
@@ -53,7 +49,10 @@ class WifiManager {
 
   boolean getWifiCredentials();
   boolean storeWifiCredentials(const String &ssid, const String &password);
+  
+  // Utils
   String toStringIp(IPAddress ip);
+  void setWifiConnectionInfo();
 };
 
 #endif  // WIFI_CONNECTION_MANAGER_H

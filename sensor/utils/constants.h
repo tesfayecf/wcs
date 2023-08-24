@@ -66,10 +66,10 @@ enum LOG_CODE {
 /// MANAGERS ///
 
 //  WIFI
-#define WIFI_SSID "ONO1D77"
-#define WIFI_PASSWORD "dVy68naGZU5d"
-#define WIFI_SSID_P "MOVISTAR_7DD9"
-#define WIFI_PASSWORD_P "W9GHdRn49sjdcXxxkhry"
+// #define WIFI_SSID "ONO1D77"
+// #define WIFI_PASSWORD "dVy68naGZU5d"
+// #define WIFI_SSID_P "MOVISTAR_7DD9"
+// #define WIFI_PASSWORD_P "W9GHdRn49sjdcXxxkhry"
 
 #define SERVER_PORT 80
 // #define DNS_PORT 53
@@ -82,8 +82,8 @@ enum LOG_CODE {
 #define MQTT_PORT 1883
 
 // HARDWARE
-#define TRIGGER_PIN D3  // RX -> D5
-#define ECHO_PIN D4     // TX -> D6
+#define TRIGGER_PIN D3  // RX 
+#define ECHO_PIN D4     // TX
 #define MAX_DISTANCE 450
 
 #endif  // CONSTANTS_H

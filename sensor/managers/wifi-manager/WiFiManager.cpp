@@ -32,7 +32,7 @@ void WifiManager::setup() {
 
 void WifiManager::loop() {
   // check wifi is connected and continue loop
-  if (!getStatus() == WL_CONNECTED) {
+  if (!WiFi.status() == WL_CONNECTED) {
     Serial.println("WiFi connection lost");
     this->autoConnect();
     return;
@@ -40,7 +40,7 @@ void WifiManager::loop() {
 }
 
 bool WifiManager::autoConnect() {
-  Serial.println("AutoConnect");
+  Serial.println("AutoConnect started");
   if (this->getWifiCredentials()) {
     if (this->connect()) {
       return true;
@@ -59,6 +59,7 @@ bool WifiManager::connect() {
   IPAddress subnet(255, 255, 0, 0);
   if (!WiFi.config(local_IP, gateway, subnet)) {
     this->connected = false;
+    Serial.println("WiFi.config connection failed");
     return false;
   }
 
@@ -70,28 +71,17 @@ bool WifiManager::connect() {
   }
 
   int r = 0;
-  while (getStatus() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED) {
     delay(100);
     r++;
     Serial.print(".");
     if (r == 150) break;
   }
 
-  if (getStatus() == WL_CONNECTED) {
-    Serial.println("");
+  if (WiFi.status() == WL_CONNECTED) {
     Serial.println("WiFi connected");
-    Serial.println("IP address: ");
-    Serial.println(WiFi.localIP());
-    Serial.println("SSID: ");
-    Serial.println(WiFi.SSID());
-    Serial.println("MAC: ");
-    Serial.println(WiFi.macAddress());
-    Serial.println("RSSI: ");
-    Serial.println(WiFi.RSSI());
-    Serial.println("Channel: ");
-    Serial.println(WiFi.channel());
-
     this->connected = true;
+    this->setWifiConnectionInfo();
     return true;
   } else {
     Serial.println("WiFi connection failed");
@@ -99,10 +89,6 @@ bool WifiManager::connect() {
     return false;
   }
 }
-
-bool WifiManager::isConnected() { return WiFi.status() == WL_CONNECTED; }
-
-wl_status_t WifiManager::getStatus() { return WiFi.status(); }
 
 boolean WifiManager::startConfigPortal() {
   // Start config portal
@@ -121,7 +107,7 @@ boolean WifiManager::startConfigPortal() {
   }
 
   String portalSSID = "WCS-sensor-" + String(ESP.getChipId());
-  Serial.println("Portal SSID: ");
+  Serial.print("Portal SSID: ");
   Serial.println(portalSSID);
 
   DNSServer dnsServer;
@@ -199,9 +185,6 @@ bool WifiManager::getWifiCredentials() {
       password_ += char(EEPROM.read(L));
     }
   }
-
-  Serial.println(ssid_);
-  Serial.println(password_);
 
   if (ssid_.length() == 0 || password_.length() == 0) {
     Serial.println("No stored credentials");
@@ -289,3 +272,18 @@ String WifiManager::toStringIp(IPAddress ip) {
   res += String(((ip >> 8 * 3)) & 0xFF);
   return res;
 }
+
+void WifiManager::setWifiConnectionInfo() {
+  this->appConfig->wifiManager.ssid = WiFi.SSID();
+  this->appConfig->wifiManager.ip = WiFi.localIP();
+  this->appConfig->wifiManager.hostname = WiFi.hostname();
+  this->appConfig->wifiManager.gateway = WiFi.gatewayIP();
+  this->appConfig->wifiManager.subnet = WiFi.subnetMask();
+  this->appConfig->wifiManager.mac = WiFi.macAddress();
+  this->appConfig->wifiManager.rssi = WiFi.RSSI();
+  this->appConfig->wifiManager.channel = WiFi.channel();
+}
+
+bool WifiManager::isConnected() { return WiFi.status() == WL_CONNECTED; }
+
+wl_status_t WifiManager::getStatus() { return WiFi.status(); }

@@ -22,3 +22,8 @@ should be modified. Give the corrected code and explain the problem and the
 solution. Also give multiple solutions to the problem and explain why i
 should use one instead of another
 */
+
+/*
+Take into account that you are a senior programmer with years of experience in embedded systems and app development.
+Give clera and concise explanation of the problem and the solution pointing to the reasons why it is the good solution
+*/

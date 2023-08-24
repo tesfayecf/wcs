@@ -19,8 +19,6 @@ class MQTTManager {
     WiFiClient wifiClient;
     PubSubClient mqttClient;
 
-    const String senosorId = WiFi.macAddress();
-
    public:
     // Constructor
     MQTTManager();
@@ -56,9 +54,10 @@ class MQTTManager {
 
     // Callback function for handling received MQTT messages
     void onMessageReceived(char* topic, byte* payload, unsigned int length);
+    static void callbackFunction(char* topic, byte* payload, unsigned int length);
 
-    // Get sensor ID from MAC address
-    String getSensorID();
+    // Set mqqt connection info
+    void setMqttConnectionInfo();
 };
 
 #endif  // MQTT_CONNECTION_MANAGER_H

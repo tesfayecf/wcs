@@ -8,8 +8,11 @@
 #include "../../utils/AppConfig.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
+#include "../../utils/utils.h"
 
-MQTTManager::MQTTManager() : mqttClient(wifiClient) {}
+MQTTManager* MQTTManager::instance = nullptr;
+
+MQTTManager::MQTTManager() : mqttClient(wifiClient) { instance = this; }
 
 void MQTTManager::init(AppConfig* config_, Managers* managers_) {
   Serial.println("MQTTManager init");
@@ -20,25 +23,90 @@ void MQTTManager::init(AppConfig* config_, Managers* managers_) {
 void MQTTManager::setup() {
   Serial.println("Initializing MQTTManager");
   mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
+  this->setMqttConnectionInfo();
   mqttClient.setCallback(callbackFunction);
   Serial.println("MQTT server set");
 
   connectMQTT();
   // TODO: subscribe to server topics: sensorID/status, sensorID/timer, ...
-  char statusTopic[this->appConfig->appInfo.sensorId.length() + 10];
-  sprintf(statusTopic, "%s/status", this->appConfig->appInfo.sensorId.c_str());
-  subscribe(statusTopic);
-  char configTopic[this->appConfig->appInfo.sensorId.length() + 10];
-  sprintf(configTopic, "%s/config", this->appConfig->appInfo.sensorId.c_str());
-  subscribe(configTopic);
+  subscribe(this->appConfig->mqttManager.statusTopic.c_str());
+  subscribe(this->appConfig->mqttManager.configTopic.c_str());
 
   Serial.println("MQTTManager Initialized");
 }
 
-void MQTTManager::loop() {
-  if (!mqttClient.connected()) {
-    reconnect();
+void MQTTManager::callbackFunction(char* topic, byte* payload,
+                                   unsigned int length) {
+  if (strcmp(topic, instance->appConfig->mqttManager.statusTopic.c_str()) ==
+      0) {
+    instance->statusCallback(payload, length);
+  } else if (strcmp(topic,
+                    instance->appConfig->mqttManager.configTopic.c_str()) ==
+             0) {
+    instance->configCallback(payload, length);
   }
+}
+
+void MQTTManager::statusCallback(uint8_t* payload, unsigned int length) {
+  Serial.println("Received status message");
+  // create a json with the most relevant app info from the app config
+  // and the payload
+  StaticJsonDocument<1024> jsonDoc;
+  JsonObject jsonObj = jsonDoc.to<JsonObject>();
+
+  JsonObject wifiObj = jsonObj.createNestedObject("wifi");
+  wifiObj[enumToString(WIFI_INITIALIZED)] =
+      this->appConfig->wifiManager.status.initialized;
+  wifiObj[enumToString(WIFI_CONNECTED_)] =
+      this->appConfig->wifiManager.status.connected;
+  wifiObj[enumToString(WIFI_CONNECTING)] =
+      this->appConfig->wifiManager.status.connecting;
+  wifiObj[enumToString(WIFI_DISCONNECTING)] =
+      this->appConfig->wifiManager.status.disconnecting;
+  wifiObj[enumToString(WIFI_HAS_ERROR)] =
+      this->appConfig->wifiManager.status.hasError;
+  wifiObj[enumToString(WIFI_ERROR)] = this->appConfig->wifiManager.status.error;
+  wifiObj[enumToString(WIFI_STATUS)] = this->appConfig->wifiManager.status.status;
+
+  JsonObject mqttObj = jsonObj.createNestedObject("mqtt");
+  mqttObj[enumToString(MQTT_INITIALIZED)] =
+      this->appConfig->mqttManager.status.initialized;
+  mqttObj[enumToString(MQTT_CONNECTED_)] =
+      this->appConfig->mqttManager.status.connected;
+  mqttObj[enumToString(MQTT_CONNECTING)] =
+      this->appConfig->mqttManager.status.connecting;
+  mqttObj[enumToString(MQTT_DISCONNECTING)] =
+      this->appConfig->mqttManager.status.disconnecting;
+  mqttObj[enumToString(MQTT_HAS_ERROR)] =
+      this->appConfig->mqttManager.status.hasError;
+  mqttObj[enumToString(MQTT_ERROR)] = this->appConfig->mqttManager.status.error;
+  mqttObj[enumToString(MQTT_STATUS)] = this->appConfig->mqttManager.status.status;
+
+  JsonObject hwObj = jsonObj.createNestedObject("hw");
+  hwObj[enumToString(HW_INITIALIZED)] =
+      this->appConfig->hardwareManager.status.initialized;
+  hwObj[enumToString(HW_CONNECTED)] =
+      this->appConfig->hardwareManager.status.connected;
+  hwObj[enumToString(HW_CONNECTING)] =
+      this->appConfig->hardwareManager.status.connecting;
+  hwObj[enumToString(HW_DISCONNECTING)] =
+      this->appConfig->hardwareManager.status.disconnecting;
+  hwObj[enumToString(HW_HAS_ERROR)] =
+      this->appConfig->hardwareManager.status.hasError;
+  hwObj[enumToString(HW_ERROR)] = this->appConfig->hardwareManager.status.error;
+  hwObj[enumToString(HW_STATUS)] = this->appConfig->hardwareManager.status.status;
+
+  this->basePublish(jsonObj, this->appConfig->mqttManager.dataTopic.c_str());
+}
+
+void MQTTManager::configCallback(uint8_t* payload, unsigned int length) {
+  Serial.println("Received config message");
+}
+
+void MQTTManager::loop() {
+  // if (!mqttClient.connected()) {
+  //   reconnect();
+  // }
 
   if (millis() % 10000 == 0) {
     unsigned int distanceRaw;
@@ -74,16 +142,6 @@ void MQTTManager::reconnect() {
   connectMQTT();
 }
 
-void MQTTManager::onMessageReceived(char* topic, byte* payload,
-                                    unsigned int length) {
-  Serial.print(topic);
-}
-
-void MQTTManager::callbackFunction(char* topic, byte* payload, unsigned int length) {
-  Serial.println(topic);
-  // Serial.println(payload.toString());
-}
-
 void MQTTManager::subscribe(const char* topic) {
   if (mqttClient.connected()) {
     mqttClient.subscribe(topic);
@@ -95,25 +153,22 @@ void MQTTManager::publishReadings(unsigned int readingRAW,
   StaticJsonDocument<200> jsonDoc;
   JsonObject jsonObj = jsonDoc.to<JsonObject>();
   // Add message data
-  jsonObj["readingRAW"] = readingRAW;
-  jsonObj["readingCM"] = readingCM;
+  jsonObj[enumToString(READING_RAW)] = readingRAW;
+  jsonObj[enumToString(READING_CM)] = readingCM;
 
-  // Set topiec
-  // Get length of sensorid
-  char topic[this->appConfig->appInfo.sensorId.length() + 10];
-  sprintf(topic, "%s/data", this->appConfig->appInfo.sensorId.c_str());
-
-  this->basePublish(jsonObj, topic);
+  this->basePublish(jsonObj, this->appConfig->mqttManager.dataTopic.c_str());
 }
 
 void MQTTManager::basePublish(ArduinoJson::V6213PB2::JsonObject& dataObject,
                               const char* topic) {
+  JsonObject metaObj = dataObject.createNestedObject("meta");
+
   // Add sensor metadata
-  this->addMetadata(dataObject);
+  this->addMetadata(metaObj);
   // Get max size of websocket message
-  char websocketMessageChar[200];
+  char websocketMessageChar[1024];
   // Serialize message
-  serializeJson(dataObject, websocketMessageChar, 200);
+  serializeJson(dataObject, websocketMessageChar, 1024);
   // Publish message
   mqttClient.publish(topic, websocketMessageChar);
 
@@ -124,30 +179,35 @@ void MQTTManager::basePublish(ArduinoJson::V6213PB2::JsonObject& dataObject,
 }
 
 void MQTTManager::addMetadata(ArduinoJson::V6213PB2::JsonObject& dataObject) {
-  dataObject["sensorId"] = this->appConfig->appInfo.sensorId;
-  dataObject["boardUptime"] = millis();
+  // Sensor meta
+  dataObject[enumToString(SENSOR_ID)] = this->appConfig->appInfo.sensorId;
 
-  // // Board meta
-  // dataObject["boardChipID"] = this->appConfig->boardInfo.boardChipId;
-  // dataObject["boardFlashChipId"] = this->appConfig->boardInfo.boardFlashChipId;
-  // dataObject["boardType"] = ESP.getChipModel();
-  // dataObject["boardVersion"] = ESP.getCoreVersion();
-  // dataObject["boardFlashSize"] = ESP.getFlashChipSize();
-  // dataObject["boardFreeHeap"] = ESP.getFreeHeap();
-  // dataObject["boardFreeRam"] = ESP.getFreeRam();
-  // dataObject["boardVersion"] = ESP.getSdkVersion();
+  dataObject[enumToString(BOARD_UPTIME)] = millis();
+  dataObject[enumToString(BOARD_CHIP_ID)] =
+      this->appConfig->boardInfo.boardChipId;
+  dataObject[enumToString(BOARD_FLASH_CHIP_ID)] =
+      this->appConfig->boardInfo.boardFlashChipId;
+  dataObject[enumToString(BOARD_VERSION)] =
+      this->appConfig->boardInfo.boardCoreVersion;
+  dataObject[enumToString(BOARD_FREE_RAM)] =
+      this->appConfig->boardInfo.boardFreeHeap;
+  dataObject[enumToString(BOARD_CPU_FREQ_MHZ)] =
+      this->appConfig->boardInfo.boardCpuFreqMHz;
 
-  // // Wifi meta
-  // dataObject["boardStatus"] = WiFi.status();
-  // dataObject["boardRSSI"] = WiFi.RSSI();
-  // dataObject["boardName"] = WiFi.hostname();
-  // dataObject["boardMac"] = WiFi.macAddress();
-  // dataObject["boardWifiChannel"] = WiFi.channel();
-  // dataObject["boardWifiMode"] = WiFi.getMode();
-  // dataObject["boardWifiSSID"] = WiFi.SSID();
-  // dataObject["boardWifiSignal"] = WiFi.RSSI();
-  // dataObject["boardWifiVersion"] = WiFi.getVersion();
-  // // Add any other desired data fields
+  // Wifi meta
+  dataObject[enumToString(BOARD_WIFI_SSID)] = this->appConfig->wifiManager.ssid;
+  dataObject[enumToString(BOARD_WIFI_HOSTNAME)] =
+      this->appConfig->wifiManager.hostname;
+  dataObject[enumToString(BOARD_WIFI_GATEWAY)] =
+      this->appConfig->wifiManager.gateway;
+  dataObject[enumToString(BOARD_WIFI_SUBNET)] =
+      this->appConfig->wifiManager.subnet;
+  dataObject[enumToString(BOARD_WIFI_MAC)] = this->appConfig->wifiManager.mac;
+  dataObject[enumToString(BOARD_WIFI_RSSI)] = this->appConfig->wifiManager.rssi;
+  dataObject[enumToString(BOARD_WIFI_CHANNEL)] =
+      this->appConfig->wifiManager.channel;
+  dataObject[enumToString(BOARD_WIFI_ENCRYPTION)] =
+      this->appConfig->wifiManager.encryption;
 }
 
 void MQTTManager::setMqttConnectionInfo() {
@@ -155,4 +215,18 @@ void MQTTManager::setMqttConnectionInfo() {
   this->appConfig->mqttManager.keepAlive = MQTT_KEEPALIVE;
   this->appConfig->mqttManager.version = MQTT_VERSION;
   this->appConfig->mqttManager.connectionTimeout = MQTT_CONNECTION_TIMEOUT;
+
+  char dataTopic[this->appConfig->appInfo.sensorId.length() + 10];
+  sprintf(dataTopic, "%s/data", this->appConfig->appInfo.sensorId.c_str());
+  this->appConfig->mqttManager.dataTopic = dataTopic;
+  Serial.println("this->appConfig->mqttManager.dataTopic");
+  Serial.println(this->appConfig->mqttManager.dataTopic);
+
+  char statusTopic[this->appConfig->appInfo.sensorId.length() + 10];
+  sprintf(statusTopic, "%s/status", this->appConfig->appInfo.sensorId.c_str());
+  this->appConfig->mqttManager.statusTopic = statusTopic;
+
+  char configTopic[this->appConfig->appInfo.sensorId.length() + 10];
+  sprintf(configTopic, "%s/config", this->appConfig->appInfo.sensorId.c_str());
+  this->appConfig->mqttManager.configTopic = configTopic;
 }

@@ -4,6 +4,16 @@
 
 #include "constants.h"
 
+struct ManagerStatus {
+  bool initialized;
+  bool connected;
+  bool connecting;
+  bool disconnecting;
+  bool hasError;
+  String error;
+  int status;
+};
+
 class AppConfig {
  public:
   class BoardInfo {
@@ -35,14 +45,7 @@ class AppConfig {
   class WifiManager {
    public:
     // Manager status info
-    bool initialized;
-    bool connected;
-    bool connecting;
-    bool reconnecting;
-    bool disconnecting;
-    bool hasError;
-    String error;
-    int status;
+    ManagerStatus status;
 
     // WiFi connection info
     String ssid;
@@ -60,34 +63,24 @@ class AppConfig {
   class MQTTManager {
    public:
     // Manager status info
-    bool initialized;
-    bool connected;
-    bool connecting;
-    bool reconnecting;
-    bool disconnecting;
-    bool hasError;
-    String error;
-    int status;
+    ManagerStatus status;
 
     // MQTT connection info
     int maxPacketSize;
     int keepAlive;
     int version;
     int connectionTimeout;
+
+    // MQTT varibles
+    String dataTopic;
+    String configTopic;
+    String statusTopic;
   };
   MQTTManager mqttManager;
 
   class HardwareManager {
    public:
-    // Status info
-    bool initialized;
-    bool connected;
-    bool connecting;
-    bool reconnecting;
-    bool disconnecting;
-    bool hasError;
-    String error;
-    int status;
+    ManagerStatus status;
   };
   HardwareManager hardwareManager;
 };

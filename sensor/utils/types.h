@@ -6,9 +6,65 @@ class MQTTManager;
 class HWManager;
 
 struct Managers {
-    WifiManager* wifiManager;
-    MQTTManager* mqttManager;
-    HWManager* hwManager;
+  WifiManager* wifiManager;
+  MQTTManager* mqttManager;
+  HWManager* hwManager;
 };
+
+enum JSON_KEYS {
+  // Wifi status
+  WIFI_INITIALIZED,
+  WIFI_CONNECTED_,
+  WIFI_CONNECTING,
+  WIFI_DISCONNECTING,
+  WIFI_HAS_ERROR,
+  WIFI_ERROR,
+  WIFI_STATUS,
+
+  // Mqtt status
+  MQTT_INITIALIZED,
+  MQTT_CONNECTED_,
+  MQTT_CONNECTING,
+  MQTT_DISCONNECTING,
+  MQTT_HAS_ERROR,
+  MQTT_ERROR,
+  MQTT_STATUS,
+
+  // Hardware status
+  HW_INITIALIZED,
+  HW_CONNECTED,
+  HW_CONNECTING,
+  HW_DISCONNECTING,
+  HW_HAS_ERROR,
+  HW_ERROR,
+  HW_STATUS,
+
+  // Sensor meta
+  SENSOR_ID,
+
+  // Board meta
+  BOARD_UPTIME,
+  BOARD_CHIP_ID,
+  BOARD_FLASH_CHIP_ID,
+  BOARD_VERSION,
+  BOARD_FREE_RAM,
+  BOARD_CPU_FREQ_MHZ,
+
+  // Wifi meta
+  BOARD_WIFI_SSID,
+  BOARD_WIFI_HOSTNAME,
+  BOARD_WIFI_GATEWAY,
+  BOARD_WIFI_SUBNET,
+  BOARD_WIFI_MAC,
+  BOARD_WIFI_RSSI,
+  BOARD_WIFI_CHANNEL,
+  BOARD_WIFI_ENCRYPTION,
+
+  // Sensor readings
+  READING_RAW,
+  READING_CM
+};
+
+
 
 #endif  // TYPES_H

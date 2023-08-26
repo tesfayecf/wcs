@@ -1,7 +1,6 @@
 #ifndef MQTT_CONNECTION_MANAGER_H
 #define MQTT_CONNECTION_MANAGER_H
 
-// #include <ArduinoMqttClient.h>
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
@@ -20,47 +19,100 @@ class MQTTManager {
   PubSubClient mqttClient;
 
  public:
-  // Constructor
+  /**
+   * @brief Constructor for the MQTTManager class.
+   */
   MQTTManager();
 
-  // Initialize manager
+  /**
+   * @brief Initializes the MQTTManager.
+   * 
+   * @param config_ Pointer to the AppConfig object.
+   * @param managers_ Pointer to the Managers object.
+   */
   void init(AppConfig* config_, Managers* managers_);
 
-  // Setup MQTT connection
+  /**
+   * @brief Sets up the MQTT connection.
+   */
   void setup();
 
-  // Main loop to handle MQTT events
+  /**
+   * @brief Main loop to handle MQTT events.
+   */
   void loop();
 
-  // Subscribe to an MQTT topic
+  /**
+   * @brief Subscribes to an MQTT topic.
+   * 
+   * @param topic The topic to subscribe to.
+   */
   void subscribe(const char* topic);
 
-  // Publish a sensor readings
+  /**
+   * @brief Publishes sensor readings to the MQTT broker.
+   * 
+   * @param readingRAW The raw reading value.
+   * @param readingCM The reading value in centimeters.
+   */
   void publishReadings(unsigned int readingRAW, unsigned long readingCM);
 
  private:
-  // Static instance pointer for the callback function
-  static MQTTManager* instance;  
+  static MQTTManager* instance;  // Static instance pointer for the callback function
 
-  // Connect to the MQTT broker
+  /**
+   * @brief Connects to the MQTT broker.
+   */
   void connectMQTT();
 
-  // Reconnect to the MQTT broker
+  /**
+   * @brief Reconnects to the MQTT broker.
+   */
   void reconnect();
 
-  // Publish an MQTT message
-  void basePublish(ArduinoJson::V6213PB2::JsonObject& dataObject,
-                   const char* topic);
+  /**
+   * @brief Publishes an MQTT message.
+   * 
+   * @param dataObject The JSON object to publish.
+   * @param topic The MQTT topic to publish to.
+   */
+  void basePublish(ArduinoJson::V6213PB2::JsonObject& dataObject, const char* topic);
 
-  // Add metadata to the MQTT message
+  /**
+   * @brief Adds metadata to the MQTT message.
+   * 
+   * @param dataObject The JSON object to add metadata to.
+   */
   void addMetadata(ArduinoJson::V6213PB2::JsonObject& dataObject);
 
-  // Callback function for handling received MQTT messages
+  /**
+   * @brief Callback function for handling received MQTT messages.
+   * 
+   * @param topic The topic of the received message.
+   * @param payload The payload of the received message.
+   * @param length The length of the payload.
+   */
   static void callbackFunction(char* topic, byte* payload, unsigned int length);
+
+  /**
+   * @brief Callback function for handling status messages.
+   * 
+   * @param payload The payload of the status message.
+   * @param length The length of the payload.
+   */
   void statusCallback(uint8_t* payload, unsigned int length);
+
+  /**
+   * @brief Callback function for handling config messages.
+   * 
+   * @param payload The payload of the config message.
+   * @param length The length of the payload.
+   */
   void configCallback(uint8_t* payload, unsigned int length);
 
-  // Set mqqt connection info
+  /**
+   * @brief Sets the MQTT connection information.
+   */
   void setMqttConnectionInfo();
 };
 

@@ -10,6 +10,7 @@
 #include "../utils/constants.h"
 #include "../utils/types.h"
 
+
 App::App(const AppConfig& config)
     : wifiManager_(nullptr),
       mqttManager_(nullptr),
@@ -20,12 +21,14 @@ App::App(const AppConfig& config)
   managers.hwManager = hwManager_;
 }
 
+
+
 void App::setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
 
   this->setBoardInfo();
-  this->setSensorId();
+  this->setSensorInfo();
 
   wifiManager_ = new WifiManager();
   mqttManager_ = new MQTTManager();
@@ -55,9 +58,30 @@ void App::loop() {
   }
 }
 
+/**
+ * @brief Stops the application.
+ *
+ * @details This function can be used to stop the application if needed.
+ * Currently, it is empty and does not have any functionality.
+ */
 void App::stop() {}
+
+/**
+ * @brief Restarts the application.
+ *
+ * @details This function restarts the application by calling the ESP.restart()
+ * function.
+ */
 void App::restart() { ESP.restart(); }
 
+
+/**
+ * @brief Sets the board information in the AppConfig object.
+ *
+ * @details This function retrieves various board information using the ESP8266
+ * functions and sets them in the AppConfig object. It also prints "Board info
+ * saved" to the serial monitor.
+ */
 void App::setBoardInfo() {
   this->appConfig.boardInfo.boardChipId = ESP.getChipId();
   this->appConfig.boardInfo.boardFlashChipId = ESP.getFlashChipId();
@@ -76,10 +100,28 @@ void App::setBoardInfo() {
   Serial.println("Board info saved");
 }
 
-void App::setSensorId() {
+
+/**
+ * @brief Sets the sensor information in the AppConfig object.
+ *
+ * @details This function generates a unique sensor ID based on the board
+ * information and sets it in the AppConfig object.
+ */
+void App::setSensorInfo() {
   this->appConfig.appInfo.sensorId = generateSensorID();
 }
 
+
+/**
+ * @brief Generates a unique sensor ID based on board information.
+ *
+ * @return The generated sensor ID.
+ *
+ * @details This function generates a unique sensor ID by combining the board
+ * chip ID and flash chip ID. It then calculates the MD5 hash of the combined
+ * string to ensure uniqueness. The generated sensor ID is printed to the serial
+ * monitor and returned.
+ */
 String App::generateSensorID() {
   String uniqueString = String(this->appConfig.boardInfo.boardChipId) +
                         String(this->appConfig.boardInfo.boardFlashChipId);
@@ -87,13 +129,25 @@ String App::generateSensorID() {
   md5.begin();
   md5.add(uniqueString);
   md5.calculate();
-  String md5Hash = md5.toString();
-  return md5Hash;
+  String sensorID = md5.toString();
+
+  Serial.print("Generated Sensor ID: ");
+  Serial.println(sensorID);
+
+  return sensorID;
 }
 
+
+/**
+ * @brief Blinks the built-in LED.
+ *
+ * @details This function blinks the built-in LED on the board by turning it on
+ * for 100 milliseconds and then off for 100 milliseconds.
+ */
 void App::blink() {
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(100);
   digitalWrite(LED_BUILTIN, LOW);
   delay(100);
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(500);
 }
+

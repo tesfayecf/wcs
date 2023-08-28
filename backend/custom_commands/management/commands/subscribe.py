@@ -11,7 +11,9 @@ class Command(BaseCommand):
             mqqtManager = MqttManager()
             tankSensorRelation = TankSensor.objects.all()
             for tankSensor in tankSensorRelation:
-                mqqtManager.subscribe(tankSensor.sensor.serial_number + "/reading")
+                mqqtManager.subscribe(tankSensor.sensor.serial_number + "/data")
+                mqqtManager.subscribe(tankSensor.sensor.serial_number + "/status")
+                mqqtManager.subscribe(tankSensor.sensor.serial_number + "/config")
         except Exception as e:
             raise CommandError(e)
 

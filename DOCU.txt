@@ -1,0 +1,8 @@
+timescale self host installation with postgresql 15 installed
+- git clone https://github.com/timescale/timescaledb
+- cd timescale 
+- git checkout 2.11.2
+- bootstrap.bat
+For installation on Microsoft Windows, you might need to add the pg_config and cmake file locations to your path. In the Windows Search tool, search for system environment variables. The path for pg_config should be C:\Program Files\PostgreSQL\<version>\bin. The path for cmake is within the Visual Studio directory.
+- cmake --build ./build --config Release
+- cmake --build ./build --config Release --target install

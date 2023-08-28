@@ -5,6 +5,7 @@ import styles from "./styles/TankGroupWidget.module.scss"
 import { ITankGroup } from '../../DashboardTypes';
 import Link from 'next/link';
 import ContentBox from '@/app/components/contentBox/ContentBox';
+import WaterTank from '@/public/svg/WaterTank';
 
 type ITankGroupWidgetProps = {
     tankGroup: ITankGroup

@@ -1,22 +1,26 @@
 from django.core.management.base import BaseCommand, CommandError
 
 from django.contrib.auth import get_user_model
-from decouple import config
+from users.models import UserAccount
 
-User = get_user_model()
-
-DJANGO_SUPERUSER_PASSWORD = config('DJANGO_SUPERUSER_PASSWORD', cast=str)
-DJANGO_SUPERUSER_EMAIL = config('DJANGO_SUPERUSER_EMAIL', cast=str)
-
+DJANGO_SUPERUSER_FNAME = "admin"
+DJANGO_SUPERUSER_LNAME = "admin"
+DJANGO_SUPERUSER_EMAIL = "admin_test@gmail.com"
+DJANGO_SUPERUSER_PASSWORD = 1234
 
 class Command(BaseCommand):
     help = 'Create superuser'
 
     def handle(self, *args, **options):
         try:
-            user = User(
+            user = UserAccount(
+                first_name=DJANGO_SUPERUSER_FNAME,
+                last_name=DJANGO_SUPERUSER_LNAME,
                 email=DJANGO_SUPERUSER_EMAIL,
                 password=DJANGO_SUPERUSER_PASSWORD,
+                is_superuser=True,
+                is_staff=True,
+                is_active=True
             )
             user.save()
             self.stdout.write(self.style.SUCCESS('Superuser created successfully'))

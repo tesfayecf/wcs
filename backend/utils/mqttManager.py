@@ -1,6 +1,6 @@
-# mqtt_manager.py
-
 import paho.mqtt.client as mqtt
+import os
+import subprocess
 
 class MqttManager:
     _instance = None
@@ -16,12 +16,33 @@ class MqttManager:
     def __init__(self):
         if self._initialized:
             return
+        
+        # start the broker server
+        self.start_broker()
+
+        # define server client
         self.mqtt_client = mqtt.Client(client_id="server", clean_session=True)
         self.mqtt_client.user_data_set(userdata={'username': "server"})
+
+        # define the callback function
         self.mqtt_client.on_message = self.on_message
+        
+        # connect to the broker
         self.mqtt_client.connect(self.host, self.port)
+        
+        # start the loop
         self.mqtt_client.loop_start()
         self._initialized = True
+    
+    def start_broker(self):
+        os.chdir('C:/emqx/bin/')
+        result = subprocess.run('.\emqx.cmd ping', stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
+        if 'pong' in result.stdout:
+            print("MQTT server is active")
+        else:
+            print("MQTT server is not active")
+            print("Starting MQTT server")
+            subprocess.run('.\emqx.cmd start', shell=True)
 
     def on_message(self, client, userdata, message):
         # Handle incoming MQTT messages here
@@ -32,11 +53,7 @@ class MqttManager:
     def subscribe(self, topic):
         self.mqtt_client.subscribe(topic)
         print(f'Subscribed to topic {topic}')
-        # You can save the subscriptions in a database or dictionary if needed
-        # Example: self.subscriptions[sensor_id] = topic
 
     def publish(self, data, topic):
         self.mqtt_client.publish(topic, data)
         print(f'Published data: {data} on topic: {topic}')
-        # You can save the publications in a database or dictionary if needed
-        # Example: self.publications[topic] = data

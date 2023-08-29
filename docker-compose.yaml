@@ -4,39 +4,56 @@ services:
   backend:
     container_name: backend
     build:
-      context: .
-      dockerfile: docker/backend/Dockerfile
-    volumes:
-      - static:/backend/static
-
+      context: . # Assuming your Dockerfile and code are in the same directory as docker-compose.yaml
+      dockerfile: /docker/backend/Dockerfile
     ports:
-      - 8000:8000
+      - "8080:8000"
     env_file:
       - ./backend/.env
+    # depends_on:
+    #   - database
 
-
-  frontend:
-    container_name: frontend
+  database:
+    container_name: database
     build:
       context: .
-      dockerfile: docker/frontend/Dockerfile
+      dockerfile: /docker/database/Dockerfile
     volumes:
-      - node_modules:/frontend/node_modules
-
+      - db_data:/var/lib/postgresql/data
     ports:
-      - 3000:3000
+      - "5432:5432"
+    command: postgres -c shared_preload_libraries=timescaledb
+  # frontend:
+  #   container_name: frontend
+  #   build:
+  #     context: .
+  #     dockerfile: docker/frontend/Dockerfile
+  #   volumes:
+  #     - node_modules:/frontend/node_modules
+  #   ports:
+  #     - 3000:3000
 
-  nginx:
-    container_name: nginx
-    build:
-      context: .
-      dockerfile: docker/nginx/Dockerfile
-    volumes:
-      - static:/frontend/static
-    ports:
-      - 80:80
+  # nginx:
+  #   container_name: nginx
+  #   build:
+  #     context: .
+  #     dockerfile: docker/nginx/Dockerfile
+  #   volumes:
+  #     - static:/frontend/static
+  #   ports:
+  #     - 80:80
 
+  # emqx:
+  #   container_name: emqx
+  #   image: emqx/emqx
+  #   ports:
+  #     - 1883:1883
+  #     - 8083:8083
+  #     - 8883:8883
+  #     - 8084:8084
+  #     - 18083:18083
 
 volumes:
-  static:
-  node_modules:
+  db_data:
+    # static:
+    # node_modules:

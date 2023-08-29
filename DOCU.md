@@ -6,3 +6,14 @@ timescale self host installation with postgresql 15 installed
 For installation on Microsoft Windows, you might need to add the pg_config and cmake file locations to your path. In the Windows Search tool, search for system environment variables. The path for pg_config should be C:\Program Files\PostgreSQL\<version>\bin. The path for cmake is within the Visual Studio directory.
 - cmake --build ./build --config Release
 - cmake --build ./build --config Release --target install
+
+
+
+
+# DEPLOYMENT
+
+## BACKEND DEPLOYMENT
+
+- Requirements.txt
+    - remove version of asgiref and channels
+    - remove twisted-iocpsupport package (Building wheel for twisted-iocpsupport (pyproject.toml) did not run successfully.)

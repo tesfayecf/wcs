@@ -81,18 +81,18 @@ ASGI_APPLICATION = "backend.routing.application"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    # "default": {
-    #     "ENGINE": "django.db.backends.sqlite3",
-    #     "NAME": BASE_DIR / "db.sqlite3",
-    # }
     "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "test_database",
-        "USER": "postgres",
-        "PASSWORD": "1234",
-        "HOST": "localhost",
-        "PORT": 5432,
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
+    # "default": {
+    #     "ENGINE": "django.db.backends.postgresql_psycopg2",
+    #     "NAME": "test_database",
+    #     "USER": "postgres",
+    #     "PASSWORD": "1234",
+    #     "HOST": "localhost",
+    #     "PORT": 5432,
+    # }
 }
 
 
@@ -125,15 +125,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = '/static/'
-
-# Add the following if you want to collect static files during deployment
 STATIC_ROOT = path.join(BASE_DIR, 'static')
 
+# STATIC_URL = '/static/'
+
+# Add the following if you want to collect static files during deployment
+# STATIC_ROOT = path.join(BASE_DIR, 'static')
+
 # Additional static file directories for your apps (if needed)
-STATICFILES_DIRS = [
-    path.join(STATIC_ROOT, 'rest_framework'),
-    path.join(STATIC_ROOT, 'admin'),
-]
+# STATICFILES_DIRS = [
+#     path.join(STATIC_ROOT, 'rest_framework'),
+#     path.join(STATIC_ROOT, 'admin'),
+# ]
 
 
 REST_FRAMEWORK = {

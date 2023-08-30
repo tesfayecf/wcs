@@ -129,10 +129,10 @@ STATIC_ROOT = path.join(BASE_DIR, 'static')
 # STATIC_ROOT = path.join(BASE_DIR, 'static')
 
 # Additional static file directories for your apps (if needed)
-# STATICFILES_DIRS = [
-#     path.join(STATIC_ROOT, 'rest_framework'),
-#     path.join(STATIC_ROOT, 'admin'),
-# ]
+STATICFILES_DIRS = [
+    path.join(STATIC_ROOT, 'rest_framework'),
+    path.join(STATIC_ROOT, 'admin'),
+]
 
 
 REST_FRAMEWORK = {

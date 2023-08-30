@@ -6,7 +6,6 @@ import RequireAuth from '../utils/auth/requireAuth'
 import Navbar from '../components/navbar/Navbar'
 import Header from '@/app/components/header/Header'
 
-
 type IAppLayoutProps = {
     children: React.ReactNode[] | React.ReactNode | undefined | null;
 }

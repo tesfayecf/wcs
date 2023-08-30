@@ -1,10 +1,10 @@
-FROM node:alpine
+FROM node:18.16.0
 
-RUN mkdir -p /app/frontend/
+WORKDIR /code
 
-WORKDIR /app/frontend
+COPY ./frontend/package*.json ./
 
-COPY ./apps/frontend/ .
+COPY ./frontend .
 
 RUN npm install
 
@@ -12,4 +12,4 @@ RUN npm run build
 
 EXPOSE 3000
 
-CMD [ "npm", "start" ]
+CMD [ "npm", "run" "dev::start" ]

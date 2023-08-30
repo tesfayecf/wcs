@@ -82,17 +82,13 @@ ASGI_APPLICATION = "backend.routing.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "database_prod",
+        "USER": "admin",
+        "PASSWORD": "1234",
+        "HOST": "database",
+        "PORT": 5432,
     }
-    # "default": {
-    #     "ENGINE": "django.db.backends.postgresql_psycopg2",
-    #     "NAME": "test_database",
-    #     "USER": "postgres",
-    #     "PASSWORD": "1234",
-    #     "HOST": "localhost",
-    #     "PORT": 5432,
-    # }
 }
 
 

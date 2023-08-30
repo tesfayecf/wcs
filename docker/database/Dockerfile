@@ -8,3 +8,5 @@ ENV POSTGRES_DB=database_prod
 
 # Expose the PostgreSQL port (although it's not strictly necessary)
 EXPOSE 5432
+
+CMD [ "postgres", "-c", "shared_preload_libraries=timescaledb" ]

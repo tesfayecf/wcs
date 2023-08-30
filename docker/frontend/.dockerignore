@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+build/
+*.txt
+.cache
+.npm
+.tsbuildinfo
+.editorconfig
+.eslintrc
+.prettierrc

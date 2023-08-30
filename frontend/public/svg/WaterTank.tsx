@@ -14,7 +14,7 @@ const WaterTank: React.FunctionComponent<IWaterTankProps> = (props: IWaterTankPr
     const viewBox = `0 0 ${size} ${size}`
 
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" xml: space="preserve" width="500" height="500">
+        <svg xmlns="http://www.w3.org/2000/svg" width="500" height="500">
             <path
                 d="M350 76c-25 0-73-2-73-12V51c0-10 48-12 73-12s73 2 73 12v13c0 10-48 12-73 12zm0-34c-46 0-71 6-71 9v13c0 4 25 9 71 9s71-5 71-9V51c0-3-25-9-71-9zm0 106c-98 0-202-8-202-24a1 1 0 0 1 2 0c0 9 71 21 200 21s200-12 200-21a1 1 0 0 1 2 0c0 16-104 24-202 24z"
                 transform="matrix(1.33 0 0 1.33 75 167)" vector-effect="non-scaling-stroke" />

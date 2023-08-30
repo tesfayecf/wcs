@@ -10,10 +10,10 @@ import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler'
 import Setup from './utils/auth/Setup'
 import styles from "@/app/app/styles/App.module.scss"
 
-export const metadata = {
-    title: 'WCS App',
-    description: 'Web app to control water resources',
-}
+// export const metadata = {
+//     title: 'WCS App',
+//     description: 'Web app to control water resources',
+// }
 
 type IAppLayoutProps = {
     children: React.ReactNode[] | React.ReactNode | undefined | null;

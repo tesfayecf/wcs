@@ -13,7 +13,10 @@ For installation on Microsoft Windows, you might need to add the pg_config and c
 # DEPLOYMENT
 
 ## BACKEND DEPLOYMENT
-
 - Requirements.txt
     - remove version of asgiref and channels
     - remove twisted-iocpsupport package (Building wheel for twisted-iocpsupport (pyproject.toml) did not run successfully.)
+
+## DATABASE DEPLOYMENT
+
+## FRONTEND DEPLOYMENT      

@@ -1,5 +1,9 @@
 #ifndef WIFI_CONNECTION_MANAGER_H
 #define WIFI_CONNECTION_MANAGER_H
+
+#include <DNSServer.h>
+#include <EEPROM.h>
+#include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h>
 
 #include "../../utils/AppConfig.h"
@@ -10,6 +14,12 @@ class WiFiManager {
    private:
     AppConfig* appConfig;
     Managers* managers;
+
+   private:
+    ESP8266WebServer server;
+    String ssid;
+    String password;
+    boolean connected;
 
    public:
     // Constructor
@@ -30,7 +40,19 @@ class WiFiManager {
     wl_status_t getStatus();
 
    private:
+    boolean autoConnect();
     boolean connect();
+
+    boolean startConfigPortal();
+    void renderMainPage();
+    void receiveCredentials();
+
+    boolean getWifiCredentials();
+    boolean storeWifiCredentials(const String& ssid, const String& password);
+
+    // Utils
+    String toStringIp(IPAddress ip);
+    void setWifiConnectionInfo();
 };
 
 #endif  // WIFI_CONNECTION_MANAGER_H

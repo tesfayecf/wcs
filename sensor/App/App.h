@@ -28,7 +28,6 @@ class App {
     void stop();
     void restart();
 
-    bool getWifiCredentials();
     void blink();
     unsigned sensorTime = 0;
 };

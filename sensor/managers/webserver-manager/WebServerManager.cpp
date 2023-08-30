@@ -4,10 +4,7 @@
 #include "../../utils/types.h"
 #include "webpage.h"
 
-// ESP8266WebServer WebServerManager::webserver(WEB_SERVER_PORT);
-// WebSocketsServer WebServerManager::webSocket(WEBSOCKET_PORT);
-
-WebServerManager::WebServerManager() : webserver(WEB_SERVER_PORT) {}
+WebServerManager::WebServerManager() : webserver(SERVER_PORT) {}
 
 void WebServerManager::init(AppConfig* config_, Managers* managers_) {
     Serial.println("WebServerManager init");
@@ -53,26 +50,33 @@ void WebServerManager::turnOFF() {
 }
 
 void WebServerManager::sendData() {
-    unsigned int distanceCM;
-    unsigned int distanceRaw;
+    unsigned int distanceCM = 0;
+    unsigned int distanceRaw = 0;
     unsigned int time = millis() / 1000;
     bool pumpStatus = this->managers->pumpManager->getPumpStatus();
+
     int pumpStatusInt = 0;
 
-    for (size_t i = 0; i < 10; i++) {
-        distanceRaw = managers->hwManager->getDistance();
-        distanceCM = managers->hwManager->getDistanceCm();
-        Serial.print(".");
-        delay(10);
-        if (distanceRaw >= 200 || distanceCM >= 3) {
-            break;
-        }
+    if (pumpStatus) {
+        pumpStatusInt = 1;
+    } else {
+        pumpStatusInt = 0;
     }
-    Serial.println();
 
-    if (distanceCM <= 3) {
-        distanceCM = distanceRaw / 57.0;
-    }
+    // for (size_t i = 0; i < 10; i++) {
+    //     distanceRaw = managers->hwManager->getDistance();
+    //     distanceCM = managers->hwManager->getDistanceCm();
+    //     Serial.print(".");
+    //     delay(10);
+    //     if (distanceRaw >= 200 || distanceCM >= 3) {
+    //         break;
+    //     }
+    // }
+    // Serial.println();
+
+    // if (distanceCM <= 3) {
+    //     distanceCM = distanceRaw / 57.0;
+    // }
 
     // Create a char array for the JSON message
     char message[100];

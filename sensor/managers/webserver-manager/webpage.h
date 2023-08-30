@@ -225,12 +225,13 @@ const char main_page[] PROGMEM = R"=====(
     }
     
     getData();
-    const timer = setInterval(getData, 60 * 1000)
+    const timer = setInterval(getData, 15 * 1000)
 
     async function getData() {
       const newData = await get("DATA");
       const json = JSON.parse(newData);
       data = json;
+      console.log(data);
       updateServerTime(data.serverTime);
       updateLevel(data.sensorValue);
       updateStatus(data.pumpStatus);

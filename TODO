@@ -1,3 +1,4 @@
 - Establish mqtt connection and get server time for logging
 - Start sending data to server and store in sqlite for now
 - Check connection with websockets in client and define data sending prededure
+- add change wifi password and trigger stop of all the managers

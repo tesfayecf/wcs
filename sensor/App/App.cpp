@@ -93,32 +93,6 @@ void App::loop() {
 void App::stop() {}
 void App::restart() {}
 
-bool App::getWifiCredentials() {
-    String ssid;
-    for (int i = 0; i < 32; ++i) {
-        ssid += char(EEPROM.read(i));
-    }
-    Serial.println();
-    Serial.print("SSID: ");
-    Serial.println(ssid);
-    Serial.println("Reading EEPROM pass");
-
-    String password = "";
-    for (int i = 32; i < 96; ++i) {
-        password += char(EEPROM.read(i));
-    }
-    Serial.print("PASS: ");
-    Serial.println(password);
-
-    if (ssid.length() > 0 && password.length() > 0) {
-        Serial.println("Found wifi credentials");
-        return true;
-    } else {
-        Serial.println("Wifi credentials not found");
-        return false;
-    }
-}
-
 void App::blink() {
     digitalWrite(LED_BUILTIN, LOW);
     delay(100);

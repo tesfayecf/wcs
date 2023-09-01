@@ -25,5 +25,5 @@ should use one instead of another
 
 /*
 Take into account that you are a senior programmer with years of experience in embedded systems and app development.
-Give clera and concise explanation of the problem and the solution pointing to the reasons why it is the good solution
+Give clear and concise explanation of the problem and the solution pointing to the reasons why it is the good solution
 */

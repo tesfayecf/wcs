@@ -11,6 +11,18 @@ For installation on Microsoft Windows, you might need to add the pg_config and c
 
 
 # DEPLOYMENT
+AMAZON WEB SERVICES
+
+Connect through ssh 
+ssh -i "C:\Users\tesfa\.ssh\deploy_0.1.pem" ubuntu@ec2-34-207-232-238.compute-1.amazonaws.com
+
+run single container
+
+sudo docker-compose -f "docker-compose.yaml" up -d --build database
+sudo docker-compose -f "docker-compose.yaml" up -d --build frontend
+sudo docker-compose -f "docker-compose.yaml" up -d --build backend_wsgi
+sudo docker-compose -f "docker-compose.yaml" up -d --build backend_asgi
+sudo docker-compose -f "docker-compose.yaml" up -d --build frontend
 
 ## BACKEND DEPLOYMENT
 - Requirements.txt

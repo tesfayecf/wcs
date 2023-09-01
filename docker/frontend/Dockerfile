@@ -1,18 +1,40 @@
-FROM node:18.16.0
 
+
+
+# Build stage
+FROM node:18.16.0 as build
 WORKDIR /code
-
 COPY ./frontend/package*.json ./
-
-COPY ./frontend .
-
 RUN npm install
-
+COPY ./frontend .
 RUN npm run build
 
-EXPOSE 3000
+# Runtime stage
+FROM nginx:1.25
+COPY --from=build /code/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
 
-CMD [ "npm", "run", "dev::start" ]
+# FROM node:18.16.0
+
+# WORKDIR /code
+
+# COPY ./frontend/package*.json ./
+
+# COPY ./frontend .
+
+# RUN npm install
+
+# RUN npm run build
+
+# EXPOSE 3000
+
+# # Install PM2 globally
+# RUN npm install -g pm2
+
+# # Use PM2 to start your Node.js application
+# CMD ["pm2-runtime", "start", "npm", "--", "run", "dev::start"]
 
 # # Use the Node.js base image
 # FROM node:18.16.0

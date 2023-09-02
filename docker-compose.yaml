@@ -10,12 +10,12 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - ./backend/backend_wsgi/.env
+      - ./docker/backend/backend_wsgi/.env
     depends_on:
       - emqx
       - database
     networks:
-      - backend
+      - local_network
     deploy:
       resources:
         limits:
@@ -31,12 +31,12 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - ./backend/backend_asgi/.env
+      - ./docker/backend/backend_asgi/.env
+    networks:
+      - local_network
     depends_on:
       - emqx
       - database
-    networks:
-      - backend
     deploy:
       resources:
         limits:
@@ -50,37 +50,54 @@ services:
       context: .
       dockerfile: docker/database/Dockerfile
     env_file:
-      - ./database/.env
+      - ./docker/database/.env
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     networks:
-      - backend
+      - local_network
     deploy:
       resources:
         limits:
           cpus: '0.50'
           memory: 1G
 
+  nginx:
+    restart: unless-stopped
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    ports:
+      - 80:80
+    depends_on:
+      - frontend
+      - backend_wsgi
+      - backend_asgi
+    networks:
+      - local_network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 300M
+
   frontend:
-      restart: unless-stopped
-      container_name: frontend
-      build:
-        context: .
-        dockerfile: docker/frontend/Dockerfile
-      ports:
-        - 80:80
-      depends_on:
-        - backend_wsgi
-        - backend_asgi
-      networks:
-        - frontend
-      deploy:
-        resources:
-          limits:
-            cpus: '0.50'
-            memory: 300M
+    restart: unless-stopped
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - local_network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 300M
 
   emqx:
     restart: unless-stopped
@@ -93,7 +110,7 @@ services:
       - 8084:8084
       - 18083:18083
     networks:
-      - backend
+      - local_network
     deploy:
       resources:
         limits:
@@ -101,8 +118,8 @@ services:
           memory: 500M
 
 networks:
-  frontend:
-  backend:
+  local_network:
+
 
 volumes:
   db_data:

@@ -27,31 +27,31 @@ export const APIInterface = {
     auth: {
         register: {
             args: (args: Partial<IRegisterForm>): APIResponse<string> => { return {} as APIResponse<string> },
-            address: "auth/users/",
+            address: "api/auth/users/",
             method: "POST",
             argsKeys: ["first_name", "last_name", "email", "password", "re_password"],
         },
         login: {
             args: (email: string, password: string): APIResponse<{ access: string, refresh: string }> => { return {} as APIResponse<{ access: string, refresh: string }> },
-            address: "auth/create/",
+            address: "api/auth/create/",
             method: "POST",
             argsKeys: ["email", "password"],
         },
         logout: {
             args: (): APIResponse<void> => { return {} as APIResponse<void> },
-            address: "auth/logout/",
+            address: "api/auth/logout/",
             method: "POST",
             argsKeys: []
         },
         verify: {
             args: (): APIResponse<void> => { return {} as APIResponse<void> },
-            address: "auth/verify/",
+            address: "api/auth/verify/",
             method: "POST",
             argsKeys: [],
         },
         refresh: {
             args: (obj: any): APIResponse<void> => { return {} as APIResponse<void> },
-            address: "auth/refresh/",
+            address: "api/auth/refresh/",
             method: "POST",
             argsKeys: []
         },

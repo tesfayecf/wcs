@@ -14,6 +14,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '*']
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # Application definition
 INSTALLED_APPS = [
     "channels",
@@ -163,10 +165,16 @@ AUTH_COOKIE_PATH = '/'
 AUTH_COOKIE_SAMESITE = 'None'
 
 
-CORS_ALLOWED_ORIGINS = getenv(
-    "CORS_ALLOWED_ORIGINS", 
-    "http://localhost:3000,http://127.0.0.1:3000"
-).split(",")
+# CORS_ALLOWED_ORIGINS = getenv(
+#     "CORS_ALLOWED_ORIGINS", 
+#     "http://localhost:3000,http://127.0.0.1:3000",
+#     "*"
+# ).split(",")
+
+# CORS_ALLOWD_ORIGINS = ["*"]
+# settings.py
+CORS_ALLOW_ORIGIN_ALL = True
+
 
 CORS_ALLOW_CREDENTIALS = True
 

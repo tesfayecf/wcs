@@ -1,64 +1,26 @@
+# Use the Node.js base image
+FROM node:18.16.0
 
-
-
-# Build stage
-FROM node:18.16.0 as build
+# Set the working directory
 WORKDIR /code
+
+# Copy package.json and package-lock.json files for dependency installation
 COPY ./frontend/package*.json ./
-RUN npm install
+
+# Copy your frontend source code into the container
 COPY ./frontend .
+
+# Install Node.js dependencies
+RUN npm install
+
+# Build your frontend
 RUN npm run build
 
-# Runtime stage
-FROM nginx:1.25
-COPY --from=build /code/build /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/nginx.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Expose the port on which your application will run
+EXPOSE 3000
 
-# FROM node:18.16.0
+# Install PM2 globally
+RUN npm install -g pm2
 
-# WORKDIR /code
-
-# COPY ./frontend/package*.json ./
-
-# COPY ./frontend .
-
-# RUN npm install
-
-# RUN npm run build
-
-# EXPOSE 3000
-
-# # Install PM2 globally
-# RUN npm install -g pm2
-
-# # Use PM2 to start your Node.js application
-# CMD ["pm2-runtime", "start", "npm", "--", "run", "dev::start"]
-
-# # Use the Node.js base image
-# FROM node:18.16.0
-
-# # Set the working directory
-# WORKDIR /code
-
-# # Copy package.json and package-lock.json files for dependency installation
-# COPY ./frontend/package*.json ./
-
-# # Install Node.js dependencies
-# RUN npm install
-
-# # Copy your frontend source code into the container
-# COPY ./frontend .
-
-# # Build your frontend
-# RUN npm run build
-
-# # Expose the port on which your application will run
-# EXPOSE 3000
-
-# # Install PM2 globally
-# RUN npm install -g pm2
-
-# # Use PM2 to start your Node.js application
-# CMD ["pm2-runtime", "start", "npm", "--", "run", "dev::start"]
+# Use PM2 to start your Node.js application
+CMD ["pm2-runtime", "start", "npm", "--", "run", "dev::start"]

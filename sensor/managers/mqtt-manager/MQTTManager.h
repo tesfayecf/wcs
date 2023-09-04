@@ -55,7 +55,7 @@ class MQTTManager {
    * @param readingRAW The raw reading value.
    * @param readingCM The reading value in centimeters.
    */
-  void publishReadings(unsigned int readingRAW, unsigned long readingCM);
+  void publishReadings(unsigned int readingRAW, unsigned int readingCM);
 
  private:
   static MQTTManager* instance;  // Static instance pointer for the callback function

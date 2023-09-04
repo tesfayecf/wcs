@@ -78,12 +78,12 @@
 #define PASSWORD_START_ADDR 100
 
 // MQTT
-#define MQTT_BROKER "192.168.1.13"
+#define MQTT_BROKER "192.168.1.2"
 #define MQTT_PORT 1883
 
 // HARDWARE
-#define TRIGGER_PIN D3  // RX 
-#define ECHO_PIN D4     // TX
-#define MAX_DISTANCE 450
+#define TRIGGER_PIN D6  // RX 
+#define ECHO_PIN D7     // TX
+#define TIMEOUT 25200   //  450 CM * 28 MS/CM * 2
 
 #endif  // CONSTANTS_H

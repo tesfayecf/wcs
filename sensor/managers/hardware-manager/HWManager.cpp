@@ -2,11 +2,13 @@
 
 #include <ESP8266WiFi.h>
 
+#include "Sensor.h"
 #include "../../utils/AppConfig.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
 
-NewPing HWManager::sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
+// NewPing HWManager::sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
+Sensor HWManager::ultraSensor(TRIGGER_PIN, ECHO_PIN, TIMEOUT);
 
 HWManager::HWManager() {}
 
@@ -24,9 +26,9 @@ void HWManager::setup() {
 void HWManager::loop() {}
 
 void HWManager::readSensorValues(unsigned int& distanceRaw,
-                                 unsigned long& distanceCm) {
+                                 unsigned int& distanceCm) {
   unsigned int distanceRaw_ = 0;
-  unsigned long distanceCM_ = 0;
+  unsigned int distanceCM_ = 0;
 
   for (size_t i = 0; i < 10; i++) {
     distanceRaw_ = getDistance();
@@ -56,11 +58,11 @@ void HWManager::readSensorValues(unsigned int& distanceRaw,
 }
 
 unsigned int HWManager::getDistance() {
-  unsigned int distance = HWManager::sonar.ping(100);
+  unsigned int distance = HWManager::ultraSensor.rawRead();
   return distance;
 }
 
-unsigned long HWManager::getDistanceCm() {
-  unsigned long distance = HWManager::sonar.ping_cm(100);
+unsigned int HWManager::getDistanceCm() {
+  unsigned int distance = HWManager::ultraSensor.read();
   return distance;
 }

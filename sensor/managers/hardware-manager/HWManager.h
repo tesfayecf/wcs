@@ -1,8 +1,9 @@
 #ifndef HW_CONNECTION_MANAGER_H
 #define HW_CONNECTION_MANAGER_H
 
-#include <NewPing.h>
-#include <Wire.h>
+// #include <NewPing.h>
+#include "Sensor.h"
+// #include <Wire.h>
 
 #include "../../utils/AppConfig.h"
 #include "../../utils/constants.h"
@@ -15,23 +16,24 @@ class HWManager {
   Managers* managers;
 
  public:
-  static NewPing sonar;
+  // static Ultrasonic sonar;
+  static Sensor ultraSensor;
   // Constructor
   HWManager();
 
   // Initialize manager
   void init(AppConfig* config_, Managers* managers_);
 
-  // Setup IR connection
+  // Setup US connection
   void setup();
 
   void loop();
 
-  void readSensorValues(unsigned int& distanceRaw, unsigned long& distanceCm);
+  void readSensorValues(unsigned int& distanceRaw, unsigned int& distanceCm);
 
-  // Get distance from IR
+  // Get distance from US
   unsigned int getDistance();
-  unsigned long getDistanceCm();
+  unsigned int getDistanceCm();
 };
 
 #endif  // HW_CONNECTION_MANAGER_H

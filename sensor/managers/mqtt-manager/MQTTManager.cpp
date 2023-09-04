@@ -38,13 +38,13 @@ void MQTTManager::setup() {
 }
 
 void MQTTManager::loop() {
-  if (!mqttClient.connected()) {
-    reconnect();
-  }
+  // if (!mqttClient.connected()) {
+  //   reconnect();
+  // }
 
   if (millis() % 10000 == 0) {
     unsigned int distanceRaw;
-    unsigned long distanceCM;
+    unsigned int distanceCM;
 
     // Read data
     managers->hwManager->readSensorValues(distanceRaw, distanceCM);
@@ -214,7 +214,7 @@ void MQTTManager::subscribe(const char* topic) {
  * @details This function creates a JSON object with the sensor readings and calls the `basePublish()` function to publish the JSON object to the MQTT broker.
  */
 void MQTTManager::publishReadings(unsigned int readingRAW,
-                                  unsigned long readingCM) {
+                                  unsigned int readingCM) {
   StaticJsonDocument<512> jsonDoc;
   JsonObject jsonObj = jsonDoc.to<JsonObject>();
   // Add message data
@@ -258,8 +258,8 @@ void MQTTManager::basePublish(ArduinoJson::V6213PB2::JsonObject& dataObject,
  */
 void MQTTManager::addMetadata(JsonObject& metaObj) {
   metaObj["sensorId"] = this->appConfig->appInfo.sensorId;
-  metaObj["sensorType"] = this->appConfig->appInfo.sensorType;
-  metaObj["location"] = this->appConfig->appInfo.location;
+  // metaObj["sensorType"] = this->appConfig->appInfo.sensorType;
+  // metaObj["location"] = this->appConfig->appInfo.location;
   metaObj["timestamp"] = millis();
 }
 
@@ -269,7 +269,7 @@ void MQTTManager::addMetadata(JsonObject& metaObj) {
  * @details This function sets the keep alive, socket timeout, and buffer size for the MQTT client.
  */
 void MQTTManager::setMqttConnectionInfo() {
-  mqttClient.setKeepAlive(60);
-  mqttClient.setSocketTimeout(15);
-  mqttClient.setBufferSize(1024);
+  // mqttClient.setKeepAlive(60);
+  // mqttClient.setSocketTimeout(15);
+  // mqttClient.setBufferSize(1024);
 }

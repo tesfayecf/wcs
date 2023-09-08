@@ -1,7 +1,7 @@
 'use client'
 import React from "react";
 import styles from "./styles/Login.module.scss"
-import PopUpFormTemplate from "@/app/components/popUpFormTemplate/PopUpFormTemplate";
+import FormTemplate from "@/app/components/formTemplate/FormTemplate";
 import AuthHandler from "../AuthHandler";
 import AppHandler from "@/app/app/AppHandler";
 import { IRootState } from "@/app/utils/store/store";
@@ -47,7 +47,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
             <CheckAuth>
                 <div className={styles.login}>
                     <div className={styles.form}>
-                        <PopUpFormTemplate
+                        {/* <PopUpFormTemplate
                             title="Login"
                             open={true}
                             onSubmit={onLogin}
@@ -76,7 +76,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
                                     password: true
                                 }
                             ]}
-                        />
+                        /> */}
                     </div>
                 </div>
             </CheckAuth>

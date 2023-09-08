@@ -7,7 +7,7 @@ import AppHandler from '@/app/app/AppHandler'
 const requestManager = RequestManager.getInstance();
 const appHandler = AppHandler.getInstance();
 
-export default function Setup() {
+export default function Authenticate() {
     React.useEffect(() => {
         const verify = async () => {
             return await requestManager.request("auth", "verify", []);

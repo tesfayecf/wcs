@@ -1,10 +1,10 @@
 import react from "react";
-import style from "./styles/Footer.module.scss"
+import styles from "./styles/Footer.module.scss"
 
 
 const Footer: React.FunctionComponent<{}> = () => (
-    <div className={style.footer}>
-        <p className={style.text}>
+    <div className={styles.footer}>
+        <p className={styles.text}>
             © 2023 All rights reserved by WCS
         </p>
     </div>

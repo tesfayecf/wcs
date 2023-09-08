@@ -1,7 +1,7 @@
 'use client'
 import React from "react";
 import styles from "./styles/Register.module.scss"
-import PopUpFormTemplate from "@/app/components/popUpFormTemplate/PopUpFormTemplate";
+import FormTemplate from "@/app/components/formTemplate/FormTemplate";
 import AuthHandler from "../AuthHandler";
 import { connect } from "react-redux";
 import { IRootState } from "@/app/utils/store/store";
@@ -41,7 +41,7 @@ const Register: React.FunctionComponent<IRegisterProps> = (props: IRegisterProps
     return (
         <div className={styles.register}>
             <div className={styles.form}>
-                <PopUpFormTemplate
+                {/* <PopUpFormTemplate
                     title="Register"
                     open={true}
                     onSubmit={onRegister}
@@ -98,7 +98,7 @@ const Register: React.FunctionComponent<IRegisterProps> = (props: IRegisterProps
                             password: true
                         }
                     ]}
-                />
+                /> */}
             </div>
         </div>
     )

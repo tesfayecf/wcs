@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { IRootState } from '@/app/utils/store/store';
 import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler';
-import PopUpFormTemplate from '@/app/components/popUpFormTemplate/PopUpFormTemplate';
+import FormTemplate from '@/app/components/formTemplate/FormTemplate';
 
 const dashboardHandler = DashboardHandler.getInstance();
 
@@ -42,18 +42,18 @@ const AddTankGroupPopUp: React.FunctionComponent<IAddWaterTankPopUpProps> = (pro
 
     return (
         <>
-            <PopUpFormTemplate
+            <FormTemplate
                 title="Add Tank Group"
-                open={props.showAddTankGroupMenu}
+                externalError={false}
+                externalErrorText={""}
                 onCancel={onClose}
-                onSubmit={onCreate}
-                // disableSubmit={!props.tankGroupCreationForm.name || !props.tankGroupCreationForm.location}
+                onAccept={onCreate}
                 submitButtonText="Add"
-                onCancelButtonText="Cancel"
+                cancelButtonText="Cancel"
                 fields={[
                     {
                         name: "Name",
-                        type: "textInput",
+                        type: "text",
                         placeholder: "",
                         value: props.tankGroupCreationForm.name,
                         onChange: onNameChange,
@@ -61,7 +61,7 @@ const AddTankGroupPopUp: React.FunctionComponent<IAddWaterTankPopUpProps> = (pro
                     },
                     {
                         name: "Location",
-                        type: "textInput",
+                        type: "text",
                         placeholder: "",
                         value: props.tankGroupCreationForm.location,
                         onChange: onLocationChange,
@@ -69,7 +69,7 @@ const AddTankGroupPopUp: React.FunctionComponent<IAddWaterTankPopUpProps> = (pro
                     },
                     {
                         name: "Description",
-                        type: "multiline",
+                        type: "multitext",
                         placeholder: "",
                         value: props.tankGroupCreationForm.description,
                         onChange: onDescriptionChange,

@@ -7,7 +7,7 @@ import AppHandler from '@/app/app/AppHandler'
 import AuthHandler from '@/app/(auth)/AuthHandler'
 import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler'
 
-import Setup from './utils/auth/Setup'
+import Authenticate from './utils/auth/authenticate'
 import styles from "@/app/app/styles/App.module.scss"
 
 // export const metadata = {
@@ -34,7 +34,7 @@ export default function RootLayout({ children }: IAppLayoutProps) {
                 </head>
                 <body className={styles.body}>
                     <Provider store={store}>
-                        <Setup />
+                        <Authenticate />
                         {children}
                     </Provider>
                 </body>

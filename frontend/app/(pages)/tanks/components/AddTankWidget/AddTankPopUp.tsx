@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { IRootState } from '@/app/utils/store/store';
-import PopUpFormTemplate from '@/app/components/popUpFormTemplate/PopUpFormTemplate';
+import FormTemplate from '@/app/components/formTemplate/FormTemplate';
 import TanksHandler from '../../TanksHandler';
 
 const tanksHandler = TanksHandler.getInstance();
@@ -51,7 +51,7 @@ const AddTankPopUp: React.FunctionComponent<IAddTankPopUpProps> = (props: IAddTa
 
     return (
         <>
-            <PopUpFormTemplate
+            {/* <PopUpFormTemplate
                 title="Add Tank Group"
                 open={props.showAddTankMenu}
                 onCancel={onClose}
@@ -110,7 +110,7 @@ const AddTankPopUp: React.FunctionComponent<IAddTankPopUpProps> = (props: IAddTa
                         error: props.tankCreationForm.brandError,
                     },
                 ]}
-            />
+            /> */}
         </>
     )
 };

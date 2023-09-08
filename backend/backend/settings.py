@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "user_visit",
-    'custom_commands',
     
     "tanks",
     "users",
@@ -85,12 +84,16 @@ ASGI_APPLICATION = "backend.routing.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "database_prod",
-        "USER": "admin",
+        "NAME": "main_database",
+        "USER": "postgres",
         "PASSWORD": "1234",
-        "HOST": "database",
+        "HOST": "localhost",
         "PORT": 5432,
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': 'mydatabase',
+    # }
 }
 
 
@@ -165,16 +168,12 @@ AUTH_COOKIE_PATH = '/'
 AUTH_COOKIE_SAMESITE = 'None'
 
 
-# CORS_ALLOWED_ORIGINS = getenv(
-#     "CORS_ALLOWED_ORIGINS", 
-#     "http://localhost:3000,http://127.0.0.1:3000",
-#     "*"
-# ).split(",")
+CORS_ALLOWED_ORIGINS = getenv(
+    "CORS_ALLOWED_ORIGINS", 
+    "http://localhost:3000,http://192.168.0.1:3000,http://127.0.0.1:3000",
+).split(",")
 
 # CORS_ALLOWD_ORIGINS = ["*"]
-# settings.py
-CORS_ALLOW_ORIGIN_ALL = True
-
 
 CORS_ALLOW_CREDENTIALS = True
 

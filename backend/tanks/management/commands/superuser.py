@@ -4,7 +4,7 @@ from users.models import UserAccount
 
 DJANGO_SUPERUSER_FNAME = "admin"
 DJANGO_SUPERUSER_LNAME = "admin"
-DJANGO_SUPERUSER_EMAIL = "admin_test@gmail.com"
+DJANGO_SUPERUSER_EMAIL = "admin@gmail.com"
 DJANGO_SUPERUSER_PASSWORD = "1234"
 
 class Command(BaseCommand):

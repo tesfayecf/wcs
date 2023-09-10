@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { IRootState } from '@/app/utils/store/store';
 import FormTemplate from '@/app/components/formTemplate/FormTemplate';
 import TanksHandler from '../../TanksHandler';
+import PopUpTemplate from '@/app/components/popUpTemplate/PopUpTemplate';
+import { ITankGroupCreationFormN } from '../../TanksTypes';
 
 const tanksHandler = TanksHandler.getInstance();
 
@@ -14,111 +16,69 @@ const AddTankPopUp: React.FunctionComponent<IAddTankPopUpProps> = (props: IAddTa
 
     const onClose = () => {
         tanksHandler.setShowAddTankMenu(false);
-        tanksHandler.setTankCreationForm({
-            name: "", nameError: false, capacity: 0, capacityError: false,
-            brand: "", brandError: false, material: "", materialError: false,
-            dimensions: "", dimensionsError: false, type: "", typeError: false,
-        })
     }
 
-    const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        tanksHandler.setTankCreationFormName(event.target.value);
-    }
-
-    const onCapacityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        tanksHandler.setTankCreationFormCapacity(parseInt(event.target.value));
-    }
-
-    const onMaterialChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        tanksHandler.setTankCreationFormMaterial(event.target.value);
-    }
-
-    const onDimensionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        tanksHandler.setTankCreationFormDimension(event.target.value);
-    }
-
-    const onTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        tanksHandler.setTankCreationFormType(event.target.value);
-    }
-
-    const onBrandChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        tanksHandler.setTankCreationFormBrand(event.target.value);
-    }
-
-    const onCreate = () => {
-        tanksHandler.createTank();
+    const onCreate = (fields: ITankGroupCreationFormN) => {
+        tanksHandler.createTank(fields);
     }
 
     return (
-        <>
-            {/* <PopUpFormTemplate
-                title="Add Tank Group"
-                open={props.showAddTankMenu}
-                onCancel={onClose}
-                onSubmit={onCreate}
-                // disableSubmit={!props.tankGroupCreationForm.name || !props.tankGroupCreationForm.location}
-                submitButtonText="Add"
-                onCancelButtonText="Cancel"
+        <PopUpTemplate
+            open={props.showAddTankMenu}
+            onClose={onClose}
+        >
+            <FormTemplate<ITankGroupCreationFormN>
+                title="Create Tank"
+                onAccept={onCreate}
+                acceptButtonText="Create"
+                cancelButtonText="Cancel"
+                externalError={false}
+                externalErrorText={"Invalid data"}
+                hideCancelButton={false}
+                isLoading={props.isFormLoading}
                 fields={[
                     {
                         name: "Name",
-                        type: "textInput",
-                        placeholder: "",
-                        value: props.tankCreationForm.name,
-                        onChange: onNameChange,
-                        error: props.tankCreationForm.nameError,
+                        type: "text",
+                        placeholder: "Name",
                     },
                     {
                         name: "Capacity",
-                        type: "textInput",
-                        placeholder: "",
-                        value: String(props.tankCreationForm.capacity),
-                        onChange: onCapacityChange,
-                        error: props.tankCreationForm.capacityError,
+                        type: "text",
+                        placeholder: "Capacity",
+                        textType: "number"
                     },
                     {
                         name: "Type",
                         type: "select",
                         selectItems: ["Storage", "Well", "Reservoir", "Tank", "Other"],
                         placeholder: "Type",
-                        value: props.tankCreationForm.type,
-                        onChange: onTypeChange,
-                        error: props.tankCreationForm.typeError,
                     },
                     {
                         name: "Dimension",
-                        type: "textInput",
-                        placeholder: "",
-                        value: props.tankCreationForm.dimensions,
-                        onChange: onDimensionChange,
-                        error: props.tankCreationForm.dimensionsError,
+                        type: "text",
+                        placeholder: "Dimension",
                     },
                     {
                         name: "Material",
-                        type: "textInput",
-                        placeholder: "",
-                        value: props.tankCreationForm.material,
-                        onChange: onMaterialChange,
-                        error: props.tankCreationForm.materialError,
+                        type: "text",
+                        placeholder: "Material",
                     },
                     {
                         name: "Brand",
-                        type: "textInput",
-                        placeholder: "",
-                        value: props.tankCreationForm.brand,
-                        onChange: onBrandChange,
-                        error: props.tankCreationForm.brandError,
+                        type: "text",
+                        placeholder: "Brand",
                     },
                 ]}
-            /> */}
-        </>
+            />
+        </PopUpTemplate>
     )
 };
 
 const mapStateToProps = (state: IRootState) => {
     return {
-        tankCreationForm: state.tanks.tankCreationForm,
-        showAddTankMenu: state.tanks.showAddTankMenu
+        showAddTankMenu: state.tanks.showAddTankMenu,
+        isFormLoading: state.app.loading.isFormLoading,
     }
 }
 

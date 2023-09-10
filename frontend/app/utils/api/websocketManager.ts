@@ -20,7 +20,6 @@ class WebSocketManager extends BaseManager {
         if (!WebSocketManager.instance) {
             WebSocketManager.instance = new WebSocketManager();
         }
-        console.log("WebSocketManager getInstance()");
         return WebSocketManager.instance;
     }
 

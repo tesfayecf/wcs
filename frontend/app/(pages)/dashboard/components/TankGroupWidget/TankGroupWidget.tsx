@@ -5,7 +5,10 @@ import styles from "./styles/TankGroupWidget.module.scss"
 import { ITankGroup } from '../../DashboardTypes';
 import Link from 'next/link';
 import ContentBox from '@/app/components/contentBox/ContentBox';
-import WaterTank from '@/public/svg/WaterTank';
+import DotMenu from '@/public/svg/DotMenuIcon';
+import ButtonTemplate from '@/app/components/buttonTemplate/ButtonTemplate';
+import { store } from '@/app/utils/store/store';
+import { appActions } from '@/app/app/AppReducer';
 
 type ITankGroupWidgetProps = {
     tankGroup: ITankGroup
@@ -14,6 +17,14 @@ type ITankGroupWidgetProps = {
 
 const TankGroupWidget: React.FunctionComponent<ITankGroupWidgetProps> = (props: ITankGroupWidgetProps) => {
     const size = 125;
+
+    const handleButtonClick = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        event.nativeEvent.stopImmediatePropagation();
+        console.log("Button clicked");
+        event.stopPropagation();
+    };
 
     return (
         <ContentBox customBoxClass={styles.group}>
@@ -28,11 +39,11 @@ const TankGroupWidget: React.FunctionComponent<ITankGroupWidgetProps> = (props: 
                         </div>
                     </div>
                     <div className={styles.data}>
-                        <div className={styles.svg}>
+                        <div className={styles.icon}>
                             <div className={styles.container} >
                                 <WatertankSVG height={size} width={size} />
                             </div>
-                            <div className={styles.volume}>
+                            <div className={styles.location}>
                                 <p className={styles.text}> {props.tankGroup.location}</p>
                             </div>
                         </div>
@@ -41,6 +52,15 @@ const TankGroupWidget: React.FunctionComponent<ITankGroupWidgetProps> = (props: 
                             <div className={styles.list}>
                                 <DataListElement keyName="Name" value={props.tankGroup.name} />
                                 <DataListElement keyName="Location" value={props.tankGroup.location} />
+                            </div>
+                            <div className={styles.menu}>
+                                <div onClick={handleButtonClick}>
+                                    <ButtonTemplate
+                                        size={40}
+                                        icon={<DotMenu fill='00000' size={20} stroke={"00000"} />}
+                                        disabled={false}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

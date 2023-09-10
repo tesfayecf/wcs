@@ -11,15 +11,17 @@ export interface APIResponse<T> {
     statusText?: string;
     headers?: any;
     config?: any;
-    isSuccess?: boolean;
-    isFailure?: boolean;
+    isSuccess?: boolean,
+    isRedirect?: boolean,
+    isClientError?: boolean,
+    isServerError?: boolean,
 }
 
 export const APIInterface = {
     app: {
         getUserInfo: {
             args: (): APIResponse<Partial<IUserInfo>> => { return {} as APIResponse<Partial<IUserInfo>> },
-            address: "auth/user/",
+            address: "api/auth/user/",
             method: "POST",
             argsKeys: [],
         }
@@ -61,7 +63,7 @@ export const APIInterface = {
         // Summary
         getSummary: {
             args: (): APIResponse<{ summaryData: any }> => { return {} as APIResponse<{ summaryData: any }> },
-            address: "api/summary/",
+            address: "api/tanks/summary/",
             method: "POST",
             argsKeys: [],
         },
@@ -69,31 +71,31 @@ export const APIInterface = {
         // Tank Groups
         getTankGroups: {
             args: (): APIResponse<ITankGroup[]> => { return {} as APIResponse<ITankGroup[]> },
-            address: "api/tank-groups/",
+            address: "api/tanks/tank-groups/",
             method: "POST",
             argsKeys: [],
         },
         createTankGroup: {
             args: (name: string, location: string, description: string): APIResponse<ITankGroup[]> => { return {} as APIResponse<ITankGroup[]> },
-            address: "api/create-tank-group/",
+            address: "api/tanks/create-tank-group/",
             method: "POST",
             argsKeys: ["name", "location", "description"],
         },
         editTankGroup: {
             args: (args: Partial<ITankGroup>): APIResponse<void> => { return {} as APIResponse<void> },
-            address: "api/edit-tank-groups/",
+            address: "api/tanks/edit-tank-groups/",
             method: "POST",
             argsKeys: ["name", "location", "description"],
         },
         deleteTankGroup: {
             args: (tankGroupId: number): APIResponse<void> => { return {} as APIResponse<void> },
-            address: "api/delete-tank-group/",
+            address: "api/tanks/delete-tank-group/",
             method: "POST",
             argsKeys: ["tankGroupId"],
         },
         getTankGroupStats: {
             args: (tankGroupId: number): APIResponse<void> => { return {} as APIResponse<void> },
-            address: "api/delete-tank-group/",
+            address: "api/tanks/delete-tank-group/",
             method: "POST",
             argsKeys: ["tankGroupId"],
         },
@@ -103,7 +105,7 @@ export const APIInterface = {
         // Tanks
         getTanks: {
             args: (tankGroupId: number): APIResponse<{ tankGroup: ITankGroup, tanks: ITank[], tankGroupStats: ITankGroupStats }> => { return {} as APIResponse<{ tankGroup: ITankGroup, tanks: ITank[], tankGroupStats: ITankGroupStats }> },
-            address: "api/tanks/",
+            address: "api/tanks/tanks/",
             method: "POST",
             argsKeys: ["tankGroupId"],
         },
@@ -111,7 +113,7 @@ export const APIInterface = {
         // Tank
         getTank: {
             args: (tankId: number, tankGroupId: number): APIResponse<ITank[]> => { return {} as APIResponse<ITank[]> },
-            address: "api/tank/",
+            address: "api/tanks/tank/",
             method: "POST",
             argsKeys: ["tankId", "tankGroupId"],
         },
@@ -120,7 +122,7 @@ export const APIInterface = {
                 tankGroupId: number, name: string, capacity: number, type: string,
                 dimensions: string, brand: string, material: string
             ): APIResponse<void> => { return {} as APIResponse<void> },
-            address: "api/create-tank/",
+            address: "api/tanks/create-tank/",
             method: "POST",
             argsKeys: ["tankGroupId", "name", "capacity", "type", "dimensions", "brand", "material"],
         },
@@ -129,19 +131,19 @@ export const APIInterface = {
                 tankId: number, tankGroupId: number, name: string, capacity: number,
                 type: string, dimensions: string, brand: string, material: string
             ): APIResponse<void> => { return {} as APIResponse<void> },
-            address: "api/edit-tank/",
+            address: "api/tanks/edit-tank/",
             method: "POST",
             argsKeys: ["tankId", "tankGroupId", "name", "capacity", "type", "dimensions", "brand", "material"],
         },
         deleteTank: {
             args: (tankId: number, tankGroupId: number): APIResponse<void> => { return {} as APIResponse<void> },
-            address: "api/delete-tank/",
+            address: "api/tanks/delete-tank/",
             method: "POST",
             argsKeys: ["tankId", "tankGroupId"],
         },
         getTankStats: {
             args: (tankId: number, tankGroupId: number): APIResponse<any> => { return {} as APIResponse<any> },
-            address: "api/tank-stats/",
+            address: "api/tanks/tank-stats/",
             method: "POST",
             argsKeys: ["tankId", "tankGroupId"],
         },
@@ -149,25 +151,15 @@ export const APIInterface = {
         // Sensor
         getSensor: {
             args: (tankId: number, tankGroupId: number): APIResponse<ISensor> => { return {} as APIResponse<ISensor> },
-            address: "api/sensor/",
+            address: "api/tanks/sensor/",
             method: "POST",
             argsKeys: ["tankId", "tankGroupId"],
+        },
+        assignSensor: {
+            args: (sensorId: number, tankId: number, tankGroupId: number): APIResponse<void> => { return {} as APIResponse<void> },
+            address: "api/tanks/assign-sensor/",
+            method: "POST",
+            argsKeys: ["sensorId", "tankId", "tankGroupId"]
         }
     }
 } as const;
-
-/**
- * register: builder.mutation({
-//             query: ({
-//                 first_name,
-//                 last_name,
-//                 email,
-//                 password,
-//                 re_password,
-//             }) => ({
-//                 url: '/users/',
-//                 method: 'POST',
-//                 body: { first_name, last_name, email, password, re_password },
-//             }),
-//         }),
- */

@@ -19,7 +19,6 @@ class RequestManager extends BaseManager {
         if (!RequestManager.instance) {
             RequestManager.instance = new RequestManager();
         }
-        console.log("RequestManager getInstance()");
         return RequestManager.instance;
     }
 
@@ -54,27 +53,33 @@ class RequestManager extends BaseManager {
         // @ts-ignore
         let response: ReturnType<typeof APIInterface[T][S]["args"]> = await this.baseRequest_(method, address, obj, authenticate);
         // @ts-ignore
-        if (response.isFailure && response.status === 401) {
+        if (response.isClientError && response.status === 401) {
             if (!mutex.isLocked()) {
-                const release = await mutex.acquire();
-                try {
-                    const refreshResponse: APIResponse<any> = await this.baseRequest_("POST", "auth/refresh/", obj, false);
-                    if (refreshResponse.data) {
-                        store.dispatch(appActions.setAuth());
-                        store.dispatch(appActions.setAccessToken(refreshResponse.data.access));
-                        store.dispatch(appActions.setRefreshToken(refreshResponse.data.refresh));
-                        response = await this.baseRequest_(method, address, obj, authenticate);
-                    } else {
-                        response = await this.baseRequest_("POST", "auth/logout/", {})
-                        store.dispatch(appActions.logout());
-                    }
-                } finally {
-                    release();
-                }
+                response = await this.reAuthRequest_(method, address, obj, authenticate);
             } else {
                 await mutex.waitForUnlock();
-                response = await this.baseRequest_(method, address, obj, authenticate);
+                response = await this.reAuthRequest_(method, address, obj, authenticate);
             }
+        }
+        return response;
+    }
+
+    private async reAuthRequest_(method: TRequestMethods, address: string, obj: any, authenticate: boolean = true) {
+        let response;
+        const release = await mutex.acquire();
+        try {
+            const refreshResponse: APIResponse<any> = await this.baseRequest_("POST", "api/auth/refresh/", obj, false);
+            if (refreshResponse.data) {
+                store.dispatch(appActions.setAuth());
+                store.dispatch(appActions.setAccessToken(refreshResponse.data.access));
+                store.dispatch(appActions.setRefreshToken(refreshResponse.data.refresh));
+                response = await this.baseRequest_(method, address, obj, authenticate);
+            } else {
+                response = await this.baseRequest_("POST", "auth/logout/", {})
+                store.dispatch(appActions.logout());
+            }
+        } finally {
+            release();
         }
         return response;
     }
@@ -105,40 +110,39 @@ class RequestManager extends BaseManager {
         }
     }
 
-
-    private async mapAxiosResponse_<T>(response: AxiosResponse<T>): Promise<APIResponse<T>> {
-        const apiResponse: APIResponse<T> = {
-            data: response.data,
-            request: response.request,
-            status: response.status,
-            statusText: response.statusText,
-            headers: response.headers,
-            config: response.config,
-            isSuccess: response.status >= 200 && response.status < 300,
-            isFailure: response.status >= 400,
-        };
-
-        return apiResponse;
+    private mapAxiosResponse_<T>(response: AxiosResponse<T>): APIResponse<T> {
+        return this.mapAxiosData_<T>(response, response.status);
     }
 
-    private async mapAxiosError_<T>(error: AxiosError<T>): Promise<APIResponse<T>> {
-        const apiResponse: APIResponse<T> = {
-            error: error.response?.data ?? error.message,
-            request: error.request,
-            status: error.response?.status,
-            statusText: error.response?.statusText,
-            headers: error.response?.headers,
-            config: error.config,
-            isSuccess: false,
-            isFailure: true,
-        };
+    private mapAxiosError_<T>(error: AxiosError<T>): APIResponse<T> {
+        const status = error.response?.status || (error.message.includes('Network Error') ? 0 : undefined);
+        return this.mapAxiosData_<T>(error.response, status, error.message);
+    }
 
-        return apiResponse;
+    private mapAxiosData_<T>(
+        response: AxiosResponse<T> | undefined,
+        status: number | undefined,
+        errorMessage?: string
+    ): APIResponse<T> {
+        const isSuccess = status !== undefined && status >= 200 && status < 300;
+        const isRedirect = status !== undefined && status >= 300 && status < 400;
+        const isClientError = status !== undefined && status >= 400 && status < 500;
+        const isServerError = status !== undefined && status >= 500;
+
+        return {
+            data: response?.data,
+            request: response?.request,
+            status: status,
+            statusText: response?.statusText,
+            headers: response?.headers,
+            config: response?.config,
+            error: errorMessage || response?.data,
+            isSuccess: isSuccess,
+            isRedirect: isRedirect,
+            isClientError: isClientError,
+            isServerError: isServerError,
+        };
     }
 }
 
 export default RequestManager;
-
-type TupleToObject<T extends any[]> = {
-    [K in keyof T]: T[K]
-};

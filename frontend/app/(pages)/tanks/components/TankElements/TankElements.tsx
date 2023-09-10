@@ -23,7 +23,7 @@ const TankElements: React.FunctionComponent<ITankElementsProps> = (props: ITankE
         }
 
         return props.tanks.map((tank, index) => {
-            tanksHandler.getSensor(tank.id);
+            // tanksHandler.getSensor(tank.id);
             // const sensor = props.sensors.find(s => s.tank.id === tank.id);
             return (
                 <TankWidget tank={tank} key={index} />

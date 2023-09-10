@@ -8,6 +8,8 @@ import { IRootState } from "@/app/utils/store/store";
 import { connect } from "react-redux";
 import { useRouter } from 'next/navigation';
 import CheckAuth from "@/app/utils/auth/checkAuth";
+import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
+import { ILoginFormN } from "./../AuthTypes"
 
 const authHandler = AuthHandler.getInstance()
 const appHandler = AppHandler.getInstance()
@@ -24,16 +26,8 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
         }
     }, [])
 
-    const onEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        authHandler.setLoginFormEmail(event.target.value);
-    }
-
-    const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        authHandler.setLoginFormPassword(event.target.value);
-    }
-
-    const onLogin = async () => {
-        const response = await authHandler.login();
+    const onLogin = async (fields: ILoginFormN) => {
+        const response = await authHandler.login(fields);
         if (response.status === 200) {
             router.push('./dashboard');
             appHandler.setAuth();
@@ -47,36 +41,37 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
             <CheckAuth>
                 <div className={styles.login}>
                     <div className={styles.form}>
-                        {/* <PopUpFormTemplate
-                            title="Login"
-                            open={true}
-                            onSubmit={onLogin}
-                            submitButtonText="Login"
-                            hideCancelButton={true}
+                        <PopUpTemplate
                             hideBackDrop={true}
-                            fields={[
-                                {
-                                    name: "Email",
-                                    type: "textInput",
-                                    placeholder: "Email",
-                                    value: props.loginForm.email,
-                                    onChange: onEmailChange,
-                                    error: props.loginForm.emailError,
-                                    errorMessage: "Invalid email",
-
-                                },
-                                {
-                                    name: "Password",
-                                    type: "textInput",
-                                    placeholder: "Password",
-                                    value: props.loginForm.password,
-                                    onChange: onPasswordChange,
-                                    error: props.loginForm.passwordError,
-                                    errorMessage: "Invalid password",
-                                    password: true
-                                }
-                            ]}
-                        /> */}
+                            open={true}
+                            onClose={() => { }}
+                        >
+                            <FormTemplate<ILoginFormN>
+                                title="Log in"
+                                externalError={false}
+                                externalErrorText={"Invalid credentials"}
+                                onCancel={() => { }}
+                                onAccept={onLogin}
+                                acceptButtonText="Log in"
+                                cancelButtonText="Cancel"
+                                hideCancelButton={false}
+                                isLoading={false}
+                                fields={[
+                                    {
+                                        name: "Email",
+                                        type: "text",
+                                        placeholder: "",
+                                        textType: "email"
+                                    },
+                                    {
+                                        name: "Password",
+                                        type: "text",
+                                        placeholder: "",
+                                        textType: "password"
+                                    }
+                                ]}
+                            />
+                        </PopUpTemplate>
                     </div>
                 </div>
             </CheckAuth>

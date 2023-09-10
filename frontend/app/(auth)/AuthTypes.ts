@@ -5,6 +5,12 @@ export interface ILoginForm {
     password: string;
     passwordError: boolean;
 }
+
+export interface ILoginFormN {
+    "Email": string,
+    "Password": string
+}
+
 export interface IRegisterForm {
     first_name: string;
     firstNameError: boolean;

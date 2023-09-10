@@ -26,6 +26,7 @@ export interface IAppStore {
     }
     loading: {
         isLoading: boolean;
+        isFormLoading: boolean;
         loadingText: string;
     }
     userInfo: IUserInfo;

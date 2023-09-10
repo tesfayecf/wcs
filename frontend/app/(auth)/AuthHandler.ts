@@ -1,11 +1,12 @@
 import { appActions } from "../app/AppReducer";
 import { store } from "../utils/store/store";
 import { authActions } from "./AuthReducer";
-import { ILoginForm } from "./AuthTypes";
+import { ILoginForm, ILoginFormN } from "./AuthTypes";
 import RequestManager from '@/app/utils/api/requestManager'
 import { useRouter } from 'next/navigation';
 
 const requestManager = RequestManager.getInstance();
+
 class AuthHandler {
     private static instance: AuthHandler;
     private constructor() {
@@ -16,13 +17,11 @@ class AuthHandler {
         if (!AuthHandler.instance) {
             AuthHandler.instance = new AuthHandler();
         }
-
-        console.log("Auth handler getInstance()");
         return AuthHandler.instance;
     }
 
     public async load() {
-        // check use data
+        // check user data
         store.dispatch(appActions.finishLoading())
     }
 
@@ -37,16 +36,6 @@ class AuthHandler {
     // Login Form //
     public setLoginForm(loginForm: ILoginForm) {
         store.dispatch(authActions.setLoginForm(loginForm))
-    }
-
-    // Login
-    public setLoginFormEmail(email: string) {
-        const error = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email);
-        store.dispatch(authActions.setLoginFormEmail({ email, error: !error }));
-    }
-
-    public setLoginFormPassword(password: string) {
-        store.dispatch(authActions.setLoginFormPassword({ password, error: false }));
     }
 
     // Register
@@ -104,16 +93,17 @@ class AuthHandler {
     }
 
 
-    public async login() {
-        const state = store.getState();
-        const email = state.auth.loginForm.email;
-        const password = state.auth.loginForm.password;
+    public async login(fields: ILoginFormN) {
+        const email = fields["Email"];
+        const password = fields["Password"];
+        store.dispatch(appActions.startLoading())
 
         const response = await requestManager.request("auth", "login", [email, password], false)
-        if (response.status === 200) {
+        if (response.isSuccess) {
             store.dispatch(appActions.setRefreshToken(response.data.refresh))
             store.dispatch(appActions.setAccessToken(response.data.access))
         }
+        store.dispatch(appActions.finishLoading())
         return response;
     }
 

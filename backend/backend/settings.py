@@ -173,8 +173,6 @@ CORS_ALLOWED_ORIGINS = getenv(
     "http://localhost:3000,http://192.168.0.1:3000,http://127.0.0.1:3000",
 ).split(",")
 
-# CORS_ALLOWD_ORIGINS = ["*"]
-
 CORS_ALLOW_CREDENTIALS = True
 
 # Default primary key field type

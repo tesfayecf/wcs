@@ -24,6 +24,8 @@ const Tanks: React.FunctionComponent<IDashboardProps> = (props: IDashboardProps)
         }
     }, [])
 
+    console.log("Rerender tanks page");
+
     return (
         <div id={"tanksPage"} className={styles.tanks}>
             <div id={"tankGroupMenu"} className={styles.tankGroupMenu}>

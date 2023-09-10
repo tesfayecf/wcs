@@ -1,5 +1,5 @@
 import { store } from "@/app/utils/store/store";
-import { ISensor, ITankCreationForm, ITanksParams } from "./TanksTypes";
+import { ISensor, ITank, ITankCreationForm, ITankGroupCreationFormN, ITanksParams } from "./TanksTypes";
 import { tankActions } from "./TanksReducer";
 import RequestManager from "@/app/utils/api/requestManager";
 import WebSocketManager2 from "@/app/utils/api/websocketManager2";
@@ -17,141 +17,86 @@ class TanksHandler {
         if (!TanksHandler.instance) {
             TanksHandler.instance = new TanksHandler();
         }
-
-        console.log("Dashboard handler getInstance()");
         return TanksHandler.instance;
     }
 
     /// LOADER \\\
 
     public async load(params: ITanksParams) {
+        // store.dispatch(appActions.startLoading()); // BUG: infinit rerender
+
         await this.loadParams(params);
         await this.getTanksInfo();
         await this.getSensorsInfo();
         await this.initializeWSConnections();
+
+        store.dispatch(appActions.finishLoading())
     }
 
     public async loadParams(params: ITanksParams) {
         store.dispatch(tankActions.setParams({ params }));
     }
 
-
-
     /// TANKS HANDLER \\\
 
     public async getTanksInfo() {
         const state = store.getState().tanks;
         const response = await requestManager.request("tanks", "getTanks", [state.tankGroupId])
-        if (response.status == 200) {
+        if (response.isSuccess) {
             store.dispatch(tankActions.setTanks({ tanks: response.data.tanks }));
             store.dispatch(tankActions.setTankGroupInfo({ tankGroupInfo: response.data.tankGroup }));
             store.dispatch(tankActions.setTankGroupStats({ tankGroupStats: response.data.tankGroupStats }));
         } else {
-            throw new Error(response.statusText);
+            // TODO:  process response/handle errors
         }
     }
 
-    public async createTank() {
-        store.dispatch(appActions.startLoading())
-        // Check user is authorized
+    public async createTank(fields: ITankGroupCreationFormN) {
+        store.dispatch(appActions.startFormLoading())
+
+        // Get fields
+        const name = fields["Name"];
+        const capacity = fields["Capacity"];
+        const type = fields["Type"];
+        const dimensions = fields["Dimension"];
+        const brand = fields["Brand"];
+        const material = fields["Material"];
+
         const state = store.getState().tanks;
-        // const { nameError, name, locationError, location, description } = state.tankGroupCreationForm;
-        const {
-            name, nameError,
-            capacity, capacityError,
-            type, typeError,
-            dimensions, dimensionsError,
-            material, materialError,
-            brand, brandError,
-        } = state.tankCreationForm;
+        const response = await requestManager.request("tanks", "createTank", [state.tankGroupId, name, capacity, type, dimensions, brand, material])
+        // TODO:  process response/handle errors
 
-        if (nameError || capacityError || typeError || dimensionsError || materialError || brandError) {
-            throw new Error("Invalid form");
-        } else {
-            const response = await requestManager.request("tanks", "createTank", [state.tankGroupId, name, capacity, type, dimensions, brand, material])
-            if (response.status == 201) {
-                console.log("Tank created");
-            } else {
-                store.dispatch(appActions.finishLoading())
-                throw new Error(response.statusText);
-            }
-            this.setShowAddTankMenu(false);
-            this.setTankCreationForm({
-                name: "", nameError: false, capacity: 0, capacityError: false,
-                brand: "", brandError: false, material: "", materialError: false,
-                dimensions: "", dimensionsError: false, type: "", typeError: false,
-            });
+        // Update redux
+        this.getTanksInfo();
+        this.setShowAddTankMenu(false);
 
-            // Update redux
-            this.getTanksInfo();
-        }
-
-        store.dispatch(appActions.finishLoading())
+        store.dispatch(appActions.finishFormLoading())
     }
 
     public setShowAddTankMenu(state: boolean) {
         store.dispatch(tankActions.setShowAddTankMenu({ state }))
     }
 
-    public setTankCreationForm(form: ITankCreationForm) {
-        store.dispatch(tankActions.setTankCreationForm({ form }))
-    }
-
-    public setTankCreationFormName(name: string) {
-        // const nameError = /^[a-zA-Z0-9_]*$/.test(name);
-        const nameError = false;
-        store.dispatch(tankActions.setTankCreationForm({ name, nameError }))
-    }
-
-    public setTankCreationFormCapacity(capacity: number) {
-        const capacityError = false;
-        store.dispatch(tankActions.setTankCreationForm({ capacity, capacityError }));
-    }
-
-    public setTankCreationFormType(type: string) {
-        const typeError = false;
-        store.dispatch(tankActions.setTankCreationForm({ type, typeError }));
-    }
-
-    public setTankCreationFormDimension(dimensions: string) {
-        const dimensionsError = false;
-        store.dispatch(tankActions.setTankCreationForm({ dimensions, dimensionsError }));
-    }
-
-    public setTankCreationFormMaterial(material: string) {
-        const materialError = false;
-        store.dispatch(tankActions.setTankCreationForm({ material, materialError }));
-    }
-
-    public setTankCreationFormBrand(brand: string) {
-        const brandError = false;
-        store.dispatch(tankActions.setTankCreationForm({ brand, brandError }));
-    }
-
     /// SENSOR HANDLER \\\
+
+    public async getSensorsInfo() {
+        const tanks: ITank[] = store.getState().tanks.tanks;
+        let sensors: ISensor[] = [];
+        await Promise.all(tanks.map(async (tank: ITank) => {
+            if (tank.hasSensor) {
+                const sensor: ISensor | undefined = await this.getSensor(tank.id);
+                if (sensor) sensors.push(sensor);
+            }
+        }))
+        store.dispatch(tankActions.setSensors({ sensors }));
+    }
 
     public async getSensor(tankId: number) {
         const state = store.getState().tanks;
         const response = await requestManager.request("tanks", "getSensor", [tankId, state.tankGroupId]);
-        if (response.status == 200) {
+        if (response.isSuccess) {
             return response.data;
-        } else {
-            throw new Error(response.statusText);
         }
-    }
-
-    public async getSensorsInfo() {
-        const tanks = store.getState().tanks.tanks;
-        let sensors: ISensor[] = [];
-        await Promise.all(tanks.map(async (tank) => {
-            if (tank.hasSensor) {
-                const sensor: ISensor = await this.getSensor(tank.id)
-                if (sensor.id !== "-1") {
-                    sensors.push(sensor)
-                }
-            }
-        }))
-        store.dispatch(tankActions.setSensors({ sensors }));
     }
 
     public async initializeWSConnections() {
@@ -186,7 +131,6 @@ class TanksHandler {
     public unload() {
         // TODO: set debounced time out. If user enter the page again no need to reconnect.
         this.closeWSConnections();
-        // store.dispatch(tankActions.unload());
     }
 
     /// TANK HANDLER \\\
@@ -194,9 +138,9 @@ class TanksHandler {
     public async getTankInfo(tankId: number) {
         const state = store.getState().tanks;
         const response = await requestManager.request("tanks", "getTank", [tankId, state.tankGroupId])
-        if (response.status == 200) {
+        if (response.isSuccess) {
         } else {
-            throw new Error(response.statusText);
+            // TODO: process response/handle errors
         }
     }
 }

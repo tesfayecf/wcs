@@ -14,7 +14,6 @@ class AppHandler {
         if (!AppHandler.instance) {
             AppHandler.instance = new AppHandler();
         }
-        console.log("App handler getInstance()");
         return AppHandler.instance;
     }
 

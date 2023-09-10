@@ -13,8 +13,8 @@ interface IAddTankGroupButtonProps extends ReturnType<typeof mapStateToProps> { 
 const AddTankGroupButton: React.FunctionComponent<IAddTankGroupButtonProps> = (props: IAddTankGroupButtonProps) => {
 
     const toggleAddTankGroupMenu = React.useCallback(() => {
-        dashboardHandler.setShowCreateTankGroupMenu(!props.showAddTankMenu);
-    }, [props.showAddTankMenu]);
+        dashboardHandler.setShowCreateTankGroupMenu(true);
+    }, []);
 
     return (
         <ContentBox customBoxClass={styles.main}>
@@ -27,11 +27,9 @@ const AddTankGroupButton: React.FunctionComponent<IAddTankGroupButtonProps> = (p
     )
 };
 
-
-
 const mapStateToProps = (state: IRootState) => {
     return {
-        showAddTankMenu: state.dashboard.showAddTankGroupMenu
+        showAddTankGroupMenu: state.dashboard.showAddTankGroupMenu
     }
 }
 

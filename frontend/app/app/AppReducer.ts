@@ -16,6 +16,7 @@ const initialState: IAppStore = {
     },
     loading: {
         isLoading: true,
+        isFormLoading: false,
         loadingText: '',
     },
     userInfo: {
@@ -38,6 +39,12 @@ const appSlice = createSlice({
         },
         finishLoading: (state) => {
             state.loading.isLoading = false;
+        },
+        startFormLoading: (state) => {
+            state.loading.isFormLoading = true;
+        },
+        finishFormLoading: (state) => {
+            state.loading.isFormLoading = false;
         },
         setAuth: (state) => {
             state.session.isAuthenticated = true;

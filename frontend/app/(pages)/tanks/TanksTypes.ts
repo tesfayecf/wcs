@@ -15,6 +15,15 @@ export interface ITankCreationForm {
     brandError: boolean;
 }
 
+export interface ITankGroupCreationFormN {
+    "Name": string;
+    "Capacity": number;
+    "Type": string;
+    "Dimension": string;
+    "Material": string;
+    "Brand": string;
+}
+
 export interface ITanksStore {
     tankId: number;
     tankGroupId: number;

@@ -1,12 +1,14 @@
 // import { useStore } from "@/app/utils/store/store";
 import { store } from "@/app/utils/store/store";
-import { ITankGroupCreationForm } from "./DashboardTypes";
+import { ITankGroupCreationForm, ITankGroupCreationFormN } from "./DashboardTypes";
 import { dashboardActions } from "./DashboardReducer";
 import RequestManager from "@/app/utils/api/requestManager";
 import { appActions } from "@/app/app/AppReducer";
 import WebSocketManager from "@/app/utils/api/websocketManager";
+import LogHandler from "@/app/app/LogHandler";
 
 const requestManager = RequestManager.getInstance();
+const logHandler = LogHandler.getInstance();
 const webSocketManager = WebSocketManager.getInstance();
 
 class DashboardHandler {
@@ -19,8 +21,6 @@ class DashboardHandler {
         if (!DashboardHandler.instance) {
             DashboardHandler.instance = new DashboardHandler();
         }
-
-        console.log("Dashboard handler getInstance()");
         return DashboardHandler.instance;
     }
 
@@ -38,39 +38,26 @@ class DashboardHandler {
         store.dispatch(appActions.finishLoading())
     }
 
-
     public async unload() { }
 
     public async startWS() {
         await webSocketManager.initWS("prova");
     }
 
-    /// TANK GROUP HANDLER \\\
+    /// DASHBOARD HANDLER \\\
 
     public async getSummaryData() {
         // const response = await requestManager.request("dashboard", "getSummary", [])
-        const response = {
-            statusText: "OK",
-            status: 200,
-            data: {
-
-            }
-        }
-        if (response.status == 200) {
-            store.dispatch(dashboardActions.setSummary({ summary: response.data }));
-        } else {
-            throw new Error(response.statusText);
-        }
     }
 
     /// TANK GROUP HANDLER \\\
 
     public async getTankGroups() {
         const response = await requestManager.request("dashboard", "getTankGroups", [])
-        if (response.status == 200) {
+        if (response.isSuccess) {
             store.dispatch(dashboardActions.setTankGroups({ tankGroups: response.data }));
         } else {
-            throw new Error(response.statusText);
+            // TODO:  process response/handle errors
         }
     }
 
@@ -78,46 +65,23 @@ class DashboardHandler {
         store.dispatch(dashboardActions.setShowCreateTankGroupMenu({ state }))
     }
 
-    public setTankGroupCreationForm(form: ITankGroupCreationForm) {
-        store.dispatch(dashboardActions.setTankGroupCreationForm({ form }))
-    }
+    public async createTankGroup(fields: ITankGroupCreationFormN) {
+        store.dispatch(appActions.startFormLoading());
 
-    public async createTankGroup() {
-        store.dispatch(appActions.startLoading())
-        // Check user is authorized
-        const state = store.getState().dashboard;
-        const { nameError, name, locationError, location, description } = state.tankGroupCreationForm;
-        if (nameError || locationError || name === "" || location === "" || !name || !location) {
-            throw new Error("Invalid form");
-        } else {
-            const response = await requestManager.request("dashboard", "createTankGroup", [name, location, description])
-            if (response.status == 201) {
-                console.log("Tank group created");
-            } else {
-                throw new Error(response.statusText);
-            }
-            this.setShowCreateTankGroupMenu(false);
-            this.setTankGroupCreationForm({ name: "", location: "", nameError: false, locationError: false, description: "", descriptionError: false });
+        // Get fields
+        const name = fields["Name"];
+        const location = fields["Location"];
+        const description = fields["Description"];
 
-            // Update redux
-            this.getTankGroups();
-        }
-        store.dispatch(appActions.finishLoading())
-    }
+        const response = await requestManager.request("dashboard", "createTankGroup", [name, location, description]);
+        // TODO:  process response/handle errors
 
-    public setTankGroupCreationFormName(name: string) {
-        const nameError = !/^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$/.test(name);
-        store.dispatch(dashboardActions.setTankGroupCreationForm({ name, nameError }))
-    }
+        // Update redux
+        // store.dispatch(appActions.startLoading());
+        this.getTankGroups();
+        this.setShowCreateTankGroupMenu(false);
 
-    public setTankGroupCreationFormLocation(location: string) {
-        const locationError = false;
-        store.dispatch(dashboardActions.setTankGroupCreationForm({ location, locationError }));
-    }
-
-    public setTankGroupCreationFormDescription(description: string) {
-        const descriptionError = false;
-        store.dispatch(dashboardActions.setTankGroupCreationForm({ description, descriptionError }));
+        store.dispatch(appActions.finishFormLoading());
     }
 }
 

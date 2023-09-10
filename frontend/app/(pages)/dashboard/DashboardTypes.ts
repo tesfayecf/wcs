@@ -33,3 +33,9 @@ export interface ITankGroupCreationForm {
     description: string;
     descriptionError: boolean;
 }
+
+export interface ITankGroupCreationFormN {
+    "Name": string;
+    "Location": string;
+    "Description": string;
+}

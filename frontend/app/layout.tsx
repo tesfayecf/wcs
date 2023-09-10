@@ -9,6 +9,7 @@ import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler'
 
 import Authenticate from './utils/auth/authenticate'
 import styles from "@/app/app/styles/App.module.scss"
+import LogHandler from './app/LogHandler'
 
 // export const metadata = {
 //     title: 'WCS App',
@@ -20,6 +21,7 @@ type IAppLayoutProps = {
 }
 
 AppHandler.getInstance();
+LogHandler.getInstance();
 AuthHandler.getInstance();
 DashboardHandler.getInstance();
 

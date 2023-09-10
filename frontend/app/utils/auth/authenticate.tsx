@@ -13,7 +13,7 @@ export default function Authenticate() {
             return await requestManager.request("auth", "verify", []);
         }
         verify().then((response) => {
-            if (response.status === 200) {
+            if (response.isSuccess) {
                 appHandler.setAuth();
                 appHandler.getUserInfo();
             } else {

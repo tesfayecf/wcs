@@ -5,24 +5,21 @@ import styles from "./styles/PopUpTemplate.module.scss"
 interface PopUpTemplateProps {
     children: React.ReactNode | React.ReactNode[];
     open: boolean;
-    onClose: () => void;
+    onClose: (ev: any) => void;
     hideBackDrop?: boolean;
 }
 
 const PopUpTemplate: React.FunctionComponent<PopUpTemplateProps> = (props: PopUpTemplateProps) => {
-    const [isOpen, setIsOpen] = React.useState(true);
-
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const handleKeyDown = (event: any) => {
         if (event.key === 'Escape') {
-            props.onClose();
-            setIsOpen(false)
+            props.onClose(event);
         }
     };
 
     return (
         <Dialog
             className={styles.popUp}
-            open={isOpen}
+            open={props.open}
             onClose={props.onClose}
             hideBackdrop={props.hideBackDrop}
             onKeyDown={handleKeyDown} // Attach the event handler

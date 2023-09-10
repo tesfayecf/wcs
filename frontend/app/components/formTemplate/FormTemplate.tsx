@@ -1,13 +1,12 @@
 import React from "react";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import styles from "./styles/FormTemplate.module.scss"
-import produce from "immer";
-import debounce from "lodash/debounce";
-
+import { produce } from "immer";
 // TODO: add input adorments
 // TODO: check text types https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types
 
 type TTextType = "text" | "password" | "email" | "number" | "tel" | "url" | "date";
+type OnAcceptFunction<T> = (fields: T) => any;
 
 type IField = {
     name: string;
@@ -31,14 +30,14 @@ type IField = {
     selectItems?: string[];
 })
 
-interface IFormProps {
+interface IFormProps<T> {
     title: string;
     fields: IField[];
     acceptButtonText: string;
-    onAccept: (fields: Record<string, any>) => void;
+    onAccept: OnAcceptFunction<T>;
     hideCancelButton?: boolean;
     cancelButtonText: string;
-    onCancel?: () => void;
+    onCancel?: (ev: any) => void;
     disableSubmit?: boolean | undefined;
     isLoading?: boolean;
     externalError: boolean;
@@ -52,8 +51,8 @@ interface IInternalField {
     errorText: string;
 }
 
-const FormTemplate: React.FunctionComponent<IFormProps> = React.memo((props: IFormProps) => {
-    const { fields, onCancel, onAccept, isLoading } = props;
+const FormTemplate = <T extends Record<string, any>>(props: IFormProps<T>) => {
+    const { onCancel, onAccept, isLoading } = props;
     const [formErrors, setFormErrors] = React.useState<boolean>(false);
     const [internalFields, setInternalFields] = React.useState<IInternalField[]>(
         props.fields.map((field) => ({
@@ -67,81 +66,54 @@ const FormTemplate: React.FunctionComponent<IFormProps> = React.memo((props: IFo
     );
 
 
+    // Initialize initial field values
+    const [initialFieldValues, setInitialFieldValues] = React.useState<Record<string, string>>(
+        props.fields.reduce((acc, field) => {
+            acc[field.name] = field.type === "select" && field.selectItems && field.selectItems.length > 0
+                ? field.selectItems[0]
+                : field.defaultValue ?? "";
+            return acc;
+        }, {})
+    );
+
     const handleFieldChange = React.useCallback((name: string, newValue: string) => {
         const foundIndex = props.fields.findIndex((field) => field.name === name);
         const externalField = props.fields[foundIndex];
-        setInternalFields((prevFields) =>
-            prevFields.map((field) => {
-                if (field.name === name) {
-                    const { error, errorText } = validateField(newValue, externalField.validation);
-                    return { ...field, value: newValue, error, errorText };
+
+        setInternalFields((prevFields) => {
+            return produce(prevFields, (draft) => {
+                const fieldIndex = draft.findIndex((field) => field.name === name);
+                if (fieldIndex !== -1) {
+                    let val;
+                    if (externalField.type === "text") val = validateField(newValue, externalField.validation, externalField.textType);
+                    else if (externalField.type === "multitext") val = validateField(newValue, externalField.validation);
+                    else if (externalField.type === "select") val = validateField(newValue, externalField.validation);
+                    const { error, errorText } = val;
+                    console.log(error, errorText)
+                    draft[fieldIndex].value = newValue;
+                    draft[fieldIndex].error = error;
+                    draft[fieldIndex].errorText = errorText;
                 }
-                return field;
-            })
-        );
-        // Check if there are any errors in the form
-        setFormErrors(internalFields.some((field) => field.error));
-    }, [props.fields]);
+            });
+        });
 
-    // const debouncedValidateField = React.useCallback(
-    //     debounce((name: string, newValue: string) => {
-    //         const foundIndex = props.fields.findIndex((field) => name === field.name);
-    //         const externalField = props.fields[foundIndex];
-    //         const { error, errorText } = validateField(
-    //             newValue,
-    //             externalField.validation,
-    //             externalField.type === "text" ? externalField.textType : undefined
-    //         );
-
-    //         // Update the formFields state with the validation results
-    //         setInternalFields((prevFields) =>
-    //             produce(prevFields, (draftFields) => {
-    //                 const updatedField = draftFields.find((field) => field.name === name);
-    //                 if (updatedField) {
-    //                     updatedField.error = error;
-    //                     updatedField.errorText = errorText;
-    //                 }
-    //             })
-    //         );
-    //     }, 300), // Debounce for 300 milliseconds
-    //     []
-    // );
-
-    // const handleFieldChange = React.useCallback(
-    //     (name: string, newValue: string) => {
-    //         // Use Immer to update formFields immutably
-    //         setInternalFields((prevFields) =>
-    //             produce(prevFields, (draftFields) => {
-    //                 const fieldToUpdate = draftFields.find((field) => field.name === name);
-    //                 if (fieldToUpdate) {
-    //                     fieldToUpdate.value = newValue;
-    //                     // Debounce the field validation to reduce validation calls
-    //                     debouncedValidateField(name, newValue);
-    //                 }
-    //             })
-    //         );
-    //         setFormErrors(internalFields.some((field) => field.error));
-
-    //     }, [debouncedValidateField]
-    // );
-
-
-    const handleCancelClick = React.useCallback(() => {
-        if (onCancel) {
-            onCancel();
+        // Check if the new value is different from the initial value
+        if (newValue !== initialFieldValues[name]) {
+            setFormErrors(internalFields.some((field) => field.error));
         }
+    }, [props.fields, internalFields, initialFieldValues]);
+    const handleCancelClick = React.useCallback(() => {
+        if (onCancel) onCancel(null);
     }, [onCancel]);
 
     const handleAcceptClick = React.useCallback(() => {
         const hasErrors = internalFields.some((field) => field.error);
-
         if (!hasErrors) {
-            const fieldValues = internalFields.reduce((values, field) => {
-                values[field.name] = field.value;
-                return values;
-            }, {});
-
-            onAccept(fieldValues);
+            const fieldValues: Record<string, any> = {};
+            internalFields.map((field) => {
+                fieldValues[field.name] = field.value;
+            });
+            onAccept(fieldValues as T);
         }
     }, [internalFields, onAccept]);
 
@@ -151,11 +123,10 @@ const FormTemplate: React.FunctionComponent<IFormProps> = React.memo((props: IFo
                 <h1>{props.title}</h1>
             </div>
         );
-
     }
 
     const renderFields = React.useCallback(() => {
-        return props.fields.map((fieldData: IField, index: number) => {
+        const fields = props.fields.map((fieldData: IField, index: number) => {
             let field = null;
             const foundIndex = internalFields.findIndex((field) => field.name === fieldData.name);
             const internalField = internalFields[foundIndex];
@@ -170,6 +141,7 @@ const FormTemplate: React.FunctionComponent<IFormProps> = React.memo((props: IFo
                         error={internalField.error}
                         helperText={internalField.errorText}
                         textType={fieldData.textType}
+                        disabled={isLoading}
                     />
                 );
             } else if (fieldData.type === "multitext") {
@@ -182,6 +154,7 @@ const FormTemplate: React.FunctionComponent<IFormProps> = React.memo((props: IFo
                         error={internalField.error}
                         helperText={internalField.errorText}
                         rows={fieldData.rows}
+                        disabled={isLoading}
                     />
                 );
             } else if (fieldData.type === "select") {
@@ -194,19 +167,25 @@ const FormTemplate: React.FunctionComponent<IFormProps> = React.memo((props: IFo
                         error={internalField.error}
                         helperText={internalField.errorText}
                         selectItems={fieldData.selectItems}
+                        disabled={isLoading}
                     />
                 );
             }
 
             return (
-                <div className={styles.fields}>
-                    <div key={index} className={styles.field}>
-                        {field}
-                    </div>
+                <div key={index} className={styles.field}>
+                    {field}
                 </div>
             );
         });
-    }, [props.fields]);
+
+        return (
+            <div className={styles.fields}>
+                {fields}
+            </div >
+
+        )
+    }, [internalFields, handleFieldChange]);
 
     const renderButtons = React.useCallback(() => {
 
@@ -221,11 +200,17 @@ const FormTemplate: React.FunctionComponent<IFormProps> = React.memo((props: IFo
 
         return (
             <div className={styles.buttons}>
-                <button className={`${styles.button} ${styles.cancel}`} onClick={handleCancelClick}>
-                    {props.cancelButtonText}
-                </button>
-                <button className={`${styles.button} ${styles.accept}`} onClick={handleAcceptClick}>
-                    {isLoading ? loadingSpinner() : null}
+                {props.hideCancelButton ?
+                    null :
+                    <button disabled={isLoading} className={`${styles.button} ${styles.cancel}`} onClick={handleCancelClick}>
+                        {props.cancelButtonText}
+                    </button>}
+                <button
+                    className={`${styles.button} ${styles.accept}`}
+                    onClick={handleAcceptClick}
+                    style={!props.hideCancelButton ? { marginLeft: 'auto' } : undefined}
+                >
+                    {props.isLoading ? loadingSpinner() : null}
                     {props.acceptButtonText}
                 </button>
             </div >
@@ -239,7 +224,7 @@ const FormTemplate: React.FunctionComponent<IFormProps> = React.memo((props: IFo
             {renderButtons()}
         </div >
     );
-});
+};
 
 export default FormTemplate;
 
@@ -251,14 +236,13 @@ interface IBaseField {
     errorText?: string;
     value: string;
     onChange: (ev: any) => void;
+    disabled: boolean;
 }
 
 
 interface ITextFieldProps extends IBaseField {
     textType?: TTextType;
 }
-
-
 
 const TextFieldComponent: React.FunctionComponent<ITextFieldProps> = React.memo((props: ITextFieldProps) => {
     return (
@@ -274,6 +258,7 @@ const TextFieldComponent: React.FunctionComponent<ITextFieldProps> = React.memo(
             fullWidth
             size="small"
             type={props.textType ?? "text"}
+            disabled={props.disabled}
         />
     )
 })
@@ -298,6 +283,7 @@ const TextMultiFieldComponent: React.FunctionComponent<IMultiTextFieldProps> = R
             size="small"
             multiline={true}
             rows={4}
+            disabled={props.disabled}
         />
     )
 })
@@ -323,6 +309,7 @@ const SelectFieldComponent: React.FunctionComponent<ISelectFieldProps> = React.m
                 placeholder={props.placeholder}
                 fullWidth
                 size="small"
+                disabled={props.disabled}
             >
                 {props.selectItems.map((item: string, index: number) => {
                     return (
@@ -343,41 +330,53 @@ const validateField = (
         required?: boolean;
         minLength?: number;
         maxLength?: number;
-        customValidator?: (value: string) => { error: boolean, errorText: string }; // Custom validation function
+        customValidator?: (value: string) => { error: boolean; errorText: string }; // Corrected return type
     } = {},
     textType?: TTextType
 ): { error: boolean; errorText: string } => {
     let error = false;
     let errorText = "";
 
-    if (validation.required && value.trim() === "") {
-        error = true;
-        errorText = "This field is required.";
+    if (value.trim() === "") {
+        error = false;
+        errorText = "";
+        return { error, errorText };
     }
+
+    // if (validation.required && value.trim() === "") {
+    //     error = true;
+    //     errorText = "This field is required.";
+    //     return { error, errorText };
+    // }
 
     if (validation.minLength && value.length < validation.minLength) {
         error = true;
         errorText = `Minimum length is ${validation.minLength} characters.`;
+        return { error, errorText };
     }
 
     if (validation.maxLength && value.length > validation.maxLength) {
         error = true;
         errorText = `Maximum length is ${validation.maxLength} characters.`;
+        return { error, errorText };
     }
 
     if (textType) {
         if (textType === "email") {
+            console.log("validating email")
             // Basic email pattern (you can use a more comprehensive regex for email validation)
             const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
             if (!emailPattern.test(value)) {
                 error = true;
                 errorText = "Invalid email address.";
+                return { error, errorText };
             }
         } else if (textType === "number") {
             const numericValue = parseFloat(value);
             if (isNaN(numericValue)) {
                 error = true;
                 errorText = "Invalid number.";
+                return { error, errorText };
             }
         } else if (textType === "tel") {
             // Regex pattern for a common North American phone number format (e.g., (123) 456-7890)
@@ -385,6 +384,7 @@ const validateField = (
             if (!phonePattern.test(value)) {
                 error = true;
                 errorText = "Invalid phone number.";
+                return { error, errorText };
             }
         } else if (textType === "url") {
             // Basic URL pattern (you can use a more comprehensive regex for URL validation)
@@ -392,6 +392,7 @@ const validateField = (
             if (!urlPattern.test(value)) {
                 error = true;
                 errorText = "Invalid URL.";
+                return { error, errorText };
             }
         } else if (textType === "date") {
             // Basic date pattern (you can use a more comprehensive regex for date validation)
@@ -399,16 +400,20 @@ const validateField = (
             if (!datePattern.test(value)) {
                 error = true;
                 errorText = "Invalid date.";
+                return { error, errorText };
             }
         }
     }
 
-    if (validation.customValidator && !validation.customValidator(value)) {
-        const newState = validation.customValidator(value);
-        error = newState.error;
-        errorText = newState.errorText;
+    if (validation.customValidator) {
+        const customValidationResult = validation.customValidator(value);
+        // Check the 'error' property in the custom validation result
+        if (customValidationResult.error) {
+            error = true;
+            errorText = customValidationResult.errorText;
+            return { error, errorText };
+        }
     }
 
     return { error, errorText };
 };
-

@@ -117,9 +117,9 @@ const Today: React.FunctionComponent<ITodayProps> = (props: ITodayProps) => {
                     </p>
                 </div>
             </div>
-            <div className={styles.icon}>
+            {/* <div className={styles.icon}>
                 <WeatherSVG path={props.current.icon} size={90} title={props.current.description} />
-            </div>
+            </div> */}
         </div>
 
     );

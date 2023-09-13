@@ -9,10 +9,10 @@ import styles from "./styles/Dashboard.module.scss"
 import SummaryWidget from "@/app/(pages)/dashboard/components/SummaryWidget/SummaryWidget"
 import WeatherWidget from "@/app/(pages)/dashboard/components/WeatherWidget/WeatherWidget";
 import TankGroupWidget from "@/app/(pages)/dashboard/components/TankGroupWidget/TankGroupWidget";
-import AddTankGroupWidget from "@/app/(pages)/dashboard/components/AddTankGroupWidget/AddTankGroupWidget";
 import AddTankGroupPopUp from "@/app/(pages)/dashboard/components/AddTankGroupWidget/AddTankGroupPopUp";
 
 import { ITankGroup } from "./DashboardTypes";
+import ToolsBar from "@/app/components/toolsBar/ToolsBar";
 
 const dashboarHandler = DashboardHandler.getInstance();
 
@@ -39,12 +39,14 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardPr
         <SummaryWidget />
         <WeatherWidget />
       </div>
+      <div id="dashboardTools" className={styles.tools}>
+        <ToolsBar onCreate={() => dashboarHandler.setShowCreateTankGroupMenu(true)} />
+      </div>
       <div id="dashboardTanks" className={styles.tankGroups}>
         {renderTanksInfo(props.tankGroups)}
-        <AddTankGroupWidget />
       </div>
       <AddTankGroupPopUp />
-    </div>
+    </div >
   )
 }
 

@@ -10,7 +10,7 @@ import HeaderWidget from "@/app/components/header/HeaderWidget";
 import Header from "@/app/components/header/Header";
 import FormTemplate from "@/app/components/formTemplate/FormTemplate";
 import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
-import TankGroupWidget from "@/app/(pages)/dashboard/components/TankGroupWidget/TankGroupWidget";
+import TankGroupWidget from "@/app/(pages)/dashboard/components/TankGroupWidget/TankGroupWidgetV1";
 
 const authHandler = AuthHandler.getInstance()
 const appHandler = AppHandler.getInstance()

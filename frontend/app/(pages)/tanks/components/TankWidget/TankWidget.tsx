@@ -1,11 +1,11 @@
 'use client'
 import React from 'react';
-import WatertankSVG from '@/public/svg/WaterTankSG';
 import styles from "./styles/TankWidget.module.scss"
 import { IRootState } from '@/app/utils/store/store';
 import { connect } from 'react-redux';
 import { ISensor, ITank, ITankStatus } from '../../TanksTypes';
 import ContentBox from '@/app/components/contentBox/ContentBox';
+import ConnectedIcon from '@/public/svg/ConnectedIcon';
 
 interface ITankWidgetWidgetProps extends ReturnType<typeof mapStateToProps> {
     tank: ITank,
@@ -15,64 +15,59 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
     const size = 125;
 
     const getStatus = () => {
-        let text: ITankStatus = "UNDEFINED";
+        let text: ITankStatus = "Undefined";
+        let icon = null;
         let color: string = "#f69c68";
+
         const hasSensor = props.tank.hasSensor;
         if (hasSensor) {
-            const sensor = props.sensors.find(s => s.tank.id === props.tank.id)
+            const sensor = props.sensors.find(s => s.tank.id === props.tank.id);
             if (sensor) {
-                text = sensor.is_active ? "ACTIVE" : "UNACTIVE"
+                text = sensor.is_active ? "Connected" : "Disconnected"
                 color = sensor.is_active ? "#3de198" : "#e07159"
+                icon = sensor.is_active ? <ConnectedIcon size={30} fill={color} strokeWidth={1} /> : null
             }
         }
 
         return (
-            <p className={styles.text} style={{ color: color }}>{text}</p>
+            <p style={{ color: color }}>{icon} {text}</p>
         )
     }
 
     const getSensorValue = () => {
         const sensor = props.sensors.find(s => s.tank.id === props.tank.id)
-        if (!sensor) return "-"
+        if (!sensor) return ""
         const sensorData = props.sensorsData[sensor.id]
-        if (!sensorData) return "-"
+        if (!sensorData) return ""
         return sensorData
     }
 
     return (
         <ContentBox customBoxClass={styles.tank}>
-            {/* {props.status ? " " : <div className={styles.disabled} />} */}
             <div className={styles.content}>
                 <div className={styles.header}>
                     <div className={styles.name}>
-                        <p>{props.tank.name}</p>
+                        {props.tank.name}
+                    </div>
+                    <div className={styles.type}>
+                        {props.tank.type}
+                    </div>
+                </div>
+                <div className={styles.data}>
+                    <div className={styles.level}>
+                        {getSensorValue()}
                     </div>
                     <div className={styles.status}>
                         {getStatus()}
                     </div>
                 </div>
-                <div className={styles.data}>
-                    <div className={styles.svg}>
-                        <div className={styles.container} >
-                            <WatertankSVG height={size} width={size} />
-                        </div>
-                        <div className={styles.volume}>
-                            <p className={styles.text}> {getSensorValue()} / {props.tank.capacity} L</p>
-                        </div>
-                    </div>
-                    <div className={styles.vl}></div>
-                    <div className={styles.properties}>
-                        <div className={styles.list}>
-                            <DataListElement keyName="Type" value={props.tank.type} />
-                            <DataListElement keyName="Capacity" value={props.tank.capacity} />
-                            <DataListElement keyName="Dimensions" value={props.tank.dimensions} />
-                            <DataListElement keyName="Material" value={props.tank.material} />
-                            <DataListElement keyName="Brand" value={props.tank.brand} />
-                        </div>
-                    </div>
-                </div>
+
+                {/* <div id='water-animation' className={styles.waterAnimation}>
+                    adfjalfasf
+                </div> */}
             </div>
-        </ContentBox>
+
+        </ContentBox >
 
     )
 }
@@ -101,4 +96,13 @@ const DataListElement: React.FunctionComponent<IDataListElementProps> = (props: 
         </div>
     )
 
+}
+
+
+const waterAnimation = () => {
+    return (
+        <span className={styles.main}>
+
+        </span>
+    )
 }

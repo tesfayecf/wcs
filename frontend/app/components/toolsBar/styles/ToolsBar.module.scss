@@ -1,0 +1,48 @@
+.toolsBar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+    margin: 0px 15px;
+
+    .button {
+        width: 150px;
+        height: 40px;
+        background: #55dc9e;
+        border-radius: 15px;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+
+        .text {
+            width: 95px;
+            height: 28px;
+            font-size: 20px;
+            text-align: CENTER;
+            color: #ffffff;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+    }
+
+    .input {
+        width: 300px;
+        height: 40px;
+        background: #d7d7d7;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 0px 15px;
+        gap: 15px;
+
+        .text {
+            appearance: none;
+            background-color: #d7d7d7;
+            border-width: 0px;
+            font-size: 20px;
+            font-weight: 500;
+        }
+    }
+}

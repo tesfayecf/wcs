@@ -52,8 +52,7 @@ export interface ITanksParams {
     tankGroupId: string;
 }
 
-export type ITankStatus = "ACTIVE" | "UNACTIVE" | "UNDEFINED"
-
+export type ITankStatus = "Connected" | "Disconnected" | "Undefined"
 export interface ISensor {
     id: string;
     serial_number: string;

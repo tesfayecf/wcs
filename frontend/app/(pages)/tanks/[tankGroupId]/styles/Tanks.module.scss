@@ -1,18 +1,32 @@
-.tanks {
-    width: 100%;
-    display: flex;
-    grid-template-columns: 1fr 3fr;
-    margin-left: 20px;
+.main {
 
-    .tankGroupMenu {
-        margin-right: 10px;
+    display: flex;
+    flex-direction: column;
+
+    .tools {
+        width: 100%;
+        margin-left: 20px;
     }
 
-    .tanksLayoutExtended {
+
+    .tanks {
+
+
+        width: 100%;
         display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        width: calc(100% - 30px);
-        margin-left: 10px;
+        grid-template-columns: 1fr 3fr;
+        margin-left: 20px;
+
+        .tankGroupMenu {
+            margin-right: 10px;
+        }
+
+        .tanksLayoutExtended {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            width: calc(100% - 30px);
+            margin-left: 10px;
+        }
     }
 }

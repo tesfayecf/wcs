@@ -4,8 +4,9 @@ import TankGroupInfoWidget from "@/app/(pages)/tanks/components/TankGroupInfoWid
 import styles from "./styles/Tanks.module.scss"
 import TanksHandler from "../TanksHandler";
 import TankElements from "../components/TankElements/TankElements";
-import AddTankWidget from "../components/AddTankWidget/AddTankWidget";
 import AddTankPopUp from "../components/AddTankWidget/AddTankPopUp";
+import ToolsBar from "@/app/components/toolsBar/ToolsBar";
+import TankGroupDescription from "../components/TankGroupInfoWidget/TankGroupDescription";
 
 const tanksHandler = TanksHandler.getInstance();
 
@@ -27,13 +28,18 @@ const Tanks: React.FunctionComponent<IDashboardProps> = (props: IDashboardProps)
     console.log("Rerender tanks page");
 
     return (
-        <div id={"tanksPage"} className={styles.tanks}>
-            <div id={"tankGroupMenu"} className={styles.tankGroupMenu}>
-                <TankGroupInfoWidget />
-                <AddTankWidget />
+        <div id={"tanksPage"} className={styles.main}>
+            <div className={styles.tools}>
+                <ToolsBar onCreate={() => tanksHandler.setShowAddTankMenu(true)} />
             </div>
-            <TankElements />
-            <AddTankPopUp />
+            <div className={styles.tanks}>
+                <div id={"tankGroupMenu"} className={styles.tankGroupMenu}>
+                    <TankGroupInfoWidget />
+                    <TankGroupDescription />
+                </div>
+                <TankElements />
+                <AddTankPopUp />
+            </div>
         </div>
     )
 }

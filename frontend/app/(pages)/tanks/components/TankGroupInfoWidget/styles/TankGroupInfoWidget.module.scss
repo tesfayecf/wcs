@@ -1,7 +1,6 @@
 .group {
-    position: relative;
-    // width: 300px;
-    width: 100%;
+    width: 260px;
+    height: 450px;
 
     .content {
         display: flex;
@@ -9,31 +8,38 @@
         border-radius: inherit;
         align-items: center;
         justify-content: flex-start;
+        padding: 10px;
 
         .header {
             width: 100%;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
+            margin: 10px 0px 0px 0px;
 
             .name {
-                // TODO: set default styles for title, subtitle...
+                text-align: center;
                 font-size: 20px;
                 font-weight: bold;
-                margin: 0px 35px;
+                color: #666b6b;
+            }
+        }
+
+        .level {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            margin: 0px 0px 10px 0px;
+
+            .valueP {
+                font-size: 80px;
+                font-weight: 700;
+                color: #454747;
             }
 
-            .status {
-                font-size: 17px;
-                line-height: 28px;
-                text-align: center;
-                align-items: center;
-                margin: 0px 35px;
-
-                .text {
-                    font-weight: 700;
-                }
+            .value {
+                height: 20px;
+                font-size: 15px;
+                color: #97999a;
+                line-height: 20px;
             }
         }
 
@@ -43,65 +49,67 @@
             justify-content: space-between;
             width: 100%;
 
-            .svg {
-                display: flex;
-                flex-direction: column;
-
-                .container {
-                    align-items: center;
-                    display: flex;
-                    justify-content: center;
-                    justify-items: center;
-                    margin: 10px 0px;
-                }
-
-                .volume {
-                    margin-bottom: 4px;
-                    font-size: 17px;
-                    line-height: 28px;
-                    text-align: center;
-                    align-items: center;
-
-                    .text {
-                        font-weight: 700;
-                    }
-                }
-            }
-
             .properties {
                 display: flex;
                 flex-direction: column;
-                // width: 50%;
-                margin: 0px 25px;
+                margin: 0px 10px;
 
                 .list {
                     display: flex;
                     flex-direction: column;
-                    margin: 10px;
 
                     .element {
+                        width: 100%;
                         display: flex;
                         flex-direction: row;
                         align-items: center;
                         justify-content: space-between;
-                        margin: 3px 15px;
                         padding: 5px;
-                        font-size: 12px;
+                        font-size: 14px;
                         line-height: 20px;
+                        font-weight: 400;
 
                         .key {
-                            font-weight: 700;
-                            color: gray;
+                            color: #97999a;
                         }
 
                         .value {
-                            font-weight: 700;
+                            color: #454747;
                         }
                     }
 
                 }
             }
 
+        }
+    }
+}
+
+.description {
+    width: 260px;
+    height: 240px;
+
+    .content {
+        margin: 10px;
+        font-size: 10px;
+        text-align: left;
+        color: #454747;
+        line-height: 21px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+
+        .title {
+            font-size: 15px;
+            color: #97999a;
+            margin: 10px 15px;
+        }
+
+        .text {
+            font-size: 10px;
+            color: #454747;
+            line-height: 21px;
+            margin: 0px 15px;
         }
     }
 }

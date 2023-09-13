@@ -18,24 +18,20 @@ const TankGroupInfoWidget: React.FunctionComponent<ITankGroupWidgetProps> = (pro
             <div className={styles.content}>
                 <div className={styles.header}>
                     <div className={styles.name}>
-                        <p style={{ textTransform: "uppercase" }} >{props.tankGroup.name}</p>
+                        {props.tankGroup.name}
                     </div>
-                    <div className={styles.status}>
-                        <p className={styles.text}>{props.tankGroup.id}</p>
+                </div>
+                <div className={styles.level}>
+                    <div className={styles.valueP}>
+                        70 %
+                    </div>
+                    <div className={styles.value}>
+                        200 L
                     </div>
                 </div>
                 <div className={styles.data}>
-                    <div className={styles.svg}>
-                        <div className={styles.container} >
-                            <WatertankSVG height={size} width={size} />
-                        </div>
-                        <div className={styles.volume}>
-                            <p className={styles.text}> {props.tankGroup.location}</p>
-                        </div>
-                    </div>
                     <div className={styles.properties}>
                         <div className={styles.list}>
-                            <DataListElement keyName="Name" value={props.tankGroup.name} />
                             <DataListElement keyName="Location" value={props.tankGroup.location} />
                             <DataListElement keyName="Capacity" value={props.tankGroupStats.totalCapacity} />
                             <DataListElement keyName="Nº tanks" value={props.tankGroupStats.totalTanks} />

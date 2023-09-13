@@ -22,3 +22,7 @@
 
 - [ ] Implement an invalid login message handling mechanism.
 
+
+## Set env variables and style variables
+
+- [ ] Task

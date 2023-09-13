@@ -11,11 +11,6 @@ import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler'
 import Authenticate from './utils/auth/authenticate'
 import LogHandler from './app/LogHandler'
 
-// export const metadata = {
-//     title: 'WCS App',
-//     description: 'Web app to control water resources',
-// }
-
 type IAppLayoutProps = {
     children: React.ReactNode[] | React.ReactNode | undefined | null;
 }

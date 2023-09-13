@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ITanksStore, ITankCreationForm, ITank, ITanksParams } from './TanksTypes';
-import { IGroup, ITankGroupStats } from '../dashboard/DashboardTypes';
+import { ITanksStore, ITank, ITanksParams } from './TanksTypes';
+import { IGroup, IGroupStats } from '../dashboard/DashboardTypes';
 
 // Define the initial state
 const initialState: ITanksStore = {
@@ -23,21 +23,8 @@ const initialState: ITanksStore = {
         maxWaterLevel: -1,
         totalCapacity: -1,
     },
-    tankCreationForm: {
-        name: '',
-        nameError: false,
-        type: 'Storage',
-        typeError: false,
-        capacity: 0,
-        capacityError: false,
-        dimensions: '',
-        dimensionsError: false,
-        material: '',
-        materialError: false,
-        brand: '',
-        brandError: false,
-    },
-    showAddTankMenu: false,
+
+    showTankMenu: false,
 };
 
 // Create the slice
@@ -51,11 +38,11 @@ const tankSlice = createSlice({
         setTanks: (state, action: PayloadAction<{ tanks: ITank[] }>) => {
             state.tanks = action.payload.tanks;
         },
-        setTankGroupInfo: (state, action: PayloadAction<{ tankGroupInfo: IGroup }>) => {
-            state.groupInfo = action.payload.tankGroupInfo;
+        setGroupInfo: (state, action: PayloadAction<{ groupInfo: IGroup }>) => {
+            state.groupInfo = action.payload.groupInfo;
         },
-        setTankGroupStats: (state, action: PayloadAction<{ tankGroupStats: ITankGroupStats }>) => {
-            state.groupStats = action.payload.tankGroupStats;
+        setGroupStats: (state, action: PayloadAction<{ groupStats: IGroupStats }>) => {
+            state.groupStats = action.payload.groupStats;
         },
         setSensors: (state, action: PayloadAction<{ sensors: any }>) => {
             state.sensors = action.payload.sensors;
@@ -65,27 +52,9 @@ const tankSlice = createSlice({
         },
 
         // POPUP
-        setShowAddTankMenu: (state, action: PayloadAction<{ state: boolean }>) => {
-            state.showAddTankMenu = action.payload.state;
-        },
-        setTankCreationForm: (state, action: PayloadAction<{
-            name?: string, nameError?: boolean, type?: string, typeError?: boolean,
-            capacity?: number, capacityError?: boolean, dimensions?: string, dimensionsError?: boolean,
-            material?: string, materialError?: boolean, brand?: string, brandError?: boolean
-        }>) => {
-            if (action.payload.name) state.tankCreationForm.name = action.payload.name;
-            if (action.payload.nameError) state.tankCreationForm.nameError = action.payload.nameError;
-            if (action.payload.type) state.tankCreationForm.type = action.payload.type;
-            if (action.payload.typeError) state.tankCreationForm.typeError = action.payload.typeError;
-            if (action.payload.capacity) state.tankCreationForm.capacity = action.payload.capacity;
-            if (action.payload.capacityError) state.tankCreationForm.capacityError = action.payload.capacityError;
-            if (action.payload.dimensions) state.tankCreationForm.dimensions = action.payload.dimensions;
-            if (action.payload.dimensionsError) state.tankCreationForm.dimensionsError = action.payload.dimensionsError;
-            if (action.payload.material) state.tankCreationForm.material = action.payload.material;
-            if (action.payload.materialError) state.tankCreationForm.materialError = action.payload.materialError;
-            if (action.payload.brand) state.tankCreationForm.brand = action.payload.brand;
-            if (action.payload.brandError) state.tankCreationForm.brandError = action.payload.brandError;
-        },
+        setShowTankMenu: (state, action: PayloadAction<{ state: boolean }>) => {
+            state.showTankMenu = action.payload.state;
+        }
     }
 });
 

@@ -5,29 +5,29 @@ import { IRootState } from '@/app/utils/store/store';
 import FormTemplate from '@/app/components/formTemplate/FormTemplate';
 import TanksHandler from '../../TanksHandler';
 import PopUpTemplate from '@/app/components/popUpTemplate/PopUpTemplate';
-import { ITankGroupCreationFormN } from '../../TanksTypes';
+import { ITankCreationForm } from '../../TanksTypes';
 
 const tanksHandler = TanksHandler.getInstance();
 
 
-interface IAddTankPopUpProps extends ReturnType<typeof mapStateToProps> { }
+interface ITankPopUpProps extends ReturnType<typeof mapStateToProps> { }
 
-const AddTankPopUp: React.FunctionComponent<IAddTankPopUpProps> = (props: IAddTankPopUpProps) => {
+const TankPopUp: React.FunctionComponent<ITankPopUpProps> = (props: ITankPopUpProps) => {
 
     const onClose = () => {
-        tanksHandler.setShowAddTankMenu(false);
+        tanksHandler.setShowTankMenu(false);
     }
 
-    const onCreate = (fields: ITankGroupCreationFormN) => {
+    const onCreate = (fields: ITankCreationForm) => {
         tanksHandler.createTank(fields);
     }
 
     return (
         <PopUpTemplate
-            open={props.showAddTankMenu}
+            open={props.showTankMenu}
             onClose={onClose}
         >
-            <FormTemplate<ITankGroupCreationFormN>
+            <FormTemplate<ITankCreationForm>
                 title="Create Tank"
                 onAccept={onCreate}
                 acceptButtonText="Create"
@@ -77,11 +77,11 @@ const AddTankPopUp: React.FunctionComponent<IAddTankPopUpProps> = (props: IAddTa
 
 const mapStateToProps = (state: IRootState) => {
     return {
-        showAddTankMenu: state.tanks.showAddTankMenu,
+        showTankMenu: state.tanks.showTankMenu,
         isFormLoading: state.app.loading.isFormLoading,
     }
 }
 
-export default connect(mapStateToProps, {})(AddTankPopUp);
+export default connect(mapStateToProps, {})(TankPopUp);
 
 

@@ -1,6 +1,6 @@
 // import { useStore } from "@/app/utils/store/store";
 import { store } from "@/app/utils/store/store";
-import { ITankGroupCreationForm, ITankGroupCreationFormN } from "./DashboardTypes";
+import { IGroupCreationForm } from "./DashboardTypes";
 import { dashboardActions } from "./DashboardReducer";
 import RequestManager from "@/app/utils/api/requestManager";
 import { appActions } from "@/app/app/AppReducer";
@@ -25,7 +25,7 @@ class DashboardHandler {
     }
 
     public async load() {
-        await this.getTankGroups();
+        await this.getGroups();
         await this.getSummaryData();
         // await this.startWS();
         const message = {
@@ -52,20 +52,20 @@ class DashboardHandler {
 
     /// TANK GROUP HANDLER \\\
 
-    public async getTankGroups() {
-        const response = await requestManager.request("dashboard", "getTankGroups", [])
+    public async getGroups() {
+        const response = await requestManager.request("dashboard", "getGroups", [])
         if (response.isSuccess) {
-            store.dispatch(dashboardActions.setTankGroups({ tankGroups: response.data }));
+            store.dispatch(dashboardActions.setGroups({ groups: response.data }));
         } else {
             // TODO:  process response/handle errors
         }
     }
 
-    public setShowCreateTankGroupMenu(state: boolean) {
-        store.dispatch(dashboardActions.setShowCreateTankGroupMenu({ state }))
+    public setShowGroupMenu(state: boolean) {
+        store.dispatch(dashboardActions.setShowGroupMenu({ state }))
     }
 
-    public async createTankGroup(fields: ITankGroupCreationFormN) {
+    public async createGroup(fields: IGroupCreationForm) {
         store.dispatch(appActions.startFormLoading());
 
         // Get fields
@@ -73,13 +73,13 @@ class DashboardHandler {
         const location = fields["Location"];
         const description = fields["Description"];
 
-        const response = await requestManager.request("dashboard", "createTankGroup", [name, location, description]);
+        const response = await requestManager.request("dashboard", "createGroup", [name, location, description]);
         // TODO:  process response/handle errors
 
         // Update redux
         // store.dispatch(appActions.startLoading());
-        this.getTankGroups();
-        this.setShowCreateTankGroupMenu(false);
+        this.getGroups();
+        this.setShowGroupMenu(false);
 
         store.dispatch(appActions.finishFormLoading());
     }

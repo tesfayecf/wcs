@@ -3,7 +3,7 @@ from sensors.models import SensorData
 from django.db.models import Avg, Max, Min
 from django.utils import timezone
 
-class TankGroup(models.Model):
+class Group(models.Model):
     # Model representing a group of tanks
     name = models.CharField(max_length=100, unique=True)
     location = models.CharField(max_length=200)
@@ -11,7 +11,6 @@ class TankGroup(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     user = models.ForeignKey("users.UserAccount", on_delete=models.CASCADE, default=None)
-
 
     def __str__(self):
         return self.name
@@ -21,7 +20,6 @@ class TankGroup(models.Model):
 
     def get_total_capacity(self):
         return self.tanks.aggregate(models.Sum('capacity'))['capacity__sum']
-        
 
 
 class Tank(models.Model):
@@ -43,7 +41,7 @@ class Tank(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
-    tankGroup = models.ForeignKey(TankGroup, on_delete=models.CASCADE, related_name='tanks')
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='tanks')
 
     def __str__(self):
         return self.name

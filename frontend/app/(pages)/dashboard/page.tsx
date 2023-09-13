@@ -25,11 +25,11 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardPr
     }
   }, [])
 
-  const renderGroupsInfo = React.useCallback((tankGroups: IGroup[]) => {
-    return tankGroups.map((tankInfo: IGroup, index: number) =>
+  const renderGroupsInfo = React.useCallback((groups: IGroup[]) => {
+    return groups.map((tankInfo: IGroup, index: number) =>
       <GroupWidget group={tankInfo} key={index} />
     );
-  }, [props.tankGroups])
+  }, [props.groups])
 
   return (
     <div id="dashboard" className={"dashboard"}>
@@ -38,10 +38,10 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardPr
         <WeatherWidget />
       </div>
       <div id="dashboardTools" className={"tools"}>
-        <ToolsBar onCreate={() => dashboarHandler.setShowCreateTankGroupMenu(true)} />
+        <ToolsBar onCreate={() => dashboarHandler.setShowGroupMenu(true)} />
       </div>
-      <div id="dashboardTanks" className={"tankGroups"}>
-        {renderGroupsInfo(props.tankGroups)}
+      <div id="dashboardTanks" className={"groups"}>
+        {renderGroupsInfo(props.groups)}
       </div>
       <GroupPopUp />
     </div >
@@ -51,7 +51,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardPr
 
 const mapStateToProps = (state: IRootState) => {
   return {
-    tankGroups: state.dashboard.tankGroups,
+    groups: state.dashboard.groups,
   }
 }
 

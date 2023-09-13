@@ -1,13 +1,12 @@
 
 
 export interface IDashboardStore {
-    tankGroups: IGroup[];
-    showEditTankGroupMenu: boolean;
-    showDeleteTankGroupMenu: boolean;
-    selectedTankGroup: number;
+    groups: IGroup[];
+    showEditGroupMenu: boolean;
+    showDeleteGroupMenu: boolean;
+    selectedGroup: number;
     summary: any;
-    showAddTankGroupMenu: boolean;
-    tankGroupCreationForm: ITankGroupCreationForm;
+    showGroupMenu: boolean;
 }
 
 export interface IGroup {
@@ -17,7 +16,7 @@ export interface IGroup {
     description: string;
 }
 
-export interface ITankGroupStats {
+export interface IGroupStats {
     totalTanks: number,
     averageWaterLevel: number,
     minWaterLevel: number,
@@ -25,16 +24,7 @@ export interface ITankGroupStats {
     totalCapacity: number,
 }
 
-export interface ITankGroupCreationForm {
-    name: string;
-    nameError: boolean;
-    location: string;
-    locationError: boolean;
-    description: string;
-    descriptionError: boolean;
-}
-
-export interface ITankGroupCreationFormN {
+export interface IGroupCreationForm {
     "Name": string;
     "Location": string;
     "Description": string;

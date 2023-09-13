@@ -5,15 +5,15 @@ urlpatterns = [
     # summary
     path('summary/', GetSummaryView.as_view()),
 
-    # tank group
-    path('tank-groups/', GetTankGroupsView.as_view()),
-    path('create-tank-group/', CreateTankGroupView.as_view()),
-    path('edit-tank-group/', EditTankGroupView.as_view()),
-    path('delete-tank-group/', DeleteTankGroupView.as_view()),
-    path('tank-groups-stats/', GetTankGroupStatsView.as_view()),
+    # group
+    path('groups/', GetGroupsView.as_view()),
+    path('create-group/', CreateGroupView.as_view()),
+    path('edit-group/', EditGroupView.as_view()),
+    path('delete-group/', DeleteGroupView.as_view()),
+    path('group-stats/', GetGroupStatsView.as_view()),
 
     # tanks
-    path('tanks/', GetTankGroupTanksView.as_view()),
+    path('tanks/', GetGroupTanksView.as_view()),
     
     # tank
     path('tank/', GetTankView.as_view()),
@@ -23,7 +23,7 @@ urlpatterns = [
     path('tank-stats/', GetTankStatsView.as_view()),
 
     # sensor
-    path('sensor/', GetTankSensorView.as_view()),
-    path('assign-sensor/', AssignTankSensorView.as_view()),
+    path('sensor/', GetSensorView.as_view()),
+    path('assign-sensor/', AssignSensorView.as_view()),
     # path('tank-sensor-data/', GetTankSensorDataView.as_view()),
 ]

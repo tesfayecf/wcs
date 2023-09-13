@@ -3,4 +3,4 @@ from .models import *
 
 # Register your models here.
 admin.site.register(Tank)
-admin.site.register(TankGroup)
+admin.site.register(Group)

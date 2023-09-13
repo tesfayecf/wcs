@@ -1,16 +1,12 @@
-import json
-from django.conf import settings
-from django.http import HttpResponse
-from .models import Tank, TankGroup
+from .models import Tank, Group
 from sensors.models import TankSensor, Sensor
-from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .serializer import TankSerializer, TankGroupSerializer, CreateTankSerializer, CreateTankGroupSerializer
-from utils.serialization.serialize_model import serialize_model
+from .serializer import TankSerializer, GroupSerializer, CreateTankSerializer, CreateGroupSerializer
+from utils.serialization.serialize_model import serialize_model, serialize_model_array
 
 
 class GetSummaryView(generics.ListAPIView):
@@ -20,24 +16,22 @@ class GetSummaryView(generics.ListAPIView):
         return Response({}, status=status.HTTP_200_OK)
 
 
-##################
-### TANK GROUP ###
-##################
+#############
+### GROUP ###
+#############
 
-class GetTankGroupsView(generics.ListAPIView):
-    serializer_class = TankGroupSerializer
-
+class GetGroupsView(generics.ListAPIView):
     def post(self, request):
         user = request.user
-        userTankGroups = TankGroup.objects.filter(user=user)
-        userTankGroups_s = TankGroupSerializer(userTankGroups, many=True)
-        if userTankGroups_s.data:
-            return Response(userTankGroups_s.data, status=status.HTTP_200_OK)
-        else:
+        groups = Group.objects.filter(user=user)
+        groups_s = serialize_model_array(groups, ['id', 'name', 'location', 'description'])
+        if not groups_s:
             return Response([], status=status.HTTP_200_OK)
+        else:
+            return Response(groups_s, status=status.HTTP_200_OK)
         
-class CreateTankGroupView(APIView):
-    serializer_class = CreateTankGroupSerializer
+class CreateGroupView(APIView):
+    serializer_class = CreateGroupSerializer
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -46,35 +40,35 @@ class CreateTankGroupView(APIView):
             location = serializer.validated_data.get('location')
             description = serializer.validated_data.get('description')
 
-            query_name = TankGroup.objects.filter(name=name)
+            query_name = Group.objects.filter(name=name)
 
             if not query_name.exists():
-                tank_group = TankGroup(name=name, location=location, description=description, user=request.user)
+                tank_group = Group(name=name, location=location, description=description, user=request.user)
                 tank_group.save()
                 return Response(serialize_model(tank_group, ['id', 'name', 'location']), status=status.HTTP_201_CREATED)
             return Response({'Bad Request': 'Invalid name...'}, status=status.HTTP_400_BAD_REQUEST)
         return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class EditTankGroupView(APIView):
+class EditGroupView(APIView):
     def post(self, request):
-        tank_group = getTankGroup(request=request)
-        serializer = TankGroupSerializer(tank_group, data=request.data, partial=True)
+        tank_group = getGroup(request=request)
+        serializer = GroupSerializer(tank_group, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({'Bad Request': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)
             
-class DeleteTankGroupView(APIView):
+class DeleteGroupView(APIView):
     def post(self, request, pk):
-        tank_group = getTankGroup(request=request)
+        tank_group = getGroup(request=request)
         tank_group.delete()
-        return Response({"message": "TankGroup deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Group deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
 
 
-class GetTankGroupTanksView(APIView):
+class GetGroupTanksView(APIView):
     def post(self, request):
-        tank_group = getTankGroup(request=request)
+        tank_group = getGroup(request=request)
         tank_group_data = serialize_model(tank_group, ['id', 'name', 'location'])
 
         tanks = tank_group.tanks.all()
@@ -85,11 +79,11 @@ class GetTankGroupTanksView(APIView):
             tanks_data.append(tank_data)
         
         data = {
-            "tankGroup": tank_group_data,
+            "group": tank_group_data,
             'tanks': tanks_data,
         }
         # # add stats data
-        data['tankGroupStats'] = {
+        data['groupStats'] = {
             'totalTanks': tank_group.total_tanks(),
             'averageWaterLevel': 0,
         #     'minWaterLevel': tank_group.min_water_level,
@@ -102,9 +96,9 @@ class GetTankGroupTanksView(APIView):
 
         return Response(data, status=status.HTTP_200_OK)
 
-class GetTankGroupStatsView(APIView):
+class GetGroupStatsView(APIView):
     def post(self, request):
-        tank_group = getTankGroup(request=request)
+        tank_group = getGroup(request=request)
         data = {
             'total_tanks': tank_group.total_tanks(),
             'average_water_level': tank_group.total_active_tanks(),
@@ -116,16 +110,16 @@ class GetTankGroupStatsView(APIView):
         }
         return Response(data, status=status.HTTP_200_OK)
 
-def getTankGroup(request):
+def getGroup(request):
     user = request.user
-    tankGroupId = request.data.get('tankGroupId')
-    tank_group = TankGroup.objects.get(pk=tankGroupId, user=user)
-    if not tank_group:
-        return Response({"error": "TankGroup not found."}, status=status.HTTP_404_NOT_FOUND)
-    if tank_group.user != request.user:
-        return Response({"error": "You don't have permission to acces this tankGroup."},
+    groupId = request.data.get('groupId')
+    group = Group.objects.get(pk=groupId, user=user)
+    if not group:
+        return Response({"error": "Group not found."}, status=status.HTTP_404_NOT_FOUND)
+    if group.user != request.user:
+        return Response({"error": "You don't have permission to acces this group."},
                         status=status.HTTP_403_FORBIDDEN)
-    return tank_group
+    return group
 
 
 ############
@@ -144,7 +138,7 @@ class GetTankView(APIView):
 
 class CreateTankView(APIView):
     def post(self, request):
-        tank_group = getTankGroup(request=request)
+        group = getGroup(request=request)
         data_s = CreateTankSerializer(data=request.data)
         if data_s.is_valid():
             name = data_s.data.get('name')
@@ -165,7 +159,7 @@ class CreateTankView(APIView):
                     material=material,
                     brand=brand,
                     type=type,
-                    tankGroup=tank_group,
+                    group=group,
                     isActive=isActive,
                 )
                 tank.save()
@@ -209,7 +203,7 @@ class GetTankStatsView(APIView):
         }
         return Response(data, status=status.HTTP_200_OK)
 
-class GetTankSensorView(APIView):
+class GetSensorView(APIView):
     def post(self, request):
         tank, _ = getTank(request=request)
         try: 
@@ -237,7 +231,7 @@ class GetTankSensorView(APIView):
             return Response(data, status=status.HTTP_200_OK)
 
 
-class AssignTankSensorView(APIView):
+class AssignSensorView(APIView):
     # each tank can only have one sensor assigned. We create a row in the table were one column is a tank and the other a sensor.
     def post(self, request):
         tank, _ = getTank(request=request)
@@ -257,16 +251,16 @@ class AssignTankSensorView(APIView):
 def getTank(request):
     user = request.user
     tankId = request.data.get('tankId')
-    tankGroupId = request.data.get('tankGroupId')
-    tank_group = TankGroup.objects.get(pk=tankGroupId, user=user)
-    if not tank_group:
-        return Response({"error": "TankGroup not found."}, status=status.HTTP_404_NOT_FOUND)
-    tank = Tank.objects.get(pk=tankId, tankGroup=tank_group)
+    groupId = request.data.get('groupId')
+    group = Group.objects.get(pk=groupId, user=user)
+    if not group:
+        return Response({"error": "Group not found."}, status=status.HTTP_404_NOT_FOUND)
+    tank = Tank.objects.get(pk=tankId, group=group)
     if not tank:
         return Response({"error": "Tank not found."}, status=status.HTTP_404_NOT_FOUND)
-    if tank.tankGroup != tank_group:
+    if tank.group != group:
         return Response({"error": "Tank not found."}, status=status.HTTP_404_NOT_FOUND)
-    if tank_group.user != request.user:
-        return Response({"error": "You don't have permission to acces this tankGroup."},
+    if group.user != request.user:
+        return Response({"error": "You don't have permission to acces this group."},
                         status=status.HTTP_403_FORBIDDEN)
-    return tank, tank_group
+    return tank, group

@@ -1,6 +1,21 @@
 from typing import List
 from django.db import models
 
+"""
+# Assuming you have a Django model called 'MyModel' with attributes 'name', 'age', 'email', and 'related_model'
+# 'related_model' is a ForeignKey to another model
+
+my_model_instance = MyModel(name="John", age=30, email="john@example.com", related_model=my_related_model_instance)
+
+# Extract specific keys from the model instance, and handle the 'related_model' with recursion
+keys_to_extract = ["name", "email"]
+related_keys_to_extract = ["name", "email"]  # Specify the keys to extract from the related model, or None for all keys
+extracted_data = deserialize_model(my_model_instance, keys_to_extract, related_keys_to_extract)
+
+print(extracted_data)
+
+"""
+
 def serialize_model(model_instance, keys: List[str], related_keys: List[str] = None):
     """
     Deserialize a Django model instance by extracting the specified keys and handling related models with recursion.
@@ -32,17 +47,11 @@ def serialize_model(model_instance, keys: List[str], related_keys: List[str] = N
     except:
         return False
 
-"""
-# Assuming you have a Django model called 'MyModel' with attributes 'name', 'age', 'email', and 'related_model'
-# 'related_model' is a ForeignKey to another model
 
-my_model_instance = MyModel(name="John", age=30, email="john@example.com", related_model=my_related_model_instance)
-
-# Extract specific keys from the model instance, and handle the 'related_model' with recursion
-keys_to_extract = ["name", "email"]
-related_keys_to_extract = ["name", "email"]  # Specify the keys to extract from the related model, or None for all keys
-extracted_data = deserialize_model(my_model_instance, keys_to_extract, related_keys_to_extract)
-
-print(extracted_data)
-
-"""
+def serialize_model_array(model_instances, keys: List[str], related_keys: List[str] = None):
+    return_data = []
+    for model_instance in model_instances:
+        data = serialize_model(model_instance, keys, related_keys)
+        if data:
+            return_data.append(data)
+    return return_data

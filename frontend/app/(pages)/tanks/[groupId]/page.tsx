@@ -29,7 +29,7 @@ const Tanks: React.FunctionComponent<IDashboardProps> = (props: IDashboardProps)
     return (
         <div id={"tanksPage"} className={"tanks"}>
             <div className={"tanksTools"}>
-                <ToolsBar onCreate={() => tanksHandler.setShowAddTankMenu(true)} />
+                <ToolsBar onCreate={() => tanksHandler.setShowTankMenu(true)} />
             </div>
             <div className={"tankElements"}>
                 <div className={"groupMenu"}>

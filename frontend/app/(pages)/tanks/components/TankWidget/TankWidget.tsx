@@ -43,8 +43,8 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
 
     return (
         <ContentBox customBoxClass={"tank"}>
-            <div className={"content"}>
-                <div className={"header"}>
+            <div className={"tankContent"}>
+                <div className={"tankHeader"}>
                     <div className={"name"}>
                         {props.tank.name}
                     </div>
@@ -52,7 +52,7 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
                         {props.tank.type}
                     </div>
                 </div>
-                <div className={"data"}>
+                <div className={"tankData"}>
                     <div className={"level"}>
                         {getSensorValue()}
                     </div>

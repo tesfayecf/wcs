@@ -15,25 +15,25 @@
         height: 230px;
     }
 
-    .tankGroups {
+    .groups {
         display: grid;
         width: 100%;
     }
 
     @media (min-width: 700px) {
-        .tankGroups {
+        .groups {
             grid-template-columns: 1fr 1fr 1fr;
         }
     }
 
     @media (min-width: 1000px) {
-        .tankGroups {
+        .groups {
             grid-template-columns: 1fr 1fr 1fr 1fr;
         }
     }
 
     @media (min-width: 1700px) {
-        .tankGroups {
+        .groups {
             grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
         }
     }

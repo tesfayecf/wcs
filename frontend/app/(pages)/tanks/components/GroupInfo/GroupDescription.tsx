@@ -4,9 +4,9 @@ import React from "react";
 import { IRootState } from "@/app/utils/store/store";
 import { connect } from "react-redux";
 
-interface ITankGroupDescriptionProps extends ReturnType<typeof mapStateToProps> { }
+interface IGroupDescriptionProps extends ReturnType<typeof mapStateToProps> { }
 
-const TankGroupDescription: React.FunctionComponent<ITankGroupDescriptionProps> = (props: ITankGroupDescriptionProps) => {
+const GroupDescription: React.FunctionComponent<IGroupDescriptionProps> = (props: IGroupDescriptionProps) => {
     return (
         <ContentBox customBoxClass={"groupDescription"}>
             <div className={"descriptionContent"}>
@@ -28,4 +28,4 @@ function mapStateToProps(state: IRootState) {
     }
 }
 
-export default connect(mapStateToProps, {})(TankGroupDescription)
+export default connect(mapStateToProps, {})(GroupDescription)

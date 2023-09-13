@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from .models import Tank, TankGroup
+from .models import Tank, Group
 
 
 class TankSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tank
         fields = ('id', 'name', 'capacity', 'isActive', 'dimensions',
-                  'material', 'brand', 'tankGroup', 'type')
+                  'material', 'brand', 'group', 'type')
 
 
 class CreateTankSerializer(serializers.ModelSerializer):
@@ -16,13 +16,13 @@ class CreateTankSerializer(serializers.ModelSerializer):
                   'dimensions', 'brand', 'material')
 
 
-class TankGroupSerializer(serializers.ModelSerializer):
+class GroupSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TankGroup
+        model = Group
         fields = ('id', 'name', 'location')
 
 
-class CreateTankGroupSerializer(serializers.ModelSerializer):
+class CreateGroupSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TankGroup
+        model = Group
         fields = ('name', 'location', "description")

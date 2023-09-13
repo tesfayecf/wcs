@@ -5,7 +5,7 @@ import { IRootState } from '@/app/utils/store/store';
 import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler';
 import FormTemplate from '@/app/components/formTemplate/FormTemplate';
 import PopUpTemplate from '@/app/components/popUpTemplate/PopUpTemplate';
-import { ITankGroupCreationFormN } from '../../DashboardTypes';
+import { IGroupCreationForm } from '../../DashboardTypes';
 
 const dashboardHandler = DashboardHandler.getInstance();
 
@@ -14,19 +14,19 @@ interface IFroupPopUpProps extends ReturnType<typeof mapStateToProps> { }
 const GroupPopUp: React.FunctionComponent<IFroupPopUpProps> = (props: IFroupPopUpProps) => {
 
     const onClose = (ev: any) => {
-        dashboardHandler.setShowCreateTankGroupMenu(false);
+        dashboardHandler.setShowGroupMenu(false);
     }
 
-    const onCreate = async (fields: ITankGroupCreationFormN) => {
-        await dashboardHandler.createTankGroup(fields);
+    const onCreate = async (fields: IGroupCreationForm) => {
+        await dashboardHandler.createGroup(fields);
     }
 
     return (
         <PopUpTemplate
-            open={props.showAddTankGroupMenu}
+            open={props.showGroupMenu}
             onClose={onClose}
         >
-            <FormTemplate<ITankGroupCreationFormN>
+            <FormTemplate<IGroupCreationForm>
                 title="Create Tank Group"
                 externalError={false}
                 externalErrorText={"Invalid data"}
@@ -62,8 +62,7 @@ const GroupPopUp: React.FunctionComponent<IFroupPopUpProps> = (props: IFroupPopU
 
 const mapStateToProps = (state: IRootState) => {
     return {
-        tankGroupCreationForm: state.dashboard.tankGroupCreationForm,
-        showAddTankGroupMenu: state.dashboard.showAddTankGroupMenu,
+        showGroupMenu: state.dashboard.showGroupMenu,
         isFormLoading: state.app.loading.isFormLoading,
     }
 }

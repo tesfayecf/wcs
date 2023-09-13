@@ -1,5 +1,5 @@
 import { store } from "@/app/utils/store/store";
-import { ISensor, ITank, ITankCreationForm, ITankGroupCreationFormN, ITanksParams } from "./TanksTypes";
+import { ISensor, ITank, ITankCreationForm, ITanksParams } from "./TanksTypes";
 import { tankActions } from "./TanksReducer";
 import RequestManager from "@/app/utils/api/requestManager";
 import WebSocketManager2 from "@/app/utils/api/websocketManager2";
@@ -44,14 +44,14 @@ class TanksHandler {
         const response = await requestManager.request("tanks", "getTanks", [state.groupId])
         if (response.isSuccess) {
             store.dispatch(tankActions.setTanks({ tanks: response.data.tanks }));
-            store.dispatch(tankActions.setTankGroupInfo({ tankGroupInfo: response.data.tankGroup }));
-            store.dispatch(tankActions.setTankGroupStats({ tankGroupStats: response.data.tankGroupStats }));
+            store.dispatch(tankActions.setGroupInfo({ groupInfo: response.data.group }));
+            store.dispatch(tankActions.setGroupStats({ groupStats: response.data.groupStats }));
         } else {
             // TODO:  process response/handle errors
         }
     }
 
-    public async createTank(fields: ITankGroupCreationFormN) {
+    public async createTank(fields: ITankCreationForm) {
         store.dispatch(appActions.startFormLoading())
 
         // Get fields
@@ -68,13 +68,13 @@ class TanksHandler {
 
         // Update redux
         this.getTanksInfo();
-        this.setShowAddTankMenu(false);
+        this.setShowTankMenu(false);
 
         store.dispatch(appActions.finishFormLoading())
     }
 
-    public setShowAddTankMenu(state: boolean) {
-        store.dispatch(tankActions.setShowAddTankMenu({ state }))
+    public setShowTankMenu(state: boolean) {
+        store.dispatch(tankActions.setShowTankMenu({ state }))
     }
 
     /// SENSOR HANDLER \\\

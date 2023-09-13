@@ -1,4 +1,4 @@
-import { IGroup, ITankGroupStats } from "../dashboard/DashboardTypes";
+import { IGroup, IGroupStats } from "../dashboard/DashboardTypes";
 
 export interface ITankCreationForm {
     name: string;
@@ -15,7 +15,7 @@ export interface ITankCreationForm {
     brandError: boolean;
 }
 
-export interface ITankGroupCreationFormN {
+export interface ITankCreationForm {
     "Name": string;
     "Capacity": number;
     "Type": string;
@@ -33,10 +33,9 @@ export interface ITanksStore {
 
     groupId: number;
     groupInfo: IGroup;
-    groupStats: ITankGroupStats;
+    groupStats: IGroupStats;
 
-    showAddTankMenu: boolean;
-    tankCreationForm: ITankCreationForm;
+    showTankMenu: boolean;
 }
 
 export interface ITank {

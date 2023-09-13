@@ -4,10 +4,10 @@ import { IRootState } from '@/app/utils/store/store';
 import { connect } from 'react-redux';
 import ContentBox from '@/app/components/contentBox/ContentBox';
 
-interface ITankGroupWidgetProps extends ReturnType<typeof mapStateToProps> { }
+interface IGroupWidgetProps extends ReturnType<typeof mapStateToProps> { }
 
 
-const TankGroupInfoWidget: React.FunctionComponent<ITankGroupWidgetProps> = (props: ITankGroupWidgetProps) => {
+const GroupInfoWidget: React.FunctionComponent<IGroupWidgetProps> = (props: IGroupWidgetProps) => {
     const size = 125;
 
     return (
@@ -50,7 +50,7 @@ function mapStateToProps(state: IRootState) {
     }
 }
 
-export default connect(mapStateToProps, {})(TankGroupInfoWidget)
+export default connect(mapStateToProps, {})(GroupInfoWidget)
 
 
 

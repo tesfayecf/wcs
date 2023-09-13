@@ -1,5 +1,5 @@
 import { IRegisterForm } from "@/app/(auth)/AuthTypes";
-import { ITankGroup, ITankGroupStats } from "@/app/(pages)/dashboard/DashboardTypes";
+import { IGroup, ITankGroupStats } from "@/app/(pages)/dashboard/DashboardTypes";
 import { ISensor, ITank } from "@/app/(pages)/tanks/TanksTypes";
 import { IUserInfo } from "@/app/app/AppTypes";
 
@@ -70,19 +70,19 @@ export const APIInterface = {
 
         // Tank Groups
         getTankGroups: {
-            args: (): APIResponse<ITankGroup[]> => { return {} as APIResponse<ITankGroup[]> },
+            args: (): APIResponse<IGroup[]> => { return {} as APIResponse<IGroup[]> },
             address: "api/tanks/tank-groups/",
             method: "POST",
             argsKeys: [],
         },
         createTankGroup: {
-            args: (name: string, location: string, description: string): APIResponse<ITankGroup[]> => { return {} as APIResponse<ITankGroup[]> },
+            args: (name: string, location: string, description: string): APIResponse<IGroup[]> => { return {} as APIResponse<IGroup[]> },
             address: "api/tanks/create-tank-group/",
             method: "POST",
             argsKeys: ["name", "location", "description"],
         },
         editTankGroup: {
-            args: (args: Partial<ITankGroup>): APIResponse<void> => { return {} as APIResponse<void> },
+            args: (args: Partial<IGroup>): APIResponse<void> => { return {} as APIResponse<void> },
             address: "api/tanks/edit-tank-groups/",
             method: "POST",
             argsKeys: ["name", "location", "description"],
@@ -104,7 +104,7 @@ export const APIInterface = {
     tanks: {
         // Tanks
         getTanks: {
-            args: (tankGroupId: number): APIResponse<{ tankGroup: ITankGroup, tanks: ITank[], tankGroupStats: ITankGroupStats }> => { return {} as APIResponse<{ tankGroup: ITankGroup, tanks: ITank[], tankGroupStats: ITankGroupStats }> },
+            args: (tankGroupId: number): APIResponse<{ tankGroup: IGroup, tanks: ITank[], tankGroupStats: ITankGroupStats }> => { return {} as APIResponse<{ tankGroup: IGroup, tanks: ITank[], tankGroupStats: ITankGroupStats }> },
             address: "api/tanks/tanks/",
             method: "POST",
             argsKeys: ["tankGroupId"],

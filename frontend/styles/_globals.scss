@@ -1,66 +1,78 @@
-@import 'variables';
-
-// Dark mode flag
-$dark-mode: false !global;
-
-// Define a mixin to switch between light and dark mode colors
-@mixin color-mode() {
-    @if $dark-mode {
-        // Background
-        --background-1: $background-1-dark;
-        --background-2: $background-2-dark;
-        // Text
-        --text-1: $text-1-dark;
-        --text-2: $text-2-dark;
-        --text-3: $text-3-dark;
-        // Navbar
-        --navbar-background: $navbar-background-dark;
-        --navbar-text: $navbar-text-dark;
-
-    }
-
-    @else {
-        // Background
-        --background-1: $background-1-light;
-        --background-2: $background-2-light;
-        // Text
-        --text-1: $text-1-light;
-        --text-2: $text-2-light;
-        --text-2: $text-2-light;
-        // Navbar
-        --navbar-background: $navbar-background-light;
-        --navbar-text: $navbar-text-light;
-    }
+body {
+    overflow: auto;
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    // background-color: #e9eaed;
+    background-color: #f0f0f0;
+    // background-color: #f5f5f5;
+    font-family: "Inter var", ui-sans-serif, system-ui, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    // font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-// Use the mixin to set colors
-:body {
-    @include color-mode();
-}
+// @import 'variables';
 
-// Define a class for dark mode
-.dark-mode {
-    $dark-mode: true !global;
-    @include color-mode();
-}
+// // Dark mode flag
+// $dark-mode: false;
+
+// // Define a mixin to switch between light and dark mode colors
+// @mixin color-mode() {
+//     @if $dark-mode {
+//         // Background
+//         --background-1: $background-1-dark;
+//         --background-2: $background-2-dark;
+//         // Text
+//         --text-1: $text-1-dark;
+//         --text-2: $text-2-dark;
+//         --text-3: $text-3-dark;
+//         // Navbar
+//         --navbar-background: $navbar-background-dark;
+//         --navbar-text: $navbar-text-dark;
+
+//     }
+
+//     @else {
+//         // Background
+//         --background-1: $background-1-light;
+//         --background-2: $background-2-light;
+//         // Text
+//         --text-1: $text-1-light;
+//         --text-2: $text-2-light;
+//         --text-2: $text-2-light;
+//         // Navbar
+//         --navbar-background: $navbar-background-light;
+//         --navbar-text: $navbar-text-light;
+//     }
+// }
+
+// // Use the mixin to set colors
+// :body {
+//     @include color-mode();
+// }
+
+// // Define a class for dark mode
+// .dark-mode {
+//     $dark-mode: true !global;
+//     @include color-mode();
+// }
 
 
-// import React, { useState } from 'react';
-// import './MyComponent.scss'; // Import your component's SCSS file
+// // import React, { useState } from 'react';
+// // import './MyComponent.scss'; // Import your component's SCSS file
 
-// const MyComponent = () => {
-//   const [darkMode, setDarkMode] = useState(false);
+// // const MyComponent = () => {
+// //   const [darkMode, setDarkMode] = useState(false);
 
-//   const toggleDarkMode = () => {
-//     setDarkMode(!darkMode);
-//   };
+// //   const toggleDarkMode = () => {
+// //     setDarkMode(!darkMode);
+// //   };
 
-//   return (
-//     <div className={`my-component ${darkMode ? 'dark-mode' : ''}`}>
-//       {/* Your component's content */}
-//       <button onClick={toggleDarkMode}>Toggle Dark Mode</button>
-//     </div>
-//   );
-// };
+// //   return (
+// //     <div className={`my-component ${darkMode ? 'dark-mode' : ''}`}>
+// //       {/* Your component's content */}
+// //       <button onClick={toggleDarkMode}>Toggle Dark Mode</button>
+// //     </div>
+// //   );
+// // };
 
-// export default MyComponent;
+// // export default MyComponent;

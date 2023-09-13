@@ -2,7 +2,6 @@ import { IRootState } from '@/app/utils/store/store'
 import React from 'react'
 import { connect } from 'react-redux'
 import TankWidget from '../TankWidget/TankWidget'
-import styles from './styles/TankElements.module.scss'
 import TanksHandler from '../../TanksHandler'
 
 const tanksHandler = TanksHandler.getInstance();
@@ -16,8 +15,8 @@ const TankElements: React.FunctionComponent<ITankElementsProps> = (props: ITankE
 
         if (props.tanks.length === 0 || !props.tanks) {
             return (
-                <div className={styles.empty}>
-                    <span className={styles.emptyText}>NO TANKS CREATED</span>
+                <div className={"empty"}>
+                    <span className={"emptyText"}>NO TANKS CREATED</span>
                 </div>
             )
         }
@@ -33,7 +32,7 @@ const TankElements: React.FunctionComponent<ITankElementsProps> = (props: ITankE
     }, [props.tanks])
 
     return (
-        <div id={"tankElements"} className={props.tanks.length === 0 || !props.tanks ? `${styles.tankElementsEmpty}` : `${styles.tankElements}`}>
+        <div id={"tankElements"} className={props.tanks.length === 0 || !props.tanks ? `${"tankElementsEmpty"}` : `${"tankElements"}`}>
             {renderTanks()}
         </div>
     )

@@ -1,22 +1,22 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ITanksStore, ITankCreationForm, ITank, ITanksParams } from './TanksTypes';
-import { ITankGroup, ITankGroupStats } from '../dashboard/DashboardTypes';
+import { IGroup, ITankGroupStats } from '../dashboard/DashboardTypes';
 
 // Define the initial state
 const initialState: ITanksStore = {
     // Add your initial state values here
     tankId: -1,
-    tankGroupId: -1,
+    groupId: -1,
     tanks: [],
     sensors: [],
     sensorsData: [],
-    tankGroupInfo: {
+    groupInfo: {
         id: -1,
         name: '',
         location: '',
         description: '',
     },
-    tankGroupStats: {
+    groupStats: {
         totalTanks: -1,
         averageWaterLevel: -1,
         minWaterLevel: -1,
@@ -46,16 +46,16 @@ const tankSlice = createSlice({
     initialState,
     reducers: {
         setParams: (state, action: PayloadAction<{ params: ITanksParams }>) => {
-            state.tankGroupId = parseInt(action.payload.params.tankGroupId);
+            state.groupId = parseInt(action.payload.params.groupId);
         },
         setTanks: (state, action: PayloadAction<{ tanks: ITank[] }>) => {
             state.tanks = action.payload.tanks;
         },
-        setTankGroupInfo: (state, action: PayloadAction<{ tankGroupInfo: ITankGroup }>) => {
-            state.tankGroupInfo = action.payload.tankGroupInfo;
+        setTankGroupInfo: (state, action: PayloadAction<{ tankGroupInfo: IGroup }>) => {
+            state.groupInfo = action.payload.tankGroupInfo;
         },
         setTankGroupStats: (state, action: PayloadAction<{ tankGroupStats: ITankGroupStats }>) => {
-            state.tankGroupStats = action.payload.tankGroupStats;
+            state.groupStats = action.payload.tankGroupStats;
         },
         setSensors: (state, action: PayloadAction<{ sensors: any }>) => {
             state.sensors = action.payload.sensors;

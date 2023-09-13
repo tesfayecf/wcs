@@ -1,9 +1,6 @@
-import React, { SVGAttributes } from 'react';
-import styles from "./styles/WeatherWidget.module.scss"
-import { HEXToVBColor, VBColorToHEX } from '@/app/utils/lib/styles';
+import React from 'react';
 import ContentBox from '@/app/components/contentBox/ContentBox';
-// import getIcon from '../../data/icons/iconsMap';
-// import '../styles.css'
+
 type IWeatherWidgetProps = {}
 
 const WeatherWidget: React.FunctionComponent<IWeatherWidgetProps> = (props: IWeatherWidgetProps) => {
@@ -28,7 +25,7 @@ const WeatherWidget: React.FunctionComponent<IWeatherWidgetProps> = (props: IWea
     // }, []);
 
     return (
-        <ContentBox customBoxClass={styles.weather}>
+        <ContentBox customBoxClass={"weather"}>
             <CustomReactWeather
                 data={dummyWeatherData}
                 locationLabel="Girona"
@@ -71,7 +68,7 @@ const CustomReactWeather: React.FunctionComponent<ICustomReactWeatherProps> = (p
     const { forecast, current } = props.data;
 
     return (
-        <div className={styles.content}>
+        <div className={"weatherContent"}>
             <Today current={current} unitsLabels={props.unitsLabels} locationLabel={props.locationLabel}></Today>
             {props.showForecast ? <Forecast unitsLabels={props.unitsLabels} forecast={forecast} /> : null}
         </div>
@@ -91,33 +88,33 @@ type ITodayProps = {
 const Today: React.FunctionComponent<ITodayProps> = (props: ITodayProps) => {
     const labels = { wind: "Wind", humidity: "Humidity" };
     return (
-        <div className={styles.today}>
-            <div className={styles.data}>
-                <div className={styles.titleDiv}>
-                    <h2 className={styles.location}>{props.locationLabel}</h2>
-                    <p className={styles.date}>{props.current.date}</p>
+        <div className={"today"}>
+            <div className={"data"}>
+                <div className={"title"}>
+                    <h2 className={"location"}>{props.locationLabel}</h2>
+                    <p className={"date"}>{props.current.date}</p>
                 </div>
-                <div className={styles.division_line} />
-                <p className={styles.temperature}>
+                <div className={"division_line"} />
+                <p className={"temperature"}>
                     {props.current.temperature.current} {props.unitsLabels.temperature}
                 </p>
-                <div className={styles.subTempDiv}>
-                    <p className={styles.temperatureMM}>
+                <div className={"subTemp"}>
+                    <p className={"temperatureMM"}>
                         {props.current.temperature.max} / {props.current.temperature.min}{' '}{props.unitsLabels.temperature}
                     </p>
-                    <p className={styles.description}>{props.current.description}</p>
+                    <p className={"weatherDescription"}>{props.current.description}</p>
                 </div>
-                <div className={styles.division_line} />
-                <div className={styles.wh}>
-                    <p className={styles.wind}>
+                <div className={"division_line"} />
+                <div className={"wh"}>
+                    <p className={"wind"}>
                         {labels.wind}: <b>{props.current.wind}</b> {props.unitsLabels.windSpeed}
                     </p>
-                    <p className={styles.humidity}>
+                    <p className={"humidity"}>
                         {labels.humidity}: <b>{props.current.humidity}</b> %
                     </p>
                 </div>
             </div>
-            {/* <div className={styles.icon}>
+            {/* <div className={"icon"}>
                 <WeatherSVG path={props.current.icon} size={90} title={props.current.description} />
             </div> */}
         </div>
@@ -139,24 +136,24 @@ const Forecast: React.FunctionComponent<IForecastProps> = (props: IForecastProps
     };
 
     return (
-        <div className={styles.forecast}
+        <div className={"forecast"}
             onMouseEnter={() => handleMouseEnter(true)}
             onMouseLeave={() => handleMouseEnter(false)}
         >
             {props.forecast.map((day: any, i: any) => {
                 if (i > 0) {
                     return (
-                        <div key={day.date} className={styles.data}>
-                            <p className={styles.date}>{day.date}</p>
-                            <div className={styles.icon}>
+                        <div key={day.date} className={"data"}>
+                            <p className={"date"}>{day.date}</p>
+                            <div className={"icon"}>
                                 <WeatherSVG
                                     path={day.icon}
                                     size={60}
                                     title={day.description}
                                 />
                             </div>
-                            <div className={styles.description}>{day.description}</div>
-                            <div className={styles.temperature}>
+                            <div className={"description"}>{day.description}</div>
+                            <div className={"temperature"}>
                                 {day.temperature.max} / {day.temperature.min}{' '}
                                 {props.unitsLabels.temperature}
                             </div>

@@ -1,5 +1,4 @@
 import { connect } from "react-redux"
-import styles from './styles/Header.module.scss'
 import {
     Chart as ChartJS, CategoryScale, LinearScale,
     PointElement, LineElement, Title, Tooltip, Legend, Filler, ChartData, ChartOptions
@@ -21,8 +20,8 @@ interface IheaderChartProps {
 const HeaderChart: React.FunctionComponent<IheaderChartProps> = (props: IheaderChartProps) => {
 
     return (
-        <div className={styles.chartContainer} >
-            <Line id={"headerChart"} data={props.data} options={props.options} className={styles.chart} />
+        <div className={"chartContainer"} >
+            <Line id={"headerChart"} data={props.data} options={props.options} className={"chart"} />
         </div>
     )
 }

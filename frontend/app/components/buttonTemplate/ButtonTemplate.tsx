@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from './styles/ButtonTemplate.module.scss';
 
 interface ButtonTemplateProps {
     size: number;
@@ -20,13 +19,13 @@ const ButtonTemplate: React.FC<ButtonTemplateProps> = (props: ButtonTemplateProp
 
     return (
         <div
-            className={`${styles.button} ${props.disabled ? styles.disabled : ''} ${props.className}`}
+            className={`${"button"} ${props.disabled ? "disabled" : ''} ${props.className}`}
             onClick={handleClick}
             role="button"
             tabIndex={0}
             style={{ height: props.size, width: props.size }}
         >
-            <div className={styles.iconContainer}>
+            <div className={"iconContainer"}>
                 {props.icon && props.icon}
             </div>
         </div>

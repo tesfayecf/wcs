@@ -1,6 +1,5 @@
 'use client'
 import React from "react";
-import styles from "./styles/Login.module.scss"
 import FormTemplate from "@/app/components/formTemplate/FormTemplate";
 import AuthHandler from "../AuthHandler";
 import AppHandler from "@/app/app/AppHandler";
@@ -39,8 +38,8 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
     return (
         <>
             <CheckAuth>
-                <div className={styles.login}>
-                    <div className={styles.form}>
+                <div className={"login"}>
+                    <div className={"form"}>
                         <PopUpTemplate
                             hideBackDrop={true}
                             open={true}

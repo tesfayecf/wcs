@@ -4,14 +4,12 @@ import { connect } from "react-redux";
 import { IRootState } from "@/app/utils/store/store";
 import DashboardHandler from "@/app/(pages)/dashboard/DashboardHandler";
 
-import styles from "./styles/Dashboard.module.scss"
-
 import SummaryWidget from "@/app/(pages)/dashboard/components/SummaryWidget/SummaryWidget"
 import WeatherWidget from "@/app/(pages)/dashboard/components/WeatherWidget/WeatherWidget";
-import TankGroupWidget from "@/app/(pages)/dashboard/components/TankGroupWidget/TankGroupWidget";
-import AddTankGroupPopUp from "@/app/(pages)/dashboard/components/AddTankGroupWidget/AddTankGroupPopUp";
+import GroupWidget from "@/app/(pages)/dashboard/components/GroupWidget/GroupWidget";
+import GroupPopUp from "@/app/(pages)/dashboard/components/GroupPopUp/GroupPopUp";
 
-import { ITankGroup } from "./DashboardTypes";
+import { IGroup } from "./DashboardTypes";
 import ToolsBar from "@/app/components/toolsBar/ToolsBar";
 
 const dashboarHandler = DashboardHandler.getInstance();
@@ -27,25 +25,25 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardPr
     }
   }, [])
 
-  const renderTanksInfo = React.useCallback((tankGroups: ITankGroup[]) => {
-    return tankGroups.map((tankInfo: ITankGroup, index: number) =>
-      <TankGroupWidget tankGroup={tankInfo} key={index} />
+  const renderGroupsInfo = React.useCallback((tankGroups: IGroup[]) => {
+    return tankGroups.map((tankInfo: IGroup, index: number) =>
+      <GroupWidget group={tankInfo} key={index} />
     );
   }, [props.tankGroups])
 
   return (
-    <div id="dashboard" className={styles.dashboard}>
-      <div id="dashboardInfo" className={styles.info}>
+    <div id="dashboard" className={"dashboard"}>
+      <div id="dashboardInfo" className={"info"}>
         <SummaryWidget />
         <WeatherWidget />
       </div>
-      <div id="dashboardTools" className={styles.tools}>
+      <div id="dashboardTools" className={"tools"}>
         <ToolsBar onCreate={() => dashboarHandler.setShowCreateTankGroupMenu(true)} />
       </div>
-      <div id="dashboardTanks" className={styles.tankGroups}>
-        {renderTanksInfo(props.tankGroups)}
+      <div id="dashboardTanks" className={"tankGroups"}>
+        {renderGroupsInfo(props.tankGroups)}
       </div>
-      <AddTankGroupPopUp />
+      <GroupPopUp />
     </div >
   )
 }

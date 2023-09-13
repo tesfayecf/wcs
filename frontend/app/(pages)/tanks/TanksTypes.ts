@@ -1,4 +1,4 @@
-import { ITankGroup, ITankGroupStats } from "../dashboard/DashboardTypes";
+import { IGroup, ITankGroupStats } from "../dashboard/DashboardTypes";
 
 export interface ITankCreationForm {
     name: string;
@@ -26,14 +26,17 @@ export interface ITankGroupCreationFormN {
 
 export interface ITanksStore {
     tankId: number;
-    tankGroupId: number;
-    showAddTankMenu: boolean;
-    tankCreationForm: ITankCreationForm;
     tanks: ITank[];
+
     sensors: ISensor[];
     sensorsData: Record<string, any>;
-    tankGroupInfo: ITankGroup;
-    tankGroupStats: ITankGroupStats;
+
+    groupId: number;
+    groupInfo: IGroup;
+    groupStats: ITankGroupStats;
+
+    showAddTankMenu: boolean;
+    tankCreationForm: ITankCreationForm;
 }
 
 export interface ITank {
@@ -49,7 +52,7 @@ export interface ITank {
 }
 
 export interface ITanksParams {
-    tankGroupId: string;
+    groupId: string;
 }
 
 export type ITankStatus = "Connected" | "Disconnected" | "Undefined"

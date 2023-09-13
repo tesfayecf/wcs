@@ -41,7 +41,7 @@ class TanksHandler {
 
     public async getTanksInfo() {
         const state = store.getState().tanks;
-        const response = await requestManager.request("tanks", "getTanks", [state.tankGroupId])
+        const response = await requestManager.request("tanks", "getTanks", [state.groupId])
         if (response.isSuccess) {
             store.dispatch(tankActions.setTanks({ tanks: response.data.tanks }));
             store.dispatch(tankActions.setTankGroupInfo({ tankGroupInfo: response.data.tankGroup }));
@@ -63,7 +63,7 @@ class TanksHandler {
         const material = fields["Material"];
 
         const state = store.getState().tanks;
-        const response = await requestManager.request("tanks", "createTank", [state.tankGroupId, name, capacity, type, dimensions, brand, material])
+        const response = await requestManager.request("tanks", "createTank", [state.groupId, name, capacity, type, dimensions, brand, material])
         // TODO:  process response/handle errors
 
         // Update redux
@@ -93,7 +93,7 @@ class TanksHandler {
 
     public async getSensor(tankId: number) {
         const state = store.getState().tanks;
-        const response = await requestManager.request("tanks", "getSensor", [tankId, state.tankGroupId]);
+        const response = await requestManager.request("tanks", "getSensor", [tankId, state.groupId]);
         if (response.isSuccess) {
             return response.data;
         }
@@ -137,7 +137,7 @@ class TanksHandler {
 
     public async getTankInfo(tankId: number) {
         const state = store.getState().tanks;
-        const response = await requestManager.request("tanks", "getTank", [tankId, state.tankGroupId])
+        const response = await requestManager.request("tanks", "getTank", [tankId, state.groupId])
         if (response.isSuccess) {
         } else {
             // TODO: process response/handle errors

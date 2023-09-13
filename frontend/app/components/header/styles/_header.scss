@@ -16,7 +16,7 @@
         height: 100%;
         border-radius: 0px 0px 14px 14px;
 
-        .content {
+        .headerCardContent {
             position: relative;
             width: 100%;
             display: flex;
@@ -38,13 +38,11 @@
 
                 .value {
                     font-size: 20px;
-                    // color: #666b6b; //$text-1-light:
-                    color: #454747;
+                    color: #454747; //$text-1-light:
                     font-weight: 700;
                 }
 
                 .change {
-
                     display: flex;
                     flex-direction: row;
                     flex-wrap: nowrap;

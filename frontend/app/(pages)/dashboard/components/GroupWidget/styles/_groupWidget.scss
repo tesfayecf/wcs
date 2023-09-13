@@ -11,26 +11,26 @@
         background-color: gray;
     }
 
-    .content {
+    .groupContent {
         display: flex;
         flex-direction: column;
         width: inherit;
         height: inherit;
         border-radius: inherit;
 
-        .banner {
+        .groupBanner {
             width: 100%;
             height: 120px;
             background: linear-gradient(180deg, rgba(85, 220, 158, 0.00), #55dc9e 93%, rgba(85, 220, 158, 0.69));
             border-radius: 15px 15px 0px 0px;
         }
 
-        .info {
+        .groupInfo {
             width: 100%;
             height: 80px;
             // padding: 15px;
 
-            .name {
+            .groupName {
                 font-size: 20px;
                 text-align: start;
                 font-weight: 500;
@@ -38,7 +38,7 @@
                 margin: 5px 15px;
             }
 
-            .location {
+            .groupLocation {
                 font-size: 14px;
                 font-weight: 500;
                 text-align: start;

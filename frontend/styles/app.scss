@@ -1,0 +1,38 @@
+// APP styles
+
+@import "./globals";
+@import "./variables";
+
+// AUTH
+@import "../app/(auth)/login/styles/login";
+@import '../app/(auth)/register/styles/register';
+@import '../app/(auth)/reset/styles/reset';
+
+// PAGES
+@import "../app/(pages)/layout";
+
+// DASHBOARD
+@import '../app/(pages)/dashboard/styles/dashboard';
+@import '../app/(pages)/dashboard/components/SummaryWidget/styles/summaryWidget';
+@import '../app/(pages)/dashboard/components/WeatherWidget/styles/weatherWidget';
+@import '../app/(pages)/dashboard/components/GroupWidget/styles/groupWidget';
+@import '../app/(pages)/dashboard/components/GroupPopUp/styles/groupPopUp';
+
+// TANKS
+@import '../app/(pages)/tanks/[tankGroupId]/styles/tanks';
+@import '../app/(pages)/tanks/components/TankElements/styles/tankElements';
+@import '../app/(pages)/tanks/components/GroupInfo/styles/groupInfo';
+@import '../app/(pages)/tanks/components/TankWidget/styles/tankWidget';
+// @import '../app/(pages)/tanks/components/TankPopUp/styles/tankPopUp'; // Empty --> NOT FOUND!
+
+
+// COMPONENTS
+@import '../app/components/buttonTemplate/styles/buttonTemplate';
+@import '../app/components/contentBox/styles/contentBox';
+@import '../app/components/formTemplate/styles/formTemplate';
+@import '../app/components/header/styles/header';
+@import '../app/components/footer/styles/footer';
+@import '../app/components/loadingPage/styles/loadingPage';
+@import '../app/components/navbar/styles/navbar';
+@import '../app/components/popUpTemplate/styles/popUpTemplate';
+@import '../app/components/toolsBar/styles/toolsBar';

@@ -1,23 +1,19 @@
-.main {
-
+.tanks {
     display: flex;
     flex-direction: column;
 
-    .tools {
+    .tanksTools {
         width: 100%;
         margin-left: 20px;
     }
 
-
-    .tanks {
-
-
+    .tankElements {
         width: 100%;
         display: flex;
         grid-template-columns: 1fr 3fr;
         margin-left: 20px;
 
-        .tankGroupMenu {
+        .groupMenu {
             margin-right: 10px;
         }
 

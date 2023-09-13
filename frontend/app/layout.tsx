@@ -2,13 +2,13 @@
 import React from 'react'
 import { Provider } from 'react-redux'
 import { store } from '@/app/utils/store/store'
+import "../styles/app.css"
 
 import AppHandler from '@/app/app/AppHandler'
 import AuthHandler from '@/app/(auth)/AuthHandler'
 import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler'
 
 import Authenticate from './utils/auth/authenticate'
-import styles from "@/app/app/styles/App.module.scss"
 import LogHandler from './app/LogHandler'
 
 // export const metadata = {
@@ -34,7 +34,7 @@ export default function RootLayout({ children }: IAppLayoutProps) {
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
                     <title>WCS</title>
                 </head>
-                <body className={styles.body}>
+                <body>
                     <Provider store={store}>
                         <Authenticate />
                         {children}

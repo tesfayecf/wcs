@@ -1,5 +1,4 @@
 import React, { ReactNode } from "react";
-import styles from "./styles/ContentBox.module.scss";
 
 type IContentBoxProps = {
     children: ReactNode;
@@ -7,7 +6,7 @@ type IContentBoxProps = {
 };
 
 const ContentBox: React.FunctionComponent<IContentBoxProps> = (props) => {
-    const boxClassName = `${styles.content_box} ${props.customBoxClass || ""}`;
+    const boxClassName = `${"content_box"} ${props.customBoxClass || ""}`;
 
     return (
         <div id="content-box" className={boxClassName}>

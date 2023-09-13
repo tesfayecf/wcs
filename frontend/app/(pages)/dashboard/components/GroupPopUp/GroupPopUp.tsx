@@ -9,9 +9,9 @@ import { ITankGroupCreationFormN } from '../../DashboardTypes';
 
 const dashboardHandler = DashboardHandler.getInstance();
 
-interface IAddWaterTankPopUpProps extends ReturnType<typeof mapStateToProps> { }
+interface IFroupPopUpProps extends ReturnType<typeof mapStateToProps> { }
 
-const AddTankGroupPopUp: React.FunctionComponent<IAddWaterTankPopUpProps> = (props: IAddWaterTankPopUpProps) => {
+const GroupPopUp: React.FunctionComponent<IFroupPopUpProps> = (props: IFroupPopUpProps) => {
 
     const onClose = (ev: any) => {
         dashboardHandler.setShowCreateTankGroupMenu(false);
@@ -68,6 +68,6 @@ const mapStateToProps = (state: IRootState) => {
     }
 }
 
-export default connect(mapStateToProps, {})(AddTankGroupPopUp);
+export default connect(mapStateToProps, {})(GroupPopUp);
 
 

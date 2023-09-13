@@ -1,6 +1,5 @@
 'use client'
 import React from 'react'
-import styles from "./Layout.module.scss"
 import Footer from '@/app/components/footer/Footer'
 import RequireAuth from '../utils/auth/requireAuth'
 import Navbar from '../components/navbar/Navbar'
@@ -13,9 +12,9 @@ type IAppLayoutProps = {
 export default function RootLayout({ children }: IAppLayoutProps) {
     return (
         <RequireAuth>
-            <div id="pagesLayout" className={styles.pagesLayout}>
+            <div id="pagesLayout" className={"pagesLayout"}>
                 <Navbar />
-                <div id='pagesContent' className={styles.pagesContent}>
+                <div id='pagesContent' className={"pagesContent"}>
                     <Header />
                     {children}
                     <Footer />

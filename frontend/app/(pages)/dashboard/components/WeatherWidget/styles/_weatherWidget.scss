@@ -3,7 +3,7 @@
 
     border-radius: 12px;
 
-    .content {
+    .weatherContent {
         height: 100%;
         display: flex;
         flex-direction: row;
@@ -23,7 +23,7 @@
                 padding: 20px 8px 20px 30px;
                 width: 160px;
 
-                .titleDiv {
+                .title {
                     display: flex;
                     flex-direction: row;
                     gap: 15px;
@@ -55,21 +55,19 @@
                     margin: 5px 0px 0px 0px;
                 }
 
-                .subTempDiv {
+                .subTemp {
                     display: flex;
                     flex-direction: row;
                     gap: 10px;
 
                     .temperatureMM {
                         font-size: 15px;
-                        // text-align: center;
                         line-height: 10px;
                     }
 
-                    .description {
+                    .weatherDescription {
                         font-size: 15px;
                         line-height: 10px;
-                        // margin: 10px 0px
                     }
                 }
 

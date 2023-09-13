@@ -1,6 +1,5 @@
 'use client'
 import React from "react";
-import styles from "./styles/Register.module.scss"
 import FormTemplate from "@/app/components/formTemplate/FormTemplate";
 import AuthHandler from "../AuthHandler";
 import { connect } from "react-redux";
@@ -39,8 +38,8 @@ const Register: React.FunctionComponent<IRegisterProps> = (props: IRegisterProps
     }, [])
 
     return (
-        <div className={styles.register}>
-            <div className={styles.form}>
+        <div className={"register"}>
+            <div className={"form"}>
                 {/* <PopUpFormTemplate
                     title="Register"
                     open={true}

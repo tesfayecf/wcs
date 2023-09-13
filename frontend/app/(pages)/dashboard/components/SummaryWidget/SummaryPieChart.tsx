@@ -1,5 +1,4 @@
 import { connect } from "react-redux"
-import styles from './styles/SummaryWidget.module.scss'
 import {
     Chart as ChartJS, CategoryScale, LinearScale,
     PointElement, LineElement, Title, Tooltip, Legend, Filler, ChartData, ChartOptions
@@ -20,8 +19,8 @@ interface ISummaryPieChartProps {
 const SummaryPieChart: React.FunctionComponent<ISummaryPieChartProps> = (props: ISummaryPieChartProps) => {
 
     return (
-        <div className={styles.chartContainer} >
-            <Pie id={"summaryPieCharts"} data={props.data} options={props.options} className={styles.chart} />
+        <div className={"chartContainer"} >
+            <Pie id={"summaryPieCharts"} data={props.data} options={props.options} className={"chart"} />
         </div>
     )
 }

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IDashboardStore, ITankGroup, ITankGroupCreationForm } from './DashboardTypes';
+import { IDashboardStore, IGroup, ITankGroupCreationForm } from './DashboardTypes';
 
 // Define the initial state
 const initialState: IDashboardStore = {
@@ -29,7 +29,7 @@ const dashboardSlice = createSlice({
             state.summary = action.payload.summary;
         },
 
-        setTankGroups: (state, action: PayloadAction<{ tankGroups: ITankGroup[] }>) => {
+        setTankGroups: (state, action: PayloadAction<{ tankGroups: IGroup[] }>) => {
             state.tankGroups = action.payload.tankGroups;
         },
 

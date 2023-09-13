@@ -1,6 +1,5 @@
 'use client'
 import React from 'react';
-import styles from "./styles/TankWidget.module.scss"
 import { IRootState } from '@/app/utils/store/store';
 import { connect } from 'react-redux';
 import { ISensor, ITank, ITankStatus } from '../../TanksTypes';
@@ -43,26 +42,26 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
     }
 
     return (
-        <ContentBox customBoxClass={styles.tank}>
-            <div className={styles.content}>
-                <div className={styles.header}>
-                    <div className={styles.name}>
+        <ContentBox customBoxClass={"tank"}>
+            <div className={"content"}>
+                <div className={"header"}>
+                    <div className={"name"}>
                         {props.tank.name}
                     </div>
-                    <div className={styles.type}>
+                    <div className={"type"}>
                         {props.tank.type}
                     </div>
                 </div>
-                <div className={styles.data}>
-                    <div className={styles.level}>
+                <div className={"data"}>
+                    <div className={"level"}>
                         {getSensorValue()}
                     </div>
-                    <div className={styles.status}>
+                    <div className={"status"}>
                         {getStatus()}
                     </div>
                 </div>
 
-                {/* <div id='water-animation' className={styles.waterAnimation}>
+                {/* <div id='water-animation' className={"waterAnimation"}>
                     adfjalfasf
                 </div> */}
             </div>
@@ -90,9 +89,9 @@ interface IDataListElementProps {
 
 const DataListElement: React.FunctionComponent<IDataListElementProps> = (props: IDataListElementProps) => {
     return (
-        <div className={styles.element}>
-            <span className={styles.key}> {props.keyName} </span>
-            <span className={styles.value}>{props.value}</span>
+        <div className={"element"}>
+            <span className={"key"}> {props.keyName} </span>
+            <span className={"value"}>{props.value}</span>
         </div>
     )
 
@@ -101,7 +100,7 @@ const DataListElement: React.FunctionComponent<IDataListElementProps> = (props: 
 
 const waterAnimation = () => {
     return (
-        <span className={styles.main}>
+        <span className={"main"}>
 
         </span>
     )

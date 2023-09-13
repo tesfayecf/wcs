@@ -1,7 +1,7 @@
 
 
 export interface IDashboardStore {
-    tankGroups: ITankGroup[];
+    tankGroups: IGroup[];
     showEditTankGroupMenu: boolean;
     showDeleteTankGroupMenu: boolean;
     selectedTankGroup: number;
@@ -10,7 +10,7 @@ export interface IDashboardStore {
     tankGroupCreationForm: ITankGroupCreationForm;
 }
 
-export interface ITankGroup {
+export interface IGroup {
     id: number;
     name: string;
     location: string;

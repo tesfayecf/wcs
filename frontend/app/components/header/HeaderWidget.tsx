@@ -1,12 +1,11 @@
 import React from "react";
 import { connect } from "react-redux"
 import ContentBox from "../contentBox/ContentBox"
-import styles from './styles/Header.module.scss'
 
 import { IRootState } from "@/app/utils/store/store";
 import { ChartData, ChartOptions } from "chart.js";
 import HeaderChart from "./HeaderChart";
-import { HEXToRGBA } from "@/app/utils/lib/styles";
+import { HEXToRGBA } from "@/app/utils/lib/styles"
 
 interface IHeaderWidgetProps {
     title: string,
@@ -41,12 +40,12 @@ const HeaderWidget: React.FunctionComponent<IHeaderWidgetProps> = (props: IHeade
         }
 
         return (
-            <div className={styles.headerText}>
-                <span className={styles.title}>{props.title}</span>
-                <span className={styles.value}>{props.value} {unit}</span>
-                <div className={styles.change}>
-                    <span className={styles.changeValue} style={{ color: color }}>{props.changeValue}% {direction}</span>
-                    <span className={styles.changeText}>  than last month</span>
+            <div className={"headerText"}>
+                <span className={"title"}>{props.title}</span>
+                <span className={"value"}>{props.value} {unit}</span>
+                <div className={"change"}>
+                    <span className={"changeValue"} style={{ color: color }}>{props.changeValue}% {direction}</span>
+                    <span className={"changeText"}>  than last month</span>
                 </div>
             </div>
         )
@@ -74,8 +73,8 @@ const HeaderWidget: React.FunctionComponent<IHeaderWidgetProps> = (props: IHeade
     }, [props.color])
 
     return (
-        <ContentBox customBoxClass={styles.headerCard} >
-            <div id="headerCard" className={styles.content}>
+        <ContentBox customBoxClass={"headerCard"} >
+            <div className={"headerCardContent"}>
                 {renderTextData()}
                 <HeaderChart
                     data={props.data}

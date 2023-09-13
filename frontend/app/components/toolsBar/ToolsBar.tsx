@@ -1,5 +1,4 @@
 import React from 'react'
-import styles from './styles/ToolsBar.module.scss'
 import SearchIcon from '@/public/svg/SearchIcon'
 
 interface IProps {
@@ -9,9 +8,9 @@ interface IProps {
 const ToolsBar: React.FunctionComponent<IProps> = (props: IProps) => {
 
     return (
-        <div className={styles.toolsBar}>
+        <div className={"toolsBar"}>
             <CreateButton onCreate={props.onCreate} />
-            <div className={styles.searchInput}>
+            <div className={"searchInput"}>
                 <SearchInput />
             </div>
         </div>
@@ -28,8 +27,8 @@ interface IButtonProps {
 const CreateButton: React.FunctionComponent<IButtonProps> = (props: IButtonProps) => {
 
     return (
-        <div className={styles.button} onClick={props.onCreate}>
-            <span className={styles.text}>Create +</span>
+        <div className={"button"} onClick={props.onCreate}>
+            <span className={"text"}>Create +</span>
         </div>
     )
 }
@@ -40,9 +39,9 @@ interface IInputProps { }
 const SearchInput: React.FunctionComponent<IInputProps> = (props: IInputProps) => {
 
     return (
-        <div className={styles.input}>
+        <div className={"input"}>
             <SearchIcon strokeWidth={2} />
-            <input className={styles.text} type="text" placeholder="Search" />
+            <input className={"text"} type="text" placeholder="Search" />
         </div>
     )
 }

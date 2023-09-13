@@ -1,6 +1,5 @@
 import React from 'react'
 import { Dialog } from '@mui/material';
-import styles from "./styles/PopUpTemplate.module.scss"
 
 interface PopUpTemplateProps {
     children: React.ReactNode | React.ReactNode[];
@@ -18,7 +17,7 @@ const PopUpTemplate: React.FunctionComponent<PopUpTemplateProps> = (props: PopUp
 
     return (
         <Dialog
-            className={styles.popUp}
+            className={"popUp"}
             open={props.open}
             onClose={props.onClose}
             hideBackdrop={props.hideBackDrop}

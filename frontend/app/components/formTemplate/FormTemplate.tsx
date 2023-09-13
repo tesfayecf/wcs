@@ -1,6 +1,5 @@
 import React from "react";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import styles from "./styles/FormTemplate.module.scss"
 import { produce } from "immer";
 // TODO: add input adorments
 // TODO: check text types https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types
@@ -119,7 +118,7 @@ const FormTemplate = <T extends Record<string, any>>(props: IFormProps<T>) => {
 
     const renderTitle = () => {
         return (
-            <div className={styles.title}>
+            <div className={"title"}>
                 <h1>{props.title}</h1>
             </div>
         );
@@ -173,14 +172,14 @@ const FormTemplate = <T extends Record<string, any>>(props: IFormProps<T>) => {
             }
 
             return (
-                <div key={index} className={styles.field}>
+                <div key={index} className={"field"}>
                     {field}
                 </div>
             );
         });
 
         return (
-            <div className={styles.fields}>
+            <div className={"fields"}>
                 {fields}
             </div >
 
@@ -191,7 +190,7 @@ const FormTemplate = <T extends Record<string, any>>(props: IFormProps<T>) => {
 
         const loadingSpinner = React.useCallback(() => {
             return (
-                <div className={styles.laodingSpinner}>
+                <div className={"laodingSpinner"}>
                     <div></div> <div></div>
                     <div></div> <div></div>
                 </div>
@@ -199,14 +198,14 @@ const FormTemplate = <T extends Record<string, any>>(props: IFormProps<T>) => {
         }, [])
 
         return (
-            <div className={styles.buttons}>
+            <div className={"buttons"}>
                 {props.hideCancelButton ?
                     null :
-                    <button disabled={isLoading} className={`${styles.button} ${styles.cancel}`} onClick={handleCancelClick}>
+                    <button disabled={isLoading} className={`${"button"} ${"cancel"}`} onClick={handleCancelClick}>
                         {props.cancelButtonText}
                     </button>}
                 <button
-                    className={`${styles.button} ${styles.accept}`}
+                    className={`${"button"} ${"accept"}`}
                     onClick={handleAcceptClick}
                     style={!props.hideCancelButton ? { marginLeft: 'auto' } : undefined}
                 >
@@ -218,7 +217,7 @@ const FormTemplate = <T extends Record<string, any>>(props: IFormProps<T>) => {
     }, [isLoading, props.acceptButtonText, props.cancelButtonText, handleAcceptClick, handleCancelClick])
 
     return (
-        <div className={styles.content}>
+        <div className={"content"}>
             {renderTitle()}
             {renderFields()}
             {renderButtons()}

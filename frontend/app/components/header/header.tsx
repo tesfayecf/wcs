@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import styles from './styles/Header.module.scss'
 import { IRootState } from '@/app/utils/store/store'
 import HeaderWidget from './HeaderWidget'
 import { ChartData } from 'chart.js'
@@ -10,7 +9,7 @@ interface IHeaderProps extends ReturnType<typeof mapStateToProps> { }
 
 const Header: React.FunctionComponent<IHeaderProps> = (props: IHeaderProps) => {
     return (
-        <div id="header" className={styles.header}>
+        <div id="header" className={"header"}>
             <HeaderWidget title='Inflow' value={241.24} changeValue={23} data={data1} color='#3de198' />
             <HeaderWidget title='Outflow' value={872.27} changeValue={-5} data={data2} color='#e07159' />
             <HeaderWidget title='Savings' value={35} changeValue={5} data={data3} color='#f2c986' />

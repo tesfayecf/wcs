@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ITanksStore, ITank, ITanksParams } from './TanksTypes';
+import { IGroupStore, ITank, IGroupParams } from './GroupTypes';
 import { IGroup, IGroupStats } from '../dashboard/DashboardTypes';
 
 // Define the initial state
-const initialState: ITanksStore = {
+const initialState: IGroupStore = {
     // Add your initial state values here
     tankId: -1,
     groupId: -1,
@@ -28,11 +28,11 @@ const initialState: ITanksStore = {
 };
 
 // Create the slice
-const tankSlice = createSlice({
-    name: 'tank',
+const groupSlice = createSlice({
+    name: 'group',
     initialState,
     reducers: {
-        setParams: (state, action: PayloadAction<{ params: ITanksParams }>) => {
+        setParams: (state, action: PayloadAction<{ params: IGroupParams }>) => {
             state.groupId = parseInt(action.payload.params.groupId);
         },
         setTanks: (state, action: PayloadAction<{ tanks: ITank[] }>) => {
@@ -59,7 +59,7 @@ const tankSlice = createSlice({
 });
 
 // Export the actions
-export const tankActions = tankSlice.actions;
+export const groupActions = groupSlice.actions;
 
 // Export the reducer
-export default tankSlice.reducer;
+export default groupSlice.reducer;

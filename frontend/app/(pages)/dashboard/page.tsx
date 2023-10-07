@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import { connect } from "react-redux";
 import { IRootState } from "@/app/utils/store/store";
@@ -14,12 +15,12 @@ import ToolsBar from "@/app/components/toolsBar/ToolsBar";
 const dashboarHandler = DashboardHandler.getInstance();
 
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
-export async function getServerSideProps(context: GetServerSidePropsContext)  {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   console.log('getServerSideProps function called');
   console.log(context)
-    return {
-        props: {}
-    }
+  return {
+    props: {}
+  }
 }
 
 interface IDashboardProps extends ReturnType<typeof mapStateToProps> { }

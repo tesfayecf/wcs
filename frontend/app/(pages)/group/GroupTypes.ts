@@ -24,7 +24,7 @@ export interface ITankCreationForm {
     "Brand": string;
 }
 
-export interface ITanksStore {
+export interface IGroupStore {
     tankId: number;
     tanks: ITank[];
 
@@ -50,7 +50,7 @@ export interface ITank {
     hasSensor: boolean;
 }
 
-export interface ITanksParams {
+export interface IGroupParams {
     groupId: string;
 }
 

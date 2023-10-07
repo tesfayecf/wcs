@@ -3,11 +3,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { IRootState } from '@/app/utils/store/store';
 import FormTemplate from '@/app/components/formTemplate/FormTemplate';
-import TanksHandler from '../../TanksHandler';
+import GroupHandler from '../../GroupHandler';
 import PopUpTemplate from '@/app/components/popUpTemplate/PopUpTemplate';
-import { ITankCreationForm } from '../../TanksTypes';
+import { ITankCreationForm } from '../../GroupTypes';
 
-const tanksHandler = TanksHandler.getInstance();
+const groupHandler = GroupHandler.getInstance();
 
 
 interface ITankPopUpProps extends ReturnType<typeof mapStateToProps> { }
@@ -15,11 +15,11 @@ interface ITankPopUpProps extends ReturnType<typeof mapStateToProps> { }
 const TankPopUp: React.FunctionComponent<ITankPopUpProps> = (props: ITankPopUpProps) => {
 
     const onClose = () => {
-        tanksHandler.setShowTankMenu(false);
+        groupHandler.setShowTankMenu(false);
     }
 
     const onCreate = (fields: ITankCreationForm) => {
-        tanksHandler.createTank(fields);
+        groupHandler.createTank(fields);
     }
 
     return (
@@ -77,7 +77,7 @@ const TankPopUp: React.FunctionComponent<ITankPopUpProps> = (props: ITankPopUpPr
 
 const mapStateToProps = (state: IRootState) => {
     return {
-        showTankMenu: state.tanks.showTankMenu,
+        showTankMenu: state.group.showTankMenu,
         isFormLoading: state.app.loading.isFormLoading,
     }
 }

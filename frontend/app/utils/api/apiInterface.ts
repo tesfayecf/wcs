@@ -1,6 +1,6 @@
 import { IRegisterForm } from "@/app/(auth)/AuthTypes";
 import { IGroup, IGroupStats } from "@/app/(pages)/dashboard/DashboardTypes";
-import { ISensor, ITank } from "@/app/(pages)/tanks/TanksTypes";
+import { ISensor, ITank } from "@/app/(pages)/group/GroupTypes";
 import { IUserInfo } from "@/app/app/AppTypes";
 
 export interface APIResponse<T> {

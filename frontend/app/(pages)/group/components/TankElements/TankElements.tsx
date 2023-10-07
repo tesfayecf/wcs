@@ -2,9 +2,9 @@ import { IRootState } from '@/app/utils/store/store'
 import React from 'react'
 import { connect } from 'react-redux'
 import TankWidget from '../TankWidget/TankWidget'
-import TanksHandler from '../../TanksHandler'
+import GroupHandler from '../../GroupHandler'
 
-const tanksHandler = TanksHandler.getInstance();
+const groupHandler = GroupHandler.getInstance();
 
 interface ITankElementsProps extends ReturnType<typeof mapStateToProps> { }
 
@@ -22,7 +22,7 @@ const TankElements: React.FunctionComponent<ITankElementsProps> = (props: ITankE
         }
 
         return props.tanks.map((tank, index) => {
-            // tanksHandler.getSensor(tank.id);
+            // groupHandler.getSensor(tank.id);
             // const sensor = props.sensors.find(s => s.tank.id === tank.id);
             return (
                 <TankWidget tank={tank} key={index} />
@@ -39,8 +39,8 @@ const TankElements: React.FunctionComponent<ITankElementsProps> = (props: ITankE
 }
 
 const mapStateToProps = (state: IRootState) => ({
-    tanks: state.tanks.tanks,
-    sensors: state.tanks.sensors
+    tanks: state.group.tanks,
+    sensors: state.group.sensors
 })
 
 

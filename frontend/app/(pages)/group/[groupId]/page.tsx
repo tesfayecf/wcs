@@ -1,13 +1,13 @@
 'use client'
 import React from "react";
-import TanksHandler from "../TanksHandler";
+import GroupHandler from "../GroupHandler";
 import TankElements from "../components/TankElements/TankElements";
 import TankPopUp from "../components/TankPupUp/TankPopUp";
 import ToolsBar from "@/app/components/toolsBar/ToolsBar";
-import GroupInfoWidget from "@/app/(pages)/tanks/components/GroupInfo/GroupInfoWidget";
+import GroupInfoWidget from "@/app/(pages)/group/components/GroupInfo/GroupInfoWidget";
 import GroupDescription from "../components/GroupInfo/GroupDescription";
 
-const tanksHandler = TanksHandler.getInstance();
+const groupHandler = GroupHandler.getInstance();
 
 interface IDashboardProps {
     params: {
@@ -18,9 +18,9 @@ interface IDashboardProps {
 const Tanks: React.FunctionComponent<IDashboardProps> = (props: IDashboardProps) => {
 
     React.useEffect(() => {
-        tanksHandler.load(props.params);
+        groupHandler.load(props.params);
         return () => {
-            tanksHandler.unload();
+            groupHandler.unload();
         }
     }, [])
 
@@ -29,7 +29,7 @@ const Tanks: React.FunctionComponent<IDashboardProps> = (props: IDashboardProps)
     return (
         <div id={"tanksPage"} className={"tanks"}>
             <div className={"tanksTools"}>
-                <ToolsBar onCreate={() => tanksHandler.setShowTankMenu(true)} />
+                <ToolsBar onCreate={() => groupHandler.setShowTankMenu(true)} />
             </div>
             <div className={"tankElements"}>
                 <div className={"groupMenu"}>

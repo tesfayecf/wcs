@@ -45,8 +45,8 @@ const GroupInfoWidget: React.FunctionComponent<IGroupWidgetProps> = (props: IGro
 
 function mapStateToProps(state: IRootState) {
     return {
-        groupInfo: state.tanks.groupInfo,
-        groupStats: state.tanks.groupStats
+        groupInfo: state.group.groupInfo,
+        groupStats: state.group.groupStats
     }
 }
 

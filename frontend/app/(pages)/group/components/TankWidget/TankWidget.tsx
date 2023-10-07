@@ -2,7 +2,7 @@
 import React from 'react';
 import { IRootState } from '@/app/utils/store/store';
 import { connect } from 'react-redux';
-import { ISensor, ITank, ITankStatus } from '../../TanksTypes';
+import { ISensor, ITank, ITankStatus } from '../../GroupTypes';
 import ContentBox from '@/app/components/contentBox/ContentBox';
 import ConnectedIcon from '@/public/svg/ConnectedIcon';
 
@@ -74,8 +74,8 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
 
 function mapStateToProps(state: IRootState) {
     return {
-        sensorsData: state.tanks.sensorsData,
-        sensors: state.tanks.sensors,
+        sensorsData: state.group.sensorsData,
+        sensors: state.group.sensors,
     }
 }
 

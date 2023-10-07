@@ -10,7 +10,7 @@ import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler'
 
 import Authenticate from './utils/auth/authenticate'
 import LogHandler from './app/LogHandler'
-import TanksHandler from './(pages)/tanks/TanksHandler'
+import GroupHandler from './(pages)/group/GroupHandler'
 
 type IAppLayoutProps = {
     children: React.ReactNode[] | React.ReactNode | undefined | null;
@@ -20,7 +20,7 @@ AppHandler.getInstance();
 LogHandler.getInstance();
 AuthHandler.getInstance();
 DashboardHandler.getInstance();
-TanksHandler.getInstance();
+GroupHandler.getInstance();
 
 export default function RootLayout({ children }: IAppLayoutProps) {
     return (

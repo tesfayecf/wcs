@@ -24,7 +24,7 @@ const GroupDescription: React.FunctionComponent<IGroupDescriptionProps> = (props
 
 function mapStateToProps(state: IRootState) {
     return {
-        description: state.tanks.groupInfo.description,
+        description: state.group.groupInfo.description,
     }
 }
 

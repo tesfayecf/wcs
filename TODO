@@ -1,5 +1,0 @@
-- Establish mqtt connection and get server time for logging
-- Check connection with websockets in client and define data sending prededure
-- configure ts watch
-- set weather static props
-- invalid login message

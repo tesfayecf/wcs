@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "NextJS - turbo",
+      "name": "NextJS dev turbo",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/frontend",
@@ -28,7 +28,7 @@
       "console": "integratedTerminal"
     },
     {
-      "name": "Django - Daphne",
+      "name": "Django ASGI Daphne",
       "type": "python",
       "request": "launch",
       "module": "daphne",
@@ -37,7 +37,7 @@
       "django": true
     },
     {
-      "name": "Django dev",
+      "name": "Django WSGI",
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}/backend/manage.py",
@@ -77,11 +77,15 @@
   "compounds": [
     {
       "name": "APP dev",
-      "configurations": ["Django - Daphne", "NextJS - turbo"]
+      "configurations": ["Django ASGI Daphne", "NextJS dev turbo"]
     },
     {
       "name": "APP dev - web",
-      "configurations": ["Django - Daphne", "NextJS - turbo", "web-renderer"]
+      "configurations": [
+        "Django ASGI Daphne",
+        "NextJS dev turbo",
+        "web-renderer"
+      ]
     },
     {
       "name": "APP prod",

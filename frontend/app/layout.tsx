@@ -10,6 +10,7 @@ import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler'
 
 import Authenticate from './utils/auth/authenticate'
 import LogHandler from './app/LogHandler'
+import TanksHandler from './(pages)/tanks/TanksHandler'
 
 type IAppLayoutProps = {
     children: React.ReactNode[] | React.ReactNode | undefined | null;
@@ -19,6 +20,7 @@ AppHandler.getInstance();
 LogHandler.getInstance();
 AuthHandler.getInstance();
 DashboardHandler.getInstance();
+TanksHandler.getInstance();
 
 export default function RootLayout({ children }: IAppLayoutProps) {
     return (

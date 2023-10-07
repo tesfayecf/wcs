@@ -1,36 +1,40 @@
 from pathlib import Path
-from os import getenv, path
+from os import path, environ
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DEVELOPMENT_MODE = 'True'
+# Development mode
+DEVELOPMENT_MODE = environ.get('DEVELOPMENT_MODE')
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-&1tgksxp1t63-yw5(p6+!-bj(cgr(j+9ssrjo1ohl_bgy2c4y4"
+# Secret key
+SECRET_KEY = environ.get('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Debug mode
+DEBUG = environ.get('DEBUG')
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '*']
+# Allowed hosts
+ALLOWED_HOSTS = environ.get('ALLOWED_HOSTS').split(',')
 
+# Secure proxy SSL header
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+
+################ APPLICATIONS ################
 # Application definition
 INSTALLED_APPS = [
     "channels",
-    
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    
     "corsheaders",
     "rest_framework",
     "user_visit",
-    
     "tanks",
     "users",
     "sensors"
@@ -43,7 +47,6 @@ CHANNEL_LAYERS = {
     },
 }
 
-
 # Middleware definition
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -54,12 +57,16 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    
     "user_visit.middleware.UserVisitMiddleware", # user log 
 ]
+################################################
 
+
+################ URLS AND TEMPLATES ################
+# Root URLconf
 ROOT_URLCONF = "backend.urls"
 
+# Templates
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -76,30 +83,26 @@ TEMPLATES = [
     },
 ]
 
+# ASGI application
 ASGI_APPLICATION = "backend.routing.application"
+################################################
 
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+################ DATABASE ################
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "main_database",
-        "USER": "postgres",
-        "PASSWORD": "1234",
-        "HOST": "localhost",
-        "PORT": 5432,
+        "ENGINE": environ.get('DEFAULT_DB_ENGINE'),
+        "NAME": environ.get('DEFAULT_DB_NAME'),
+        "USER": environ.get('DEFAULT_DB_USER'),
+        "PASSWORD": environ.get('DEFAULT_DB_PASSWORD'),
+        "HOST": environ.get('DEFAULT_DB_HOST'),
+        "PORT": environ.get('DEFAULT_DB_PORT'),
     }
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': 'mydatabase',
-    # }
 }
+################################################
 
 
-# Password validation
-# https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
-
+################ PASSWORD VALIDATION ################
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -108,38 +111,28 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
 ]
+################################################
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/4.1/topics/i18n/
-
+################ INTERNATIONALIZATION ################
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_TZ = True
+################################################
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.1/howto/static-files/
-
+################ STATIC FILES ################
 STATIC_URL = '/static/'
 STATIC_ROOT = path.join(BASE_DIR, 'static')
-
-# STATIC_URL = '/static/'
-
-# Add the following if you want to collect static files during deployment
-# STATIC_ROOT = path.join(BASE_DIR, 'static')
-
-# Additional static file directories for your apps (if needed)
 STATICFILES_DIRS = [
     path.join(STATIC_ROOT, 'rest_framework'),
     path.join(STATIC_ROOT, 'admin'),
 ]
+################################################
 
 
+################ REST FRAMEWORK ################
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'users.authentication.CustomJWTAuthentication'
@@ -148,7 +141,10 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ]
 }
+################################################
 
+
+################ DJOSER ################
 DJOSER ={
     'PASSWORD_RESET_CONFIRM_URL': 'password-reset/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': False,
@@ -157,27 +153,35 @@ DJOSER ={
     'PASSWORD_RESET_CONFIRM_RETYPE': True,
     'TOKEN_MODEL': None,
 }
+################################################
 
+
+################ AUTHENTICATION COOKIE ################
 AUTH_COOKIE = "acces"
 AUTH_COOKIE_MAX_AGE = 60*60*24
 AUTH_COOKIE_ACCES_MAX_AGE = 60*5 
 AUTH_COOKIE_REFRESH_MAX_AGE = 60*60*24
-AUTH_COOKIE_SECURE = getenv('AUTH_COOKIE_SECURE', 'True') == 'True'
+AUTH_COOKIE_SECURE = 'True'
 AUTH_COOKIE_HTTP_ONLY = True
 AUTH_COOKIE_PATH = '/'
 AUTH_COOKIE_SAMESITE = 'None'
+################################################
 
 
-CORS_ALLOWED_ORIGINS = getenv(
+################ CORS ################
+CORS_ALLOWED_ORIGINS = environ.get(
     "CORS_ALLOWED_ORIGINS", 
     "http://localhost:3000,http://192.168.0.1:3000,http://127.0.0.1:3000",
 ).split(",")
-
 CORS_ALLOW_CREDENTIALS = True
+################################################
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
+################ DEFAULT PRIMARY KEY FIELD TYPE ################
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+################################################
 
+
+################ CUSTOM USER MODEL ################
 AUTH_USER_MODEL = 'users.UserAccount'
+################################################

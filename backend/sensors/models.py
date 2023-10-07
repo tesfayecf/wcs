@@ -24,12 +24,12 @@ class TankSensor(models.Model):
         return f"Sensor: {self.sensor.serial_number}, Tank: {self.tank.name}"
 
 class SensorData(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    time = models.DateTimeField(primary_key=True, auto_now=True)
     sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE, related_name='sensor_data')
-    timestamp = models.DateTimeField()
     water_level = models.FloatField()
-    temperature = models.FloatField()
-    humidity = models.FloatField()
+    temperature = models.FloatField(null=True, blank=True)
+    humidity = models.FloatField(null=True, blank=True)
     battery_voltage = models.FloatField(null=True, blank=True)
     signal_strength = models.IntegerField(null=True, blank=True)
     status = models.CharField(max_length=50, null=True, blank=True)
@@ -42,7 +42,6 @@ class SensorData(models.Model):
     rain_rate = models.FloatField(null=True, blank=True)
     soil_moisture = models.FloatField(null=True, blank=True)
     air_quality = models.CharField(max_length=50, null=True, blank=True)
-    # Add more fields as needed
 
     def __str__(self):
-        return f"Sensor: {self.sensor.serial_number}, Timestamp: {self.timestamp}"
+        return f"Timestamp: {self.timestamp} Water Level: {self.water_level} Sensor: {self.sensor.serial_number}, "

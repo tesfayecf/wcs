@@ -76,8 +76,9 @@ In your backend deployment, make sure to update your `requirements.txt` file by:
 - Removing the `twisted-iocpsupport` package, as it might cause issues during the build process.
 
 ### Database Deployment
-
-[Add specific details and steps for your database deployment here. Include any database setup, initialization, or migrations required for your project.]
+# Create databases manually with pgAdmin:
+# Timescale db database run command:
+CREATE EXTENSION IF NOT EXISTS timescaledb;
 
 ### Frontend Deployment
 

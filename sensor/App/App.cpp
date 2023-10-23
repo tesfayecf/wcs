@@ -2,16 +2,15 @@
 
 #include "../../managers/hardware-manager/HWManager.cpp"
 #include "../../managers/hardware-manager/HWManager.h"
+#include "../../managers/hardware-manager/Sensor.cpp"
+#include "../../managers/hardware-manager/Sensor.h"
 #include "../../managers/mqtt-manager/MQTTManager.cpp"
 #include "../../managers/mqtt-manager/MQTTManager.h"
 #include "../../managers/wifi-manager/WifiManager.cpp"
 #include "../../managers/wifi-manager/WifiManager.h"
-#include "../../managers/hardware-manager/Sensor.h"
-#include "../../managers/hardware-manager/Sensor.cpp"
 #include "../utils/AppConfig.h"
 #include "../utils/constants.h"
 #include "../utils/types.h"
-
 
 App::App(const AppConfig& config)
     : wifiManager_(nullptr),
@@ -22,8 +21,6 @@ App::App(const AppConfig& config)
   managers.mqttManager = mqttManager_;
   managers.hwManager = hwManager_;
 }
-
-
 
 void App::setup() {
   pinMode(LED_BUILTIN, OUTPUT);
@@ -76,7 +73,6 @@ void App::stop() {}
  */
 void App::restart() { ESP.restart(); }
 
-
 /**
  * @brief Sets the board information in the AppConfig object.
  *
@@ -102,7 +98,6 @@ void App::setBoardInfo() {
   Serial.println("Board info saved");
 }
 
-
 /**
  * @brief Sets the sensor information in the AppConfig object.
  *
@@ -111,8 +106,16 @@ void App::setBoardInfo() {
  */
 void App::setSensorInfo() {
   this->appConfig.appInfo.sensorId = generateSensorID();
+  this->appConfig.mqttManager.statusTopic =
+      this->appConfig.appInfo.sensorId + "/status";
+  this->appConfig.mqttManager.configTopic =
+      this->appConfig.appInfo.sensorId + "/config";
+  this->appConfig.mqttManager.dataTopic =
+      this->appConfig.appInfo.sensorId + "/data";
+  this->appConfig.mqttManager.authTopic =
+      this->appConfig.appInfo.sensorId + "/auth";
+  this->appConfig.mqttManager.registerTopic = "server/register";
 }
-
 
 /**
  * @brief Generates a unique sensor ID based on board information.
@@ -139,7 +142,6 @@ String App::generateSensorID() {
   return sensorID;
 }
 
-
 /**
  * @brief Blinks the built-in LED.
  *
@@ -152,4 +154,3 @@ void App::blink() {
   digitalWrite(LED_BUILTIN, LOW);
   delay(100);
 }
-

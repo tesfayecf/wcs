@@ -7,6 +7,7 @@ class Sensor(models.Model):
     manufacturer = models.CharField(max_length=100)
     model = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
+    last_start = models.DateField(null=True, blank=True)
     installation_date = models.DateField()
     calibration_date = models.DateField()
     maintenance_interval = models.DurationField(null=True, blank=True)

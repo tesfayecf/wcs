@@ -21,7 +21,7 @@ const GroupWidget: React.FunctionComponent<IGroupWidgetProps> = (props: IGroupWi
 
     return (
         <ContentBox customBoxClass={"group"}>
-            <Link href={`/tanks/${props.group.id}`} style={{ color: 'inherit', textDecoration: 'inherit' }}>
+            <Link href={`/group/${props.group.id}`} style={{ color: 'inherit', textDecoration: 'inherit' }}>
                 <div className={"groupContent"}>
                     <div className={"groupBanner"} />
                     <div className={"groupInfo"}>

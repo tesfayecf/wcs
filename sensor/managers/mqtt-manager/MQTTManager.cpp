@@ -12,9 +12,7 @@
 
 MQTTManager* MQTTManager::instance = nullptr;
 
-MQTTManager::MQTTManager() : mqttClient(wifiClient) {
-  instance = this;
-}
+MQTTManager::MQTTManager() : mqttClient(wifiClient) { instance = this; }
 
 void MQTTManager::init(AppConfig* config_, Managers* managers_) {
   Serial.println("MQTTManager init");
@@ -27,9 +25,16 @@ void MQTTManager::setup() {
   mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
   this->setMqttConnectionInfo();
   mqttClient.setCallback(callbackFunction);
-  Serial.println("MQTT server set");
+  Serial.println("MQTT client set");
 
-  connectMQTT();
+  // Connect to MQTT broker
+  this->connect();
+
+  // Register client
+  this->registerClient();
+  // Auhenticate client
+  this->authenticateClient();
+
   // TODO: subscribe to server topics: sensorID/status, sensorID/timer, ...
   subscribe(this->appConfig->mqttManager.statusTopic.c_str());
   subscribe(this->appConfig->mqttManager.configTopic.c_str());
@@ -42,6 +47,7 @@ void MQTTManager::loop() {
   //   reconnect();
   // }
 
+  // Publish sensor data every 10 seconds
   if (millis() % 10000 == 0) {
     unsigned int distanceRaw;
     unsigned int distanceCM;
@@ -58,12 +64,13 @@ void MQTTManager::loop() {
 
 /**
  * @brief Connects to the MQTT broker.
- * 
- * @details This function connects to the MQTT broker using the provided client ID.
- * If the connection is successful, it prints "MQTT connected" to the serial monitor.
- * If the connection fails, it prints "MQTT connection failed" to the serial monitor.
+ *
+ * @details This function connects to the MQTT broker using the provided client
+ * ID. If the connection is successful, it prints "MQTT connected" to the serial
+ * monitor. If the connection fails, it prints "MQTT connection failed" to the
+ * serial monitor.
  */
-void MQTTManager::connectMQTT() {
+void MQTTManager::connect() {
   String clientId = this->appConfig->appInfo.sensorId;
   Serial.print("Connecting to MQTT broker: ");
   while (!mqttClient.connected()) {
@@ -80,48 +87,52 @@ void MQTTManager::connectMQTT() {
 
 /**
  * @brief Reconnects to the MQTT broker.
- * 
- * @details This function disconnects from the MQTT broker and then calls the `connectMQTT()` function to reconnect.
+ *
+ * @details This function disconnects from the MQTT broker and then calls the
+ * `connectMQTT()` function to reconnect.
  */
 void MQTTManager::reconnect() {
   mqttClient.disconnect();
-  connectMQTT();
+  this->connect();
 }
 
 /**
  * @brief Callback function for MQTT messages.
- * 
+ *
  * @param topic The topic of the received message.
  * @param payload The payload of the received message.
  * @param length The length of the payload.
- * 
+ *
  * @details This function is called when a new MQTT message is received.
- * It checks the topic of the message and calls the corresponding callback function based on the topic.
+ * It checks the topic of the message and calls the corresponding callback
+ * function based on the topic.
  */
 void MQTTManager::callbackFunction(char* topic, byte* payload,
                                    unsigned int length) {
-  if (strcmp(topic, instance->appConfig->mqttManager.statusTopic.c_str()) == 0) {
-    payload[length] = '\0'; // Add a null terminator to the payload
-    // Serial.println(payload);
-    if (strcmp(reinterpret_cast<char*>(payload), "status") == 0) {
-      instance->statusCallback(payload, length);
-    }
-  } else if (topic == instance->appConfig->mqttManager.configTopic.c_str()) {
-    if (topic == "config") {
-      instance->configCallback(payload, length);
-    }
+  payload[length] = '\0';  // Add a null terminator to the payload
+  if (strcmp(topic, instance->appConfig->mqttManager.statusTopic.c_str()) ==
+      0) {
+    instance->statusCallback(payload, length);
+  } else if (strcmp(topic,
+                    instance->appConfig->mqttManager.statusTopic.c_str()) ==
+             0) {
+    instance->configCallback(payload, length);
+  } else if (strcmp(topic,
+                    instance->appConfig->mqttManager.authTopic.c_str()) == 0) {
+    instance->authCallback(payload, length);
   }
 }
 
 /**
  * @brief Callback function for status messages.
- * 
+ *
  * @param payload The payload of the status message.
  * @param length The length of the payload.
- * 
+ *
  * @details This function is called when a status message is received.
  * It creates a JSON object with the relevant app information and the payload,
- * and then calls the `basePublish()` function to publish the JSON object to the MQTT broker.
+ * and then calls the `basePublish()` function to publish the JSON object to
+ * the MQTT broker.
  */
 void MQTTManager::statusCallback(uint8_t* payload, unsigned int length) {
   Serial.println("Received status message");
@@ -180,24 +191,46 @@ void MQTTManager::statusCallback(uint8_t* payload, unsigned int length) {
 
 /**
  * @brief Callback function for config messages.
- * 
+ *
  * @param payload The payload of the config message.
  * @param length The length of the payload.
- * 
+ *
  * @details This function is called when a config message is received.
- * It currently prints "Received config message" to the serial monitor.
- * You can add the desired functionality for handling config messages here.
- */
 void MQTTManager::configCallback(uint8_t* payload, unsigned int length) {
   Serial.println("Received config message");
 }
 
 /**
+ * @brief Callback function for register messages.
+ *
+ * @param payload The payload of the register message.
+ * @param length The length of the payload.
+ *
+ * @details This function is called when a register message is received.
+ */
+void MQTTManager::authCallback(uint8_t* payload, unsigned int length) {
+  Serial.println("Received auth message");
+}
+
+void MQTTManager::registerClient() {
+  StaticJsonDocument<512> jsonDoc;
+  JsonObject jsonObj = jsonDoc.to<JsonObject>();
+  // Add message data
+  jsonObj[enumToString(SENSOR_ID)] = this->appConfig->appInfo.sensorId;
+
+  this->basePublish(jsonObj, this->appConfig->mqttManager.registerTopic.c_str(),
+                    false);
+}
+
+void MQTTManager::authenticateClient() {}
+
+/**
  * @brief Subscribes to a given MQTT topic.
- * 
+ *
  * @param topic The topic to subscribe to.
- * 
- * @details This function subscribes to the specified MQTT topic if the MQTT client is connected.
+ *
+ * @details This function subscribes to the specified MQTT topic if the MQTT
+ * client is connected.
  */
 void MQTTManager::subscribe(const char* topic) {
   if (mqttClient.connected()) {
@@ -207,11 +240,13 @@ void MQTTManager::subscribe(const char* topic) {
 
 /**
  * @brief Publishes sensor readings to the MQTT broker.
- * 
+ *
  * @param readingRAW The raw reading value.
  * @param readingCM The reading value in centimeters.
- * 
- * @details This function creates a JSON object with the sensor readings and calls the `basePublish()` function to publish the JSON object to the MQTT broker.
+ *
+ * @details This function creates a JSON object with the sensor readings and
+ * calls the `basePublish()` function to publish the JSON object to the MQTT
+ * broker.
  */
 void MQTTManager::publishReadings(unsigned int readingRAW,
                                   unsigned int readingCM) {
@@ -226,18 +261,23 @@ void MQTTManager::publishReadings(unsigned int readingRAW,
 
 /**
  * @brief Publishes a JSON object to the MQTT broker.
- * 
+ *
  * @param dataObject The JSON object to publish.
  * @param topic The MQTT topic to publish to.
- * 
- * @details This function serializes the JSON object, publishes it to the MQTT broker using the specified topic, and prints the published message to the serial monitor.
+ *
+ * @details This function serializes the JSON object, publishes it to the MQTT
+ * broker using the specified topic, and prints the published message to the
+ * serial monitor.
  */
 void MQTTManager::basePublish(ArduinoJson::V6213PB2::JsonObject& dataObject,
-                              const char* topic) {
+                              const char* topic, bool meta) {
   JsonObject metaObj = dataObject.createNestedObject("meta");
 
   // Add sensor metadata
-  this->addMetadata(metaObj);
+  if (meta) {
+    this->addMetadata(metaObj);
+  }
+
   // Get max size of websocket message
   char websocketMessageChar[1024];
   // Serialize message
@@ -251,10 +291,11 @@ void MQTTManager::basePublish(ArduinoJson::V6213PB2::JsonObject& dataObject,
 
 /**
  * @brief Adds sensor metadata to the JSON object.
- * 
+ *
  * @param metaObj The JSON object to add metadata to.
- * 
- * @details This function adds sensor metadata such as sensor ID, sensor type, location, and timestamp to the JSON object.
+ *
+ * @details This function adds sensor metadata such as sensor ID, sensor type,
+ * location, and timestamp to the JSON object.
  */
 void MQTTManager::addMetadata(JsonObject& metaObj) {
   metaObj["sensorId"] = this->appConfig->appInfo.sensorId;
@@ -265,8 +306,9 @@ void MQTTManager::addMetadata(JsonObject& metaObj) {
 
 /**
  * @brief Sets the MQTT connection information.
- * 
- * @details This function sets the keep alive, socket timeout, and buffer size for the MQTT client.
+ *
+ * @details This function sets the keep alive, socket timeout, and buffer size
+ * for the MQTT client.
  */
 void MQTTManager::setMqttConnectionInfo() {
   // mqttClient.setKeepAlive(60);

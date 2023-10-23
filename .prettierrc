@@ -1,15 +1,11 @@
 {
   "arrowParens": "always",
   "bracketSpacing": true,
-  "endOfLine": "lf",
   "htmlWhitespaceSensitivity": "css",
-  "insertPragma": false,
   "singleAttributePerLine": false,
   "bracketSameLine": false,
   "jsxBracketSameLine": false,
   "jsxSingleQuote": false,
-  "printWidth": 80,
-  "proseWrap": "preserve",
   "quoteProps": "as-needed",
   "requirePragma": false,
   "semi": true,
@@ -17,8 +13,5 @@
   "tabWidth": 2,
   "trailingComma": "es5",
   "useTabs": false,
-  "embeddedLanguageFormatting": "auto",
-  "vueIndentScriptAndStyle": false,
-  "filepath": "c:\\Users\\tesfa\\AppData\\Roaming\\Code\\User\\settings.json",
-  "parser": "json"
+  "embeddedLanguageFormatting": "auto"
 }

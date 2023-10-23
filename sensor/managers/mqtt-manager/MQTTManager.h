@@ -26,7 +26,7 @@ class MQTTManager {
 
   /**
    * @brief Initializes the MQTTManager.
-   * 
+   *
    * @param config_ Pointer to the AppConfig object.
    * @param managers_ Pointer to the Managers object.
    */
@@ -44,26 +44,27 @@ class MQTTManager {
 
   /**
    * @brief Subscribes to an MQTT topic.
-   * 
+   *
    * @param topic The topic to subscribe to.
    */
   void subscribe(const char* topic);
 
   /**
    * @brief Publishes sensor readings to the MQTT broker.
-   * 
+   *
    * @param readingRAW The raw reading value.
    * @param readingCM The reading value in centimeters.
    */
   void publishReadings(unsigned int readingRAW, unsigned int readingCM);
 
  private:
-  static MQTTManager* instance;  // Static instance pointer for the callback function
+  static MQTTManager*
+      instance;  // Static instance pointer for the callback function
 
   /**
    * @brief Connects to the MQTT broker.
    */
-  void connectMQTT();
+  void connect();
 
   /**
    * @brief Reconnects to the MQTT broker.
@@ -72,22 +73,23 @@ class MQTTManager {
 
   /**
    * @brief Publishes an MQTT message.
-   * 
+   *
    * @param dataObject The JSON object to publish.
    * @param topic The MQTT topic to publish to.
    */
-  void basePublish(ArduinoJson::V6213PB2::JsonObject& dataObject, const char* topic);
+  void basePublish(ArduinoJson::V6213PB2::JsonObject& dataObject,
+                   const char* topic, bool meta = true);
 
   /**
    * @brief Adds metadata to the MQTT message.
-   * 
+   *
    * @param dataObject The JSON object to add metadata to.
    */
   void addMetadata(ArduinoJson::V6213PB2::JsonObject& dataObject);
 
   /**
    * @brief Callback function for handling received MQTT messages.
-   * 
+   *
    * @param topic The topic of the received message.
    * @param payload The payload of the received message.
    * @param length The length of the payload.
@@ -96,7 +98,7 @@ class MQTTManager {
 
   /**
    * @brief Callback function for handling status messages.
-   * 
+   *
    * @param payload The payload of the status message.
    * @param length The length of the payload.
    */
@@ -104,11 +106,23 @@ class MQTTManager {
 
   /**
    * @brief Callback function for handling config messages.
-   * 
+   *
    * @param payload The payload of the config message.
    * @param length The length of the payload.
    */
   void configCallback(uint8_t* payload, unsigned int length);
+
+  /**
+   * @brief Callback function for handling register messages.
+   *
+   * @param payload The payload of the register message.
+   * @param length The length of the payload.
+   */
+  void authCallback(uint8_t* payload, unsigned int length);
+
+  void registerClient();
+
+  void authenticateClient();
 
   /**
    * @brief Sets the MQTT connection information.

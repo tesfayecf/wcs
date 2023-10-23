@@ -1,5 +1,3 @@
-You're correct; it's generally a good practice to authenticate and validate a sensor before registering it. Here's the corrected communication sequence:
-
 **Communication Sequence: Server-Sensor Interaction via MQTT**
 
 1. **Sensor Initialization:**

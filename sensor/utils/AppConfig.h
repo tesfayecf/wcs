@@ -1,8 +1,13 @@
 #ifndef APPCONFIG_H
 #define APPCONFIG_H
+
 #include <ESP8266WiFi.h>
 
 #include "constants.h"
+
+///////////////////////////////
+/// ManagerStatus Structure ///
+///////////////////////////////
 
 struct ManagerStatus {
   bool initialized;    // Indicates whether the manager is initialized
@@ -15,8 +20,16 @@ struct ManagerStatus {
   int status;          // Status of the manager
 };
 
+///////////////////////
+/// AppConfig Class ///
+///////////////////////
+
 class AppConfig {
  public:
+  ///////////////////////
+  /// BoardInfo Class ///
+  ///////////////////////
+
   class BoardInfo {
    public:
     String boardChipId;           // Chip ID of the board
@@ -34,13 +47,21 @@ class AppConfig {
     uint32_t boardFlashChipSpeed;   // Speed of the flash chip on the board
     uint32_t boardCycleCount;       // Cycle count of the board
   };
-  BoardInfo boardInfo;
+
+  /////////////////////
+  /// AppInfo Class ///
+  /////////////////////
 
   class AppInfo {
    public:
     String sensorId;  // ID of the sensor
+   private:
+    String generateId(String boardId, String flashChipId);
   };
-  AppInfo appInfo;
+
+  /////////////////////////
+  /// WifiManager Class ///
+  /////////////////////////
 
   class WifiManager {
    public:
@@ -53,12 +74,15 @@ class AppConfig {
     IPAddress gateway;  // Gateway of the WiFi connection
     IPAddress subnet;   // Subnet of the WiFi connection
     String mac;         // MAC address of the WiFi connection
-    int rssi;           // RSSI (Received Signal Strength Indicator) of the WiFi
+    int rssi;           // (Received Signal Strength Indicator) of WiFi
                         // connection
     int channel;        // Channel of the WiFi connection
     int encryption;     // Encryption type of the WiFi connection
   };
-  WifiManager wifiManager;
+
+  /////////////////////////
+  /// MQTTManager Class ///
+  /////////////////////////
 
   class MQTTManager {
    public:
@@ -77,12 +101,27 @@ class AppConfig {
     String authTopic;      // Auth topic of the MQTT connection
     String registerTopic;  // Register topic of the MQTT connection
   };
-  MQTTManager mqttManager;
+
+  /////////////////////////////
+  /// HardwareManager Class ///
+  /////////////////////////////
 
   class HardwareManager {
    public:
     ManagerStatus status;
   };
+
+  //////////////////
+  /// Initialize ///
+  //////////////////
+
+  // INFO
+  BoardInfo boardInfo;
+  AppInfo appInfo;
+
+  // MANAGEMENT
+  WifiManager wifiManager;
+  MQTTManager mqttManager;
   HardwareManager hardwareManager;
 };
 

@@ -81,19 +81,20 @@ void App::restart() { ESP.restart(); }
  * saved" to the serial monitor.
  */
 void App::setBoardInfo() {
-  this->appConfig.boardInfo.boardChipId = ESP.getChipId();
-  this->appConfig.boardInfo.boardFlashChipId = ESP.getFlashChipId();
-  this->appConfig.boardInfo.boardCoreVersion = ESP.getCoreVersion();
-  this->appConfig.boardInfo.boardFlashChipSize = ESP.getFlashChipSize();
-  this->appConfig.boardInfo.boardFlashChipRealSize = ESP.getFlashChipRealSize();
-  this->appConfig.boardInfo.boardCpuFreqMHz = ESP.getCpuFreqMHz();
-  this->appConfig.boardInfo.boardFreeHeap = ESP.getFreeHeap();
-  this->appConfig.boardInfo.boardHeapFragmentation = ESP.getHeapFragmentation();
-  this->appConfig.boardInfo.boardSketchSize = ESP.getSketchSize();
-  this->appConfig.boardInfo.boardFreeSketchSpace = ESP.getFreeSketchSpace();
-  this->appConfig.boardInfo.boardSketchMD5 = ESP.getSketchMD5();
-  this->appConfig.boardInfo.boardFlashChipSpeed = ESP.getFlashChipSpeed();
-  this->appConfig.boardInfo.boardCycleCount = ESP.getCycleCount();
+  // this->appConfig.boardInfo.boardChipId = ESP.getChipId();
+  // this->appConfig.boardInfo.boardFlashChipId = ESP.getFlashChipId();
+  // this->appConfig.boardInfo.boardCoreVersion = ESP.getCoreVersion();
+  // this->appConfig.boardInfo.boardFlashChipSize = ESP.getFlashChipSize();
+  // this->appConfig.boardInfo.boardFlashChipRealSize =
+  // ESP.getFlashChipRealSize(); this->appConfig.boardInfo.boardCpuFreqMHz =
+  // ESP.getCpuFreqMHz(); this->appConfig.boardInfo.boardFreeHeap =
+  // ESP.getFreeHeap(); this->appConfig.boardInfo.boardHeapFragmentation =
+  // ESP.getHeapFragmentation(); this->appConfig.boardInfo.boardSketchSize =
+  // ESP.getSketchSize(); this->appConfig.boardInfo.boardFreeSketchSpace =
+  // ESP.getFreeSketchSpace(); this->appConfig.boardInfo.boardSketchMD5 =
+  // ESP.getSketchMD5(); this->appConfig.boardInfo.boardFlashChipSpeed =
+  // ESP.getFlashChipSpeed(); this->appConfig.boardInfo.boardCycleCount =
+  // ESP.getCycleCount();
 
   Serial.println("Board info saved");
 }
@@ -105,16 +106,16 @@ void App::setBoardInfo() {
  * information and sets it in the AppConfig object.
  */
 void App::setSensorInfo() {
-  this->appConfig.appInfo.sensorId = generateSensorID();
-  this->appConfig.mqttManager.statusTopic =
-      this->appConfig.appInfo.sensorId + "/status";
-  this->appConfig.mqttManager.configTopic =
-      this->appConfig.appInfo.sensorId + "/config";
-  this->appConfig.mqttManager.dataTopic =
-      this->appConfig.appInfo.sensorId + "/data";
-  this->appConfig.mqttManager.authTopic =
-      this->appConfig.appInfo.sensorId + "/auth";
-  this->appConfig.mqttManager.registerTopic = "server/register";
+  // this->appConfig.appInfo.sensorId = generateSensorID();
+  // this->appConfig.mqttManager.statusTopic =
+  //     this->appConfig.appInfo.sensorId + "/status";
+  // this->appConfig.mqttManager.configTopic =
+  //     this->appConfig.appInfo.sensorId + "/config";
+  // this->appConfig.mqttManager.dataTopic =
+  //     this->appConfig.appInfo.sensorId + "/data";
+  // this->appConfig.mqttManager.authTopic =
+  //     this->appConfig.appInfo.sensorId + "/auth";
+  // this->appConfig.mqttManager.registerTopic = "server/register";
 }
 
 /**

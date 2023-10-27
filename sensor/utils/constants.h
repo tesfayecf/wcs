@@ -55,7 +55,7 @@
 // };
 
 ///////////////////
-/// APP CONFIG ////
+/// APP CONFIG ///
 ///////////////////
 
 #define APP_NAME "Sensor"
@@ -65,25 +65,46 @@
 
 /// MANAGERS ///
 
-//  WIFI
-// #define WIFI_SSID "ONO1D77"
-// #define WIFI_PASSWORD "dVy68naGZU5d"
-// #define WIFI_SSID_P "MOVISTAR_7DD9"
-// #define WIFI_PASSWORD_P "W9GHdRn49sjdcXxxkhry"
+////////////////////////
+/// WIFI MANAGER ///
+////////////////////////
+
+// #define WIFI_SSID ""
+// #define WIFI_PASSWORD ""
 
 #define SERVER_PORT 80
-// #define DNS_PORT 53
-#define WIFI_CONNECTION_TIMEOUT 250
 #define SSID_START_ADDR 0
 #define PASSWORD_START_ADDR 100
+#define WIFI_CONNECTION_TIMEOUT 250
 
-// MQTT
-#define MQTT_BROKER "192.168.1.2"
-#define MQTT_PORT 1883
+////////////////////////
+/// MQTT MANAGER ///
+////////////////////////
 
-// HARDWARE
-#define TRIGGER_PIN D6  // RX 
-#define ECHO_PIN D7     // TX
-#define TIMEOUT 25200   //  450 CM * 28 MS/CM * 2
+////////////////////////
+/// MQTT MANAGER ///
+////////////////////////
+
+#define MQTT_BROKER "192.168.1.2"  // MQTT Broker IP Address
+#define MQTT_PORT 1883             // MQTT Broker Port
+
+#define MQTT_VERSION 5  // MQTT Protocol Version (e.g., 3.1, 3.1.1, 5)
+#define MQTT_MAX_PACKET_SIZE 1024
+#define MQTT_KEEP_ALIVE 60
+#define MQTT_CONNECTION_TIMEOUT 10
+
+#define MQTT_STATUS_TOPIC "status"             // MQTT Status Topic
+#define MQTT_CONFIG_TOPIC "config"             // MQTT Config Topic
+#define MQTT_DATA_TOPIC "data"                 // MQTT Data Topic
+#define MQTT_AUTH_TOPIC "auth"                 // MQTT Auth Topic
+#define MQTT_REGISTER_TOPIC "server/register"  // MQTT Register Topic
+
+////////////////////////
+/// HARDWARE MANAGER ///
+////////////////////////
+
+#define TRIGGER_PIN D6  // Trigger Pin (e.g., for ultrasonic sensor)
+#define ECHO_PIN D7     // Echo Pin (e.g., for ultrasonic sensor)
+#define TIMEOUT 25200   // Timeout value for hardware operations
 
 #endif  // CONSTANTS_H

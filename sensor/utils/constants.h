@@ -54,9 +54,9 @@
 //     SENSOR_DATA_PROCESSING_RETRY,
 // };
 
-///////////////////
+//////////////////
 /// APP CONFIG ///
-///////////////////
+//////////////////
 
 #define APP_NAME "Sensor"
 #define APP_VERSION "0.1"
@@ -65,9 +65,9 @@
 
 /// MANAGERS ///
 
-////////////////////////
+////////////////////
 /// WIFI MANAGER ///
-////////////////////////
+////////////////////
 
 // #define WIFI_SSID ""
 // #define WIFI_PASSWORD ""
@@ -77,13 +77,9 @@
 #define PASSWORD_START_ADDR 100
 #define WIFI_CONNECTION_TIMEOUT 250
 
-////////////////////////
+////////////////////
 /// MQTT MANAGER ///
-////////////////////////
-
-////////////////////////
-/// MQTT MANAGER ///
-////////////////////////
+////////////////////
 
 #define MQTT_BROKER "192.168.1.2"  // MQTT Broker IP Address
 #define MQTT_PORT 1883             // MQTT Broker Port

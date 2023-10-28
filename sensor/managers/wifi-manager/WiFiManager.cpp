@@ -1,6 +1,6 @@
 #include "WifiManager.h"
 
-#include "../../utils/AppConfig.h"
+#include "../../App/AppConfig.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
 #include "WebPage.h"

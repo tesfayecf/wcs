@@ -8,9 +8,9 @@
 #include "../../managers/mqtt-manager/MQTTManager.h"
 #include "../../managers/wifi-manager/WifiManager.cpp"
 #include "../../managers/wifi-manager/WifiManager.h"
-#include "../utils/AppConfig.h"
 #include "../utils/constants.h"
 #include "../utils/types.h"
+#include "./AppConfig.h"
 
 App::App(const AppConfig& config)
     : wifiManager_(nullptr),
@@ -38,13 +38,13 @@ void App::setup() {
   hwManager_->init(&this->appConfig, &this->managers);
 
   wifiManager_->setup();
-  blink();
+  this->blink();
 
   mqttManager_->setup();
-  blink();
+  this->blink();
 
   hwManager_->setup();
-  blink();
+  this->blink();
 
   digitalWrite(LED_BUILTIN, LOW);
 }
@@ -81,22 +81,25 @@ void App::restart() { ESP.restart(); }
  * saved" to the serial monitor.
  */
 void App::setBoardInfo() {
-  // this->appConfig.boardInfo.boardChipId = ESP.getChipId();
-  // this->appConfig.boardInfo.boardFlashChipId = ESP.getFlashChipId();
-  // this->appConfig.boardInfo.boardCoreVersion = ESP.getCoreVersion();
-  // this->appConfig.boardInfo.boardFlashChipSize = ESP.getFlashChipSize();
-  // this->appConfig.boardInfo.boardFlashChipRealSize =
-  // ESP.getFlashChipRealSize(); this->appConfig.boardInfo.boardCpuFreqMHz =
-  // ESP.getCpuFreqMHz(); this->appConfig.boardInfo.boardFreeHeap =
-  // ESP.getFreeHeap(); this->appConfig.boardInfo.boardHeapFragmentation =
-  // ESP.getHeapFragmentation(); this->appConfig.boardInfo.boardSketchSize =
-  // ESP.getSketchSize(); this->appConfig.boardInfo.boardFreeSketchSpace =
-  // ESP.getFreeSketchSpace(); this->appConfig.boardInfo.boardSketchMD5 =
-  // ESP.getSketchMD5(); this->appConfig.boardInfo.boardFlashChipSpeed =
-  // ESP.getFlashChipSpeed(); this->appConfig.boardInfo.boardCycleCount =
-  // ESP.getCycleCount();
-
-  Serial.println("Board info saved");
+  Serial.println("Board info:");
+  Serial.print("Board Chip ID: ");
+  Serial.println(this->appConfig.boardInfo.boardChipId);
+  Serial.print("Board Flash Chip ID: ");
+  Serial.println(this->appConfig.boardInfo.boardFlashChipId);
+  Serial.print("Board Core Version: ");
+  Serial.println(this->appConfig.boardInfo.boardCoreVersion);
+  Serial.print("Board Flash Chip Size: ");
+  Serial.println(this->appConfig.boardInfo.boardFlashChipSize);
+  Serial.print("Board Flash Chip Real Size: ");
+  Serial.println(this->appConfig.boardInfo.boardFlashChipRealSize);
+  Serial.print("Board CPU Frequency: ");
+  Serial.println(this->appConfig.boardInfo.boardCpuFreqMHz);
+  Serial.print("Board Free Heap: ");
+  Serial.println(this->appConfig.boardInfo.boardFreeHeap);
+  Serial.print("Board Heap Fragmentation: ");
+  Serial.println(this->appConfig.boardInfo.boardHeapFragmentation);
+  Serial.print("Board Sketch Size: ");
+  Serial.println(this->appConfig.boardInfo.boardSketchSize);
 }
 
 /**
@@ -106,41 +109,9 @@ void App::setBoardInfo() {
  * information and sets it in the AppConfig object.
  */
 void App::setSensorInfo() {
-  // this->appConfig.appInfo.sensorId = generateSensorID();
-  // this->appConfig.mqttManager.statusTopic =
-  //     this->appConfig.appInfo.sensorId + "/status";
-  // this->appConfig.mqttManager.configTopic =
-  //     this->appConfig.appInfo.sensorId + "/config";
-  // this->appConfig.mqttManager.dataTopic =
-  //     this->appConfig.appInfo.sensorId + "/data";
-  // this->appConfig.mqttManager.authTopic =
-  //     this->appConfig.appInfo.sensorId + "/auth";
-  // this->appConfig.mqttManager.registerTopic = "server/register";
-}
-
-/**
- * @brief Generates a unique sensor ID based on board information.
- *
- * @return The generated sensor ID.
- *
- * @details This function generates a unique sensor ID by combining the board
- * chip ID and flash chip ID. It then calculates the MD5 hash of the combined
- * string to ensure uniqueness. The generated sensor ID is printed to the serial
- * monitor and returned.
- */
-String App::generateSensorID() {
-  String uniqueString = String(this->appConfig.boardInfo.boardChipId) +
-                        String(this->appConfig.boardInfo.boardFlashChipId);
-  MD5Builder md5;
-  md5.begin();
-  md5.add(uniqueString);
-  md5.calculate();
-  String sensorID = md5.toString();
-
-  Serial.print("Generated Sensor ID: ");
-  Serial.println(sensorID);
-
-  return sensorID;
+  Serial.println("Sensor info:");
+  Serial.print("Sensor ID: ");
+  Serial.println(this->appConfig.appInfo.sensorId);
 }
 
 /**

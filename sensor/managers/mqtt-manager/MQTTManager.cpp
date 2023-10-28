@@ -5,7 +5,7 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-#include "../../utils/AppConfig.h"
+#include "../../App/AppConfig.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
 #include "../../utils/utils.h"

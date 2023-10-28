@@ -2,10 +2,10 @@
 
 #include <ESP8266WiFi.h>
 
-#include "Sensor.h"
-#include "../../utils/AppConfig.h"
+#include "../../App/AppConfig.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
+#include "Sensor.h"
 
 // NewPing HWManager::sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 Sensor HWManager::ultraSensor(TRIGGER_PIN, ECHO_PIN, TIMEOUT);

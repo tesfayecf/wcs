@@ -1,6 +1,9 @@
 #include "AppConfig.h"
 
-#include "constants.h"
+#include <ESP8266WiFi.h>
+
+#include "../utils/constants.h"
+#include "./AppConfig.h"
 
 ////////////////////////////////////
 /// AppConfig Class Constructors ///
@@ -8,7 +11,6 @@
 
 AppConfig::AppConfig() {
   // Constructor for the AppConfig class.
-  // You may add any initialization code here.
 }
 
 ///////////////////////////////////
@@ -17,6 +19,7 @@ AppConfig::AppConfig() {
 
 AppConfig::BoardInfo::BoardInfo() {
   // Constructor for the BoardInfo class.
+
   boardChipId = ESP.getChipId();
   boardFlashChipId = ESP.getFlashChipId();
   boardCoreVersion = ESP.getCoreVersion();
@@ -31,6 +34,28 @@ AppConfig::BoardInfo::BoardInfo() {
   boardFlashChipSpeed = ESP.getFlashChipSpeed();
   boardCycleCount = ESP.getCycleCount();
 }
+
+// AppConfig::BoardInfo::printInfo() {
+//   Serial.println("Board info:");
+//   Serial.print("Board Chip ID: ");
+//   Serial.println(this->appConfig.boardInfo.boardChipId);
+//   Serial.print("Board Flash Chip ID: ");
+//   Serial.println(this->appConfig.boardInfo.boardFlashChipId);
+//   Serial.print("Board Core Version: ");
+//   Serial.println(this->appConfig.boardInfo.boardCoreVersion);
+//   Serial.print("Board Flash Chip Size: ");
+//   Serial.println(this->appConfig.boardInfo.boardFlashChipSize);
+//   Serial.print("Board Flash Chip Real Size: ");
+//   Serial.println(this->appConfig.boardInfo.boardFlashChipRealSize);
+//   Serial.print("Board CPU Frequency: ");
+//   Serial.println(this->appConfig.boardInfo.boardCpuFreqMHz);
+//   Serial.print("Board Free Heap: ");
+//   Serial.println(this->appConfig.boardInfo.boardFreeHeap);
+//   Serial.print("Board Heap Fragmentation: ");
+//   Serial.println(this->appConfig.boardInfo.boardHeapFragmentation);
+//   Serial.print("Board Sketch Size: ");
+//   Serial.println(this->appConfig.boardInfo.boardSketchSize);
+// }
 
 //////////////////////////////////
 /// AppInfo Class Constructors ///
@@ -47,7 +72,7 @@ String AppConfig::AppInfo::generateId(String boardId, String flashChipId) {
 
 AppConfig::AppInfo::AppInfo() {
   // Constructor for the AppInfo class.
-  // Initialize default values for sensorId
+
   sensorId = generateId(boardInfo.boardChipId, boardInfo.boardFlashChipId);
 }
 
@@ -57,8 +82,8 @@ AppConfig::AppInfo::AppInfo() {
 
 AppConfig::WifiManager::WifiManager() {
   // Constructor for the WifiManager class.
-  // Initialize default values for WifiManager
   status = {false, false, false, false, false, "", 0};
+
   ssid = "";
   ip = IPAddress(0, 0, 0, 0);
   hostname = "";
@@ -76,7 +101,6 @@ AppConfig::WifiManager::WifiManager() {
 
 AppConfig::MQTTManager::MQTTManager() {
   // Constructor for the MQTTManager class.
-  // Initialize default values for MQTTManager
   status = {false, false, false, false, false, "", 0};
 
   maxPacketSize = MQTT_MAX_PACKET_SIZE;
@@ -98,6 +122,5 @@ AppConfig::MQTTManager::MQTTManager() {
 
 AppConfig::HardwareManager::HardwareManager() {
   // Constructor for the HardwareManager class.
-  // Initialize default values for HardwareManager
   status = {false, false, false, false, false, "", 0};
 }

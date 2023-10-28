@@ -3,7 +3,8 @@
 
 #include <ESP8266WiFi.h>
 
-#include "constants.h"
+#include "../../utils/constants.h"
+#include "./AppConfig.h"
 
 ///////////////////////////////
 /// ManagerStatus Structure ///
@@ -46,6 +47,8 @@ class AppConfig {
     String boardSketchMD5;          // MD5 hash of the sketch on the board
     uint32_t boardFlashChipSpeed;   // Speed of the flash chip on the board
     uint32_t boardCycleCount;       // Cycle count of the board
+
+    // void printInfo();
   };
 
   /////////////////////

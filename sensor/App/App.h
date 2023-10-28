@@ -4,9 +4,9 @@
 #include "../../managers/hardware-manager/HWManager.h"
 #include "../../managers/mqtt-manager/MQTTManager.h"
 #include "../../managers/wifi-manager/WifiManager.h"
-#include "../utils/AppConfig.h"
 #include "../utils/constants.h"
 #include "../utils/types.h"
+#include "./AppConfig.h"
 #include "Arduino.h"
 
 class App {
@@ -55,13 +55,6 @@ class App {
    * @brief Sets the sensor information in the AppConfig object.
    */
   void setSensorInfo();
-
-  /**
-   * @brief Generates a unique sensor ID based on board information.
-   *
-   * @return The generated sensor ID.
-   */
-  String generateSensorID();
 
   /**
    * @brief Blinks the built-in LED.

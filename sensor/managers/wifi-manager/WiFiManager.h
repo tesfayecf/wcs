@@ -6,7 +6,7 @@
 #include <ESP8266WiFi.h>
 #include <EEPROM.h>
 
-#include "../../utils/AppConfig.h"
+#include "../../App/AppConfig.h"
 #include "../../utils/types.h"
 #include "Arduino.h"
 

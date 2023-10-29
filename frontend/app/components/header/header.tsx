@@ -1,8 +1,8 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { IRootState } from '@/app/utils/store/store'
-import HeaderWidget from './HeaderWidget'
 import { ChartData } from 'chart.js'
+import { connect } from 'react-redux'
+import HeaderWidget from '@/app/components/header/HeaderWidget'
+import { IRootState } from '@/app/utils/store/store'
 
 
 interface IHeaderProps extends ReturnType<typeof mapStateToProps> { }

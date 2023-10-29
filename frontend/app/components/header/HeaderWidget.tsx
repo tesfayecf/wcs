@@ -1,10 +1,10 @@
 import React from "react";
 import { connect } from "react-redux"
-import ContentBox from "../contentBox/ContentBox"
+import ContentBox from "@/app/components/contentBox/ContentBox"
 
 import { IRootState } from "@/app/utils/store/store";
 import { ChartData, ChartOptions } from "chart.js";
-import HeaderChart from "./HeaderChart";
+import HeaderChart from "@/app/components/header/HeaderChart";
 import { HEXToRGBA } from "@/app/utils/lib/styles"
 
 interface IHeaderWidgetProps {

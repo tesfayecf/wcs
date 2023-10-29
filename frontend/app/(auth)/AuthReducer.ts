@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { IAuthStore, ILoginForm, IRegisterForm, IResetPasswordForm } from './AuthTypes';
+import { IAuthStore, ILoginForm } from '@/app/(auth)/AuthTypes';
 
 
 // Define the initial state

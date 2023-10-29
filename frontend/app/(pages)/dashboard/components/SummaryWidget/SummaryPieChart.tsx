@@ -1,3 +1,4 @@
+'use client'
 import { connect } from "react-redux"
 import {
     Chart as ChartJS, CategoryScale, LinearScale,
@@ -24,7 +25,6 @@ const SummaryPieChart: React.FunctionComponent<ISummaryPieChartProps> = (props: 
         </div>
     )
 }
-
 
 const mapStateToProps = (state: IRootState) => {
     return {}

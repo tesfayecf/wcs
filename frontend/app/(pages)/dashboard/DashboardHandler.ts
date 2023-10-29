@@ -1,7 +1,7 @@
 // import { useStore } from "@/app/utils/store/store";
 import { store } from "@/app/utils/store/store";
-import { IGroupCreationForm } from "./DashboardTypes";
-import { dashboardActions } from "./DashboardReducer";
+import { IGroupCreationForm } from "@/app/(pages)/dashboard/DashboardTypes";
+import { dashboardActions } from "@/app/(pages)/dashboard/DashboardReducer";
 import RequestManager from "@/app/utils/api/requestManager";
 import { appActions } from "@/app/app/AppReducer";
 import WebSocketManager from "@/app/utils/api/websocketManager";

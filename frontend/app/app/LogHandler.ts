@@ -1,5 +1,3 @@
-'use client'
-
 class LogHandler {
     private static instance: LogHandler;
     private constructor() {

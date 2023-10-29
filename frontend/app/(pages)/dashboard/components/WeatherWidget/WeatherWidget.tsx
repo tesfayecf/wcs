@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import ContentBox from '@/app/components/contentBox/ContentBox';
 

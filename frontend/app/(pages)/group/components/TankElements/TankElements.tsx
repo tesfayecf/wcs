@@ -1,3 +1,4 @@
+'use client'
 import { IRootState } from '@/app/utils/store/store'
 import React from 'react'
 import { connect } from 'react-redux'

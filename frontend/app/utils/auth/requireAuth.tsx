@@ -1,7 +1,7 @@
 'use client';
 import { connect } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { IRootState } from '../store/store';
+import { IRootState } from '@/app/utils/store/store';
 import LoadingPage from '@/app/components/loadingPage/LoadingPage';
 
 interface IProps extends ReturnType<typeof mapStateToProps> {

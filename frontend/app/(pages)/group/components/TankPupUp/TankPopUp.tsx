@@ -9,7 +9,6 @@ import { ITankCreationForm } from '../../GroupTypes';
 
 const groupHandler = GroupHandler.getInstance();
 
-
 interface ITankPopUpProps extends ReturnType<typeof mapStateToProps> { }
 
 const TankPopUp: React.FunctionComponent<ITankPopUpProps> = (props: ITankPopUpProps) => {

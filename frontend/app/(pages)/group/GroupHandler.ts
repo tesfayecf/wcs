@@ -1,6 +1,6 @@
 import { store } from "@/app/utils/store/store";
-import { ISensor, ITank, ITankCreationForm, IGroupParams } from "./GroupTypes";
-import { groupActions } from "./GroupReducer";
+import { ISensor, ITank, ITankCreationForm, IGroupParams } from "@/app/(pages)/group/GroupTypes";
+import { groupActions } from "@/app/(pages)/group/GroupReducer";
 import RequestManager from "@/app/utils/api/requestManager";
 import WebSocketManager2 from "@/app/utils/api/websocketManager2";
 import { appActions } from "@/app/app/AppReducer";

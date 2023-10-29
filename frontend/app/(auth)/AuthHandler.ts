@@ -1,9 +1,8 @@
 import { appActions } from "../app/AppReducer";
 import { store } from "../utils/store/store";
-import { authActions } from "./AuthReducer";
-import { ILoginForm, ILoginFormN } from "./AuthTypes";
+import { authActions } from "@/app/(auth)/AuthReducer";
+import { ILoginForm, ILoginFormN } from "@/app/(auth)/AuthTypes";
 import RequestManager from '@/app/utils/api/requestManager'
-import { useRouter } from 'next/navigation';
 
 const requestManager = RequestManager.getInstance();
 

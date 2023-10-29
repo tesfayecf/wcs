@@ -1,5 +1,3 @@
-
-
 export interface IDashboardStore {
     groups: IGroup[];
     showEditGroupMenu: boolean;

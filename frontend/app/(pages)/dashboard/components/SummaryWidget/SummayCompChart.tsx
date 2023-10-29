@@ -1,3 +1,4 @@
+'use client'
 import { connect } from "react-redux"
 import {
     Chart as ChartJS, CategoryScale, LinearScale,

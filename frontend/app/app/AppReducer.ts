@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IAppStore, IUserInfo } from './AppTypes';
+import { IAppStore, IUserInfo } from '@/app/app/AppTypes';
 
 // Define the initial state
 const initialState: IAppStore = {

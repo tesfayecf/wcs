@@ -1,5 +1,5 @@
-import { store } from '../store/store';
-import BaseManager from './baseManager';
+import { store } from '@/app/utils/store/store';
+import BaseManager from '@/app/utils/api/baseManager';
 
 class WebSocketManager extends BaseManager {
     private static instance: WebSocketManager;

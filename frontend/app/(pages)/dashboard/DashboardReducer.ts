@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IDashboardStore, IGroup } from './DashboardTypes';
+import { IDashboardStore, IGroup } from '@/app/(pages)/dashboard/DashboardTypes';
 
 // Define the initial state
 const initialState: IDashboardStore = {

@@ -1,11 +1,11 @@
 import { Mutex } from "async-mutex";
-import { APIInterface, APIResponse } from "./apiInterface";
-import { AxiosError, AxiosResponse } from 'axios';
-import { store } from "../store/store";
+import { store } from "@/app/utils/store/store";
 import { appActions } from "@/app/app/AppReducer";
-import BaseManager from "./baseManager";
-const mutex = new Mutex();
+import { AxiosError, AxiosResponse } from 'axios';
+import BaseManager from "@/app/utils/api/baseManager";
+import { APIInterface, APIResponse } from "@/app/utils/api/apiInterface";
 
+const mutex = new Mutex();
 type TRequestMethods = "GET" | "POST" | "DELETE";
 
 class RequestManager extends BaseManager {

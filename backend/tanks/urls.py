@@ -5,8 +5,10 @@ urlpatterns = [
     # summary
     path('summary/', GetSummaryView.as_view()),
 
-    # group
+    # groups
     path('groups/', GetGroupsView.as_view()),
+
+    # group
     path('create-group/', CreateGroupView.as_view()),
     path('edit-group/', EditGroupView.as_view()),
     path('delete-group/', DeleteGroupView.as_view()),

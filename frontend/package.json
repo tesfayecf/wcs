@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon server.js",
+    "start": "nodemon server.js",
+    "dev::start": "next start",
     "dev::next": "next dev",
     "dev::next::turbo": "next dev --turbo",
-    "dev::start": "next start",
     "build": "next build",
     "lint": "next lint",
     "ts": "tsc --noEmit --incremental",

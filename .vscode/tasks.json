@@ -2,67 +2,56 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Watch all",
-      "dependsOn": [],
-      "dependsOrder": "parallel",
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "problemMatcher": [],
-      "isBackground": true
-    },
-    {
-      "label": "NextJS: --watch ts",
+      "label": "Start EMQ X Broker - 5.1",
       "type": "shell",
-      "command": "npm",
-      "group": {
-        "kind": "build"
-      },
-      "options": {
-        "cwd": "${workspaceFolder}/frontend"
-      },
-      "args": ["run", "ts:watch"],
-      "isBackground": true,
-      "problemMatcher": []
-    },
-    {
-      "label": "NextJS: --watch lint",
-      "type": "shell",
-      "command": "npm",
-      "group": {
-        "kind": "build"
-      },
-      "options": {
-        "cwd": "${workspaceFolder}/frontend"
-      },
-      "args": ["run", "lint"],
-      "isBackground": true,
-      "problemMatcher": []
-    },
-    {
-      "label": "Start EMQ X Broker",
-      "type": "shell",
-      "command": "C:\\emqx\\bin\\emqx.cmd",
+      "command": "C:\\emqx_51\\bin\\emqx.cmd",
       "args": ["start"],
       "options": {
-        "cwd": "C:\\emqx\\bin"
+        "cwd": "C:\\emqx_51\\bin"
       },
-      "isBackground": true,
+      "isBackground": false,
       "presentation": {
         "reveal": "silent"
       },
       "problemMatcher": []
     },
     {
-      "label": "Stop EMQ X Broker",
+      "label": "Stop EMQ X Broker - 5.1",
       "type": "shell",
-      "command": "C:\\emqx\\bin\\emqx.cmd",
+      "command": "C:\\emqx_51\\bin\\emqx.cmd",
       "args": ["stop"],
       "options": {
-        "cwd": "C:\\emqx\\bin"
+        "cwd": "C:\\emqx_51\\bin"
       },
-      "isBackground": true,
+      "isBackground": false,
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Start EMQ X Broker - 4.4",
+      "type": "shell",
+      "command": "C:\\emqx_44\\bin\\emqx.cmd",
+      "args": ["start"],
+      "options": {
+        "cwd": "C:\\emqx_44\\bin"
+      },
+      "isBackground": false,
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Stop EMQ X Broker - 4.4",
+      "type": "shell",
+      "command": "C:\\emqx_44\\bin\\emqx.cmd",
+      "args": ["stop"],
+      "options": {
+        "cwd": "C:\\emqx_44\\bin"
+      },
+      "isBackground": false,
       "presentation": {
         "reveal": "silent"
       },

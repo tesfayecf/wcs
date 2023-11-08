@@ -4,10 +4,10 @@
   "C_Cpp.clang_format_fallbackStyle": "Google",
   "vsmqtt.brokerProfiles": [
     {
-      "name": "loacal_test",
+      "name": "LOCAL MQTT BROKER",
       "host": "127.0.0.1",
       "port": 1883,
-      "clientId": "local_test"
+      "clientId": "vsmqtt_client_033c"
     }
   ]
 }

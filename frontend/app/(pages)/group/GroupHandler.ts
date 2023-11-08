@@ -29,7 +29,7 @@ class GroupHandler {
         await this.loadParams(params);
         await this.getTanksInfo();
         await this.getSensorsInfo();
-        await this.initializeWSConnections();
+        this.initializeWSConnections(); // dont wait
 
         store.dispatch(appActions.finishLoading())
     }

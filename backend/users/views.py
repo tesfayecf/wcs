@@ -40,8 +40,7 @@ class CustomProviderAuthView(ProviderAuthView):
 
         return response
 
-
-class CustomTokenObtainPairView(TokenObtainPairView):
+class CustomTokenLoginView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
 
@@ -70,6 +69,15 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
         return response
 
+class CustomTokenVerifyView(TokenVerifyView):
+    def post(self, request, *args, **kwargs):
+        access_token = request.COOKIES.get('access')
+
+        if access_token:
+            request.data['token'] = access_token
+
+        return super().post(request, *args, **kwargs)
+
 
 class CustomTokenRefreshView(TokenRefreshView):
     def post(self, request, *args, **kwargs):
@@ -95,18 +103,7 @@ class CustomTokenRefreshView(TokenRefreshView):
 
         return response
 
-
-class CustomTokenVerifyView(TokenVerifyView):
-    def post(self, request, *args, **kwargs):
-        access_token = request.COOKIES.get('access')
-
-        if access_token:
-            request.data['token'] = access_token
-
-        return super().post(request, *args, **kwargs)
-
-
-class LogoutView(APIView):
+class CustomTokenLogoutView(APIView):
     def post(self, request, *args, **kwargs):
         response = Response(status=status.HTTP_204_NO_CONTENT)
         response.delete_cookie('access')

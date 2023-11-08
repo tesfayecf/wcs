@@ -35,7 +35,7 @@ export const APIInterface = {
         },
         login: {
             args: (email: string, password: string): APIResponse<{ access: string, refresh: string }> => { return {} as APIResponse<{ access: string, refresh: string }> },
-            address: "api/auth/create/",
+            address: "api/auth/login/",
             method: "POST",
             argsKeys: ["email", "password"],
         },

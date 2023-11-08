@@ -25,13 +25,17 @@ class DashboardHandler {
     }
 
     public async load() {
-        await this.getGroups();
-        await this.getSummaryData();
-        // await this.startWS();
-        const message = {
-            message: "test",
-            sender: "test"
-        }
+        await Promise.all([
+            this.getGroups(),
+            this.getSummaryData(),
+            // await this.startWS();
+        ])
+
+
+        // const message = {
+        //     message: "test",
+        //     sender: "test"
+        // }
         // await webSocketManager.sendWebSocketData("prova", message)
         // await webSocketManager.receiveWebSocketData("prova");
 
@@ -50,7 +54,7 @@ class DashboardHandler {
         // const response = await requestManager.request("dashboard", "getSummary", [])
     }
 
-    /// TANK GROUP HANDLER \\\
+    /// GROUP HANDLER \\\
 
     public async getGroups() {
         const response = await requestManager.request("dashboard", "getGroups", [])

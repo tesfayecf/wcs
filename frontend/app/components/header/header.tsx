@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import { ChartData } from 'chart.js'
 import { connect } from 'react-redux'

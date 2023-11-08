@@ -1,6 +1,4 @@
 /** @type {import('next').NextConfig} */
-path = require("path");
-
 const nextConfig = {
     experimental: {
         appDir: true,
@@ -12,8 +10,16 @@ const nextConfig = {
                 destination: '/dashboard',
                 permanent: true,
             },
-        ]
+        ];
     },
-}
+    async rewrites() {
+        return [
+            {
+                source: '/api/:path*',
+                destination: 'http://127.0.0.1:8000/api/:path*/',
+            },
+        ];
+    },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

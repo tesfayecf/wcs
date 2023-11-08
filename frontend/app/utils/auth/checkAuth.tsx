@@ -1,7 +1,7 @@
 'use client';
 import { connect } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { IRootState } from '../store/store';
+import { IRootState } from '@/app/utils/store/store';
 import LoadingPage from '@/app/components/loadingPage/LoadingPage';
 
 interface IProps extends ReturnType<typeof mapStateToProps> {
@@ -9,10 +9,10 @@ interface IProps extends ReturnType<typeof mapStateToProps> {
 }
 
 const CheckAuth: React.FunctionComponent<IProps> = (props: IProps) => {
-    const router = useRouter()
-    if (props.isLoading) return <LoadingPage />
+    const router = useRouter();
+    if (props.isLoading) return <LoadingPage />;
     if (props.isAuthenticated) router.push('./dashboard');
-    return <>{props.children}</>;
+    return props.children;
 }
 
 function mapStateToProps(state: IRootState) {

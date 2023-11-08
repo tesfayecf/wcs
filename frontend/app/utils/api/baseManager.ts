@@ -4,8 +4,8 @@ import axios, { AxiosInstance } from "axios";
 class BaseManager {
     public HTTP_PROT = "http";
     public WS_PROT = "ws";
-    public BASE_URL = "127.0.0.1";
-    public PORT = 8000;
+    public BASE_URL = "localhost";
+    public PORT = 3000;
     protected request_api: AxiosInstance;
     protected ws_api: WebSocket;
 

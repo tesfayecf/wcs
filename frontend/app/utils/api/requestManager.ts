@@ -22,6 +22,28 @@ class RequestManager extends BaseManager {
         return RequestManager.instance;
     }
 
+    public async request_<
+        T extends keyof typeof APIInterface,
+        S extends keyof typeof APIInterface[T],
+    >(
+        group: T,
+        endpoint: S,
+        // @ts-ignore
+        args: Parameters<typeof APIInterface[T][S]["args"]>,
+        authenticate: boolean = true,
+        // @ts-ignore
+    ): Promise<ReturnType<typeof APIInterface[T][S]["args"]>> {
+        // @ts-ignore
+        const { address, method, argsKeys } = APIInterface[group][endpoint as string];
+        console.log(address, method)
+        const obj = Object.fromEntries(args.map((key, index) => [argsKeys[index], key]));
+        const reponse = await this.baseRequest_(method, address, obj, authenticate);
+        if (process.env.NODE_ENV === "development") {
+            console.log(`[${group}][${endpoint as string}]`, reponse);
+        }
+        return reponse;
+    }
+
     public async request<
         T extends keyof typeof APIInterface,
         S extends keyof typeof APIInterface[T],
@@ -75,7 +97,7 @@ class RequestManager extends BaseManager {
                 store.dispatch(appActions.setRefreshToken(refreshResponse.data.refresh));
                 response = await this.baseRequest_(method, address, obj, authenticate);
             } else {
-                response = await this.baseRequest_("POST", "auth/logout/", {})
+                response = await this.baseRequest_("POST", "api/auth/logout/", {})
                 store.dispatch(appActions.logout());
             }
         } finally {

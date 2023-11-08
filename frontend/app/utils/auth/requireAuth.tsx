@@ -12,7 +12,7 @@ const RequireAuth: React.FunctionComponent<IProps> = (props: IProps) => {
     const router = useRouter();
     if (props.isLoading) return <LoadingPage />
     if (!props.isAuthenticated) router.push('/login');
-    return <>{props.children}</>;
+    return props.children;
 }
 
 function mapStateToProps(state: IRootState) {

@@ -1,19 +1,19 @@
 'use client'
 import React from "react";
 import FormTemplate from "@/app/components/formTemplate/FormTemplate";
+import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
+import { ILoginFormN } from "@/app/(auth)/AuthTypes"
 import AuthHandler from "../AuthHandler";
 import AppHandler from "@/app/app/AppHandler";
-import { IRootState } from "@/app/utils/store/store";
+import { useRouter } from "next/navigation";
 import { connect } from "react-redux";
-import { useRouter } from 'next/navigation';
+import { IRootState } from "@/app/utils/store/store";
 import CheckAuth from "@/app/utils/auth/checkAuth";
-import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
-import { ILoginFormN } from "./../AuthTypes"
 
 const authHandler = AuthHandler.getInstance()
 const appHandler = AppHandler.getInstance()
 
-interface ILoginProps extends ReturnType<typeof mapStateToProps> { }
+interface ILoginProps { }
 
 const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
     const router = useRouter();
@@ -31,58 +31,54 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
             router.push('./dashboard');
             appHandler.setAuth();
         } else {
-            console.log("Error") // Error handler
+            console.log("Error")
         }
     }
 
     return (
-        <>
-            <CheckAuth>
-                <div className={"login"}>
-                    <div className={"form"}>
-                        <PopUpTemplate
-                            hideBackDrop={true}
-                            open={true}
-                            onClose={() => { }}
-                        >
-                            <FormTemplate<ILoginFormN>
-                                title="Log in"
-                                externalError={false}
-                                externalErrorText={"Invalid credentials"}
-                                onCancel={() => { }}
-                                onAccept={onLogin}
-                                acceptButtonText="Log in"
-                                cancelButtonText="Cancel"
-                                hideCancelButton={false}
-                                isLoading={false}
-                                fields={[
-                                    {
-                                        name: "Email",
-                                        type: "text",
-                                        placeholder: "",
-                                        textType: "email"
-                                    },
-                                    {
-                                        name: "Password",
-                                        type: "text",
-                                        placeholder: "",
-                                        textType: "password"
-                                    }
-                                ]}
-                            />
-                        </PopUpTemplate>
-                    </div>
+        <CheckAuth>
+            <div className={"login"}>
+                <div className={"form"}>
+                    <PopUpTemplate
+                        hideBackDrop={true}
+                        open={true}
+                        onClose={() => { }}
+                    >
+                        <FormTemplate<ILoginFormN>
+                            title="Log in"
+                            externalError={false}
+                            externalErrorText={"Invalid credentials"}
+                            onCancel={() => { }}
+                            onAccept={onLogin}
+                            acceptButtonText="Log in"
+                            cancelButtonText="Cancel"
+                            hideCancelButton={false}
+                            isLoading={false}
+                            fields={[
+                                {
+                                    name: "Email",
+                                    type: "text",
+                                    placeholder: "",
+                                    textType: "email"
+                                },
+                                {
+                                    name: "Password",
+                                    type: "text",
+                                    placeholder: "",
+                                    textType: "password"
+                                }
+                            ]}
+                        />
+                    </PopUpTemplate>
                 </div>
-            </CheckAuth>
-        </>
+            </div>
+        </CheckAuth>
     )
 }
 
 
 const mapStateToProps = (state: IRootState) => {
-    return {
-        loginForm: state.auth.loginForm,
-    }
+    return {}
 }
 
 export default connect(mapStateToProps, {})(Login);

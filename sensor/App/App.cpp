@@ -10,6 +10,7 @@
 #include "../../managers/wifi-manager/WifiManager.h"
 #include "../utils/constants.h"
 #include "../utils/types.h"
+#include "../utils/utils.h"
 #include "./AppConfig.h"
 
 App::App(const AppConfig& config)
@@ -26,8 +27,9 @@ void App::setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
 
+  // Set App and Boardinfo
   this->setBoardInfo();
-  this->setSensorInfo();
+  this->setAppInfo();
 
   wifiManager_ = new WifiManager();
   mqttManager_ = new MQTTManager();
@@ -81,6 +83,20 @@ void App::restart() { ESP.restart(); }
  * saved" to the serial monitor.
  */
 void App::setBoardInfo() {
+  this->appConfig.boardInfo.boardChipId = ESP.getChipId();
+  this->appConfig.boardInfo.boardFlashChipId = ESP.getFlashChipId();
+  this->appConfig.boardInfo.boardCoreVersion = ESP.getCoreVersion();
+  this->appConfig.boardInfo.boardFlashChipSize = ESP.getFlashChipSize();
+  this->appConfig.boardInfo.boardFlashChipRealSize = ESP.getFlashChipRealSize();
+  this->appConfig.boardInfo.boardCpuFreqMHz = ESP.getCpuFreqMHz();
+  this->appConfig.boardInfo.boardFreeHeap = ESP.getFreeHeap();
+  this->appConfig.boardInfo.boardHeapFragmentation = ESP.getHeapFragmentation();
+  this->appConfig.boardInfo.boardSketchSize = ESP.getSketchSize();
+  this->appConfig.boardInfo.boardFreeSketchSpace = ESP.getFreeSketchSpace();
+  this->appConfig.boardInfo.boardSketchMD5 = ESP.getSketchMD5();
+  this->appConfig.boardInfo.boardFlashChipSpeed = ESP.getFlashChipSpeed();
+  this->appConfig.boardInfo.boardCycleCount = ESP.getCycleCount();
+
   Serial.println("Board info:");
   Serial.print("Board Chip ID: ");
   Serial.println(this->appConfig.boardInfo.boardChipId);
@@ -108,9 +124,13 @@ void App::setBoardInfo() {
  * @details This function generates a unique sensor ID based on the board
  * information and sets it in the AppConfig object.
  */
-void App::setSensorInfo() {
-  Serial.println("Sensor info:");
-  Serial.print("Sensor ID: ");
+void App::setAppInfo() {
+  String flashChipIdStr =
+      String(this->appConfig.boardInfo.boardFlashChipId, DEC);
+
+  this->appConfig.appInfo.sensorId =
+      generateId(this->appConfig.boardInfo.boardChipId, flashChipIdStr);
+
   Serial.println(this->appConfig.appInfo.sensorId);
 }
 

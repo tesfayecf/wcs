@@ -3,7 +3,6 @@
 
 #include <ESP8266WiFi.h>
 
-#include "../../utils/constants.h"
 #include "./AppConfig.h"
 
 ///////////////////////////////
@@ -58,8 +57,6 @@ class AppConfig {
   class AppInfo {
    public:
     String sensorId;  // ID of the sensor
-   private:
-    String generateId(String boardId, String flashChipId);
   };
 
   /////////////////////////

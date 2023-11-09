@@ -101,7 +101,8 @@ const char* enumToString(JSON_KEYS key) {
 }
 
 // // Function to add an element to a JSON object
-// bool addToJsonObject(JsonObject& jsonObject, JSON_KEYS key, const char* value) {
+// bool addToJsonObject(JsonObject& jsonObject, JSON_KEYS key, const char*
+// value) {
 //     char charKey = enumToString(key);
 
 //     // Check if the key is already present in the JSON object
@@ -116,5 +117,14 @@ const char* enumToString(JSON_KEYS key) {
 //     // Return true to indicate success
 //     return true;
 // }
+
+String generateId(String boardId, String flashChipId) {
+  MD5Builder md5;
+  md5.begin();
+  md5.add(boardId);
+  md5.add(flashChipId);
+  md5.calculate();
+  return md5.toString();
+}
 
 #endif  // UTILS_H

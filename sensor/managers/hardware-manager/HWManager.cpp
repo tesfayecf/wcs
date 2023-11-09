@@ -20,11 +20,13 @@ void HWManager::init(AppConfig* config_, Managers* managers_) {
 
 void HWManager::setup() {
   Serial.println("Initializing HWManager");
+  // check sensor works
   Serial.println("HWManager Initialized");
 }
 
 void HWManager::loop() {}
 
+// TODO: get better reading from boscal branch
 void HWManager::readSensorValues(unsigned int& distanceRaw,
                                  unsigned int& distanceCm) {
   unsigned int distanceRaw_ = 0;

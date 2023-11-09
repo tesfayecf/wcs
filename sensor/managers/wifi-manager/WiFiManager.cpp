@@ -6,6 +6,7 @@
 #include "WebPage.h"
 
 WifiManager::WifiManager() : server(SERVER_PORT) {
+  Serial.println("WifiManager constructor");
   this->ssid = "";
   this->password = "";
 }
@@ -18,20 +19,20 @@ void WifiManager::init(AppConfig* config_, Managers* managers_) {
 
 void WifiManager::setup() {
   Serial.println("Initializing WifiManager");
+
   EEPROM.begin(EEPROM_SIZE);
+
   // Connect to WiFi
   if (!this->autoConnect()) {
     Serial.println("WiFi connection failed");
     return;
   }
-  // wiFiManager.autoConnect("AutoConnectAP");
-  // wiFiManager.startConfigPortal("AutoConnectAP");
 
   Serial.println("WifiManager Initialized");
 }
 
 void WifiManager::loop() {
-  // check wifi is connected and continue loop
+  // Check if WiFi is connected and continue loop
   if (!WiFi.status() == WL_CONNECTED) {
     Serial.println("WiFi connection lost");
     this->autoConnect();
@@ -46,6 +47,7 @@ bool WifiManager::autoConnect() {
       return true;
     }
   }
+  this->connected = false;
 
   // Start config portal
   return this->startConfigPortal();
@@ -58,15 +60,12 @@ bool WifiManager::connect() {
   IPAddress gateway(192, 168, 1, 1);
   IPAddress subnet(255, 255, 0, 0);
   if (!WiFi.config(local_IP, gateway, subnet)) {
-    this->connected = false;
-    Serial.println("WiFi.config connection failed");
+    Serial.println("WiFi.config failed");
     return false;
   }
 
-  // WiFi.begin("ONO1D77", "dVy68naGZU5d");
   if (!WiFi.begin(this->ssid, this->password)) {
-    Serial.println("WiFi.begin connection failed");
-    this->connected = false;
+    Serial.println("WiFi.begin failed");
     return false;
   }
 
@@ -79,18 +78,18 @@ bool WifiManager::connect() {
   }
 
   if (WiFi.status() == WL_CONNECTED) {
-    Serial.println("WiFi connected");
+    Serial.println("WiFi did connect");
     this->connected = true;
     this->setWifiConnectionInfo();
     return true;
   } else {
-    Serial.println("WiFi connection failed");
+    Serial.println("WiFi could not connect");
     this->connected = false;
     return false;
   }
 }
 
-boolean WifiManager::startConfigPortal() {
+bool WifiManager::startConfigPortal() {
   // Start config portal
   Serial.println("Starting config portal");
 
@@ -131,15 +130,17 @@ boolean WifiManager::startConfigPortal() {
   }
 
   Serial.println("Portal closed");
-  Serial.println(this->connected);
+  if (this->connected) {
+    Serial.println("");
+  }
 
   return this->connected;
 }
 
 void WifiManager::renderMainPage() {
   String serverLoc = toStringIp(server.client().localIP());
-  bool doredirect = serverLoc != server.hostHeader();
-  if (doredirect) {
+  bool doRedirect = serverLoc != server.hostHeader();
+  if (doRedirect) {
     server.sendHeader(F("Location"), (String)F("http://") + serverLoc, true);
     server.send(302, "text/plain", "");
     server.client().stop();
@@ -169,7 +170,6 @@ void WifiManager::receiveCredentials() {
 }
 
 bool WifiManager::getWifiCredentials() {
-  EEPROM.begin(EEPROM_SIZE);
   delay(10);
 
   String ssid_ = "";

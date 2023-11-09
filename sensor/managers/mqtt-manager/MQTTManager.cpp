@@ -10,9 +10,13 @@
 #include "../../utils/types.h"
 #include "../../utils/utils.h"
 
+// Singleton instance
 MQTTManager* MQTTManager::instance = nullptr;
 
-MQTTManager::MQTTManager() : mqttClient(wifiClient) { instance = this; }
+MQTTManager::MQTTManager() : mqttClient(wifiClient) {
+  Serial.println("MQTTManager constructor");
+  instance = this;
+}
 
 void MQTTManager::init(AppConfig* config_, Managers* managers_) {
   Serial.println("MQTTManager init");
@@ -22,8 +26,11 @@ void MQTTManager::init(AppConfig* config_, Managers* managers_) {
 
 void MQTTManager::setup() {
   Serial.println("Initializing MQTTManager");
-  mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
+
+  this->setMqttBaseInfo();
+
   this->setMqttConnectionInfo();
+
   mqttClient.setCallback(callbackFunction);
   Serial.println("MQTT client set");
 
@@ -32,7 +39,8 @@ void MQTTManager::setup() {
 
   // Register client
   this->registerClient();
-  // Auhenticate client
+
+  // Authenticate client
   this->authenticateClient();
 
   // TODO: subscribe to server topics: sensorID/status, sensorID/timer, ...
@@ -43,9 +51,9 @@ void MQTTManager::setup() {
 }
 
 void MQTTManager::loop() {
-  // if (!mqttClient.connected()) {
-  //   reconnect();
-  // }
+  if (!mqttClient.connected()) {
+    reconnect();
+  }
 
   // Publish sensor data every 10 seconds
   if (millis() % 10000 == 0) {
@@ -114,7 +122,7 @@ void MQTTManager::callbackFunction(char* topic, byte* payload,
       0) {
     instance->statusCallback(payload, length);
   } else if (strcmp(topic,
-                    instance->appConfig->mqttManager.statusTopic.c_str()) ==
+                    instance->appConfig->mqttManager.configTopic.c_str()) ==
              0) {
     instance->configCallback(payload, length);
   } else if (strcmp(topic,
@@ -196,6 +204,8 @@ void MQTTManager::statusCallback(uint8_t* payload, unsigned int length) {
  * @param length The length of the payload.
  *
  * @details This function is called when a config message is received.
+ *
+ */
 void MQTTManager::configCallback(uint8_t* payload, unsigned int length) {
   Serial.println("Received config message");
 }
@@ -299,9 +309,35 @@ void MQTTManager::basePublish(ArduinoJson::V6213PB2::JsonObject& dataObject,
  */
 void MQTTManager::addMetadata(JsonObject& metaObj) {
   metaObj["sensorId"] = this->appConfig->appInfo.sensorId;
-  // metaObj["sensorType"] = this->appConfig->appInfo.sensorType;
-  // metaObj["location"] = this->appConfig->appInfo.location;
   metaObj["timestamp"] = millis();
+}
+
+/**
+ * @brief Sets the MQTT basic information.
+ *
+ * @details This function sets the topics to subscribe and publish for the MQTT
+ * client.
+ */
+void MQTTManager::setMqttBaseInfo() {
+  this->appConfig->mqttManager.statusTopic =
+      this->appConfig->appInfo.sensorId + "/" + MQTT_STATUS_TOPIC;
+  this->appConfig->mqttManager.configTopic =
+      this->appConfig->appInfo.sensorId + "/" + MQTT_CONFIG_TOPIC;
+  this->appConfig->mqttManager.dataTopic =
+      this->appConfig->appInfo.sensorId + "/" + MQTT_DATA_TOPIC;
+  this->appConfig->mqttManager.authTopic =
+      this->appConfig->appInfo.sensorId + "/" + MQTT_AUTH_TOPIC;
+
+  Serial.println("Status Topic");
+  Serial.println(this->appConfig->mqttManager.statusTopic);
+  Serial.println("Config Topic");
+  Serial.println(this->appConfig->mqttManager.configTopic);
+  Serial.println("Data Topic");
+  Serial.println(this->appConfig->mqttManager.dataTopic);
+  Serial.println("Auth Topic");
+  Serial.println(this->appConfig->mqttManager.authTopic);
+  Serial.println("Register Topic");
+  Serial.println(this->appConfig->mqttManager.registerTopic);
 }
 
 /**
@@ -311,7 +347,8 @@ void MQTTManager::addMetadata(JsonObject& metaObj) {
  * for the MQTT client.
  */
 void MQTTManager::setMqttConnectionInfo() {
-  // mqttClient.setKeepAlive(60);
-  // mqttClient.setSocketTimeout(15);
-  // mqttClient.setBufferSize(1024);
+  mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
+  mqttClient.setKeepAlive(MQTT_KEEP_ALIVE);
+  mqttClient.setSocketTimeout(MQTT_CONNECTION_TIMEOUT_CUSTOM);
+  mqttClient.setBufferSize(MQTT_MAX_PACKET_SIZE);
 }

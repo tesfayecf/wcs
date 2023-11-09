@@ -125,6 +125,12 @@ class MQTTManager {
   void authenticateClient();
 
   /**
+   * @brief Set the Mqtt Basic Info object
+   *
+   */
+  void setMqttBaseInfo();
+
+  /**
    * @brief Sets the MQTT connection information.
    */
   void setMqttConnectionInfo();

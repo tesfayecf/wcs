@@ -87,7 +87,7 @@
 #define MQTT_VERSION 5  // MQTT Protocol Version (e.g., 3.1, 3.1.1, 5)
 #define MQTT_MAX_PACKET_SIZE 1024
 #define MQTT_KEEP_ALIVE 60
-#define MQTT_CONNECTION_TIMEOUT 10
+#define MQTT_CONNECTION_TIMEOUT_CUSTOM 10
 
 #define MQTT_STATUS_TOPIC "status"             // MQTT Status Topic
 #define MQTT_CONFIG_TOPIC "config"             // MQTT Config Topic

@@ -54,7 +54,7 @@ class App {
   /**
    * @brief Sets the sensor information in the AppConfig object.
    */
-  void setSensorInfo();
+  void setAppInfo();
 
   /**
    * @brief Blinks the built-in LED.

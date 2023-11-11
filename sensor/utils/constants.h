@@ -81,7 +81,7 @@
 /// MQTT MANAGER ///
 ////////////////////
 
-#define MQTT_BROKER "192.168.1.2"  // MQTT Broker IP Address
+#define MQTT_BROKER "192.168.1.6"  // MQTT Broker IP Address
 #define MQTT_PORT 1883             // MQTT Broker Port
 
 #define MQTT_VERSION 5  // MQTT Protocol Version (e.g., 3.1, 3.1.1, 5)

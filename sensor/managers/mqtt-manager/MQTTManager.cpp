@@ -18,24 +18,31 @@ MQTTManager::MQTTManager() : mqttClient(wifiClient) {
   instance = this;
 }
 
+/// INIT ///
 void MQTTManager::init(AppConfig* config_, Managers* managers_) {
   Serial.println("MQTTManager init");
   managers = managers_;
   appConfig = config_;
 }
 
+/// SETUP ///
 void MQTTManager::setup() {
   Serial.println("Initializing MQTTManager");
 
-  this->setMqttBaseInfo();
+  // Set MQTT basic info
+  this->setMqttBasicInfo();
 
+  // Set MQTT connection info
   this->setMqttConnectionInfo();
 
   mqttClient.setCallback(callbackFunction);
-  Serial.println("MQTT client set");
 
   // Connect to MQTT broker
   this->connect();
+
+  // TODO: subscribe to server topics: sensorID/status, sensorID/timer, ...
+  // subscribe(this->appConfig->mqttManager.statusTopic.c_str());
+  // subscribe(this->appConfig->mqttManager.registerTopic.c_str());
 
   // Register client
   this->registerClient();
@@ -43,13 +50,10 @@ void MQTTManager::setup() {
   // Authenticate client
   this->authenticateClient();
 
-  // TODO: subscribe to server topics: sensorID/status, sensorID/timer, ...
-  subscribe(this->appConfig->mqttManager.statusTopic.c_str());
-  subscribe(this->appConfig->mqttManager.configTopic.c_str());
-
   Serial.println("MQTTManager Initialized");
 }
 
+/// LOOP ///
 void MQTTManager::loop() {
   if (!mqttClient.connected()) {
     reconnect();
@@ -60,11 +64,13 @@ void MQTTManager::loop() {
     unsigned int distanceRaw;
     unsigned int distanceCM;
 
+    // this->mqttClient.publish("test_", "testData");
+
     // Read data
     managers->hwManager->readSensorValues(distanceRaw, distanceCM);
 
     // Publish data
-    publishReadings(distanceRaw, distanceCM);
+    // publishReadings(distanceRaw, distanceCM);
   }
 
   mqttClient.loop();
@@ -117,7 +123,14 @@ void MQTTManager::reconnect() {
  */
 void MQTTManager::callbackFunction(char* topic, byte* payload,
                                    unsigned int length) {
+  Serial.println("Received MQTT message");
+  Serial.print("Topic: ");
+  Serial.println(topic);
+  Serial.print("Payload: ");
+  Serial.write(payload, length);
+  Serial.println();
   payload[length] = '\0';  // Add a null terminator to the payload
+
   if (strcmp(topic, instance->appConfig->mqttManager.statusTopic.c_str()) ==
       0) {
     instance->statusCallback(payload, length);
@@ -281,10 +294,9 @@ void MQTTManager::publishReadings(unsigned int readingRAW,
  */
 void MQTTManager::basePublish(ArduinoJson::V6213PB2::JsonObject& dataObject,
                               const char* topic, bool meta) {
-  JsonObject metaObj = dataObject.createNestedObject("meta");
-
   // Add sensor metadata
   if (meta) {
+    JsonObject metaObj = dataObject.createNestedObject("meta");
     this->addMetadata(metaObj);
   }
 
@@ -308,8 +320,8 @@ void MQTTManager::basePublish(ArduinoJson::V6213PB2::JsonObject& dataObject,
  * location, and timestamp to the JSON object.
  */
 void MQTTManager::addMetadata(JsonObject& metaObj) {
-  metaObj["sensorId"] = this->appConfig->appInfo.sensorId;
-  metaObj["timestamp"] = millis();
+  metaObj[enumToString(SENSOR_ID)] = this->appConfig->appInfo.sensorId;
+  metaObj[enumToString(TIMESTAMP)] = millis();
 }
 
 /**
@@ -318,7 +330,7 @@ void MQTTManager::addMetadata(JsonObject& metaObj) {
  * @details This function sets the topics to subscribe and publish for the MQTT
  * client.
  */
-void MQTTManager::setMqttBaseInfo() {
+void MQTTManager::setMqttBasicInfo() {
   this->appConfig->mqttManager.statusTopic =
       this->appConfig->appInfo.sensorId + "/" + MQTT_STATUS_TOPIC;
   this->appConfig->mqttManager.configTopic =
@@ -327,6 +339,7 @@ void MQTTManager::setMqttBaseInfo() {
       this->appConfig->appInfo.sensorId + "/" + MQTT_DATA_TOPIC;
   this->appConfig->mqttManager.authTopic =
       this->appConfig->appInfo.sensorId + "/" + MQTT_AUTH_TOPIC;
+  this->appConfig->mqttManager.registerTopic = MQTT_REGISTER_TOPIC;
 
   Serial.println("Status Topic");
   Serial.println(this->appConfig->mqttManager.statusTopic);

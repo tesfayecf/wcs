@@ -24,3 +24,13 @@ void loop() {
   // Call the loop function of the App class to run the main application loop
   app.loop();
 }
+
+/**
+ * @brief
+ * I am developing an app that receives sensor data and plots it. Now i have to
+ * develop the protocol between the sensor and the server. The first step is
+ * register the sensor in the server. This step asumes that the server already
+ * knows about the esxistance of the sensor. The sensor on start up will send a
+ * message to the topic "server/register" with its id.
+ *
+ */

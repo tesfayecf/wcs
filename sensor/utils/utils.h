@@ -95,6 +95,10 @@ const char* enumToString(JSON_KEYS key) {
       return "701";
     case READING_CM:
       return "702";
+
+    // Log info
+    case TIMESTAMP:
+      return "801";
   }
   // Handle the case when the enum value doesn't match any case.
   return "0";

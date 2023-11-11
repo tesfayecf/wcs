@@ -128,7 +128,7 @@ class MQTTManager {
    * @brief Set the Mqtt Basic Info object
    *
    */
-  void setMqttBaseInfo();
+  void setMqttBasicInfo();
 
   /**
    * @brief Sets the MQTT connection information.

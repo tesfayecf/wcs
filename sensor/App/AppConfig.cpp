@@ -113,12 +113,6 @@ AppConfig::MQTTManager::MQTTManager() {
   keepAlive = MQTT_KEEP_ALIVE;
   version = MQTT_VERSION;
   connectionTimeout = MQTT_CONNECTION_TIMEOUT_CUSTOM;
-
-  // statusTopic = appConfig.appInfo.sensorId + "/" + MQTT_STATUS_TOPIC;
-  // configTopic = appConfig.appInfo.sensorId + "/" + MQTT_CONFIG_TOPIC;
-  // dataTopic = appConfig.appInfo.sensorId + "/" + MQTT_DATA_TOPIC;
-  // authTopic = appConfig.appInfo.sensorId + "/" + MQTT_AUTH_TOPIC;
-  registerTopic = MQTT_REGISTER_TOPIC;
 }
 
 /////////////////////////////////////////

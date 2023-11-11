@@ -62,7 +62,10 @@ enum JSON_KEYS {
 
   // Sensor readings
   READING_RAW = 701,
-  READING_CM = 702
+  READING_CM = 702,
+
+  // LOG INFO
+  TIMESTAMP = 801,
 };
 
 #endif  // TYPES_H

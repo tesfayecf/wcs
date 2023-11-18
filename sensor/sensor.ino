@@ -26,11 +26,14 @@ void loop() {
 }
 
 /**
- * @brief
  * I am developing an app that receives sensor data and plots it. Now i have to
  * develop the protocol between the sensor and the server. The first step is
  * register the sensor in the server. This step asumes that the server already
- * knows about the esxistance of the sensor. The sensor on start up will send a
+ * knows about the existance of the sensor. The sensor on start up will send a
  * message to the topic "server/register" with its id.
- *
+ * I want to design a authentication sequences when a new sensor is connected.
+ * First the sensor will send its id and other information in the
+ * server/register topic. Then the server will authenticate the sensor. I want
+ * you to help me design an authentication protocol that is fast, secure and
+ * efficient. The messages can be sent in new topic called {sensor_id}/auth.
  */

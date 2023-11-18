@@ -2,6 +2,9 @@ from enum import Enum
 
 class TOPICS():
     REGISTER_TOPIC = "server/register"
+    DATA_TOPIC = "data"
+    STATUS_TOPIC = "status"
+    CONFIG_TOPIC = "config"
 
 
 class JSON_KEYS(Enum):
@@ -34,6 +37,7 @@ class JSON_KEYS(Enum):
 
     # Sensor meta
     SENSOR_ID = 401
+    SENSOR_TIME = 402
 
     # Board meta
     BOARD_UPTIME = 501
@@ -63,6 +67,7 @@ class JSON_KEYS(Enum):
 def enum_to_string(key):
     # Mapping of enum values to their string representations
     enum_mapping = {
+        # Wifi status
         JSON_KEYS.WIFI_INITIALIZED: "101",
         JSON_KEYS.WIFI_CONNECTED_: "102",
         JSON_KEYS.WIFI_CONNECTING: "103",
@@ -70,6 +75,8 @@ def enum_to_string(key):
         JSON_KEYS.WIFI_HAS_ERROR: "105",
         JSON_KEYS.WIFI_ERROR: "106",
         JSON_KEYS.WIFI_STATUS: "107",
+
+        # Mqtt status
         JSON_KEYS.MQTT_INITIALIZED: "201",
         JSON_KEYS.MQTT_CONNECTED_: "202",
         JSON_KEYS.MQTT_CONNECTING: "203",
@@ -77,6 +84,8 @@ def enum_to_string(key):
         JSON_KEYS.MQTT_HAS_ERROR: "205",
         JSON_KEYS.MQTT_ERROR: "206",
         JSON_KEYS.MQTT_STATUS: "207",
+
+        # Hardware status
         JSON_KEYS.HW_INITIALIZED: "301",
         JSON_KEYS.HW_CONNECTED: "302",
         JSON_KEYS.HW_CONNECTING: "303",
@@ -84,13 +93,20 @@ def enum_to_string(key):
         JSON_KEYS.HW_HAS_ERROR: "305",
         JSON_KEYS.HW_ERROR: "306",
         JSON_KEYS.HW_STATUS: "307",
+
+        # Sensor meta
         JSON_KEYS.SENSOR_ID: "401",
+        JSON_KEYS.SENSOR_TIME: "402",
+
+        # Board meta
         JSON_KEYS.BOARD_UPTIME: "501",
         JSON_KEYS.BOARD_CHIP_ID: "502",
         JSON_KEYS.BOARD_FLASH_CHIP_ID: "503",
         JSON_KEYS.BOARD_VERSION: "504",
         JSON_KEYS.BOARD_FREE_RAM: "505",
         JSON_KEYS.BOARD_CPU_FREQ_MHZ: "506",
+
+        # Wifi meta
         JSON_KEYS.BOARD_WIFI_SSID: "601",
         JSON_KEYS.BOARD_WIFI_HOSTNAME: "602",
         JSON_KEYS.BOARD_WIFI_GATEWAY: "603",
@@ -99,9 +115,10 @@ def enum_to_string(key):
         JSON_KEYS.BOARD_WIFI_RSSI: "606",
         JSON_KEYS.BOARD_WIFI_CHANNEL: "607",
         JSON_KEYS.BOARD_WIFI_ENCRYPTION: "608",
+
+        # Sensor readings
         JSON_KEYS.READING_RAW: "701",
         JSON_KEYS.READING_CM: "702",
-        JSON_KEYS.TIMESTAMP: "801",
     }
 
     return enum_mapping.get(key, "0")

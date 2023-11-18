@@ -47,7 +47,7 @@ class MQTTManager {
    *
    * @param topic The topic to subscribe to.
    */
-  void subscribe(const char* topic);
+  void subscribe();
 
   /**
    * @brief Publishes sensor readings to the MQTT broker.
@@ -77,8 +77,8 @@ class MQTTManager {
    * @param dataObject The JSON object to publish.
    * @param topic The MQTT topic to publish to.
    */
-  void basePublish(ArduinoJson::V6213PB2::JsonObject& dataObject,
-                   const char* topic, bool meta = true);
+  void publish(ArduinoJson::V6213PB2::JsonObject& dataObject, const char* topic,
+               bool meta = true);
 
   /**
    * @brief Adds metadata to the MQTT message.

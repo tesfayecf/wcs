@@ -164,7 +164,7 @@ GitHub.sublime-settings
 
 # Arduino build
 /sensor/build/
-/sensor/libraries/
+libs
 
 # Django
 /backend/static

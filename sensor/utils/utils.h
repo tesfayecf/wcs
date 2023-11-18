@@ -1,8 +1,51 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "../../utils/constants.h"
-#include "../../utils/types.h"
+// #include <HTTPClient.h>
+// #include <TimeLib.h>
+
+#include "../App/AppConfig.h"
+#include "constants.h"
+#include "types.h"
+
+String generateId(String boardId, String flashChipId) {
+  MD5Builder md5;
+  md5.begin();
+  md5.add(boardId);
+  md5.add(flashChipId);
+  md5.calculate();
+  return md5.toString();
+}
+
+// void getTimeStamp(AppConfig& appConfig) {
+//   // Make request to server to get timestamp
+//   HTTPClient http;
+//   http.begin(appConfig.appInfo.timeUrl);
+//   int httpCode = http.GET();
+//   if (httpCode == HTTP_CODE_OK) {
+//     // Parse the JSON response to get the timestamp
+//     StaticJsonDocument<512> jsonDoc;
+//     DeserializationError error = deserializeJson(jsonDoc, http.getString());
+
+//     if (error) {
+//       Serial.print("JSON parsing error: ");
+//       Serial.println(error.c_str());
+//       return;  // Return an error code
+//     }
+
+//     // Extract timestamp from the JSON response
+//     long timestamp = jsonDoc["unixtime"];
+//     // Close the HTTP connection
+//     http.end();
+
+//     appConfig.appInfo.startTime = timestamp;
+//     appConfig.appInfo.localTimestamp = millis();
+//   } else {
+//     Serial.printf("HTTP request failed with error code %d\n", httpCode);
+//     http.end();
+//     return;  // Return an error code
+//   }
+// }
 
 const char* enumToString(JSON_KEYS key) {
   switch (key) {
@@ -102,33 +145,6 @@ const char* enumToString(JSON_KEYS key) {
   }
   // Handle the case when the enum value doesn't match any case.
   return "0";
-}
-
-// // Function to add an element to a JSON object
-// bool addToJsonObject(JsonObject& jsonObject, JSON_KEYS key, const char*
-// value) {
-//     char charKey = enumToString(key);
-
-//     // Check if the key is already present in the JSON object
-//     if (jsonObject.containsKey(charKey)) {
-//         // Key is already present, return false to indicate failure
-//         return false;
-//     }
-
-//     // Add the key-value pair to the JSON object
-//     jsonObject[charKey] = value;
-
-//     // Return true to indicate success
-//     return true;
-// }
-
-String generateId(String boardId, String flashChipId) {
-  MD5Builder md5;
-  md5.begin();
-  md5.add(boardId);
-  md5.add(flashChipId);
-  md5.calculate();
-  return md5.toString();
 }
 
 #endif  // UTILS_H

@@ -9,69 +9,13 @@
 /// AppConfig Class Constructors ///
 ////////////////////////////////////
 
-AppConfig::AppConfig() {
-  // Constructor for the AppConfig class.
-}
+AppConfig::AppConfig() {}
 
 ///////////////////////////////////
 /// BoardInfo Class Constructor ///
 ///////////////////////////////////
 
-// AppConfig::BoardInfo::BoardInfo() {
-//   // Constructor for the BoardInfo class.
-
-//   boardChipId = ESP.getChipId();
-//   boardFlashChipId = ESP.getFlashChipId();
-//   boardCoreVersion = ESP.getCoreVersion();
-//   boardFlashChipSize = ESP.getFlashChipSize();
-//   boardFlashChipRealSize = ESP.getFlashChipRealSize();
-//   boardCpuFreqMHz = ESP.getCpuFreqMHz();
-//   boardFreeHeap = ESP.getFreeHeap();
-//   boardHeapFragmentation = ESP.getHeapFragmentation();
-//   boardSketchSize = ESP.getSketchSize();
-//   boardFreeSketchSpace = ESP.getFreeSketchSpace();
-//   boardSketchMD5 = ESP.getSketchMD5();
-//   boardFlashChipSpeed = ESP.getFlashChipSpeed();
-//   boardCycleCount = ESP.getCycleCount();
-// }
-
-AppConfig::BoardInfo::BoardInfo() {
-  // Constructor for the BoardInfo class.
-
-  // boardChipId = ESP.getChipId();
-  // boardFlashChipId = ESP.getFlashChipId();
-  // boardCoreVersion = ESP.getCoreVersion();
-  // boardFlashChipSize = ESP.getFlashChipSize();
-  // boardFlashChipRealSize = ESP.getFlashChipRealSize();
-  // boardCpuFreqMHz = ESP.getCpuFreqMHz();
-  // boardFreeHeap = ESP.getFreeHeap();
-  // boardHeapFragmentation = ESP.getHeapFragmentation();
-  // boardSketchSize = ESP.getSketchSize();
-  // boardFreeSketchSpace = ESP.getFreeSketchSpace();
-  // boardSketchMD5 = ESP.getSketchMD5();
-  // boardFlashChipSpeed = ESP.getFlashChipSpeed();
-  // boardCycleCount = ESP.getCycleCount();
-
-  // Serial.println("Board info:");
-  // Serial.print("Board Chip ID: ");
-  // Serial.println(this->appConfig.boardInfo.boardChipId);
-  // Serial.print("Board Flash Chip ID: ");
-  // Serial.println(this->appConfig.boardInfo.boardFlashChipId);
-  // Serial.print("Board Core Version: ");
-  // Serial.println(this->appConfig.boardInfo.boardCoreVersion);
-  // Serial.print("Board Flash Chip Size: ");
-  // Serial.println(this->appConfig.boardInfo.boardFlashChipSize);
-  // Serial.print("Board Flash Chip Real Size: ");
-  // Serial.println(this->appConfig.boardInfo.boardFlashChipRealSize);
-  // Serial.print("Board CPU Frequency: ");
-  // Serial.println(this->appConfig.boardInfo.boardCpuFreqMHz);
-  // Serial.print("Board Free Heap: ");
-  // Serial.println(this->appConfig.boardInfo.boardFreeHeap);
-  // Serial.print("Board Heap Fragmentation: ");
-  // Serial.println(this->appConfig.boardInfo.boardHeapFragmentation);
-  // Serial.print("Board Sketch Size: ");
-  // Serial.println(this->appConfig.boardInfo.boardSketchSize);
-}
+AppConfig::BoardInfo::BoardInfo() {}
 
 //////////////////////////////////
 /// AppInfo Class Constructors ///
@@ -79,7 +23,7 @@ AppConfig::BoardInfo::BoardInfo() {
 
 AppConfig::AppInfo::AppInfo() {
   // Constructor for the AppInfo class.
-  // Initialize other member variables here.
+  timeUrl = TIME_URL;
 }
 
 /////////////////////////////////////

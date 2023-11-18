@@ -1,11 +1,11 @@
-from sensors.MQTT.manager import MqttManager
+from sensors.MQTT.server import MqttServer
 
 def connect():
     # Initialize the MQTT manager singleton
-    mqqtManager = MqttManager()
+    mqttServer = MqttServer()
     
     # Start broker connection 
-    mqqtManager.start()
+    mqttServer.start()
 
     # Set basic topics
-    mqqtManager.config()
+    mqttServer.config()

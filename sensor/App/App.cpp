@@ -1,5 +1,7 @@
 #include "App.h"
 
+#include <TimeLib.h>
+
 #include "../../managers/hardware-manager/HWManager.cpp"
 #include "../../managers/hardware-manager/HWManager.h"
 #include "../../managers/hardware-manager/Sensor.cpp"
@@ -48,11 +50,18 @@ void App::setup() {
   hwManager_->setup();
   this->blink();
 
+  // getTimeStamp(this->appConfig);
+  setTime(this->appConfig.appInfo.startTime);
+
   digitalWrite(LED_BUILTIN, LOW);
 }
 
 void App::loop() {
   if (millis() % 1000 == 0) {
+    // Update time
+    this->appConfig.appInfo.localTime = millis();
+    this->appConfig.appInfo.serverTime = now();
+
     wifiManager_->loop();  // check wifi connection
     mqttManager_->loop();  // check mqtt messages
     hwManager_->loop();    // check hardware connection

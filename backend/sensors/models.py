@@ -1,19 +1,27 @@
 import uuid
 from django.db import models
+from django.utils import timezone
 
 class Sensor(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    serial_number = models.CharField(max_length=50, unique=True)
-    manufacturer = models.CharField(max_length=100)
-    model = models.CharField(max_length=100)
+    sensor_id = models.CharField(max_length=50, unique=True)
+    first_start = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
-    last_start = models.DateField(null=True, blank=True)
-    installation_date = models.DateField()
-    calibration_date = models.DateField()
-    maintenance_interval = models.DurationField(null=True, blank=True)
+    last_start = models.DateTimeField(null=True, blank=True)
+    secret_key = models.CharField(max_length=50, unique=True)
+
+    def start(self, *args, **kwargs):
+        # Set first_start when the sensor is created
+        if not self.pk:
+            self.first_start = timezone.now()
+
+        # Update last_start every time the sensor is saved
+        self.last_start = timezone.now()
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.serial_number}"
+        return f"{self.sensor_id}"
 
 class TankSensor(models.Model):
     # Table used to make the relations between a sensor and a tank.
@@ -28,7 +36,7 @@ class SensorData(models.Model):
     # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     time = models.DateTimeField(primary_key=True, auto_now=True)
     sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE, related_name='sensor_data')
-    water_level = models.FloatField()
+    level = models.FloatField()
     temperature = models.FloatField(null=True, blank=True)
     humidity = models.FloatField(null=True, blank=True)
     battery_voltage = models.FloatField(null=True, blank=True)

@@ -56,7 +56,11 @@ class AppConfig {
 
   class AppInfo {
    public:
-    String sensorId;  // ID of the sensor
+    String sensorId;        // ID of the sensor
+    String timeUrl;         // URL of the time server
+    long startTime = 0;     // Start timestamp of the sensor
+    long localTime = 0;     // Local timestamp of the sensor
+    time_t serverTime = 0;  // Timestamp of the sensor
   };
 
   /////////////////////////

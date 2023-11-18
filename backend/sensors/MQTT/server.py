@@ -1,21 +1,22 @@
 import paho.mqtt.client as mqtt
-import os, subprocess, json, sys, time, datetime
+import os, subprocess, json, sys, time
 from sensors.MQTT.utils import TOPICS, JSON_KEYS, enum_to_string
+from sensors.MQTT.client import MqttClient
 
-
-class MqttManager:
+class MqttServer:
     _instance = None
     version = 51 # 4.4 of 5.1
+    sensors = {}
     
     ############## CONSTRUCTOR ##############
     def __new__(cls):
         if cls._instance is None:
-            cls._instance = super(MqttManager, cls).__new__(cls)
+            cls._instance = super(MqttServer, cls).__new__(cls)
             cls._instance._initialized = False
 
         return cls._instance
     
-    ############## START CONNECTION ##############
+    ############## START SERVER CONNECTION ##############
     def start(self):
         try:
             if self._initialized:
@@ -43,17 +44,22 @@ class MqttManager:
         except Exception as e:
             print(f"MQTT connection error: {e}")
 
-    ############## CONFIGURE CONNECTION ##############
+    ############## CONFIGURE SERVER CONNECTION ##############
     def config(self):
-        # test
-        self.subscribe('test_')
-        # subscribe to general topics
-        self.subscribe(TOPICS.REGISTER_TOPIC)
+        try:
+            # test
+            self.subscribe('test_')
+            # subscribe to general topics
+            self.subscribe(TOPICS.REGISTER_TOPIC)
 
-        # self.subscribe('b1726b2b1acdaf030ab9db79805edd58/data')
+            # self.subscribe('b1726b2b1acdaf030ab9db79805edd58/data')
+        except Exception as e:
+            print(f"MQTT config error: {e}")
+
 
     ############## CONNECTION CALLBACKS ##############
     def on_connect(client, userdata, flags, rc):
+        try:
             if rc == 0:
                 print("Connected to MQTT Broker!")
                 print(f"Client: ${client}")
@@ -62,42 +68,54 @@ class MqttManager:
                 print(f"Return Code:  ${rc}\n")
             else:
                 print("Failed to connect, return code %d\n", rc)
+        except Exception as e:
+            print(f"MQTT on_connect error: {e}")
 
     def on_message(self, client, userdata, message):
-        payload = message.payload.decode('utf-8')
-        print(f'Received message on topic: {message.topic}')
-        print(f'Received message on topic: {message.payload.decode("utf-8")}')
-        if (message.topic == TOPICS.REGISTER_TOPIC):
-            self.registerSensor(payload)
+        try:
+            payload = message.payload.decode("utf-8")
+            print(f'Topic: {message.topic}')
+            print(f'Message: {payload}')
+
+            # Register sensor
+            if (message.topic == TOPICS.REGISTER_TOPIC):
+                self.registerSensor(payload)
+        except Exception as e:
+            print(f"MQTT on_message error: {e}")
 
     ############## MANAGE SENSORS ##############
-    ## - own database
-    ## - own manager
     def registerSensor(self, payload):
-        authenticated = self.authenticateSensor(payload)
-        if (authenticated):
-            from sensors.models import Sensor
+
+        # Get sensor info
+        try:
+            data = json.loads(payload)
+            sensor_id = data[enum_to_string(JSON_KEYS.SENSOR_ID)]
+        except:
+            print("Invalid payload")
+            return
+
+        # Create client object
+        sensor = MqttClient(self, sensor_id)
+
+        # Authenticat client
+        try:
+            isAuth = sensor.authencticate()
+            if not isAuth:
+                raise Exception("Not authenticated")
+        except Exception as e: 
+            print(f"Authentication error: {e}")
+            return
             
-            # Extract sensor id
-            try:
-                data = json.loads(payload)
-                sensor_id = data[enum_to_string(JSON_KEYS.SENSOR_ID)]
-            except:
-                print("Invalid payload")
-                return
+        # Register sensor new connection
+        try:
+            sensor.register()
+        except Exception as e:
+            print(f"Registration error: {e}")
+            return
 
-            # Register sensor into database
-            try:
-                sensor = Sensor.objects.get(serial_number=sensor_id)
-                sensor.last_start = datetime.now()
-                sensor.is_active = True
-                sensor.save()
-            except Sensor.DoesNotExist:
-                print("Sensor not found")
-                return
-
-            # If valid sensor, subscribe to data topic
-            self.subscribe(sensor_id + "/data")
+        # If valid sensor, subscribe to data topic
+        self.subscribe(sensor_id + "/" + TOPICS.DATA_TOPIC)
+        self.subscribe(sensor_id + "/" + TOPICS.STATUS_TOPIC)
 
     def authenticateSensor(self, payload):
         # Authentication process

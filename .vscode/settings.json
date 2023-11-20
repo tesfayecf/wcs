@@ -1,7 +1,7 @@
 {
   "C_Cpp.errorSquiggles": "disabled",
   "C_Cpp.codeAnalysis.clangTidy.checks.disabled": ["clang-diagnostic-error"],
-  "C_Cpp.clang_format_fallbackStyle": "Google",
+  "C_Cpp.clang_format_fallbackStyle": "Microsoft",
   "vsmqtt.brokerProfiles": [
     {
       "name": "LOCAL MQTT BROKER",
@@ -9,5 +9,13 @@
       "port": 1883,
       "clientId": "vsmqtt_client_033c"
     }
-  ]
+  ],
+  "C_Cpp.vcFormat.newLine.beforeElse": false,
+  "C_Cpp.vcFormat.newLine.beforeCatch": false,
+  "C_Cpp.clang_format_style": "file",
+  "C_Cpp.vcFormat.newLine.beforeOpenBrace.block": "sameLine",
+  "C_Cpp.vcFormat.newLine.beforeOpenBrace.function": "sameLine",
+  "C_Cpp.vcFormat.newLine.beforeOpenBrace.lambda": "sameLine",
+  "C_Cpp.vcFormat.newLine.beforeOpenBrace.namespace": "sameLine",
+  "C_Cpp.vcFormat.newLine.beforeOpenBrace.type": "sameLine"
 }

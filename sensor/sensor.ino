@@ -1,5 +1,5 @@
 // Include the implementation file for the App class
-#include "App/App.cpp"
+#include "App/App.cpp"  // BUG ALERT
 // Include the header file for the App class
 #include "App/App.h"
 // Include the header file for the AppConfig class

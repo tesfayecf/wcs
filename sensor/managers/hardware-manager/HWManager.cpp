@@ -27,8 +27,7 @@ void HWManager::setup() {
 void HWManager::loop() {}
 
 // TODO: get better reading from boscal branch
-void HWManager::readSensorValues(unsigned int& distanceRaw,
-                                 unsigned int& distanceCm) {
+void HWManager::readSensorValues(unsigned int& distanceRaw, unsigned int& distanceCm) {
   unsigned int distanceRaw_ = 0;
   unsigned int distanceCM_ = 0;
 

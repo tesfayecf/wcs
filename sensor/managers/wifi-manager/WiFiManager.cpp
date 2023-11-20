@@ -78,12 +78,12 @@ bool WifiManager::connect() {
   }
 
   if (WiFi.status() == WL_CONNECTED) {
-    Serial.println("WiFi did connect");
+    Serial.println(" DONE! :)");
     this->connected = true;
     this->setWifiConnectionInfo();
     return true;
   } else {
-    Serial.println("WiFi could not connect");
+    Serial.println(" ERROR! :(");
     this->connected = false;
     return false;
   }
@@ -201,8 +201,7 @@ bool WifiManager::getWifiCredentials() {
   return true;
 }
 
-bool WifiManager::storeWifiCredentials(const String& ssid,
-                                       const String& password) {
+bool WifiManager::storeWifiCredentials(const String& ssid, const String& password) {
   // Check if SSID and password lengths exceed the allocated space
   if (ssid.length() > (PASSWORD_START_ADDR - SSID_START_ADDR - 1) ||
       password.length() > (EEPROM_SIZE - PASSWORD_START_ADDR - 1)) {

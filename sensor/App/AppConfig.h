@@ -46,8 +46,6 @@ class AppConfig {
     String boardSketchMD5;          // MD5 hash of the sketch on the board
     uint32_t boardFlashChipSpeed;   // Speed of the flash chip on the board
     uint32_t boardCycleCount;       // Cycle count of the board
-
-    // void printInfo();
   };
 
   /////////////////////
@@ -57,10 +55,12 @@ class AppConfig {
   class AppInfo {
    public:
     String sensorId;        // ID of the sensor
-    String timeUrl;         // URL of the time server
     long startTime = 0;     // Start timestamp of the sensor
     long localTime = 0;     // Local timestamp of the sensor
     time_t serverTime = 0;  // Timestamp of the sensor
+
+    boolean authenticated = false;  // Indicates if the sensor is authenticated
+    boolean registered = false;     // Indicates if the sensor is registred
   };
 
   /////////////////////////
@@ -98,10 +98,11 @@ class AppConfig {
     int version;            // Version of the MQTT connection
     int connectionTimeout;  // Connection timeout of the MQTT connection
 
-    // MQTT variables
-    String dataTopic;      // Data topic of the MQTT connection
+    // Send topics
+    String dataTopic;    // Data topic of the MQTT connection
+    String statusTopic;  // Status topic of the MQTT connection
+    // Receive topics
     String configTopic;    // Config topic of the MQTT connection
-    String statusTopic;    // Status topic of the MQTT connection
     String authTopic;      // Auth topic of the MQTT connection
     String registerTopic;  // Register topic of the MQTT connection
   };

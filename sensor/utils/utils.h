@@ -47,7 +47,7 @@ String generateId(String boardId, String flashChipId) {
 //   }
 // }
 
-const char* enumToString(JSON_KEYS key) {
+const char* ETS(JSON_KEYS key) {
   switch (key) {
     // Wifi status
     case WIFI_INITIALIZED:
@@ -100,6 +100,8 @@ const char* enumToString(JSON_KEYS key) {
     // Sensor meta
     case SENSOR_ID:
       return "401";
+    case SENSOR_TIME:
+      return "402";
 
     // Board meta
     case BOARD_UPTIME:
@@ -142,9 +144,11 @@ const char* enumToString(JSON_KEYS key) {
     // Log info
     case TIMESTAMP:
       return "801";
+    case MESSAGE:
+      return "802";
   }
   // Handle the case when the enum value doesn't match any case.
-  return "0";
+  return "-";
 }
 
 #endif  // UTILS_H

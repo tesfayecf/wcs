@@ -21,17 +21,13 @@ AppConfig::BoardInfo::BoardInfo() {}
 /// AppInfo Class Constructors ///
 //////////////////////////////////
 
-AppConfig::AppInfo::AppInfo() {
-  // Constructor for the AppInfo class.
-  timeUrl = TIME_URL;
-}
+AppConfig::AppInfo::AppInfo() {}
 
 /////////////////////////////////////
 /// WifiManager Class Constructor ///
 /////////////////////////////////////
 
 AppConfig::WifiManager::WifiManager() {
-  // Constructor for the WifiManager class.
   status = {false, false, false, false, false, "", 0};
 
   ssid = "";
@@ -50,7 +46,6 @@ AppConfig::WifiManager::WifiManager() {
 /////////////////////////////////////
 
 AppConfig::MQTTManager::MQTTManager() {
-  // Constructor for the MQTTManager class.
   status = {false, false, false, false, false, "", 0};
 
   maxPacketSize = MQTT_MAX_PACKET_SIZE;
@@ -64,6 +59,5 @@ AppConfig::MQTTManager::MQTTManager() {
 /////////////////////////////////////////
 
 AppConfig::HardwareManager::HardwareManager() {
-  // Constructor for the HardwareManager class.
   status = {false, false, false, false, false, "", 0};
 }

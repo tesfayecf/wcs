@@ -6,7 +6,6 @@ class TOPICS():
     STATUS_TOPIC = "status"
     CONFIG_TOPIC = "config"
 
-
 class JSON_KEYS(Enum):
     # Wifi status
     WIFI_INITIALIZED = 101
@@ -63,8 +62,29 @@ class JSON_KEYS(Enum):
 
     # Log info
     TIMESTAMP = 801
+    MESSAGE = 802
 
-def enum_to_string(key):
+class MESSAGE_TYPES(Enum):
+  # Status
+  NOK = 0,
+  OK = 1,
+
+  # Commands
+  AUTH = 2,
+  REGISTER = 3,
+  CONFIG = 4,
+  START = 5,
+  STOP = 6,
+  RESET = 7,
+  PING = 8,
+  STATUS = 9,
+  LOG = 10,
+  INFO = 12,
+  WARN = 13,
+  ERROR = 14,
+
+
+def ETS(key):
     # Mapping of enum values to their string representations
     enum_mapping = {
         # Wifi status
@@ -119,6 +139,10 @@ def enum_to_string(key):
         # Sensor readings
         JSON_KEYS.READING_RAW: "701",
         JSON_KEYS.READING_CM: "702",
+
+        # Log info
+        JSON_KEYS.TIMESTAMP: "801",
+        JSON_KEYS.MESSAGE: "802",
     }
 
     return enum_mapping.get(key, "0")

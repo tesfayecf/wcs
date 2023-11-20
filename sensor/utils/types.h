@@ -41,6 +41,7 @@ enum JSON_KEYS {
 
   // Sensor meta
   SENSOR_ID = 401,
+  SENSOR_TIME = 402,
 
   // Board meta
   BOARD_UPTIME = 501,
@@ -66,6 +67,27 @@ enum JSON_KEYS {
 
   // LOG INFO
   TIMESTAMP = 801,
+  MESSAGE = 802, 
 };
+
+enum MESSAGE_TYPES {
+  // Status
+  NOK = 0,
+  OK = 1,
+
+  // Commands
+  AUTH = 2,
+  REGISTER = 3,
+  CONFIG = 4,
+  START = 5,
+  STOP = 6,
+  RESET = 7,
+  PING = 8,
+  STATUS = 9,
+  LOG = 10,
+  INFO = 12,
+  WARN = 13,
+  ERROR = 14,
+}
 
 #endif  // TYPES_H

@@ -53,6 +53,8 @@
 #define MQTT_AUTH_TOPIC "auth"                 // MQTT Auth Topic
 #define MQTT_REGISTER_TOPIC "server/register"  // MQTT Register Topic
 
+#define MQTT_UPDATE_INTERVAL 60000
+
 ////////////////////////
 /// HARDWARE MANAGER ///
 ////////////////////////

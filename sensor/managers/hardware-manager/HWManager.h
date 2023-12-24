@@ -11,29 +11,32 @@
 #include "Arduino.h"
 
 class HWManager {
- private:
-  AppConfig* appConfig;
-  Managers* managers;
+  private:
+    AppConfig* appConfig;
+    Managers* managers;
 
- public:
-  // static Ultrasonic sonar;
-  static Sensor ultraSensor;
-  // Constructor
-  HWManager();
+    unsigned int distanceCM;
+    unsigned int distanceRAW;
 
-  // Initialize manager
-  void init(AppConfig* config_, Managers* managers_);
+  public:
+    // static Ultrasonic sonar;
+    static Sensor ultraSonicSensor;
+    // Constructor
+    HWManager();
 
-  // Setup US connection
-  void setup();
+    // Initialize manager
+    void init(AppConfig* config_, Managers* managers_);
 
-  void loop();
+    // Setup US connection
+    void setup();
 
-  void readSensorValues(unsigned int& distanceRaw, unsigned int& distanceCm);
+    void loop();
 
-  // Get distance from US
-  unsigned int getDistance();
-  unsigned int getDistanceCm();
+    void readSensorValues(unsigned int& distanceRaw, unsigned int& distanceCm);
+
+    // Get distance from US
+    unsigned int getDistance();
+    unsigned int getDistanceCm();
 };
 
 #endif  // HW_CONNECTION_MANAGER_H

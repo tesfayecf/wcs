@@ -21,7 +21,14 @@ AppConfig::BoardInfo::BoardInfo() {}
 /// AppInfo Class Constructors ///
 //////////////////////////////////
 
-AppConfig::AppInfo::AppInfo() {}
+AppConfig::AppInfo::AppInfo() {
+  sensorId = "";
+  startTime = 0;
+  localTime = 0;
+  serverTime = 0;
+  authenticated = false;
+  registered = false;    
+}
 
 /////////////////////////////////////
 /// WifiManager Class Constructor ///
@@ -52,6 +59,13 @@ AppConfig::MQTTManager::MQTTManager() {
   keepAlive = MQTT_KEEP_ALIVE;
   version = MQTT_VERSION;
   connectionTimeout = MQTT_CONNECTION_TIMEOUT_CUSTOM;
+
+  // Publish MQTT topics
+  this->appConfig->mqttManager.registerTopic = MQTT_REGISTER_TOPIC;
+  // Subscribe MQTT topics
+  this->appConfig->mqttManager.commandTopic = MQTT_COMMAND_TOPIC;
+  // Sensor key
+  this->appConfig->mqttManager.sensorKey = MQTT_SENSOR_KEY;
 }
 
 /////////////////////////////////////////
@@ -60,4 +74,6 @@ AppConfig::MQTTManager::MQTTManager() {
 
 AppConfig::HardwareManager::HardwareManager() {
   status = {false, false, false, false, false, "", 0};
+
+  updateRate = UPDATE_RATE;
 }

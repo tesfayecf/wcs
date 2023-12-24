@@ -55,11 +55,6 @@ class App {
    * @brief Sets the sensor information in the AppConfig object.
    */
   void setAppInfo();
-
-  /**
-   * @brief Blinks the built-in LED.
-   */
-  void blink();
 };
 
 #endif  // APP_H

@@ -26,8 +26,9 @@ void App::setup() {
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, HIGH);
 
-    // Set App and Boardinfo
+    // Set App info
     this->setBoardInfo();
+    // Set Board info
     this->setAppInfo();
 
     wifiManager_ = new WifiManager();
@@ -39,13 +40,13 @@ void App::setup() {
     hwManager_->init(&this->appConfig, &this->managers);
 
     wifiManager_->setup();
-    this->blink();
+    blink();
 
     mqttManager_->setup();
-    this->blink();
+    blink();
 
     hwManager_->setup();
-    this->blink();
+    blink();
 
     // getTimeStamp(this->appConfig);
     setTime(this->appConfig.appInfo.startTime);
@@ -86,41 +87,11 @@ void App::setBoardInfo() {
     this->appConfig.boardInfo.boardSketchMD5 = ESP.getSketchMD5();
     this->appConfig.boardInfo.boardFlashChipSpeed = ESP.getFlashChipSpeed();
     this->appConfig.boardInfo.boardCycleCount = ESP.getCycleCount();
-
-    // Serial.println("Board info:");
-    // Serial.print("Board Chip ID: ");
-    // Serial.println(this->appConfig.boardInfo.boardChipId);
-    // Serial.print("Board Flash Chip ID: ");
-    // Serial.println(this->appConfig.boardInfo.boardFlashChipId);
-    // Serial.print("Board Core Version: ");
-    // Serial.println(this->appConfig.boardInfo.boardCoreVersion);
-    // Serial.print("Board Flash Chip Size: ");
-    // Serial.println(this->appConfig.boardInfo.boardFlashChipSize);
-    // Serial.print("Board Flash Chip Real Size: ");
-    // Serial.println(this->appConfig.boardInfo.boardFlashChipRealSize);
-    // Serial.print("Board CPU Frequency: ");
-    // Serial.println(this->appConfig.boardInfo.boardCpuFreqMHz);
-    // Serial.print("Board Free Heap: ");
-    // Serial.println(this->appConfig.boardInfo.boardFreeHeap);
-    // Serial.print("Board Heap Fragmentation: ");
-    // Serial.println(this->appConfig.boardInfo.boardHeapFragmentation);
-    // Serial.print("Board Sketch Size: ");
-    // Serial.println(this->appConfig.boardInfo.boardSketchSize);
 }
 
 void App::setAppInfo() {
-    String flashChipIdStr =
-        String(this->appConfig.boardInfo.boardFlashChipId, DEC);
-
-    this->appConfig.appInfo.sensorId =
-        generateId(this->appConfig.boardInfo.boardChipId, flashChipIdStr);
-
-    Serial.println(this->appConfig.appInfo.sensorId);
-}
-
-void App::blink() {
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(100);
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(100);
+    // Get flash chip id
+    String flashChipIdStr = String(this->appConfig.boardInfo.boardFlashChipId, DEC);
+    // Get id
+    this->appConfig.appInfo.sensorId = generateId(this->appConfig.boardInfo.boardChipId, flashChipIdStr);
 }

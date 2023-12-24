@@ -47,13 +47,9 @@
 #define MQTT_KEEP_ALIVE 60
 #define MQTT_CONNECTION_TIMEOUT_CUSTOM 10
 
-#define MQTT_STATUS_TOPIC "status"             // MQTT Status Topic
-#define MQTT_CONFIG_TOPIC "config"             // MQTT Config Topic
-#define MQTT_DATA_TOPIC "data"                 // MQTT Data Topic
-#define MQTT_AUTH_TOPIC "auth"                 // MQTT Auth Topic
+#define MQTT_COMMAND_TOPIC "command"  // MQTT Command Topic
 #define MQTT_REGISTER_TOPIC "server/register"  // MQTT Register Topic
-
-#define MQTT_UPDATE_INTERVAL 60000
+#define MQTT_SENSOR_KEY "1234567890"
 
 ////////////////////////
 /// HARDWARE MANAGER ///
@@ -62,5 +58,7 @@
 #define TRIGGER_PIN D6  // Trigger Pin (e.g., for ultrasonic sensor)
 #define ECHO_PIN D7     // Echo Pin (e.g., for ultrasonic sensor)
 #define TIMEOUT 25200   // Timeout value for hardware operations
+
+#define UPDATE_RATE 60000
 
 #endif  // CONSTANTS_H

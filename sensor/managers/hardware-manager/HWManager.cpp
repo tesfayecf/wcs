@@ -8,7 +8,7 @@
 #include "Sensor.h"
 
 // NewPing HWManager::sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
-Sensor HWManager::ultraSensor(TRIGGER_PIN, ECHO_PIN, TIMEOUT);
+Sensor HWManager::ultraSonicSensor(TRIGGER_PIN, ECHO_PIN, TIMEOUT);
 
 HWManager::HWManager() {}
 
@@ -24,7 +24,20 @@ void HWManager::setup() {
   Serial.println("HWManager Initialized");
 }
 
-void HWManager::loop() {}
+void HWManager::loop() {
+  // Publish sensor data every 60 seconds
+  if (millis() % this->appConfig->hardwareManager.updateRate == 0) {
+    // Read sensor data
+    this->readSensorValues(this->distanceRAW, this->distanceCM);
+    
+    // Convert sensor readings to const char*
+    String distanceRawStr = String(this->distanceRAW);
+    String distanceCmStr = String(this->distanceCM);
+
+    // Publish sensor data
+    this->managers->mqttManager->publish("sensor/distance", MESSAGE_TYPES::DATA, new const char*[2]{distanceRawStr.c_str(), distanceCmStr.c_str()}, 2);
+  }
+}
 
 // TODO: get better reading from boscal branch
 void HWManager::readSensorValues(unsigned int& distanceRaw, unsigned int& distanceCm) {
@@ -59,11 +72,11 @@ void HWManager::readSensorValues(unsigned int& distanceRaw, unsigned int& distan
 }
 
 unsigned int HWManager::getDistance() {
-  unsigned int distance = HWManager::ultraSensor.rawRead();
+  unsigned int distance = HWManager::ultraSonicSensor.rawRead();
   return distance;
 }
 
 unsigned int HWManager::getDistanceCm() {
-  unsigned int distance = HWManager::ultraSensor.read();
+  unsigned int distance = HWManager::ultraSonicSensor.read();
   return distance;
 }

@@ -7,7 +7,8 @@ import { produce } from "immer";
 type TTextType = "text" | "password" | "email" | "number" | "tel" | "url" | "date";
 type OnAcceptFunction<T> = (fields: T) => any;
 
-type IField = {
+type IField<T> = {
+    key: keyof T;
     name: string;
     placeholder: string;
     defaultValue?: string;
@@ -17,6 +18,7 @@ type IField = {
         minLength?: number;
         maxLength?: number;
     };
+    button?: React.JSX.Element
 } & ({
     type: "text";
     password?: boolean;
@@ -30,22 +32,36 @@ type IField = {
 })
 
 interface IFormProps<T> {
-    title: string;
-    fields: IField[];
-    acceptButtonText: string;
+    title: string | React.JSX.Element;
+
+    acceptButton: string | React.JSX.Element;
     onAccept: OnAcceptFunction<T>;
-    hideCancelButton?: boolean;
-    cancelButtonText: string;
+
+    showCancelButton?: boolean;
+    cancelButton: string | React.JSX.Element;
     onCancel?: (ev: any) => void;
-    disableSubmit?: boolean | undefined;
+
+    additionalButtons?: React.JSX.Element;
+
     isLoading?: boolean;
+    disableSubmit?: boolean;
     externalError: boolean;
     externalErrorText: string;
+
+    titleStyle?: React.CSSProperties;
+    fieldStyle?: React.CSSProperties;
+    acceptButtonStyle?: React.CSSProperties;
+    cancelButtonStyle?: React.CSSProperties;
+    formStyle?: React.CSSProperties;
+
+    fields: IField<T>[];
 }
 
-interface IInternalField {
+interface IInternalField<T> {
+    key: keyof T;
     name: string;
     value: string;
+    initValue: string;
     error: boolean;
     errorText: string;
 }
@@ -53,126 +69,133 @@ interface IInternalField {
 const FormTemplate = <T extends Record<string, any>>(props: IFormProps<T>) => {
     const { onCancel, onAccept, isLoading } = props;
     const [formErrors, setFormErrors] = React.useState<boolean>(false);
-    const [internalFields, setInternalFields] = React.useState<IInternalField[]>(
-        props.fields.map((field) => ({
-            name: field.name,
-            value: field.type === "select" && field.selectItems && field.selectItems.length > 0
-                ? field.selectItems[0]
-                : field.defaultValue ?? "",
-            error: false,
-            errorText: "",
-        }))
-    );
-
-
-    // Initialize initial field values
-    const [initialFieldValues, setInitialFieldValues] = React.useState<Record<string, string>>(
-        props.fields.reduce((acc, field) => {
-            acc[field.name] = field.type === "select" && field.selectItems && field.selectItems.length > 0
+    const [internalFields, setInternalFields] = React.useState<IInternalField<T>[]>(
+        props.fields.map((field) => {
+            const value = field.type === "select" && field.selectItems && field.selectItems.length > 0
                 ? field.selectItems[0]
                 : field.defaultValue ?? "";
-            return acc;
-        }, {})
+
+            return {
+                key: field.key as keyof T,
+                name: field.name,
+                value: value,
+                initValue: value,
+                error: false,
+                errorText: "",
+            }
+        })
     );
 
-    const handleFieldChange = React.useCallback((name: string, newValue: string) => {
-        const foundIndex = props.fields.findIndex((field) => field.name === name);
+    const handleFieldChange = React.useCallback((key: string, newValue: string) => {
+        const foundIndex = props.fields.findIndex((field) => field.key === key);
+        if (foundIndex === -1) return;
         const externalField = props.fields[foundIndex];
 
         setInternalFields((prevFields) => {
             return produce(prevFields, (draft) => {
-                const fieldIndex = draft.findIndex((field) => field.name === name);
-                if (fieldIndex !== -1) {
-                    let val;
-                    if (externalField.type === "text") val = validateField(newValue, externalField.validation, externalField.textType);
-                    else if (externalField.type === "multitext") val = validateField(newValue, externalField.validation);
-                    else if (externalField.type === "select") val = validateField(newValue, externalField.validation);
-                    const { error, errorText } = val;
-                    console.log(error, errorText)
-                    draft[fieldIndex].value = newValue;
-                    draft[fieldIndex].error = error;
-                    draft[fieldIndex].errorText = errorText;
-                }
+                const fieldIndex = draft.findIndex((field) => field.key === key);
+                if (fieldIndex === -1) return;
+                let valueError;
+                if (externalField.type === "text") valueError = validateField(newValue, externalField.validation, externalField.textType);
+                else if (externalField.type === "multitext") valueError = validateField(newValue, externalField.validation);
+                else if (externalField.type === "select") valueError = validateField(newValue, externalField.validation);
+                const { error, errorText } = valueError;
+                draft[fieldIndex].value = newValue;
+                draft[fieldIndex].error = error;
+                draft[fieldIndex].errorText = errorText;
             });
         });
 
         // Check if the new value is different from the initial value
-        if (newValue !== initialFieldValues[name]) {
+        if (newValue !== internalFields[key].initValue) {
             setFormErrors(internalFields.some((field) => field.error));
         }
-    }, [props.fields, internalFields, initialFieldValues]);
+    }, [props.fields, internalFields]);
+
     const handleCancelClick = React.useCallback(() => {
         if (onCancel) onCancel(null);
     }, [onCancel]);
 
     const handleAcceptClick = React.useCallback(() => {
         const hasErrors = internalFields.some((field) => field.error);
-        if (!hasErrors) {
-            const fieldValues: Record<string, any> = {};
-            internalFields.map((field) => {
-                fieldValues[field.name] = field.value;
-            });
-            onAccept(fieldValues as T);
-        }
+        if (hasErrors) return
+        const fieldValues: Record<string, any> = {};
+        internalFields.map((field) => {
+            fieldValues[field.key as string] = field.value;
+        });
+        onAccept(fieldValues as T);
     }, [internalFields, onAccept]);
 
     const renderTitle = () => {
         return (
-            <div className={"title"}>
-                <h1>{props.title}</h1>
+            <div className={"title"} style={props.titleStyle}>
+                {typeof props.title === "string" ? <h1>{props.title}</h1> : props.title}
             </div>
         );
     }
 
     const renderFields = React.useCallback(() => {
-        const fields = props.fields.map((fieldData: IField, index: number) => {
-            let field = null;
-            const foundIndex = internalFields.findIndex((field) => field.name === fieldData.name);
+        const fields = props.fields.map((fieldData: IField<T>, index: number) => {
+            let field: null | React.JSX.Element = null;
+            const foundIndex = internalFields.findIndex((field) => field.key === fieldData.key);
+            if (foundIndex === -1) return;
             const internalField = internalFields[foundIndex];
 
             if (fieldData.type === "text") {
                 field = (
                     <TextFieldComponent
+                        key={fieldData.key as string}
                         name={fieldData.name}
                         placeholder={fieldData.placeholder}
-                        onChange={(event) => handleFieldChange(fieldData.name, event.target.value)}
+                        onChange={handleFieldChange}
                         value={internalField.value}
                         error={internalField.error}
                         helperText={internalField.errorText}
-                        textType={fieldData.textType}
                         disabled={isLoading}
+                        button={fieldData.button}
+                        focus={index == 0}
+
+                        textType={fieldData.textType}
                     />
                 );
             } else if (fieldData.type === "multitext") {
                 field = (
                     <TextMultiFieldComponent
+                        key={fieldData.key as string}
                         name={fieldData.name}
                         placeholder={fieldData.placeholder}
-                        onChange={(event) => handleFieldChange(fieldData.name, event.target.value)}
+                        onChange={handleFieldChange}
                         value={internalField.value}
                         error={internalField.error}
                         helperText={internalField.errorText}
-                        rows={fieldData.rows}
                         disabled={isLoading}
+                        button={fieldData.button}
+                        focus={index == 0}
+
+                        rows={fieldData.rows}
                     />
                 );
             } else if (fieldData.type === "select") {
                 field = (
                     <SelectFieldComponent
+                        key={fieldData.key as string}
                         name={fieldData.name}
                         placeholder={fieldData.placeholder}
-                        onChange={(event) => handleFieldChange(fieldData.name, event.target.value as string)}
+                        onChange={handleFieldChange}
                         value={internalField.value}
                         error={internalField.error}
                         helperText={internalField.errorText}
-                        selectItems={fieldData.selectItems}
                         disabled={isLoading}
+                        button={fieldData.button}
+                        focus={index == 0}
+
+                        selectItems={fieldData.selectItems}
                     />
                 );
             }
 
             return (
-                <div key={index} className={"field"}>
+                <div key={fieldData.key as string} className={"field"} style={props.fieldStyle}>
                     {field}
                 </div>
             );
@@ -187,7 +210,6 @@ const FormTemplate = <T extends Record<string, any>>(props: IFormProps<T>) => {
     }, [internalFields, handleFieldChange]);
 
     const renderButtons = React.useCallback(() => {
-
         const loadingSpinner = React.useCallback(() => {
             return (
                 <div className={"laodingSpinner"}>
@@ -198,28 +220,33 @@ const FormTemplate = <T extends Record<string, any>>(props: IFormProps<T>) => {
         }, [])
 
         return (
-            <div className={"buttons"}>
-                {props.hideCancelButton ?
-                    null :
-                    <button disabled={isLoading} className={`${"button"} ${"cancel"}`} onClick={handleCancelClick}>
-                        {props.cancelButtonText}
-                    </button>}
+            <div className={"buttons"} >
+                {props.showCancelButton ?
+                    <button disabled={isLoading}
+                        className={`${"button"} ${"cancel"}`}
+                        onClick={handleCancelClick}
+                        style={props.cancelButtonStyle}>
+                        {props.cancelButton}
+                    </button>
+                    : null}
                 <button
                     className={`${"button"} ${"accept"}`}
                     onClick={handleAcceptClick}
-                    style={!props.hideCancelButton ? { marginLeft: 'auto' } : undefined}
+                    style={props.acceptButtonStyle}
+                // style={props.showCancelButton ? { ...props.acceptButtonStyle, marginLeft: 'auto' } : props.acceptButtonStyle}
                 >
                     {props.isLoading ? loadingSpinner() : null}
-                    {props.acceptButtonText}
+                    {props.acceptButton}
                 </button>
             </div >
         )
-    }, [isLoading, props.acceptButtonText, props.cancelButtonText, handleAcceptClick, handleCancelClick])
+    }, [isLoading, props.acceptButton, props.showCancelButton, handleAcceptClick, handleCancelClick])
 
     return (
-        <div className={"content"}>
+        <div className={"content"} style={props.formStyle}>
             {renderTitle()}
             {renderFields()}
+            {props.additionalButtons ? props.additionalButtons : null}
             {renderButtons()}
         </div >
     );
@@ -228,14 +255,17 @@ const FormTemplate = <T extends Record<string, any>>(props: IFormProps<T>) => {
 export default FormTemplate;
 
 interface IBaseField {
+    key: string;
     name: string;
     placeholder: string;
     helperText?: string;
     error?: boolean;
     errorText?: string;
     value: string;
-    onChange: (ev: any) => void;
+    onChange: (key: string, ev: any) => void;
     disabled: boolean;
+    button?: React.JSX.Element
+    focus?: boolean;
 }
 
 
@@ -245,20 +275,24 @@ interface ITextFieldProps extends IBaseField {
 
 const TextFieldComponent: React.FunctionComponent<ITextFieldProps> = React.memo((props: ITextFieldProps) => {
     return (
-        <TextField
-            id={props.name}
-            label={props.name}
-            value={props.value}
-            onChange={(event) => { props.onChange(event); }}
-            placeholder={props.placeholder}
-            variant="outlined"
-            error={props.error}
-            helperText={props.helperText} // TODO: replace with errorText
-            fullWidth
-            size="small"
-            type={props.textType ?? "text"}
-            disabled={props.disabled}
-        />
+        <>
+            <TextField
+                id={props.key}
+                label={props.name}
+                value={props.value}
+                onChange={(event) => { props.onChange(props.key, event); }}
+                placeholder={props.placeholder}
+                variant="outlined"
+                error={props.error}
+                helperText={props.helperText} // TODO: replace with errorText
+                fullWidth
+                size="small"
+                type={props.textType ?? "text"}
+                disabled={props.disabled}
+                autoFocus={props.focus}
+            />
+            {props.button ? props.button : null}
+        </>
     )
 })
 
@@ -269,21 +303,25 @@ interface IMultiTextFieldProps extends IBaseField {
 const TextMultiFieldComponent: React.FunctionComponent<IMultiTextFieldProps> = React.memo((props: IMultiTextFieldProps) => {
 
     return (
-        <TextField
-            id={props.name}
-            label={props.name}
-            variant="outlined"
-            value={props.value}
-            onChange={(event) => { props.onChange(event); }}
-            error={props.error}
-            helperText={props.helperText}
-            placeholder={props.placeholder}
-            fullWidth
-            size="small"
-            multiline={true}
-            rows={4}
-            disabled={props.disabled}
-        />
+        <>
+            <TextField
+                id={props.name}
+                label={props.name}
+                variant="outlined"
+                value={props.value}
+                onChange={(event) => { props.onChange(props.key, event); }}
+                error={props.error}
+                helperText={props.helperText}
+                placeholder={props.placeholder}
+                fullWidth
+                size="small"
+                multiline={true}
+                rows={4}
+                disabled={props.disabled}
+                autoFocus={props.focus}
+            />
+            {props.button ? props.button : null}
+        </>
     )
 })
 
@@ -294,31 +332,35 @@ interface ISelectFieldProps extends IBaseField {
 const SelectFieldComponent: React.FunctionComponent<ISelectFieldProps> = React.memo((props: ISelectFieldProps) => {
 
     return (
-        <FormControl style={{ width: "100%" }}>
-            <InputLabel id={props.name}>{props.name}</InputLabel>
-            <Select
-                id={props.name}
-                label={props.name}
-                variant="outlined"
-                labelId={props.name}
-                value={props.value}
-                onChange={props.onChange}
-                error={props.error}
-                defaultValue="Storage"
-                placeholder={props.placeholder}
-                fullWidth
-                size="small"
-                disabled={props.disabled}
-            >
-                {props.selectItems.map((item: string, index: number) => {
-                    return (
-                        <MenuItem key={index} value={item}>
-                            {item}
-                        </MenuItem>
-                    )
-                })}
-            </Select>
-        </FormControl>
+        <>
+            <FormControl style={{ width: "100%" }}>
+                <InputLabel id={props.name}>{props.name}</InputLabel>
+                <Select
+                    id={props.name}
+                    label={props.name}
+                    variant="outlined"
+                    labelId={props.name}
+                    value={props.value}
+                    onChange={(event) => { props.onChange(props.key, event) }}
+                    error={props.error}
+                    defaultValue="Storage"
+                    placeholder={props.placeholder}
+                    fullWidth
+                    size="small"
+                    disabled={props.disabled}
+                    autoFocus={props.focus}
+                >
+                    {props.selectItems.map((item: string, index: number) => {
+                        return (
+                            <MenuItem key={index} value={item}>
+                                {item}
+                            </MenuItem>
+                        )
+                    })}
+                </Select>
+            </FormControl>
+            {props.button ? props.button : null}
+        </>
     )
 })
 

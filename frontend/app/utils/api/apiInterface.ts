@@ -1,4 +1,4 @@
-import { IRegisterForm } from "@/app/(auth)/AuthTypes";
+import { IRegisterForm, IResetPasswordForm } from "@/app/(auth)/AuthTypes";
 import { IGroup, IGroupStats } from "@/app/(pages)/dashboard/DashboardTypes";
 import { ISensor, ITank } from "@/app/(pages)/group/GroupTypes";
 import { IUserInfo } from "@/app/app/AppTypes";
@@ -27,11 +27,11 @@ export const APIInterface = {
         }
     },
     auth: {
-        register: {
+        signup: {
             args: (args: Partial<IRegisterForm>): APIResponse<string> => { return {} as APIResponse<string> },
-            address: "api/auth/users/",
+            address: "api/auth/signup/",
             method: "POST",
-            argsKeys: ["first_name", "last_name", "email", "password", "re_password"],
+            argsKeys: ["firstName", "lastName", "email", "password", "rePassword"],
         },
         login: {
             args: (email: string, password: string): APIResponse<{ access: string, refresh: string }> => { return {} as APIResponse<{ access: string, refresh: string }> },
@@ -44,6 +44,12 @@ export const APIInterface = {
             address: "api/auth/logout/",
             method: "POST",
             argsKeys: []
+        },
+        reset: {
+            args: (args: Partial<IResetPasswordForm>): APIResponse<void> => { return {} as APIResponse<void> },
+            address: "api/auth/reset/",
+            method: "POST",
+            argsKeys: ["oldPassword", "password", "rePassword"],
         },
         verify: {
             args: (): APIResponse<void> => { return {} as APIResponse<void> },

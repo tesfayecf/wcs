@@ -6,6 +6,7 @@ interface PopUpTemplateProps {
     open: boolean;
     onClose: (ev: any) => void;
     hideBackDrop?: boolean;
+    elevation?: number;
 }
 
 const PopUpTemplate: React.FunctionComponent<PopUpTemplateProps> = (props: PopUpTemplateProps) => {
@@ -22,6 +23,9 @@ const PopUpTemplate: React.FunctionComponent<PopUpTemplateProps> = (props: PopUp
             onClose={props.onClose}
             hideBackdrop={props.hideBackDrop}
             onKeyDown={handleKeyDown} // Attach the event handler
+            PaperProps={{
+                elevation: props.elevation ?? 5
+            }}
         >
             {props.children}
         </Dialog>

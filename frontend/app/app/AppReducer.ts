@@ -55,8 +55,14 @@ const appSlice = createSlice({
         setAccessToken: (state, action: PayloadAction<string>) => {
             state.auth.accesToken = action.payload;
         },
+        removeAccesToken: (state) => {
+            state.auth.accesToken = '';
+        },
         setRefreshToken: (state, action: PayloadAction<string>) => {
             state.auth.refreshToken = action.payload;
+        },
+        removeRefreshToken: (state) => {
+            state.auth.refreshToken = '';
         },
         setUserInfo: (state, action: PayloadAction<IUserInfo>) => {
             state.userInfo = action.payload;

@@ -7,14 +7,14 @@ export interface ILoginForm {
 }
 
 export interface ILoginFormN {
-    "Email": string,
-    "Password": string
+    "email": string,
+    "password": string
 }
 
 export interface IRegisterForm {
-    first_name: string;
+    firstName: string;
     firstNameError: boolean;
-    last_name: string;
+    lastName: string;
     lastNameError: boolean;
     email: string;
     emailError: boolean;
@@ -24,13 +24,27 @@ export interface IRegisterForm {
     rePasswordError: boolean;
 }
 
+export interface IRegisterFormN {
+    "firstName": string,
+    "lastName": string,
+    "email": string,
+    "password": string,
+    "confirmPassword": string
+}
+
 export interface IResetPasswordForm {
-    old_password: string;
-    old_passwordError: boolean;
+    oldPassword: string;
+    oldPasswordError: boolean;
     password: string;
     passwordError: boolean;
-    re_password: string;
-    re_passwordError: boolean;
+    rePassword: string;
+    rePasswordError: boolean;
+}
+
+export interface IResetPasswordFormN {
+    "Old Password": string,
+    "New Password": string,
+    "Confirm Password": string
 }
 
 export interface IAuthStore {

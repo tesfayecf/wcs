@@ -74,7 +74,6 @@ const FormTemplate = <T extends Record<string, any>>(props: IFormProps<T>) => {
             const value = field.type === "select" && field.selectItems && field.selectItems.length > 0
                 ? field.selectItems[0]
                 : field.defaultValue ?? "";
-
             return {
                 key: field.key as keyof T,
                 name: field.name,
@@ -107,7 +106,9 @@ const FormTemplate = <T extends Record<string, any>>(props: IFormProps<T>) => {
         });
 
         // Check if the new value is different from the initial value
-        if (newValue !== internalFields[key].initValue) {
+        const internalIndex = internalFields.findIndex((field) => field.key === key);
+        if (internalIndex === -1) return;
+        if (newValue !== internalFields[internalIndex].initValue) {
             setFormErrors(internalFields.some((field) => field.error));
         }
     }, [props.fields, internalFields]);
@@ -147,7 +148,7 @@ const FormTemplate = <T extends Record<string, any>>(props: IFormProps<T>) => {
                         key={fieldData.key as string}
                         name={fieldData.name}
                         placeholder={fieldData.placeholder}
-                        onChange={handleFieldChange}
+                        onChange={(value: string) => { handleFieldChange(fieldData.key as string, value) }}
                         value={internalField.value}
                         error={internalField.error}
                         helperText={internalField.errorText}
@@ -164,7 +165,7 @@ const FormTemplate = <T extends Record<string, any>>(props: IFormProps<T>) => {
                         key={fieldData.key as string}
                         name={fieldData.name}
                         placeholder={fieldData.placeholder}
-                        onChange={handleFieldChange}
+                        onChange={(value: string) => { handleFieldChange(fieldData.key as string, value) }}
                         value={internalField.value}
                         error={internalField.error}
                         helperText={internalField.errorText}
@@ -181,7 +182,7 @@ const FormTemplate = <T extends Record<string, any>>(props: IFormProps<T>) => {
                         key={fieldData.key as string}
                         name={fieldData.name}
                         placeholder={fieldData.placeholder}
-                        onChange={handleFieldChange}
+                        onChange={(value: string) => { handleFieldChange(fieldData.key as string, value) }}
                         value={internalField.value}
                         error={internalField.error}
                         helperText={internalField.errorText}
@@ -262,7 +263,7 @@ interface IBaseField {
     error?: boolean;
     errorText?: string;
     value: string;
-    onChange: (key: string, ev: any) => void;
+    onChange: (value: string) => void;
     disabled: boolean;
     button?: React.JSX.Element
     focus?: boolean;
@@ -280,7 +281,7 @@ const TextFieldComponent: React.FunctionComponent<ITextFieldProps> = React.memo(
                 id={props.key}
                 label={props.name}
                 value={props.value}
-                onChange={(event) => { props.onChange(props.key, event); }}
+                onChange={(event) => { props.onChange(event.target.value); }}
                 placeholder={props.placeholder}
                 variant="outlined"
                 error={props.error}
@@ -301,15 +302,14 @@ interface IMultiTextFieldProps extends IBaseField {
 }
 
 const TextMultiFieldComponent: React.FunctionComponent<IMultiTextFieldProps> = React.memo((props: IMultiTextFieldProps) => {
-
     return (
         <>
             <TextField
-                id={props.name}
+                id={props.key}
                 label={props.name}
                 variant="outlined"
                 value={props.value}
-                onChange={(event) => { props.onChange(props.key, event); }}
+                onChange={(event) => { props.onChange(event.target.value); }}
                 error={props.error}
                 helperText={props.helperText}
                 placeholder={props.placeholder}
@@ -330,18 +330,17 @@ interface ISelectFieldProps extends IBaseField {
 }
 
 const SelectFieldComponent: React.FunctionComponent<ISelectFieldProps> = React.memo((props: ISelectFieldProps) => {
-
     return (
         <>
             <FormControl style={{ width: "100%" }}>
                 <InputLabel id={props.name}>{props.name}</InputLabel>
                 <Select
-                    id={props.name}
+                    id={props.key}
                     label={props.name}
                     variant="outlined"
                     labelId={props.name}
                     value={props.value}
-                    onChange={(event) => { props.onChange(props.key, event) }}
+                    onChange={(event) => { props.onChange(event.target.value); }}
                     error={props.error}
                     defaultValue="Storage"
                     placeholder={props.placeholder}

@@ -8,7 +8,7 @@ const initialState: IDashboardStore = {
 
     summary: {},
 
-    showGroupMenu: false,
+    showCreateGroupMenu: false,
     showEditGroupMenu: false,
     showDeleteGroupMenu: false,
 };
@@ -26,8 +26,8 @@ const dashboardSlice = createSlice({
             state.groups = action.payload.groups;
         },
 
-        setShowGroupMenu: (state, action: PayloadAction<{ state: boolean }>) => {
-            state.showGroupMenu = action.payload.state;
+        setShowCreateGroupMenu: (state, action: PayloadAction<{ state: boolean }>) => {
+            state.showCreateGroupMenu = action.payload.state;
         },
     }
 });

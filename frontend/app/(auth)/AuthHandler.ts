@@ -1,7 +1,6 @@
 import { appActions } from "../app/AppReducer";
 import { store } from "../utils/store/store";
-import { authActions } from "@/app/(auth)/AuthReducer";
-import { ILoginForm, ILoginFormN, IRegisterFormN, IResetPasswordFormN } from "@/app/(auth)/AuthTypes";
+import { ILoginForm, ISignupForm, IRecoverForm } from "@/app/(auth)/AuthTypes";
 import RequestManager from '@/app/utils/api/requestManager'
 
 const requestManager = RequestManager.getInstance();
@@ -27,18 +26,19 @@ class AuthHandler {
 
     public async unload() { }
 
-    // REGISTER
+    // SIGN UP
 
-    public async signup(fields: IRegisterFormN) {
+    public async signup(fields: ISignupForm) {
         try {
-            const firstName = fields["firstName"];
-            const lastName = fields["lastName"];
-            const email = fields["email"];
-            const password = fields["password"];
-            const rePassword = fields["cPassword"];
             store.dispatch(appActions.startLoading());
 
-            const response = await requestManager.request("auth", "signup", [{ firstName, lastName, email, password, rePassword }], false)
+            const firstName = fields.firstName;
+            const lastName = fields.lastName;
+            const email = fields.email;
+            const password = fields.password
+            const confirmPassword = fields.confirmPassword
+
+            const response = await requestManager.request("auth", "signup", [{ firstName, lastName, email, password, confirmPassword }], false)
 
             if (response.isSuccess) {
             } else {
@@ -54,10 +54,10 @@ class AuthHandler {
 
     // LOGIN
 
-    public async login(fields: ILoginFormN) {
+    public async login(fields: ILoginForm) {
         try {
-            const email = fields["email"];
-            const password = fields["password"];
+            const email = fields.email
+            const password = fields.password;
             store.dispatch(appActions.startLoading());
 
             const response = await requestManager.request("auth", "login", [email, password], false);
@@ -97,7 +97,7 @@ class AuthHandler {
 
     // RESET PASSWORD
 
-    public async resetPassword(filds: IResetPasswordFormN) {
+    public async resetPassword(filds: IRecoverForm) {
         try {
 
         } catch (error) {

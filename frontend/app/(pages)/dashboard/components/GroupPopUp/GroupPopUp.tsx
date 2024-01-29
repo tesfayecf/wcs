@@ -32,23 +32,25 @@ const GroupPopUp: React.FunctionComponent<IFroupPopUpProps> = (props: IFroupPopU
                 externalErrorText={"Invalid data"}
                 onCancel={onClose}
                 onAccept={onCreate}
-                acceptButtonText="Create"
-                cancelButtonText="Cancel"
-                hideCancelButton={false}
+                acceptButton="Create"
+                cancelButton="Cancel"
+                showCancelButton={true}
                 isLoading={props.isFormLoading}
                 fields={[
                     {
+                        key: "name",
                         name: "Name",
                         type: "text",
                         placeholder: "",
                     },
                     {
+                        key: "location",
                         name: "Location",
                         type: "text",
                         placeholder: "",
-                        // textType: "location"
                     },
                     {
+                        key: "description",
                         name: "Description",
                         type: "multitext",
                         placeholder: "",
@@ -62,7 +64,7 @@ const GroupPopUp: React.FunctionComponent<IFroupPopUpProps> = (props: IFroupPopU
 
 const mapStateToProps = (state: IRootState) => {
     return {
-        showGroupMenu: state.dashboard.showGroupMenu,
+        showGroupMenu: state.dashboard.showCreateGroupMenu,
         isFormLoading: state.app.loading.isFormLoading,
     }
 }

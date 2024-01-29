@@ -4,22 +4,22 @@ import FormTemplate from "@/app/components/formTemplate/FormTemplate";
 import AuthHandler from "../AuthHandler";
 import { connect } from "react-redux";
 import { IRootState } from "@/app/utils/store/store";
-import { IRegisterFormN } from "../AuthTypes";
+import { ISignupForm } from "../AuthTypes";
 import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
 import { useRouter } from "next/navigation";
 import LogoIcon from "@/public/svg/LogoIcon";
 
-// test register password: kcswOpy35P
+// test signup password: kcswOpy35P
 
 const authHandler = AuthHandler.getInstance()
 
-interface IRegisterProps extends ReturnType<typeof mapStateToProps> { }
+interface ISignupProps extends ReturnType<typeof mapStateToProps> { }
 
-const Register: React.FunctionComponent<IRegisterProps> = (props: IRegisterProps) => {
+const Signup: React.FunctionComponent<ISignupProps> = (props: ISignupProps) => {
     const router = useRouter();
     const [error, setError] = React.useState<boolean>(false)
 
-    const onRegister = async (fields: IRegisterFormN) => {
+    const onSignup = async (fields: ISignupForm) => {
         const response = await authHandler.signup(fields);
         if (response.status === 200) {
             router.push('./login');
@@ -76,7 +76,7 @@ const Register: React.FunctionComponent<IRegisterProps> = (props: IRegisterProps
     )
 
     return (
-        <div className={"register"}>
+        <div className={"signup"}>
             <div className={"logo"}>
                 <LogoIcon size={2000} />
             </div>
@@ -87,14 +87,14 @@ const Register: React.FunctionComponent<IRegisterProps> = (props: IRegisterProps
                     hideBackDrop={true}
                     elevation={0}
                 >
-                    <FormTemplate<IRegisterFormN>
+                    <FormTemplate<ISignupForm>
                         title={renderTitle()}
                         titleStyle={titleStyle}
                         externalError={error}
                         externalErrorText={"Invalid credentials"}
-                        onAccept={onRegister}
+                        onAccept={onSignup}
                         onCancel={() => { }}
-                        acceptButton="Register"
+                        acceptButton="Sign up"
                         acceptButtonStyle={acceptButtonStyle}
                         cancelButton=""
                         showCancelButton={false}
@@ -150,4 +150,4 @@ function mapStateToProps(state: IRootState) {
     }
 }
 
-export default connect(mapStateToProps, {})(Register)
+export default connect(mapStateToProps, {})(Signup)

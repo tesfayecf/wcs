@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import FormTemplate from "@/app/components/formTemplate/FormTemplate";
 import AuthHandler from "../AuthHandler";
 import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
-import { IResetPasswordFormN } from "../AuthTypes";
+import { IRecoverForm } from "../AuthTypes";
 
 const authHandler = AuthHandler.getInstance();
 
@@ -12,7 +12,7 @@ interface IResetProps { }
 const Reset: React.FunctionComponent<IResetProps> = (props: IResetProps) => {
     const [error, setError] = useState<boolean>(false);
 
-    const onResetPassword = async (fields: IResetPasswordFormN) => { };
+    const onResetPassword = async (fields: IRecoverForm) => { };
 
     const renderTitle = () => {
         return (
@@ -42,7 +42,7 @@ const Reset: React.FunctionComponent<IResetProps> = (props: IResetProps) => {
                     hideBackDrop={true}
                     elevation={0}
                 >
-                    <FormTemplate<IResetPasswordFormN>
+                    <FormTemplate<IRecoverForm>
                         title={renderTitle()}
                         titleStyle={titleStyle}
                         externalError={error}

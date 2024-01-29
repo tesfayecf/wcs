@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import FormTemplate from "@/app/components/formTemplate/FormTemplate";
 import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
 import AuthHandler from "@/app/(auth)/AuthHandler";
-import { ILoginFormN } from "@/app/(auth)/AuthTypes"
+import { ILoginForm } from "@/app/(auth)/AuthTypes"
 import AppHandler from "@/app/app/AppHandler";
 import { IRootState } from "@/app/utils/store/store";
 import CheckAuth from "@/app/utils/auth/checkAuth";
@@ -27,7 +27,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
         }
     }, [])
 
-    const onLogin = async (fields: ILoginFormN) => {
+    const onLogin = async (fields: ILoginForm) => {
         const response = await authHandler.login(fields);
         if (response.status === 200) {
             router.push('./dashboard');
@@ -97,7 +97,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
         <CheckAuth>
             <div className={"login"}>
                 <div className="logo">
-                    <LogoIcon size={2000} />
+                    <LogoIcon size={2400} />
                 </div>
                 <div className={"form"}>
                     <PopUpTemplate
@@ -109,7 +109,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
                         hideBackDrop={true}
                         elevation={0}
                     >
-                        <FormTemplate<ILoginFormN>
+                        <FormTemplate<ILoginForm>
                             title={renderTitle()}
                             titleStyle={titleStyle}
                             externalError={error}

@@ -1,4 +1,4 @@
-import { IRegisterForm, IResetPasswordForm } from "@/app/(auth)/AuthTypes";
+import { IRecoverForm, ISignupForm } from "@/app/(auth)/AuthTypes";
 import { IGroup, IGroupStats } from "@/app/(pages)/dashboard/DashboardTypes";
 import { ISensor, ITank } from "@/app/(pages)/group/GroupTypes";
 import { IUserInfo } from "@/app/app/AppTypes";
@@ -28,10 +28,10 @@ export const APIInterface = {
     },
     auth: {
         signup: {
-            args: (args: Partial<IRegisterForm>): APIResponse<string> => { return {} as APIResponse<string> },
+            args: (args: Partial<ISignupForm>): APIResponse<string> => { return {} as APIResponse<string> },
             address: "api/auth/signup/",
             method: "POST",
-            argsKeys: ["firstName", "lastName", "email", "password", "rePassword"],
+            argsKeys: ["firstName", "lastName", "email", "password", "confirmPassword"],
         },
         login: {
             args: (email: string, password: string): APIResponse<{ access: string, refresh: string }> => { return {} as APIResponse<{ access: string, refresh: string }> },
@@ -46,10 +46,10 @@ export const APIInterface = {
             argsKeys: []
         },
         reset: {
-            args: (args: Partial<IResetPasswordForm>): APIResponse<void> => { return {} as APIResponse<void> },
+            args: (args: Partial<IRecoverForm>): APIResponse<void> => { return {} as APIResponse<void> },
             address: "api/auth/reset/",
             method: "POST",
-            argsKeys: ["oldPassword", "password", "rePassword"],
+            argsKeys: ["oldPassword", "newPassword", "confirmPassword"],
         },
         verify: {
             args: (): APIResponse<void> => { return {} as APIResponse<void> },
@@ -88,10 +88,10 @@ export const APIInterface = {
             argsKeys: ["name", "location", "description"],
         },
         editGroup: {
-            args: (args: Partial<IGroup>): APIResponse<void> => { return {} as APIResponse<void> },
+            args: (groupId: number, name: string, location: string, description: string): APIResponse<void> => { return {} as APIResponse<void> },
             address: "api/tanks/edit-group/",
             method: "POST",
-            argsKeys: ["name", "location", "description"],
+            argsKeys: ["groupId", "name", "location", "description"],
         },
         deleteGroup: {
             args: (groupId: number): APIResponse<void> => { return {} as APIResponse<void> },

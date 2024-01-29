@@ -1,10 +1,10 @@
 export interface IDashboardStore {
+    summary: any;
     groups: IGroup[];
+    selectedGroup: number;
+    showCreateGroupMenu: boolean;
     showEditGroupMenu: boolean;
     showDeleteGroupMenu: boolean;
-    selectedGroup: number;
-    summary: any;
-    showGroupMenu: boolean;
 }
 
 export interface IGroup {
@@ -23,7 +23,7 @@ export interface IGroupStats {
 }
 
 export interface IGroupCreationForm {
-    "Name": string;
-    "Location": string;
-    "Description": string;
+    name: string,
+    location: string,
+    description: string
 }

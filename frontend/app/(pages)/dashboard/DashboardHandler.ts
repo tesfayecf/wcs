@@ -25,67 +25,97 @@ class DashboardHandler {
     }
 
     public async load() {
+        // store.dispatch(appActions.startLoading());
+
         await Promise.all([
             this.getGroups(),
             this.getSummaryData(),
-            // await this.startWS();
         ])
-
-
-        // const message = {
-        //     message: "test",
-        //     sender: "test"
-        // }
-        // await webSocketManager.sendWebSocketData("prova", message)
-        // await webSocketManager.receiveWebSocketData("prova");
 
         store.dispatch(appActions.finishLoading())
     }
 
     public async unload() { }
 
-    public async startWS() {
-        await webSocketManager.initWS("prova");
-    }
-
     /// DASHBOARD HANDLER \\\
-
     public async getSummaryData() {
         // const response = await requestManager.request("dashboard", "getSummary", [])
     }
 
-    /// GROUP HANDLER \\\
+    public setShowGroupMenu(state: boolean) {
+        store.dispatch(dashboardActions.setShowCreateGroupMenu({ state }))
+    }
 
+    /// GROUP HANDLER \\\
     public async getGroups() {
-        const response = await requestManager.request("dashboard", "getGroups", [])
-        if (response.isSuccess) {
-            store.dispatch(dashboardActions.setGroups({ groups: response.data }));
-        } else {
-            // TODO:  process response/handle errors
+        try {
+            const response = await requestManager.request("dashboard", "getGroups", [])
+            if (response.isSuccess) {
+                store.dispatch(dashboardActions.setGroups({ groups: response.data }));
+            } else {
+                // TODO:  process response/handle errors
+            }
+        } catch (error) {
+            // Log error
         }
     }
 
-    public setShowGroupMenu(state: boolean) {
-        store.dispatch(dashboardActions.setShowGroupMenu({ state }))
+    public async createGroup(fields: IGroupCreationForm) {
+        try {
+            store.dispatch(appActions.startFormLoading());
+
+            // Get fields
+            const name = fields.name
+            const location = fields.location
+            const description = fields.description
+
+            const response = await requestManager.request("dashboard", "createGroup", [name, location, description]);
+
+            // TODO:  process response/handle errors
+            if (response.isSuccess) {
+                this.getGroups();
+                this.setShowGroupMenu(false);
+            }
+            store.dispatch(appActions.finishFormLoading());
+        } catch (error) {
+            // Log error
+        }
     }
 
-    public async createGroup(fields: IGroupCreationForm) {
-        store.dispatch(appActions.startFormLoading());
+    public async editGroup(groupId: number, fields: IGroupCreationForm) {
+        try {
+            store.dispatch(appActions.startFormLoading());
 
-        // Get fields
-        const name = fields["Name"];
-        const location = fields["Location"];
-        const description = fields["Description"];
+            // Get fields
+            const name = fields.name
+            const location = fields.location
+            const description = fields.description
 
-        const response = await requestManager.request("dashboard", "createGroup", [name, location, description]);
-        // TODO:  process response/handle errors
+            const response = await requestManager.request("dashboard", "editGroup", [groupId, name, location, description]);
+            if (response.isSuccess) {
+                this.getGroups();
+            }
 
-        // Update redux
-        // store.dispatch(appActions.startLoading());
-        this.getGroups();
-        this.setShowGroupMenu(false);
+            store.dispatch(appActions.finishFormLoading());
+        }
+        catch (error) {
+            // Log error
+        }
+    }
 
-        store.dispatch(appActions.finishFormLoading());
+    public async deleteGroup(groupId: number) {
+        try {
+            store.dispatch(appActions.startFormLoading());
+
+            const response = await requestManager.request("dashboard", "deleteGroup", [groupId]);
+            if (response.isSuccess) {
+                this.getGroups();
+            }
+
+            store.dispatch(appActions.finishFormLoading());
+        } catch (error) {
+            // Log error
+        }
     }
 }
 

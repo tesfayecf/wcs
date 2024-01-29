@@ -8,6 +8,11 @@
     align-items: center;
     z-index: 200;
 
+    .logo {
+        position: absolute;
+        top: -700px;
+    }
+
     .form {
         position: fixed;
         top: 0;

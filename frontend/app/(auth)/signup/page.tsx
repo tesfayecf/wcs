@@ -7,6 +7,7 @@ import { IRootState } from "@/app/utils/store/store";
 import { IRegisterFormN } from "../AuthTypes";
 import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
 import { useRouter } from "next/navigation";
+import LogoIcon from "@/public/svg/LogoIcon";
 
 // test register password: kcswOpy35P
 
@@ -30,7 +31,6 @@ const Register: React.FunctionComponent<IRegisterProps> = (props: IRegisterProps
     const renderTitle = () => {
         return (
             <>
-                <h1>SMATER+</h1>
                 <h2>SIGN UP. BE THE CHANGE</h2>
             </>
         )
@@ -77,6 +77,9 @@ const Register: React.FunctionComponent<IRegisterProps> = (props: IRegisterProps
 
     return (
         <div className={"register"}>
+            <div className={"logo"}>
+                <LogoIcon size={2000} />
+            </div>
             <div className={"form"}>
                 <PopUpTemplate
                     open={true}

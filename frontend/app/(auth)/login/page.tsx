@@ -40,7 +40,6 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
     const renderTitle = () => {
         return (
             <>
-                <h1>SMATER+</h1>
                 <h2>LOG IN. BE THE CHANGE</h2>
             </>
         )
@@ -49,6 +48,8 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
     const titleStyle: React.CSSProperties = {
         fontSize: "16px",
         fontWeight: "bold",
+        marginTop: "35px",
+        marginBottom: "10px",
     }
 
     const acceptButtonStyle: React.CSSProperties = {
@@ -66,7 +67,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
         backgroundColor: "#55dc9e",  // Replace with the color you want on hover
     };
 
-    const additionalButton: React.JSX.Element = (
+    const additionalButtons: React.JSX.Element = (
         <div style={{
             display: "flex",
             flexDirection: "row",
@@ -95,10 +96,16 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
     return (
         <CheckAuth>
             <div className={"login"}>
+                <div className="logo">
+                    <LogoIcon size={2000} />
+                </div>
                 <div className={"form"}>
                     <PopUpTemplate
                         open={true}
                         onClose={() => { }}
+                        customStyles={{
+                            background: "transparent"
+                        }}
                         hideBackDrop={true}
                         elevation={0}
                     >
@@ -113,8 +120,11 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
                             acceptButtonStyle={acceptButtonStyle}
                             cancelButton=""
                             showCancelButton={false}
-                            additionalButtons={additionalButton}
+                            additionalButtons={additionalButtons}
                             isLoading={false}
+                            formStyle={{
+                                background: "linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 1))",
+                            }}
                             fields={[
                                 {
                                     key: "email",

@@ -4,7 +4,7 @@ import ContentBox from "@/app/components/contentBox/ContentBox"
 
 import { IRootState } from "@/app/utils/store/store";
 import { ChartData, ChartOptions } from "chart.js";
-import HeaderChart from "@/app/components/header/HeaderChart";
+import InfoChart from "@/app/(pages)/dashboard/components/InfoWidget/InfoChart";
 import { HEXToRGBA } from "@/app/utils/lib/styles"
 
 interface IHeaderWidgetProps {
@@ -15,7 +15,7 @@ interface IHeaderWidgetProps {
     color: string;
 }
 
-const HeaderWidget: React.FunctionComponent<IHeaderWidgetProps> = (props: IHeaderWidgetProps) => {
+const InfoWidget: React.FunctionComponent<IHeaderWidgetProps> = (props: IHeaderWidgetProps) => {
 
 
     const renderTextData = React.useCallback(() => {
@@ -40,7 +40,7 @@ const HeaderWidget: React.FunctionComponent<IHeaderWidgetProps> = (props: IHeade
         }
 
         return (
-            <div className={"headerText"}>
+            <div className={"infoText"}>
                 <span className={"title"}>{props.title}</span>
                 <span className={"value"}>{props.value} {unit}</span>
                 <div className={"change"}>
@@ -73,10 +73,10 @@ const HeaderWidget: React.FunctionComponent<IHeaderWidgetProps> = (props: IHeade
     }, [props.color])
 
     return (
-        <ContentBox customBoxClass={"headerCard"} >
-            <div className={"headerCardContent"}>
+        <ContentBox>
+            <div className={"infoCardContent"}>
                 {renderTextData()}
-                <HeaderChart
+                <InfoChart
                     data={props.data}
                     options={
                         getCustomOptions(
@@ -95,7 +95,7 @@ const mapStateToProps = (state: IRootState) => {
     return {}
 }
 
-export default connect(mapStateToProps, {})(HeaderWidget)
+export default connect(mapStateToProps, {})(InfoWidget)
 
 const options = {
     responsive: true,

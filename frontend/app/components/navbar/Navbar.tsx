@@ -1,5 +1,5 @@
+'use client'
 import React from 'react'
-// import LogoIcon from '@/public/svg/LogoIcon'
 import DashboardIcon from '@/public/svg/DashboardIcon'
 import AnalyticsIcon from '@/public/svg/AnalyticsIcon'
 import SettingsIcon from '@/public/svg/SettingsIcon'

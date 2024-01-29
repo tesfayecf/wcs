@@ -3,21 +3,17 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    height: 50px;
-    margin: 0px 15px;
 
     .button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 150px;
         height: 40px;
         background: #55dc9e;
         border-radius: 15px;
-        align-items: center;
-        display: flex;
-        justify-content: center;
 
         .text {
-            width: 95px;
-            height: 28px;
             font-size: 20px;
             text-align: CENTER;
             color: #ffffff;

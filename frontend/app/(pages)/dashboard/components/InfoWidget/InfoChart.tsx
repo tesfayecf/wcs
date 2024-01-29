@@ -17,11 +17,11 @@ interface IheaderChartProps {
     options: ChartOptions<'line'>;
 }
 
-const HeaderChart: React.FunctionComponent<IheaderChartProps> = (props: IheaderChartProps) => {
+const InfoChart: React.FunctionComponent<IheaderChartProps> = (props: IheaderChartProps) => {
 
     return (
         <div className={"chartContainer"} >
-            <Line id={"headerChart"} data={props.data} options={props.options} className={"chart"} />
+            <Line id={"infoChart"} data={props.data} options={props.options} className={"chart"} />
         </div>
     )
 }
@@ -31,6 +31,6 @@ const mapStateToProps = (state: IRootState) => {
     return {}
 }
 
-export default connect(mapStateToProps, {})(HeaderChart)
+export default connect(mapStateToProps, {})(InfoChart)
 
 

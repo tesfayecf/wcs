@@ -10,9 +10,9 @@ const ToolsBar: React.FunctionComponent<IProps> = (props: IProps) => {
     return (
         <div className={"toolsBar"}>
             <CreateButton onCreate={props.onCreate} />
-            <div className={"searchInput"}>
+            {/* <div className={"searchInput"}>
                 <SearchInput />
-            </div>
+            </div> */}
         </div>
     )
 }
@@ -28,7 +28,7 @@ const CreateButton: React.FunctionComponent<IButtonProps> = (props: IButtonProps
 
     return (
         <div className={"button"} onClick={props.onCreate}>
-            <span className={"text"}>Create +</span>
+            <span className={"text"}>CREATE</span>
         </div>
     )
 }

@@ -1,14 +1,16 @@
 .pagesLayout {
     height: 100%;
-    width: calc(100vw - 60px);
+    width: 100%;
 
     .pagesContent {
-        margin-left: 200px;
+        width: 100%;
+        box-sizing: border-box;
+        padding-left: 200px;
     }
 
     @media (max-width: 800px) {
         .pagesContent {
-            margin-left: 75px;
+            padding-left: 75px;
         }
     }
 }

@@ -1,0 +1,113 @@
+.weather2 {
+    width: 100%;
+    height: 100%;
+
+    .weatherContent2 {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 15px; // It should not be here
+
+        .general {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+
+            .info {
+                width: 30%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                box-sizing: border-box;
+                padding: 10px 0px 0px 0px;
+
+                .temperature {
+                    font-size: 50px;
+                    color: #454747; //$text-1-light:
+                    font-weight: 700;
+                }
+
+                .location {
+                    font-size: 12px;
+                    color: #97999a; // $text-2-light:
+                    margin: 2px;
+                }
+
+                .date {
+                    font-size: 12px;
+                    color: #97999a; // $text-2-light:
+                    margin: 2px;
+                }
+            }
+
+            .icon {
+                width: 30%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+
+        .forecast2 {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+            align-items: center;
+            font-size: 12px;
+            overflow: hidden;
+            color: #454747; //$text-1-light:
+
+            .data {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+
+                .date {
+                    text-align: center;
+                    margin-top: 15px;
+                }
+
+                .icon {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                .temperature {
+                    text-align: center;
+                    white-space: nowrap;
+                }
+            }
+        }
+
+        .buttons {
+            width: 100%;
+            height: 25px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 7px;
+            margin: 10px 0px;
+
+            .dot {
+                height: 7px;
+                width: 7px;
+                // background-color: black;
+                border-radius: 50%;
+                display: inline-block;
+            }
+        }
+    }
+}

@@ -12,7 +12,7 @@ const Navbar: React.FunctionComponent<INavbarProps> = (props: INavbarProps) => {
 
     const renderKeys = React.useCallback(() => {
         return navigation.map((key, index) => {
-            return <NavKey text={key.text} index={key.index} icon={key.icon} />
+            return <NavKey key={index} text={key.text} index={key.index} icon={key.icon} />
         })
     }, [])
 

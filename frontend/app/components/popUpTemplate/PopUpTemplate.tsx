@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog } from '@mui/material';
+import { Dialog, PaperProps } from '@mui/material';
 
 interface PopUpTemplateProps {
     open: boolean;
@@ -7,7 +7,7 @@ interface PopUpTemplateProps {
     onClose: (ev: any) => void;
     customStyles?: React.CSSProperties;
     hideBackDrop?: boolean;
-    elevation?: number;
+    paperProps?: PaperProps;
 }
 
 const PopUpTemplate: React.FunctionComponent<PopUpTemplateProps> = (
@@ -27,9 +27,7 @@ const PopUpTemplate: React.FunctionComponent<PopUpTemplateProps> = (
             onClose={props.onClose}
             hideBackdrop={props.hideBackDrop}
             onKeyDown={handleKeyDown}
-            PaperProps={{
-                elevation: props.elevation ?? 5,
-            }}
+            PaperProps={props.paperProps}
         >
             {props.children}
         </Dialog>

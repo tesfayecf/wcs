@@ -48,7 +48,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
     const titleStyle: React.CSSProperties = {
         fontSize: "16px",
         fontWeight: "bold",
-        marginTop: "35px",
+        marginTop: "10px",
         marginBottom: "10px",
     }
 
@@ -97,17 +97,19 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
         <CheckAuth>
             <div className={"login"}>
                 <div className="logo">
-                    <LogoIcon size={2400} />
+                    <LogoIcon size={2200} />
                 </div>
                 <div className={"form"}>
                     <PopUpTemplate
                         open={true}
                         onClose={() => { }}
-                        customStyles={{
-                            background: "transparent"
-                        }}
                         hideBackDrop={true}
-                        elevation={0}
+                        paperProps={{
+                            elevation: 0,
+                            style: {
+                                top: "100px"
+                            }
+                        }}
                     >
                         <FormTemplate<ILoginForm>
                             title={renderTitle()}
@@ -122,9 +124,6 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
                             showCancelButton={false}
                             additionalButtons={additionalButtons}
                             isLoading={false}
-                            formStyle={{
-                                background: "linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 1))",
-                            }}
                             fields={[
                                 {
                                     key: "email",

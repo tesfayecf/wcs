@@ -78,14 +78,19 @@ const Signup: React.FunctionComponent<ISignupProps> = (props: ISignupProps) => {
     return (
         <div className={"signup"}>
             <div className={"logo"}>
-                <LogoIcon size={2000} />
+                <LogoIcon size={2200} />
             </div>
             <div className={"form"}>
                 <PopUpTemplate
                     open={true}
                     onClose={() => { }}
                     hideBackDrop={true}
-                    elevation={0}
+                    paperProps={{
+                        elevation: 0,
+                        style: {
+                            top: "-15px"
+                        }
+                    }}
                 >
                     <FormTemplate<ISignupForm>
                         title={renderTitle()}

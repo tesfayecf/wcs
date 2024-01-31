@@ -40,7 +40,9 @@ const Reset: React.FunctionComponent<IResetProps> = (props: IResetProps) => {
                     open={true}
                     onClose={() => { }}
                     hideBackDrop={true}
-                    elevation={0}
+                    paperProps={{
+                        elevation: 0,
+                    }}
                 >
                     <FormTemplate<IRecoverForm>
                         title={renderTitle()}

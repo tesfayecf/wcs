@@ -73,7 +73,7 @@ const InfoWidget: React.FunctionComponent<IHeaderWidgetProps> = (props: IHeaderW
     }, [props.color])
 
     return (
-        <ContentBox>
+        <ContentBox customBoxClass={"infoCard"}>
             <div className={"infoCardContent"}>
                 {renderTextData()}
                 <InfoChart

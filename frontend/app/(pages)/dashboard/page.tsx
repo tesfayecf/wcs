@@ -10,6 +10,7 @@ import GroupPopUp from "@/app/(pages)/dashboard/components/GroupPopUp/GroupPopUp
 import ToolsBar from "@/app/components/toolsBar/ToolsBar";
 import GroupsInfo from "@/app/(pages)/dashboard/components/GroupsInfo/GroupsInfo";
 import InfoWidget from "./components/InfoWidget/InfoWidget";
+import ContentBox from "@/app/components/contentBox/ContentBox";
 
 interface IDashboardProps { }
 
@@ -31,20 +32,17 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardPr
 
 
   return (
-    <div id="dashboard" className={"dashboard"}>
-      <div id="dashboardStatus" className={"status"}>
+    <div className={"dashboard"}>
+      <div className={"status"}>
         <SummaryWidget />
         <WeatherWidget />
       </div>
-      <div id="dashboardInfo" className={"info"}>
+      <div className={"info"}>
         <InfoWidget title='Inflow' value={241.24} changeValue={23} data={data1} color='#3de198' />
         <InfoWidget title='Outflow' value={872.27} changeValue={-5} data={data2} color='#e07159' />
         <InfoWidget title='Savings' value={35} changeValue={5} data={data3} color='#f2c986' />
       </div>
-      <div id="dashboardTools" className={"tools"}>
-        <ToolsBar onCreate={onCreate} />
-      </div>
-      <div id="dashboardGroups" className={"groups"}>
+      <div className={"groups"}>
         <GroupsInfo />
       </div>
       <GroupPopUp />

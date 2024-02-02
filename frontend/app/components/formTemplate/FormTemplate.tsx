@@ -291,6 +291,7 @@ const TextFieldComponent: React.FunctionComponent<ITextFieldProps> = React.memo(
                 type={props.textType ?? "text"}
                 disabled={props.disabled}
                 autoFocus={props.focus}
+                color={"secondary"}
             />
             {props.button ? props.button : null}
         </>

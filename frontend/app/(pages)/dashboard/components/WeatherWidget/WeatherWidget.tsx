@@ -29,7 +29,7 @@ const WeatherWidget: React.FunctionComponent<IWeatherWidgetProps> = (props: IWea
 
     const renderForecastPage = React.useCallback(() => {
         return (
-            <div className={"forecast2"}>
+            <div className={"forecast"}>
                 {weatherData.forecast.map((day: any, i: any) => {
                     return (
                         <div key={day.date} className={"data"}>
@@ -66,8 +66,8 @@ const WeatherWidget: React.FunctionComponent<IWeatherWidgetProps> = (props: IWea
 
 
     return (
-        <ContentBox customBoxClass={"weather2"}>
-            <div className={"weatherContent2"} style={{
+        <ContentBox customBoxClass={"weather"}>
+            <div className={"weatherContent"} style={{
                 background: "linear-gradient(90deg, white, 65%, #f2c986)"
             }}>
                 {page === 0 ? renderGeneralPage() : null}

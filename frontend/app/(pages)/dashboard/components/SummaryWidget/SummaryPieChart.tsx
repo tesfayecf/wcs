@@ -1,35 +1,120 @@
 'use client'
-import { connect } from "react-redux"
-import {
-    Chart as ChartJS, CategoryScale, LinearScale,
-    PointElement, LineElement, Title, Tooltip, Legend, Filler, ChartData, ChartOptions
-} from 'chart.js';
-
-import { Pie } from 'react-chartjs-2';
+import React from "react"
+import { connect } from "react-redux";
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, ArcElement, ChartData, ChartOptions, ChartTypeRegistry, BubbleDataPoint, LegendItem } from 'chart.js';
+import { Chart, Pie } from 'react-chartjs-2';
 import { IRootState } from "@/app/utils/store/store";
+import { Point } from "chart.js/dist/core/core.controller";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement,
-    LineElement, Title, Legend, Tooltip, Filler
-);
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Legend, Tooltip, Filler);
 
 interface ISummaryPieChartProps {
-    data: ChartData<'pie'>;
-    options: ChartOptions<'pie'>;
+    // data: ChartData<'pie'>;
+    // options: ChartOptions<'pie'>;
 }
 
 const SummaryPieChart: React.FunctionComponent<ISummaryPieChartProps> = (props: ISummaryPieChartProps) => {
 
+    const legendLabels = ['Category A', 'Category B', 'Category C', 'Category D'];
+    const legendBackgroundColors = ['#83ecbd', '#e68b77', '#f2c986', '#92c594'];
+
+    const renderLegend = () => {
+        return legendLabels.map((label, index) => (
+            <div key={index} className="legend-item">
+                <span className={"dot"} style={{ backgroundColor: legendBackgroundColors[index] }}></span>
+                <div className={"label"}>
+                    {label}
+                </div>
+            </div >
+        ));
+    }
+
     return (
-        <div className={"chartContainer"} >
-            <Pie id={"summaryPieCharts"} data={props.data} options={props.options} className={"chart"} />
+        <div className={"pie-chart"}>
+            <div className={"legend"}>
+                {renderLegend()}
+            </div>
+            <div className={"chart"}>
+                <Pie data={defaultPieData} options={defaultPieOptions} width={"100%"} />
+            </div>
         </div>
-    )
+    );
 }
 
 const mapStateToProps = (state: IRootState) => {
-    return {}
+    return {};
 }
 
-export default connect(mapStateToProps, {})(SummaryPieChart)
+export default connect(mapStateToProps, {})(SummaryPieChart);
+
+// Dummy Pie Data
+const defaultPieData: ChartData<'pie'> = {
+    labels: ['Category A', 'Category B', 'Category C', 'Category D'],
+    datasets: [
+        {
+            data: [25, 30, 15, 30], // Replace with your actual data values
+            backgroundColor: ['#83ecbd', '#e68b77', '#f2c986', '#92c594'], // Replace with your desired colors
+        },
+    ],
+};
+
+const generateLabels = (chart: ChartJS<keyof ChartTypeRegistry, (number | [number, number] | Point | BubbleDataPoint)[], unknown>) => {
+    let legendItems: LegendItem[] = []
+    chart.data.labels.forEach((label, index) => {
+        legendItems.push({
+            text: label as string,
+            fillStyle: chart.data.datasets[0].backgroundColor[index],
+            fontColor: "#97999a",
+        })
+    })
+    return legendItems
+}
+
+// Dummy Pie Options
+const defaultPieOptions: ChartOptions<'pie'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '40%',
+    plugins: {
+        legend: {
+            display: false,
+        },
+        tooltip: {
+            callbacks: {
+                label: (context: any) => {
+                    const value = context.raw || 0;
+                    const percentage = ((value / context.dataset.data.reduce((a: number, b: number) => a + b, 0)) * 100).toFixed(2);
+                    return `${percentage}%`;
+                },
+            },
+        },
+    },
+    scales: {
+        x: {
+            display: false,
+        },
+        y: {
+            display: false,
+        },
+    },
+};
 
 
+interface CustomLegendProps {
+    labels: string[];
+    backgroundColors: string[];
+}
+
+const CustomLegend: React.FunctionComponent<CustomLegendProps> = ({ labels, backgroundColors }) => {
+    return (
+        <div className="legend">
+            {labels.map((label, index) => (
+                <div key={index} className="legend-item">
+                    <span className="legend-color" style={{ backgroundColor: backgroundColors[index] }}></span>
+                    <span className="legend-label">{label}</span>
+                </div>
+            ))}
+        </div>
+    );
+};

@@ -32,13 +32,34 @@ const SummaryPieChart: React.FunctionComponent<ISummaryPieChartProps> = (props: 
         });
     }
 
+    const getPieData = () => {
+
+        const pidData: ChartData<'pie'> = {
+            labels: [],
+            datasets: [
+                {
+                    data: [], // Replace with your actual data values
+                    backgroundColor: [], // Replace with your desired colors
+                },
+            ],
+        };
+
+        props.groups.map((group, index) => {
+            pidData.labels.push(group.name)
+            pidData.datasets[0].data.push(Math.random() * 100)
+            pidData.datasets[0].backgroundColor!.push(colors[index])
+        })
+
+        return pidData
+    }
+
     return (
         <div className={"pie-chart"}>
             <div className={"legend"}>
                 {renderLegend()}
             </div>
             <div className={"chart"}>
-                <Pie data={defaultPieData} options={defaultPieOptions} width={"100%"} />
+                <Pie data={getPieData()} options={defaultPieOptions} width={"100%"} />
             </div>
         </div>
     );
@@ -53,15 +74,7 @@ const mapStateToProps = (state: IRootState) => {
 export default connect(mapStateToProps, {})(SummaryPieChart);
 
 // Dummy Pie Data
-const defaultPieData: ChartData<'pie'> = {
-    labels: ['Category A', 'Category B', 'Category C', 'Category D'],
-    datasets: [
-        {
-            data: [25, 30, 15, 30, 20], // Replace with your actual data values
-            backgroundColor: ['#83ecbd', '#e68b77', '#f2c986', '#92c594', '#12f594'], // Replace with your desired colors
-        },
-    ],
-};
+
 
 const generateLabels = (chart: ChartJS<keyof ChartTypeRegistry, (number | [number, number] | Point | BubbleDataPoint)[], unknown>) => {
     let legendItems: LegendItem[] = []

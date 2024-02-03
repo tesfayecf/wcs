@@ -1,5 +1,6 @@
 import React from 'react'
 import SearchIcon from '@/public/svg/SearchIcon'
+import ContentBox from '../contentBox/ContentBox'
 
 interface IProps {
     onCreate: () => void
@@ -8,31 +9,17 @@ interface IProps {
 const ToolsBar: React.FunctionComponent<IProps> = (props: IProps) => {
 
     return (
-        <div className={"toolsBar"}>
-            <CreateButton onCreate={props.onCreate} />
-            {/* <div className={"searchInput"}>
-                <SearchInput />
-            </div> */}
-        </div>
+        <ContentBox customBoxClass={"toolsBar"}>
+            <div className={"toolsBarContent"}>
+                <div className={"button"} onClick={props.onCreate}>
+                    <span className={"text"}>CREATE</span>
+                </div>
+            </div>
+        </ContentBox>
     )
 }
 
 export default ToolsBar
-
-
-interface IButtonProps {
-    onCreate: () => void;
-}
-
-const CreateButton: React.FunctionComponent<IButtonProps> = (props: IButtonProps) => {
-
-    return (
-        <div className={"button"} onClick={props.onCreate}>
-            <span className={"text"}>CREATE</span>
-        </div>
-    )
-}
-
 
 interface IInputProps { }
 

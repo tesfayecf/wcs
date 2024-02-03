@@ -1,28 +1,43 @@
-.tanks {
+.group {
+    width: 100%;
+    height: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px;
 
-    .tanksTools {
-        width: 100%;
-        margin-left: 20px;
-    }
-
-    .tankElements {
-        width: 100%;
+    .info {
+        height: 100%;
         display: flex;
-        grid-template-columns: 1fr 3fr;
-        margin-left: 20px;
-
-        .groupMenu {
-            margin-right: 10px;
-        }
-
-        .tanksLayoutExtended {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            width: calc(100% - 30px);
-            margin-left: 10px;
-        }
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
     }
+
+    .tanks {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        // flex-shrink: 0;
+        // flex-grow: 0;
+
+        // overflow-x: auto;
+        // white-space: nowrap;
+        /* Prevent content from wrapping */
+
+
+        // /* Optional: Hide scrollbar for different browsers */
+        // scrollbar-width: thin;
+        // /* Firefox */
+        // scrollbar-color: transparent transparent;
+        // /* Firefox */
+
+        // /* Optional: Hide scrollbar for WebKit browsers */
+        // -ms-overflow-style: none;
+        // /* IE and Edge */
+        // scrollbar-width: none;
+        // /* Firefox */
+    }
+
 }

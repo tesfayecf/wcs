@@ -1,7 +1,8 @@
 'use client'
 import React from 'react';
-import { IRootState } from '@/app/utils/store/store';
+import Link from 'next/link';
 import { connect } from 'react-redux';
+import { IRootState } from '@/app/utils/store/store';
 import { ISensor, ITank, ITankStatus } from '../../GroupTypes';
 import ContentBox from '@/app/components/contentBox/ContentBox';
 import ConnectedIcon from '@/public/svg/ConnectedIcon';
@@ -42,30 +43,27 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
     }
 
     return (
-        <ContentBox customBoxClass={"tank"}>
-            <div className={"tankContent"}>
-                <div className={"tankHeader"}>
-                    <div className={"name"}>
-                        {props.tank.name}
+        <ContentBox customBoxClass={"tankWidget"}>
+            <Link href={`/tank/${props.tank.id}`} style={{ textDecoration: 'none' }}>
+                <div className={"tankContent"}>
+                    <div className={"tankHeader"}>
+                        <div className={"name"}>
+                            {props.tank.name}
+                        </div>
+                        <div className={"type"}>
+                            {props.tank.type}
+                        </div>
                     </div>
-                    <div className={"type"}>
-                        {props.tank.type}
+                    <div className={"tankData"}>
+                        <div className={"level"}>
+                            {getSensorValue()}
+                        </div>
+                        <div className={"status"}>
+                            {getStatus()}
+                        </div>
                     </div>
                 </div>
-                <div className={"tankData"}>
-                    <div className={"level"}>
-                        {getSensorValue()}
-                    </div>
-                    <div className={"status"}>
-                        {getStatus()}
-                    </div>
-                </div>
-
-                {/* <div id='water-animation' className={"waterAnimation"}>
-                    adfjalfasf
-                </div> */}
-            </div>
-
+            </Link>
         </ContentBox >
 
     )

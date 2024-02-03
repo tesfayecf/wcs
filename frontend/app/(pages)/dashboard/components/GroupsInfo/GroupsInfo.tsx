@@ -12,10 +12,14 @@ interface IGroupsInfoProps extends ReturnType<typeof mapStateToProps> { }
 
 const GroupsInfo: React.FunctionComponent<IGroupsInfoProps> = (props: IGroupsInfoProps) => {
 
+    const colors = ['#83ecbd', '#e68b77', '#f2c986', '#92c594', '#12f594']
+
     const renderGroupsInfo = React.useCallback((groups: IGroup[]) => {
-        return groups.map((tankInfo: IGroup, index: number) =>
-            <GroupWidget group={tankInfo} key={index} />
+        const widgets = groups.map((tankInfo: IGroup, index: number) =>
+            <GroupWidget group={tankInfo} key={index} color={colors[index]} />
         );
+
+        return widgets
     }, [props.groups])
 
     return renderGroupsInfo(props.groups)

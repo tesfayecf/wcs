@@ -12,7 +12,7 @@ type IGroupWidgetProps = {
 const GroupWidget: React.FunctionComponent<IGroupWidgetProps> = (props: IGroupWidgetProps) => {
 
     return (
-        <ContentBox customBoxClass={"group"}>
+        <ContentBox customBoxClass={"groupWidget"}>
             <Link href={`/group/${props.group.id}`} style={{ textDecoration: 'none' }}>
                 <div className={"groupContent"}>
                     <div className={"groupBanner"} style={{ background: props.color }} />

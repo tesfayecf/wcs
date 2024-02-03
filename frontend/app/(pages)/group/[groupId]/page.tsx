@@ -1,9 +1,8 @@
 'use client'
 import React from "react";
 import GroupHandler from "../GroupHandler";
-import TankElements from "../components/TankElements/TankElements";
+import TanksInfo from "../components/TanksInfo/TanksInfo";
 import TankPopUp from "../components/TankPupUp/TankPopUp";
-import ToolsBar from "@/app/components/toolsBar/ToolsBar";
 import GroupInfoWidget from "@/app/(pages)/group/components/GroupInfo/GroupInfoWidget";
 import GroupDescription from "../components/GroupInfo/GroupDescription";
 
@@ -25,18 +24,15 @@ const Tanks: React.FunctionComponent<IDashboardProps> = (props: IDashboardProps)
     }, [])
 
     return (
-        <div id={"tanksPage"} className={"tanks"}>
-            <div className={"tanksTools"}>
-                <ToolsBar onCreate={() => groupHandler.setShowTankMenu(true)} />
+        <div className={"group"}>
+            <div className={"info"}>
+                <GroupInfoWidget />
+                <GroupDescription />
             </div>
-            <div className={"tankElements"}>
-                <div className={"groupMenu"}>
-                    <GroupInfoWidget />
-                    <GroupDescription />
-                </div>
-                <TankElements />
-                <TankPopUp />
+            <div className={"tanks"}>
+                <TanksInfo />
             </div>
+            <TankPopUp />
         </div>
     )
 }

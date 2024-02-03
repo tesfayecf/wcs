@@ -7,7 +7,6 @@
     padding: 5px;
     min-width: 500px;
 
-
     .title {
         text-align: center;
         font-size: 10px;
@@ -48,7 +47,6 @@
             background-color: #FFFFFF;
             border: 1.5px solid #222222;
             border-radius: 8px;
-            box-sizing: border-box;
             cursor: pointer;
             display: inline-block;
             outline: none;
@@ -87,7 +85,6 @@
             }
 
             .laodingSpinner div {
-                box-sizing: border-box;
                 position: absolute;
                 width: inherit;
                 height: inherit;

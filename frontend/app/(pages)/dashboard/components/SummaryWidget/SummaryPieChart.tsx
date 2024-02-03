@@ -16,18 +16,20 @@ interface ISummaryPieChartProps {
 
 const SummaryPieChart: React.FunctionComponent<ISummaryPieChartProps> = (props: ISummaryPieChartProps) => {
 
-    const legendLabels = ['Category A', 'Category B', 'Category C', 'Category D'];
-    const legendBackgroundColors = ['#83ecbd', '#e68b77', '#f2c986', '#92c594'];
+    const colors = ['#83ecbd', '#e68b77', '#f2c986', '#92c594', '#12f594'];
 
     const renderLegend = () => {
-        return legendLabels.map((label, index) => (
-            <div key={index} className="legend-item">
-                <span className={"dot"} style={{ backgroundColor: legendBackgroundColors[index] }}></span>
-                <div className={"label"}>
-                    {label}
-                </div>
-            </div >
-        ));
+        return props.groups.map((group, index) => {
+            const random = Math.floor(Math.random() * colors.length)
+            return (
+                <div key={index} className="legend-item">
+                    <span className={"dot"} style={{ backgroundColor: colors[random] }}></span>
+                    <div className={"label"}>
+                        {group.name}
+                    </div>
+                </div >
+            )
+        });
     }
 
     return (
@@ -43,7 +45,9 @@ const SummaryPieChart: React.FunctionComponent<ISummaryPieChartProps> = (props: 
 }
 
 const mapStateToProps = (state: IRootState) => {
-    return {};
+    return {
+        groups: state.dashboard.groups
+    };
 }
 
 export default connect(mapStateToProps, {})(SummaryPieChart);
@@ -53,8 +57,8 @@ const defaultPieData: ChartData<'pie'> = {
     labels: ['Category A', 'Category B', 'Category C', 'Category D'],
     datasets: [
         {
-            data: [25, 30, 15, 30], // Replace with your actual data values
-            backgroundColor: ['#83ecbd', '#e68b77', '#f2c986', '#92c594'], // Replace with your desired colors
+            data: [25, 30, 15, 30, 20], // Replace with your actual data values
+            backgroundColor: ['#83ecbd', '#e68b77', '#f2c986', '#92c594', '#12f594'], // Replace with your desired colors
         },
     ],
 };

@@ -9,20 +9,6 @@ import SummaryBarChart from '@/app/(pages)/dashboard/components/SummaryWidget/Su
 type ISummaryWidgetProps = {}
 
 const SummaryWidget: React.FunctionComponent<ISummaryWidgetProps> = (props: ISummaryWidgetProps) => {
-  // const [page, setPage] = React.useState(0);
-
-  // const renderPageButtons = React.useCallback(() => {
-  //   return (
-  //     <div className={"buttons"}>
-  //       <button onClick={() => setPage(0)} style={{ all: "unset" }}>
-  //         <span className={"dot"} style={{ backgroundColor: page == 0 ? "black" : "#67605f" }}></span>
-  //       </button>
-  //       <button onClick={() => setPage(1)} style={{ all: "unset" }}>
-  //         <span className={"dot"} style={{ backgroundColor: page == 1 ? "black" : "#67605f" }}></span>
-  //       </button>
-  //     </div>
-  //   )
-  // }, [page])
 
   return (
     <ContentBox customBoxClass={"summary"}>

@@ -5,25 +5,17 @@ import ContentBox from '@/app/components/contentBox/ContentBox';
 import { IGroup } from '../../DashboardTypes';
 
 type IGroupWidgetProps = {
-    group: IGroup
+    group: IGroup,
+    color: string
 }
 
 const GroupWidget: React.FunctionComponent<IGroupWidgetProps> = (props: IGroupWidgetProps) => {
 
-
-    const handleButtonClick = (event: React.MouseEvent<HTMLDivElement>) => {
-        event.preventDefault();
-        event.stopPropagation();
-        event.nativeEvent.stopImmediatePropagation();
-        console.log("Button clicked");
-        event.stopPropagation();
-    };
-
     return (
         <ContentBox customBoxClass={"group"}>
-            <Link href={`/group/${props.group.id}`} style={{ color: 'inherit', textDecoration: 'inherit' }}>
+            <Link href={`/group/${props.group.id}`} style={{ textDecoration: 'none' }}>
                 <div className={"groupContent"}>
-                    <div className={"groupBanner"} />
+                    <div className={"groupBanner"} style={{ background: props.color }} />
                     <div className={"groupInfo"}>
                         <div className={"groupName"}>{props.group.name}</div>
                         <div className={"groupLocation"}>{props.group.location}</div>

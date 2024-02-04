@@ -5,7 +5,7 @@ import { IRootState } from '@/app/utils/store/store';
 import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler';
 import FormTemplate from '@/app/components/formTemplate/FormTemplate';
 import PopUpTemplate from '@/app/components/popUpTemplate/PopUpTemplate';
-import { IGroupCreationForm } from '../../DashboardTypes';
+import { IGroupCreationForm } from '@/app/(pages)/dashboard/DashboardTypes';
 
 const dashboardHandler = DashboardHandler.getInstance();
 

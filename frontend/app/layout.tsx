@@ -7,7 +7,7 @@ import "../styles/app.css"
 import AppHandler from '@/app/app/AppHandler'
 import AuthHandler from '@/app/(auth)/AuthHandler'
 import DashboardHandler from '@/app/(pages)/dashboard/DashboardHandler'
-import GroupHandler from '@/app/(pages)/group/GroupHandler'
+import GroupHandler from '@/app/(pages)/group/[groupId]/GroupHandler'
 
 import LogHandler from '@/app/app/LogHandler'
 

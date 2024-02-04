@@ -1,9 +1,9 @@
 'use client'
-import { IRootState } from '@/app/utils/store/store'
 import React from 'react'
 import { connect } from 'react-redux'
-import TankWidget from '../TankWidget/TankWidget'
-import GroupHandler from '../../GroupHandler'
+import { IRootState } from '@/app/utils/store/store'
+import GroupHandler from '@/app/(pages)/group/[groupId]/GroupHandler'
+import TankWidget from '@/app/(pages)/group/[groupId]/components/TankWidget/TankWidget'
 
 const groupHandler = GroupHandler.getInstance();
 

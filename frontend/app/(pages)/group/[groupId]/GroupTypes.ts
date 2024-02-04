@@ -1,4 +1,4 @@
-import { IGroup, IGroupStats } from "../dashboard/DashboardTypes";
+import { IGroup, IGroupStats } from "../../dashboard/DashboardTypes";
 
 export interface ITankCreationForm {
     name: string;

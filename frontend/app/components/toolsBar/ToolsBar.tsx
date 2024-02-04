@@ -1,6 +1,6 @@
 import React from 'react'
 import SearchIcon from '@/public/svg/SearchIcon'
-import ContentBox from '../contentBox/ContentBox'
+import ContentBox from '@/app/components/contentBox/ContentBox'
 
 interface IProps {
     onCreate: () => void

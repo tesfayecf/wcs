@@ -4,7 +4,7 @@ import DashboardIcon from '@/public/svg/DashboardIcon'
 import AnalyticsIcon from '@/public/svg/AnalyticsIcon'
 import SettingsIcon from '@/public/svg/SettingsIcon'
 import LogoSmallIcon from '@/public/svg/LogoSmallIcon'
-import NavKey from './Navkey'
+import NavKey from '@/app/components/navbar/Navkey'
 
 interface INavbarProps { }
 

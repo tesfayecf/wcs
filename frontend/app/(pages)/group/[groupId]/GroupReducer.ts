@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IGroupStore, ITank, IGroupParams } from '@/app/(pages)/group/GroupTypes';
+import { IGroupStore, ITank, IGroupParams } from '@/app/(pages)/group/[groupId]/GroupTypes';
 import { IGroup, IGroupStats } from '@/app/(pages)/dashboard/DashboardTypes';
 
 // Define the initial state

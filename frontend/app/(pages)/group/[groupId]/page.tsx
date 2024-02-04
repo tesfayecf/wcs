@@ -1,10 +1,10 @@
 'use client'
 import React from "react";
-import GroupHandler from "../GroupHandler";
-import TanksInfo from "../components/TanksInfo/TanksInfo";
-import TankPopUp from "../components/TankPupUp/TankPopUp";
-import GroupInfoWidget from "@/app/(pages)/group/components/GroupInfo/GroupInfoWidget";
-import GroupDescription from "../components/GroupInfo/GroupDescription";
+import GroupHandler from "./GroupHandler";
+import TanksInfo from "./components/TanksInfo/TanksInfo";
+import TankPopUp from "./components/TankPupUp/TankPopUp";
+import GroupInfoWidget from "@/app/(pages)/group/[groupId]/components/GroupInfo/GroupInfoWidget";
+import GroupDescription from "./components/GroupInfo/GroupDescription";
 
 const groupHandler = GroupHandler.getInstance();
 

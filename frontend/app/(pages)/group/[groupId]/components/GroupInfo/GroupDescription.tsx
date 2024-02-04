@@ -1,8 +1,8 @@
 'use client'
-import ContentBox from "@/app/components/contentBox/ContentBox";
 import React from "react";
-import { IRootState } from "@/app/utils/store/store";
 import { connect } from "react-redux";
+import { IRootState } from "@/app/utils/store/store";
+import ContentBox from "@/app/components/contentBox/ContentBox";
 
 interface IGroupDescriptionProps extends ReturnType<typeof mapStateToProps> { }
 

@@ -3,9 +3,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { IRootState } from '@/app/utils/store/store';
 import FormTemplate from '@/app/components/formTemplate/FormTemplate';
-import GroupHandler from '../../GroupHandler';
+import GroupHandler from '@/app/(pages)/group/[groupId]/GroupHandler';
 import PopUpTemplate from '@/app/components/popUpTemplate/PopUpTemplate';
-import { ITankCreationForm } from '../../GroupTypes';
+import { ITankCreationForm } from '@/app/(pages)/group/[groupId]/GroupTypes';
 
 const groupHandler = GroupHandler.getInstance();
 
@@ -37,9 +37,10 @@ const TankPopUp: React.FunctionComponent<ITankPopUpProps> = (props: ITankPopUpPr
                 isLoading={props.isFormLoading}
                 fields={[
                     {
-                        name: "Name",
+                        name: "",
                         type: "text",
                         placeholder: "Name",
+
                     },
                     {
                         name: "Capacity",

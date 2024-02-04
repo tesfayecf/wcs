@@ -3,9 +3,9 @@ import React from 'react';
 import Link from 'next/link';
 import { connect } from 'react-redux';
 import { IRootState } from '@/app/utils/store/store';
-import { ISensor, ITank, ITankStatus } from '../../GroupTypes';
-import ContentBox from '@/app/components/contentBox/ContentBox';
 import ConnectedIcon from '@/public/svg/ConnectedIcon';
+import ContentBox from '@/app/components/contentBox/ContentBox';
+import { ISensor, ITank, ITankStatus } from '@/app/(pages)/group/[groupId]/GroupTypes';
 
 interface ITankWidgetWidgetProps extends ReturnType<typeof mapStateToProps> {
     tank: ITank,

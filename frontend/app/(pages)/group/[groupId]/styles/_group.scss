@@ -6,7 +6,7 @@
     justify-content: space-between;
     padding: 10px;
 
-    .info {
+    .status {
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -14,30 +14,38 @@
         align-items: center;
     }
 
-    .tanks {
-        width: 100%;
+    .general {
         height: 100%;
+        width: 100%;
         display: flex;
-        flex-direction: row;
-        // flex-shrink: 0;
-        // flex-grow: 0;
+        flex-direction: column;
+        justify-content: flex-start;
 
-        // overflow-x: auto;
-        // white-space: nowrap;
-        /* Prevent content from wrapping */
+        .info {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+        }
 
+        .tanks {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+        }
 
-        // /* Optional: Hide scrollbar for different browsers */
-        // scrollbar-width: thin;
-        // /* Firefox */
-        // scrollbar-color: transparent transparent;
-        // /* Firefox */
-
-        // /* Optional: Hide scrollbar for WebKit browsers */
-        // -ms-overflow-style: none;
-        // /* IE and Edge */
-        // scrollbar-width: none;
-        // /* Firefox */
+        .data {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+        }
     }
 
 }

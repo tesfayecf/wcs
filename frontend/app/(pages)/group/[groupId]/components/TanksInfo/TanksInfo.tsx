@@ -12,11 +12,12 @@ interface ITankElementsProps extends ReturnType<typeof mapStateToProps> { }
 const TanksInfo: React.FunctionComponent<ITankElementsProps> = (props: ITankElementsProps) => {
 
     const renderTanksInfo = React.useCallback(() => {
+
         const widgets = props.tanks.map((tank, index) =>
             <TankWidget tank={tank} key={index} />
         )
 
-        return widgets
+        return widgets.splice(2)
     }, [props.tanks])
 
     return renderTanksInfo()

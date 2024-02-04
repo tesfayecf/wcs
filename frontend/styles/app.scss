@@ -21,8 +21,9 @@
 
 // TANKS
 @import '../app/(pages)/group/[groupId]/styles/group';
-@import '../app/(pages)/group/components/GroupInfo/styles/groupInfo';
-@import '../app/(pages)/group/components/TankWidget/styles/tankWidget';
+@import '../app/(pages)/group/[groupId]/components/GroupInfo/styles/groupInfo';
+@import '../app/(pages)/group/[groupId]/components/TankWidget/styles/tankWidget';
+@import '../app/(pages)/group/[groupId]/components/DataWidget/styles/DataWidget';
 // @import '../app/(pages)/tanks/components/TankPopUp/styles/tankPopUp'; // Empty --> NOT FOUND!
 
 

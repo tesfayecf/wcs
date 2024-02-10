@@ -18,7 +18,7 @@ urlpatterns = [
     path('tanks/', GetGroupTanksView.as_view()),
     
     # tank
-    path('tank/', GetTankView.as_view()),
+    path('tank/', GetTanksView.as_view()),
     path('create-tank/', CreateTankView.as_view()),
     path('edit-tank/', EditTankView.as_view()),
     path('delete-tank/', DeleteTankView.as_view()),

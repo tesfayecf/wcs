@@ -1,7 +1,6 @@
 from django.contrib import admin
-from .models import Sensor, SensorData, TankSensor
+from .models import *
 
 # Register your models here.
-admin.site.register(Sensor)
-admin.site.register(TankSensor)
-admin.site.register(SensorData)
+admin.site.register(SensorReading)
+admin.site.register(SensorLog)

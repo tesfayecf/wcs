@@ -44,26 +44,26 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
 
     return (
         <ContentBox customBoxClass={"tankWidget"}>
-            <Link href={`/tank/${props.tank.id}`} style={{ textDecoration: 'none' }}>
-                <div className={"tankContent"}>
-                    <div className={"tankHeader"}>
-                        <div className={"name"}>
-                            {props.tank.name}
-                        </div>
-                        <div className={"type"}>
-                            {props.tank.type}
-                        </div>
+            {/* <Link href={`/tank/${props.tank.id}`} style={{ textDecoration: 'none' }}> */}
+            <div className={"tankContent"}>
+                <div className={"tankHeader"}>
+                    <div className={"name"}>
+                        {props.tank.name}
                     </div>
-                    <div className={"tankData"}>
-                        <div className={"level"}>
-                            {getSensorValue()}
-                        </div>
-                        <div className={"status"}>
-                            {getStatus()}
-                        </div>
+                    <div className={"type"}>
+                        {props.tank.type}
                     </div>
                 </div>
-            </Link>
+                <div className={"tankData"}>
+                    <div className={"level"}>
+                        {getSensorValue()}
+                    </div>
+                    <div className={"status"}>
+                        {getStatus()}
+                    </div>
+                </div>
+            </div>
+            {/* </Link> */}
         </ContentBox >
 
     )

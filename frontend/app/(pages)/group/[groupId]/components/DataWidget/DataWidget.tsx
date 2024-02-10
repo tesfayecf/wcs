@@ -60,35 +60,82 @@ function mapStateToProps(state: IRootState) {
 export default connect(mapStateToProps, {})(DataWidget)
 
 
+const labels = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
+
 const data: ChartData<'bar'> = {
-    labels: ['January', 'February', 'March', 'April', 'May'],
+    labels: labels,
     datasets: [
         {
-            label: 'Sales',
-            data: [65, 59, 80, 81, 56],
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
+            type: 'line' as const,
+            label: 'Savings',
+            borderColor: '#f2c986',
+            borderWidth: 2,
+            fill: false,
+            pointRadius: 0,
+            cubicInterpolationMode: 'monotone',
+            tension: 0.4,
+            data: generateRandomData(0, 100, labels.length),
         },
         {
-            label: 'Expenses',
-            data: [28, 48, 40, 19, 86],
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
+            type: 'bar' as const,
+            label: 'Inflow',
+            backgroundColor: '#83ecbd',
+            data: generateRandomData(0, 100, labels.length),
+            borderColor: 'white',
+            borderWidth: 2,
+            hoverBackgroundColor: '#37dd93',
+            hoverBorderColor: 'white',
+            // borderRadius: 10,
+        },
+        {
+            type: 'bar' as const,
+            label: 'Outflow',
+            backgroundColor: '#e68b77',
+            data: generateRandomData(0, 100, labels.length),
+            borderColor: 'white',
+            borderWidth: 2,
+            hoverBackgroundColor: '#e96649',
+            hoverBorderColor: 'white',
+            // borderRadius: 10,
         },
     ],
 }
 
+// Dummy Bar Options
 const options: ChartOptions<'bar'> = {
     responsive: true,
     maintainAspectRatio: false,
-    scales: {
-        x: {
-            labels: ['January', 'February', 'March', 'April', 'May'],
-        },
-        y: {
-            beginAtZero: true,
+    plugins: {
+        legend: {
+            display: true, // Remove legend
         },
     },
+    scales: {
+        x: {
+            display: true, // Display x-axis labels
+            ticks: {
+                display: true, // Display tick labels
+                color: '#97999a', // Set x-axis label color
+            },
+            grid: {
+                drawOnChartArea: false, // Remove the grid lines
+                drawTicks: false, // Remove ticks within the grid
+            },
+        },
+        y: {
+            display: true, // Remove y-axis labels
+            ticks: {
+                color: '#97999a', // Set y-axis label color
+            },
+        },
+    },
+};
+
+function generateRandomData(min, max, length) {
+    const data = [];
+    for (let i = 0; i < length; i++) {
+        const randomValue = Math.random() * (max - min) + min;
+        data.push(randomValue.toFixed(2)); // Round to 2 decimal places
+    }
+    return data;
 }

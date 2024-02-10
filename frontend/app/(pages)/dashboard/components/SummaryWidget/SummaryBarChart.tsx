@@ -29,7 +29,7 @@ ChartJS.register(
     BarController
 );
 
-interface ISummaryBarChartProps {
+interface ISummaryBarChartProps extends ReturnType<typeof mapStateToProps> {
     // data: ChartData<'bar'>;
     // options: ChartOptions<'bar'>;
 }

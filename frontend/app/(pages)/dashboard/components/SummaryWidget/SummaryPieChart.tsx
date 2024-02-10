@@ -2,14 +2,14 @@
 import React from "react"
 import { connect } from "react-redux";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, ArcElement, ChartData, ChartOptions, ChartTypeRegistry, BubbleDataPoint, LegendItem } from 'chart.js';
-import { Chart, Pie } from 'react-chartjs-2';
+import { Pie } from 'react-chartjs-2';
 import { IRootState } from "@/app/utils/store/store";
 import { Point } from "chart.js/dist/core/core.controller";
 
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Legend, Tooltip, Filler);
 
-interface ISummaryPieChartProps {
+interface ISummaryPieChartProps extends ReturnType<typeof mapStateToProps> {
     // data: ChartData<'pie'>;
     // options: ChartOptions<'pie'>;
 }
@@ -23,7 +23,7 @@ const SummaryPieChart: React.FunctionComponent<ISummaryPieChartProps> = (props: 
             const random = Math.floor(Math.random() * colors.length)
             return (
                 <div key={index} className="legend-item">
-                    <span className={"dot"} style={{ backgroundColor: colors[random] }}></span>
+                    <span className={"dot"} style={{ backgroundColor: colors[index] }}></span>
                     <div className={"label"}>
                         {group.name}
                     </div>

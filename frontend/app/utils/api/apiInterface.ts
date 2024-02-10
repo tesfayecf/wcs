@@ -69,7 +69,7 @@ export const APIInterface = {
         // Summary
         getSummary: {
             args: (): APIResponse<{ summaryData: any }> => { return {} as APIResponse<{ summaryData: any }> },
-            address: "api/tanks/summary/",
+            address: "api/data/summary/",
             method: "POST",
             argsKeys: [],
         },
@@ -77,31 +77,31 @@ export const APIInterface = {
         // Groups
         getGroups: {
             args: (): APIResponse<IGroup[]> => { return {} as APIResponse<IGroup[]> },
-            address: "api/tanks/groups/",
+            address: "api/data/groups/",
             method: "POST",
             argsKeys: [],
         },
         createGroup: {
             args: (name: string, location: string, description: string): APIResponse<IGroup[]> => { return {} as APIResponse<IGroup[]> },
-            address: "api/tanks/create-group/",
+            address: "api/data/create-group/",
             method: "POST",
             argsKeys: ["name", "location", "description"],
         },
         editGroup: {
             args: (groupId: number, name: string, location: string, description: string): APIResponse<void> => { return {} as APIResponse<void> },
-            address: "api/tanks/edit-group/",
+            address: "api/data/edit-group/",
             method: "POST",
             argsKeys: ["groupId", "name", "location", "description"],
         },
         deleteGroup: {
             args: (groupId: number): APIResponse<void> => { return {} as APIResponse<void> },
-            address: "api/tanks/delete-group/",
+            address: "api/data/delete-group/",
             method: "POST",
             argsKeys: ["groupId"],
         },
         getGroupStats: {
             args: (groupId: number): APIResponse<void> => { return {} as APIResponse<void> },
-            address: "api/tanks/delete-group/",
+            address: "api/data/delete-group/",
             method: "POST",
             argsKeys: ["groupId"],
         },
@@ -111,7 +111,7 @@ export const APIInterface = {
         // Tanks
         getTanks: {
             args: (groupId: number): APIResponse<{ group: IGroup, tanks: ITank[], groupStats: IGroupStats }> => { return {} as APIResponse<{ group: IGroup, tanks: ITank[], groupStats: IGroupStats }> },
-            address: "api/tanks/tanks/",
+            address: "api/data/tanks/",
             method: "POST",
             argsKeys: ["groupId"],
         },
@@ -119,7 +119,7 @@ export const APIInterface = {
         // Tank
         getTank: {
             args: (tankId: number, groupId: number): APIResponse<ITank[]> => { return {} as APIResponse<ITank[]> },
-            address: "api/tanks/tank/",
+            address: "api/data/tank/",
             method: "POST",
             argsKeys: ["tankId", "groupId"],
         },
@@ -128,7 +128,7 @@ export const APIInterface = {
                 groupId: number, name: string, capacity: number, type: string,
                 dimensions: string, brand: string, material: string
             ): APIResponse<void> => { return {} as APIResponse<void> },
-            address: "api/tanks/create-tank/",
+            address: "api/data/create-tank/",
             method: "POST",
             argsKeys: ["groupId", "name", "capacity", "type", "dimensions", "brand", "material"],
         },
@@ -137,19 +137,19 @@ export const APIInterface = {
                 tankId: number, groupId: number, name: string, capacity: number,
                 type: string, dimensions: string, brand: string, material: string
             ): APIResponse<void> => { return {} as APIResponse<void> },
-            address: "api/tanks/edit-tank/",
+            address: "api/data/edit-tank/",
             method: "POST",
             argsKeys: ["tankId", "groupId", "name", "capacity", "type", "dimensions", "brand", "material"],
         },
         deleteTank: {
             args: (tankId: number, groupId: number): APIResponse<void> => { return {} as APIResponse<void> },
-            address: "api/tanks/delete-tank/",
+            address: "api/data/delete-tank/",
             method: "POST",
             argsKeys: ["tankId", "groupId"],
         },
         getTankStats: {
             args: (tankId: number, groupId: number): APIResponse<any> => { return {} as APIResponse<any> },
-            address: "api/tanks/tank-stats/",
+            address: "api/data/tank-stats/",
             method: "POST",
             argsKeys: ["tankId", "groupId"],
         },
@@ -157,13 +157,13 @@ export const APIInterface = {
         // Sensor
         getSensor: {
             args: (tankId: number, groupId: number): APIResponse<ISensor> => { return {} as APIResponse<ISensor> },
-            address: "api/tanks/sensor/",
+            address: "api/data/sensor/",
             method: "POST",
             argsKeys: ["tankId", "groupId"],
         },
         assignSensor: {
             args: (sensorId: number, tankId: number, groupId: number): APIResponse<void> => { return {} as APIResponse<void> },
-            address: "api/tanks/assign-sensor/",
+            address: "api/data/assign-sensor/",
             method: "POST",
             argsKeys: ["sensorId", "tankId", "groupId"]
         }

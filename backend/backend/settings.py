@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "user_visit",
-    "tanks",
+    "data",
     "users",
     "sensors"
 ]

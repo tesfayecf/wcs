@@ -31,25 +31,18 @@ class GetGroupsView(generics.ListAPIView):
             return Response(groups_s, status=status.HTTP_200_OK)
         
 class CreateGroupView(APIView):
-    serializer_class = CreateGroupSerializer
-
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            name = serializer.validated_data.get('name')
-            location = serializer.validated_data.get('location')
-            description = serializer.validated_data.get('description')
-
-            query_name = Group.objects.filter(name=name)
-
-            if not query_name.exists():
-                tank_group = Group(name=name, location=location, description=description, user=request.user)
-                tank_group.save()
-                return Response(serialize_model(tank_group, ['id', 'name', 'location']), status=status.HTTP_201_CREATED)
-            return Response({'Bad Request': 'Invalid name...'}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
-
-
+        name = request.data.get('name', )
+        location = request.data.get('location')
+        description = request.data.get('description')
+        
+        query_name = Group.objects.filter(name=name)
+        if not query_name.exists():
+            tank_group = Group(name=name, location=location, description=description, user=request.user)
+            tank_group.save()
+            return Response(serialize_model(tank_group, ['id', 'name', 'location']), status=status.HTTP_201_CREATED)
+        return Response({'Bad Request': 'Invalid name...'}, status=status.HTTP_400_BAD_REQUEST)
+        
 class EditGroupView(APIView):
     def post(self, request):
         tank_group = getGroup(request=request)

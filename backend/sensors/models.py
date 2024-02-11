@@ -19,10 +19,10 @@ class SensorReading(models.Model):
 ###########
 ### LOG ###
 ###########
-class SensorStatus(Enum):
-    NORMAL = 'Normal', 'Normal'
-    WARNING = 'Warning', 'Warning'
-    ERROR = 'Error', 'Error'
+class SensorStatus(models.TextChoices):
+    NORMAL = ('Normal', 'Normal')
+    WARNING = ('Warning', 'Warning')
+    ERROR = ('Error', 'Error')
 
 class SensorLog(models.Model):
     timestamp = models.DateTimeField(auto_now=True)

@@ -32,11 +32,11 @@ class Group(TimeStampedModel):
 ############
 
 class TankType(models.TextChoices):
-    STORAGE = 'Storage', 'Storage'
-    WELL = 'Well', 'Well'
-    RESERVOIR = 'Reservoir', 'Reservoir'
-    TANK = 'Tank', 'Tank'
-    OTHER = 'Other', 'Other'
+    STORAGE = ('Storage', 'Storage')
+    WELL = ('Well', 'Well')
+    RESERVOIR = ('Reservoir', 'Reservoir')
+    TANK = ('Tank', 'Tank')
+    OTHER = ('Other', 'Other')
 
 class Tank(TimeStampedModel):
     # Model representing a single tank

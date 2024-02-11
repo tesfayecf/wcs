@@ -5,6 +5,12 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+def to_dict(model):
+    model_dict = {}
+    for field in model._meta.fields:
+        model_dict[field.name] = getattr(model, field.name)
+    return model_dict
+
 #############
 ### GROUP ###
 #############
@@ -16,11 +22,10 @@ class GetGroupsView(APIView):
             user = request.user
             groups = Group.objects.filter(user=user)
 
-            group_schema = GroupSchema(many=True)
-            serialized_groups = group_schema.dump(groups)
-            
-            # Convert to JSON
-            groups_json = dict(serialized_groups)
+            groups_json = []
+            for group in groups:
+                group_schema = GroupSchema(**to_dict(group))
+                groups_json.append(group_schema.model_dump_json())
 
             return Response(groups_json, status=status.HTTP_200_OK)
         except Exception as e:
@@ -30,10 +35,7 @@ class GetGroupsView(APIView):
 class CreateGroupView(APIView):
     def post(self, request):
         try:
-            # Deserialize request data using Pydantic schema
             create_group_data = CreateGroupSchema(**request.data)
-            # Validate the deserialized data
-            create_group_data.model_validate()
                        
             # Check if a group with the same name already exists
             if Group.objects.filter(name=create_group_data.name, user=request.user).exists():
@@ -49,16 +51,10 @@ class CreateGroupView(APIView):
             group.save()
             
             # Get created group
-            group = Group.objects.get(
-                pk=group.pk,
-                user=request.user
-            )
-            
-            group_schema = GroupSchema()
-            serialized_group = group_schema.dump(group)
+            group_schema = GroupSchema(**to_dict(group))
             
             # Convert to JSON
-            group_json = dict(serialized_group)
+            group_json = group_schema.model_dump_json()
             
             return Response(group_json, status=status.HTTP_201_CREATED)
         except Exception as e:
@@ -70,8 +66,6 @@ class EditGroupView(APIView):
         try:
             # Deserialize request data using Pydantic schema
             edit_group_data = EditGroupSchema(**request.data)
-            # Validate the deserialized data
-            edit_group_data.model_validate()
             
             # Check the group exists
             if not Group.objects.filter(pk=edit_group_data.id).exists():
@@ -89,11 +83,11 @@ class EditGroupView(APIView):
             group.description = edit_group_data.description
             group.save()
             
-            group_schema = GroupSchema()
-            serialized_group = group_schema.dump(group)
+            # Get created group
+            group_schema = GroupSchema(**to_dict(group))
             
             # Convert to JSON
-            group_json = dict(serialized_group)
+            group_json = group_schema.model_dump_json()
             
             return Response(group_json, status=status.HTTP_200_OK)
         except Exception as e:
@@ -105,8 +99,6 @@ class DeleteGroupView(APIView):
         try:
             # Deserialize request data using Pydantic schema
             delete_group_data = DeleteGroupSchema(**request.data)
-            # Validate the deserialized data
-            delete_group_data.model_validate()
 
             # Check the group exists
             if not Group.objects.filter(pk=delete_group_data.id).exists():
@@ -121,7 +113,7 @@ class DeleteGroupView(APIView):
             # Delete group
             group.delete()
             
-            return Response({"message": "Group deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+            return Response({}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

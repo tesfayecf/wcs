@@ -22,14 +22,14 @@ class GroupHandler {
     }
 
     /// LOADER \\\
-
     public async load(params: IGroupParams) {
         // store.dispatch(appActions.startLoading()); // BUG: infinit rerender
 
         await this.loadParams(params);
-        await this.getTanksInfo();
-        await this.getSensorsInfo();
-        this.initializeWSConnections(); // dont wait
+        await this.setGroupInfo();
+        await this.getTanks();
+        // await this.getSensors();
+        // this.initializeWSConnections(); // dont wait
 
         store.dispatch(appActions.finishLoading())
     }
@@ -38,40 +38,94 @@ class GroupHandler {
         store.dispatch(groupActions.setParams({ params }));
     }
 
-    /// GROUP HANDLER \\\
+    public async setGroupInfo() {
+        const groupId = store.getState().group.groupId;
+        const groups = store.getState().dashboard.groups;
+        const group = groups.find(group => group.id === groupId);
+        if (group) {
+            store.dispatch(groupActions.setGroupInfo({ groupInfo: group }));
+        }
+    }
 
-    public async getTanksInfo() {
-        const state = store.getState().group;
-        const response = await requestManager.request("tanks", "getTanks", [state.groupId])
-        if (response.isSuccess) {
-            store.dispatch(groupActions.setTanks({ tanks: response.data.tanks }));
-            store.dispatch(groupActions.setGroupInfo({ groupInfo: response.data.group }));
-            store.dispatch(groupActions.setGroupStats({ groupStats: response.data.groupStats }));
-        } else {
-            // TODO:  process response/handle errors
+    /// TANK HANDLER \\\
+    public async getTanks() {
+        try {
+            const groupId = store.getState().group.groupId;
+            const response = await requestManager.request("tank", "getTanks", [groupId])
+            if (response.isSuccess) {
+                store.dispatch(groupActions.setTanks({ tanks: response.data }));
+            } else {
+                // TODO:  process response/handle errors
+            }
+        } catch (error) {
+            // Log error
         }
     }
 
     public async createTank(fields: ITankCreationForm) {
-        store.dispatch(appActions.startFormLoading())
+        try {
+            store.dispatch(appActions.startFormLoading())
 
-        // Get fields
-        const name = fields["Name"];
-        const capacity = fields["Capacity"];
-        const type = fields["Type"];
-        const dimensions = fields["Dimension"];
-        const brand = fields["Brand"];
-        const material = fields["Material"];
+            // Get fields
+            const name = fields.name;
+            const type = fields.type;
+            const capacity = fields.capacity;
+            const groupId = store.getState().group.groupId;
 
-        const state = store.getState().group;
-        const response = await requestManager.request("tanks", "createTank", [state.groupId, name, capacity, type, dimensions, brand, material])
-        // TODO:  process response/handle errors
+            const response = await requestManager.request("tank", "createTank", [name, type, capacity, groupId])
 
-        // Update redux
-        this.getTanksInfo();
-        this.setShowTankMenu(false);
+            // TODO:  process response/handle errors
+            if (response.isSuccess) {
+                this.getTanks();
+            }
+            this.setShowTankMenu(false);
 
-        store.dispatch(appActions.finishFormLoading())
+            store.dispatch(appActions.finishFormLoading())
+        } catch (error) {
+            // Log error
+        }
+    }
+
+    public async editTank(tankId: number, fields: ITankCreationForm) {
+        try {
+            store.dispatch(appActions.startFormLoading())
+
+            // Get fields
+            const name = fields.name;
+            const type = fields.type;
+            const capacity = fields.capacity;
+            const is_active = true;
+            const groupId = store.getState().group.groupId;
+
+            const response = await requestManager.request("tank", "editTank", [tankId, name, type, capacity, is_active, groupId]);
+
+            // TODO:  process response/handle errors
+            if (response.isSuccess) {
+                this.getTanks();
+            }
+
+            store.dispatch(appActions.finishFormLoading())
+        } catch (error) {
+            // Log error
+        }
+    }
+
+    public async deleteTank(tankId: number) {
+        try {
+            store.dispatch(appActions.startFormLoading())
+
+            const groupId = store.getState().group.groupId;
+            const response = await requestManager.request("tank", "deleteTank", [tankId, groupId])
+
+            // TODO:  process response/handle errors
+            if (response.isSuccess) {
+                this.getTanks();
+            }
+
+            store.dispatch(appActions.finishFormLoading())
+        } catch (error) {
+            // Log error
+        }
     }
 
     public setShowTankMenu(state: boolean) {
@@ -79,70 +133,116 @@ class GroupHandler {
     }
 
     /// SENSOR HANDLER \\\
-
-    public async getSensorsInfo() {
+    public async getSensors() {
         const tanks: ITank[] = store.getState().group.tanks;
         let sensors: ISensor[] = [];
         await Promise.all(tanks.map(async (tank: ITank) => {
-            if (tank.hasSensor) {
-                const sensor: ISensor | undefined = await this.getSensor(tank.id);
-                if (sensor) sensors.push(sensor);
-            }
+            const sensor: ISensor | undefined = await this.getSensor(tank.id);
+            if (sensor) sensors.push(sensor);
         }))
         store.dispatch(groupActions.setSensors({ sensors }));
     }
 
     public async getSensor(tankId: number) {
-        const state = store.getState().group;
-        const response = await requestManager.request("tanks", "getSensor", [tankId, state.groupId]);
-        if (response.isSuccess) {
-            return response.data;
+        try {
+            const groupId = store.getState().group.groupId;
+            const response = await requestManager.request("sensor", "getSensor", [tankId, groupId]);
+            if (response.isSuccess) {
+                return response.data;
+            }
+        } catch (error) {
+            // Log error
         }
     }
 
-    public async initializeWSConnections() {
-        // const sensors = store.getState().tanks.sensors;
-        // Promise.all(sensors.map(async (sensor) => {
-        //     await websocketManager2.connect(sensor.id, this.handleWsConnection, this.handleWsMessage, this.handleWsError)
-        // }))
+    public async createSensor(token: string) {
+        try {
+            store.dispatch(appActions.startFormLoading());
+
+            // const tankId = store.getState().tank.tankId;
+            const tankId = -1;
+            const groupId = store.getState().group.groupId;
+            const response = await requestManager.request("sensor", "createSensor", [token, tankId, groupId]);
+            if (response.isSuccess) {
+                this.getSensors();
+            }
+
+            store.dispatch(appActions.finishFormLoading());
+        } catch (error) {
+            // Log error
+        }
     }
 
-    public async closeWSConnections() {
-        const sensors = store.getState().group.sensors;
-        Promise.all(sensors.map(async (sensor) => {
-            await websocketManager2.close(sensor.id)
-        }))
+    public async editSensor() {
+        try {
+            store.dispatch(appActions.startFormLoading());
+            const sensorId = -1;
+            const token = "";
+            const is_active = true;
+            const tankId = -1;
+            const groupId = store.getState().group.groupId;
+            const response = await requestManager.request("sensor", "editSensor", [sensorId, token, is_active, tankId, groupId]);
+            if (response.isSuccess) {
+                this.getSensors();
+            }
+
+            store.dispatch(appActions.finishFormLoading());
+        } catch (error) {
+            // Log error
+        }
     }
 
-    private async handleWsConnection(event) {
-        console.log("event", event);
+    public async deleteSensor() {
+        try {
+            store.dispatch(appActions.startFormLoading());
+
+            const sensorId = -1;
+            const tankId = -1;
+            const groupId = store.getState().group.groupId;
+            const response = await requestManager.request("sensor", "deleteSensor", [sensorId, tankId, groupId]);
+            if (response.isSuccess) {
+                this.getSensors();
+            }
+
+            store.dispatch(appActions.finishFormLoading());
+        } catch (error) {
+            // Log error
+        }
     }
 
-    private async handleWsMessage(message, sensorId) {
-        const sensorsData = store.getState().group.sensorsData;
-        let sensorsDataEdit = { ...sensorsData };
-        sensorsDataEdit[sensorId] = message.water_level;
-        store.dispatch(groupActions.setSensorsData({ sensorsData: sensorsDataEdit }));
-    }
+    /// WEBSOCKET HANDLER \\\
+    // public async initializeWSConnections() {
+    //     // const sensors = store.getState().tanks.sensors;
+    //     // Promise.all(sensors.map(async (sensor) => {
+    //     //     await websocketManager2.connect(sensor.id, this.handleWsConnection, this.handleWsMessage, this.handleWsError)
+    //     // }))
+    // }
 
-    private async handleWsError(message) {
-        console.log("message", message);
-    }
+    // public async closeWSConnections() {
+    //     const sensors = store.getState().group.sensors;
+    //     Promise.all(sensors.map(async (sensor) => {
+    //         await websocketManager2.close(sensor.id)
+    //     }))
+    // }
+
+    // private async handleWsConnection(event) {
+    //     console.log("event", event);
+    // }
+
+    // private async handleWsMessage(message, sensorId) {
+    //     const sensorsData = store.getState().group.sensorsData;
+    //     let sensorsDataEdit = { ...sensorsData };
+    //     sensorsDataEdit[sensorId] = message.water_level;
+    //     store.dispatch(groupActions.setSensorsData({ sensorsData: sensorsDataEdit }));
+    // }
+
+    // private async handleWsError(message) {
+    //     console.log("message", message);
+    // }
 
     public unload() {
         // TODO: set debounced time out. If user enter the page again no need to reconnect.
-        this.closeWSConnections();
-    }
-
-    /// TANK HANDLER \\\
-
-    public async getTankInfo(tankId: number) {
-        const state = store.getState().group;
-        const response = await requestManager.request("tanks", "getTank", [tankId, state.groupId])
-        if (response.isSuccess) {
-        } else {
-            // TODO: process response/handle errors
-        }
+        // this.closeWSConnections();
     }
 }
 

@@ -38,7 +38,7 @@ class AppHandler {
     }
 
     public async getUserInfo() {
-        const userInfo = await requestManager.request("app", "getUserInfo", []);
+        const userInfo = await requestManager.request("user", "getUserInfo", []);
         store.dispatch(appActions.setUserInfo({
             id: userInfo.data.id,
             email: userInfo.data.email,

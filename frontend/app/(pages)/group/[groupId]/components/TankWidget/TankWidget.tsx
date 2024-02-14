@@ -1,32 +1,26 @@
 'use client'
 import React from 'react';
-import Link from 'next/link';
 import { connect } from 'react-redux';
 import { IRootState } from '@/app/utils/store/store';
 import ConnectedIcon from '@/public/svg/ConnectedIcon';
 import ContentBox from '@/app/components/contentBox/ContentBox';
-import { ISensor, ITank, ITankStatus } from '@/app/(pages)/group/[groupId]/GroupTypes';
+import { ITank, ITankStatus } from '@/app/(pages)/group/[groupId]/GroupTypes';
 
 interface ITankWidgetWidgetProps extends ReturnType<typeof mapStateToProps> {
     tank: ITank,
 }
 
 const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITankWidgetWidgetProps) => {
-    const size = 125;
-
     const getStatus = () => {
         let text: ITankStatus = "Undefined";
         let icon = null;
         let color: string = "#f69c68";
 
-        const hasSensor = props.tank.hasSensor;
-        if (hasSensor) {
-            const sensor = props.sensors.find(s => s.tank.id === props.tank.id);
-            if (sensor) {
-                text = sensor.is_active ? "Connected" : "Disconnected"
-                color = sensor.is_active ? "#3de198" : "#e07159"
-                icon = sensor.is_active ? <ConnectedIcon size={30} fill={color} strokeWidth={1} /> : null
-            }
+        const sensor = props.sensors.find(s => s.tank.id === props.tank.id);
+        if (sensor) {
+            text = sensor.is_active ? "Connected" : "Disconnected"
+            color = sensor.is_active ? "#3de198" : "#e07159"
+            icon = sensor.is_active ? <ConnectedIcon size={30} fill={color} strokeWidth={1} /> : null
         }
 
         return (

@@ -12,7 +12,7 @@ export interface ISignupForm {
     confirmPassword: string
 }
 
-export interface IRecoverForm {
+export interface IResetForm {
     oldPassword: string,
     newPassword: string,
     confirmPassword: string

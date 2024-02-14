@@ -1,6 +1,6 @@
 import { appActions } from "../app/AppReducer";
 import { store } from "../utils/store/store";
-import { ILoginForm, ISignupForm, IRecoverForm } from "@/app/(auth)/AuthTypes";
+import { ILoginForm, ISignupForm, IResetForm } from "@/app/(auth)/AuthTypes";
 import RequestManager from '@/app/utils/api/requestManager'
 
 const requestManager = RequestManager.getInstance();
@@ -27,7 +27,6 @@ class AuthHandler {
     public async unload() { }
 
     // SIGN UP
-
     public async signup(fields: ISignupForm) {
         try {
             store.dispatch(appActions.startLoading());
@@ -38,11 +37,11 @@ class AuthHandler {
             const password = fields.password
             const confirmPassword = fields.confirmPassword
 
-            const response = await requestManager.request("auth", "signup", [{ firstName, lastName, email, password, confirmPassword }], false)
+            const response = await requestManager.request("auth", "signup", [firstName, lastName, email, password, confirmPassword], false)
 
             if (response.isSuccess) {
             } else {
-                throw new Error("Error during log in")
+                throw new Error("Error during sign up")
             }
 
             store.dispatch(appActions.finishLoading());
@@ -53,7 +52,6 @@ class AuthHandler {
     }
 
     // LOGIN
-
     public async login(fields: ILoginForm) {
         try {
             const email = fields.email
@@ -76,11 +74,10 @@ class AuthHandler {
     }
 
     // LOGOUT
-
     public async logout() {
         try {
             store.dispatch(appActions.startLoading())
-            const response = await requestManager.request("auth", "logout", [], false);
+            const response = await requestManager.request("auth", "logout", []);
 
             if (response.isSuccess) {
                 store.dispatch(appActions.removeRefreshToken())
@@ -96,10 +93,22 @@ class AuthHandler {
     }
 
     // RESET PASSWORD
-
-    public async resetPassword(filds: IRecoverForm) {
+    public async resetPassword(fields: IResetForm) {
         try {
+            const oldPassword = fields.oldPassword;
+            const newPassword = fields.newPassword;
+            const confirmPassword = fields.confirmPassword;
+            store.dispatch(appActions.startLoading())
 
+            const response = await requestManager.request("auth", "reset", [oldPassword, newPassword, confirmPassword]);
+
+            if (response.isSuccess) {
+            } else {
+                throw new Error("Error during sign up")
+            }
+
+            store.dispatch(appActions.finishLoading());
+            return response;
         } catch (error) {
             // Log error
         }

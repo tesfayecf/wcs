@@ -1,4 +1,4 @@
-import { IRecoverForm, ISignupForm } from "@/app/(auth)/AuthTypes";
+import { ILoginForm, IResetForm, ISignupForm } from "@/app/(auth)/AuthTypes";
 import { IGroup, IGroupStats } from "@/app/(pages)/dashboard/DashboardTypes";
 import { ISensor, ITank } from "@/app/(pages)/group/[groupId]/GroupTypes";
 import { IUserInfo } from "@/app/app/AppTypes";
@@ -18,7 +18,8 @@ export interface APIResponse<T> {
 }
 
 export const APIInterface = {
-    app: {
+    app: {},
+    user: {
         getUserInfo: {
             args: (): APIResponse<Partial<IUserInfo>> => { return {} as APIResponse<Partial<IUserInfo>> },
             address: "api/auth/user/",
@@ -28,7 +29,7 @@ export const APIInterface = {
     },
     auth: {
         signup: {
-            args: (args: Partial<ISignupForm>): APIResponse<string> => { return {} as APIResponse<string> },
+            args: (firstName: string, lastName: string, email: string, password: string, confirmPassword: string): APIResponse<string> => { return {} as APIResponse<string> },
             address: "api/auth/signup/",
             method: "POST",
             argsKeys: ["firstName", "lastName", "email", "password", "confirmPassword"],
@@ -46,7 +47,7 @@ export const APIInterface = {
             argsKeys: []
         },
         reset: {
-            args: (args: Partial<IRecoverForm>): APIResponse<void> => { return {} as APIResponse<void> },
+            args: (oldPassword: string, newPassword: string, confirmPassword: string): APIResponse<void> => { return {} as APIResponse<void> },
             address: "api/auth/reset/",
             method: "POST",
             argsKeys: ["oldPassword", "newPassword", "confirmPassword"],
@@ -64,17 +65,7 @@ export const APIInterface = {
             argsKeys: []
         },
     },
-    dashboard: {
-
-        // Summary
-        // getSummary: {
-        //     args: (): APIResponse<{ summaryData: any }> => { return {} as APIResponse<{ summaryData: any }> },
-        //     address: "api/data/summary/",
-        //     method: "POST",
-        //     argsKeys: [],
-        // },
-
-        // Groups
+    group: {
         getGroups: {
             args: (): APIResponse<IGroup[]> => { return {} as APIResponse<IGroup[]> },
             address: "api/data/groups/",
@@ -106,9 +97,7 @@ export const APIInterface = {
         //     argsKeys: ["groupId"],
         // },
     },
-
-    tanks: {
-        // Tanks
+    tank: {
         getTanks: {
             args: (group_id: number): APIResponse<ITank[]> => { return {} as APIResponse<ITank[]> },
             address: "api/data/tanks/",
@@ -116,16 +105,16 @@ export const APIInterface = {
             argsKeys: ["group_id"],
         },
         createTank: {
-            args: (group_id: number, name: string, type: string, capacity: number): APIResponse<void> => { return {} as APIResponse<void> },
+            args: (name: string, type: string, capacity: number, group_id: number): APIResponse<void> => { return {} as APIResponse<void> },
             address: "api/data/create-tank/",
             method: "POST",
-            argsKeys: ["group_id", "name", "type", "capacity"],
+            argsKeys: ["name", "type", "capacity", "group_id"],
         },
         editTank: {
-            args: (id: number, group_id: number, name: string, type: string, capacity: number, is_active: boolean): APIResponse<void> => { return {} as APIResponse<void> },
+            args: (id: number, name: string, type: string, capacity: number, is_active: boolean, group_id: number): APIResponse<void> => { return {} as APIResponse<void> },
             address: "api/data/edit-tank/",
             method: "POST",
-            argsKeys: ["id", "group_id", "name", "type", "capacity", "is_active"],
+            argsKeys: ["id", "name", "type", "capacity", "is_active", "group_id"],
         },
         deleteTank: {
             args: (id: number, group_id: number): APIResponse<void> => { return {} as APIResponse<void> },
@@ -139,8 +128,8 @@ export const APIInterface = {
         //     method: "POST",
         //     argsKeys: ["tankId", "groupId"],
         // },
-
-        // Sensor
+    },
+    sensor: {
         getSensor: {
             args: (tank_id: number, group_id: number): APIResponse<ISensor> => { return {} as APIResponse<ISensor> },
             address: "api/data/sensor/",
@@ -148,16 +137,16 @@ export const APIInterface = {
             argsKeys: ["tank_id", "group_id"],
         },
         createSensor: {
-            args: (tank_id: number, group_id: number, token: string): APIResponse<void> => { return {} as APIResponse<void> },
+            args: (token: string, tank_id: number, group_id: number): APIResponse<void> => { return {} as APIResponse<void> },
             address: "api/data/create-sensor/",
             method: "POST",
-            argsKeys: ["tank_id", "group_id", "token"],
+            argsKeys: ["token", "tank_id", "group_id",],
         },
         editSensor: {
-            args: (id: number, tank_id: number, group_id: number, token: string, is_active: boolean): APIResponse<void> => { return {} as APIResponse<void> },
+            args: (id: number, token: string, is_active: boolean, tank_id: number, group_id: number,): APIResponse<void> => { return {} as APIResponse<void> },
             address: "api/data/edit-sensor/",
             method: "POST",
-            argsKeys: ["id", "tank_id", "group_id", "token", "is_active"],
+            argsKeys: ["id", "token", "is_active", "tank_id", "group_id"],
         },
         deleteSensor: {
             args: (id: number, tank_id: number, group_id: number): APIResponse<void> => { return {} as APIResponse<void> },
@@ -165,5 +154,14 @@ export const APIInterface = {
             method: "POST",
             argsKeys: ["id", "tank_id", "group_id"],
         }
+    },
+    dashboard: {
+        // Summary
+        // getSummary: {
+        //     args: (): APIResponse<{ summaryData: any }> => { return {} as APIResponse<{ summaryData: any }> },
+        //     address: "api/data/summary/",
+        //     method: "POST",
+        //     argsKeys: [],
+        // },
     }
 } as const;

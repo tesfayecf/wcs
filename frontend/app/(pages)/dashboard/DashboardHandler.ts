@@ -49,7 +49,7 @@ class DashboardHandler {
     /// GROUP HANDLER \\\
     public async getGroups() {
         try {
-            const response = await requestManager.request("dashboard", "getGroups", [])
+            const response = await requestManager.request("group", "getGroups", []);
             if (response.isSuccess) {
                 store.dispatch(dashboardActions.setGroups({ groups: response.data }));
             } else {
@@ -69,7 +69,7 @@ class DashboardHandler {
             const location = fields.location
             const description = fields.description
 
-            const response = await requestManager.request("dashboard", "createGroup", [name, location, description]);
+            const response = await requestManager.request("group", "createGroup", [name, location, description]);
 
             // TODO:  process response/handle errors
             if (response.isSuccess) {
@@ -91,7 +91,7 @@ class DashboardHandler {
             const location = fields.location
             const description = fields.description
 
-            const response = await requestManager.request("dashboard", "editGroup", [groupId, name, location, description]);
+            const response = await requestManager.request("group", "editGroup", [groupId, name, location, description]);
             if (response.isSuccess) {
                 this.getGroups();
             }
@@ -107,7 +107,7 @@ class DashboardHandler {
         try {
             store.dispatch(appActions.startFormLoading());
 
-            const response = await requestManager.request("dashboard", "deleteGroup", [groupId]);
+            const response = await requestManager.request("group", "deleteGroup", [groupId]);
             if (response.isSuccess) {
                 this.getGroups();
             }

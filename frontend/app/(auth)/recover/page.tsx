@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import FormTemplate from "@/app/components/formTemplate/FormTemplate";
 import AuthHandler from "../AuthHandler";
 import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
-import { IRecoverForm } from "../AuthTypes";
+import { IResetForm } from "../AuthTypes";
 
 const authHandler = AuthHandler.getInstance();
 
@@ -12,7 +12,7 @@ interface IResetProps { }
 const Reset: React.FunctionComponent<IResetProps> = (props: IResetProps) => {
     const [error, setError] = useState<boolean>(false);
 
-    const onResetPassword = async (fields: IRecoverForm) => { };
+    const onResetPassword = async (fields: IResetForm) => { };
 
     const renderTitle = () => {
         return (
@@ -44,7 +44,7 @@ const Reset: React.FunctionComponent<IResetProps> = (props: IResetProps) => {
                         elevation: 0,
                     }}
                 >
-                    <FormTemplate<IRecoverForm>
+                    <FormTemplate<IResetForm>
                         title={renderTitle()}
                         titleStyle={titleStyle}
                         externalError={error}
@@ -56,7 +56,29 @@ const Reset: React.FunctionComponent<IResetProps> = (props: IResetProps) => {
                         cancelButton=""
                         showCancelButton={false}
                         isLoading={false}
-                        fields={[]}
+                        fields={[
+                            {
+                                key: "oldPassword",
+                                name: "Old password",
+                                type: "text",
+                                placeholder: "",
+                                textType: "password"
+                            },
+                            {
+                                key: "newPassword",
+                                name: "New password",
+                                type: "text",
+                                placeholder: "",
+                                textType: "password"
+                            },
+                            {
+                                key: "confirmPassword",
+                                name: "Confirm password",
+                                type: "text",
+                                placeholder: "",
+                                textType: "password"
+                            },
+                        ]}
                     />
                 </PopUpTemplate>
             </div>

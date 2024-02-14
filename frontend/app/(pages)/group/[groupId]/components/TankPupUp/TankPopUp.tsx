@@ -28,46 +28,34 @@ const TankPopUp: React.FunctionComponent<ITankPopUpProps> = (props: ITankPopUpPr
         >
             <FormTemplate<ITankCreationForm>
                 title="Create Tank"
-                onAccept={onCreate}
-                acceptButtonText="Create"
-                cancelButtonText="Cancel"
                 externalError={false}
                 externalErrorText={"Invalid data"}
-                hideCancelButton={false}
+                onCancel={onClose}
+                onAccept={onCreate}
+                acceptButton="Create"
+                cancelButton="Cancel"
+                showCancelButton={true}
                 isLoading={props.isFormLoading}
                 fields={[
                     {
-                        name: "",
+                        key: "name",
+                        name: "Name",
                         type: "text",
-                        placeholder: "Name",
-
+                        placeholder: "",
                     },
                     {
-                        name: "Capacity",
-                        type: "text",
-                        placeholder: "Capacity",
-                        textType: "number"
-                    },
-                    {
+                        key: "type",
                         name: "Type",
                         type: "select",
                         selectItems: ["Storage", "Well", "Reservoir", "Tank", "Other"],
-                        placeholder: "Type",
+                        defaultValue: "Storage",
+                        placeholder: "",
                     },
                     {
-                        name: "Dimension",
+                        key: "capacity",
+                        name: "Capacity",
                         type: "text",
-                        placeholder: "Dimension",
-                    },
-                    {
-                        name: "Material",
-                        type: "text",
-                        placeholder: "Material",
-                    },
-                    {
-                        name: "Brand",
-                        type: "text",
-                        placeholder: "Brand",
+                        placeholder: "",
                     },
                 ]}
             />

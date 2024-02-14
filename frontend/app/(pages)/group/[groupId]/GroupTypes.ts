@@ -2,26 +2,9 @@ import { IGroup, IGroupStats } from "../../dashboard/DashboardTypes";
 
 export interface ITankCreationForm {
     name: string;
-    nameError: boolean;
-    capacity: number;
-    capacityError: boolean;
     type: string;
-    typeError: boolean;
-    dimensions: string;
-    dimensionsError: boolean;
-    material: string;
-    materialError: boolean;
-    brand: string;
-    brandError: boolean;
-}
-
-export interface ITankCreationForm {
-    "Name": string;
-    "Capacity": number;
-    "Type": string;
-    "Dimension": string;
-    "Material": string;
-    "Brand": string;
+    capacity: number;
+    is_active: boolean;
 }
 
 export interface IGroupStore {
@@ -43,11 +26,9 @@ export interface ITank {
     name: string;
     capacity: number;
     type: string;
-    dimensions: string;
-    material: string;
-    brand: string;
-    isActive: boolean;
-    hasSensor: boolean;
+    date_created: Date;
+    date_modified: Date;
+    is_Active: boolean;
 }
 
 export interface IGroupParams {

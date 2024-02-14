@@ -1,6 +1,8 @@
 from .models import Tank, Group, Sensor
 from .schemas import *
 
+import json
+from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -25,7 +27,7 @@ class GetGroupsView(APIView):
             groups_json = []
             for group in groups:
                 group_schema = GroupSchema(**to_dict(group))
-                groups_json.append(group_schema.model_dump_json())
+                groups_json.append(group_schema.model_dump())
 
             return Response(groups_json, status=status.HTTP_200_OK)
         except Exception as e:
@@ -54,7 +56,7 @@ class CreateGroupView(APIView):
             group_schema = GroupSchema(**to_dict(group))
             
             # Convert to JSON
-            group_json = group_schema.model_dump_json()
+            group_json = group_schema.model_dump()
             
             return Response(group_json, status=status.HTTP_201_CREATED)
         except Exception as e:
@@ -87,7 +89,7 @@ class EditGroupView(APIView):
             group_schema = GroupSchema(**to_dict(group))
             
             # Convert to JSON
-            group_json = group_schema.model_dump_json()
+            group_json = group_schema.model_dump()
             
             return Response(group_json, status=status.HTTP_200_OK)
         except Exception as e:
@@ -143,8 +145,6 @@ class GetTanksView(APIView):
         try:
             # Deserialize request data using Pydantic schema
             get_group_data = GetTanksSchema(**request.data)
-            # Validate the deserialized data
-            get_group_data.model_validate()
 
             # Check the group exists
             if not Group.objects.filter(pk=get_group_data.group_id).exists():
@@ -155,11 +155,10 @@ class GetTanksView(APIView):
                 group__user=request.user
             )
             
-            tank_schema = TankSchema(many=True)
-            serialized_tanks = tank_schema.dump(tanks)
-            
-            # Convert to JSON
-            tanks_json = dict(serialized_tanks)
+            tanks_json = []
+            for tank in tanks:
+                group_schema = TankSchema(**to_dict(tank))
+                tanks_json.append(group_schema.model_dump())
             
             return Response(tanks_json, status=status.HTTP_200_OK)
         except Exception as e:
@@ -171,8 +170,6 @@ class CreateTankView(APIView):
             try:
                 # Deserialize request data using Pydantic schema
                 create_tank_data = CreateTankSchema(**request.data)
-                # Validate the deserialized data
-                create_tank_data.model_validate()
                 
                 # Check the group exists
                 if not Group.objects.filter(pk=create_tank_data.group_id, user=request.user).exists():
@@ -187,19 +184,18 @@ class CreateTankView(APIView):
                 # Create a new Tank object
                 tank = Tank(
                     name=create_tank_data.name,
-                    tank_type=create_tank_data.type,
+                    type=create_tank_data.type,
                     capacity=create_tank_data.capacity,
                     is_active=True,
                     group=group,
-                    user=request.user
                 )
                 tank.save()         
                 
-                tank_schema = TankSchema()
-                serialized_tank = tank_schema.dump(tank)
+                # Get created tank
+                tank_schema = TankSchema(**to_dict(tank))
                 
                 # Convert to JSON
-                tank_json = dict(serialized_tank)
+                tank_json = tank_schema.model_dump()
                 
                 return Response(tank_json, status=status.HTTP_200_OK)
             except Exception as e:
@@ -211,8 +207,6 @@ class EditTankView(APIView):
         try:
             # Deserialize request data using Pydantic schema
             edit_tank_data = EditTankSchema(**request.data)
-            # Validate the deserialized data
-            edit_tank_data.model_validate()
             
             # Check the group exists
             if not Group.objects.filter(pk=edit_tank_data.group_id, user=request.user).exists():
@@ -235,11 +229,11 @@ class EditTankView(APIView):
             tank.capacity = edit_tank_data.capacity
             tank.save()
             
-            tank_schema = TankSchema()
-            serialized_tank = tank_schema.dump(tank)
+            # Get created tank
+            tank_schema = TankSchema(**to_dict(tank))
             
             # Convert to JSON
-            tank_json = dict(serialized_tank)
+            tank_json = tank_schema.model_dump()
             
             return Response(tank_json, status=status.HTTP_200_OK)
         except Tank.DoesNotExist:
@@ -272,7 +266,7 @@ class DeleteTankView(APIView):
             # Deleta tank
             tank.delete()
             
-            return Response({"message": "Group deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+            return Response({}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -282,13 +276,11 @@ class DeleteTankView(APIView):
 ##############
 
 ### GET ###
-class GetSensorsView(APIView):
+class GetSensorView(APIView):
     def post(self, request):
         try:
             # Deserialize request data using Pydantic schema
             get_sensor_data = GetSensorSchema(**request.data)
-            # Validate the deserialized data
-            get_sensor_data.model_validate()
 
             # Check the group exists
             if not Group.objects.filter(pk=get_sensor_data.group_id).exists():
@@ -303,11 +295,11 @@ class GetSensorsView(APIView):
                 tank__group__id=get_sensor_data.group_id
             )
             
-            sensor_schema = SensorSchema()
-            serialized_sensors = sensor_schema.dump(sensor)
+            # Get created sensor
+            sensor_schema = SensorSchema(**to_dict(sensor))
             
             # Convert to JSON
-            sensor_json = dict(serialized_sensors)
+            sensor_json = sensor_schema.model_dump()
             
             return Response(sensor_json, status=status.HTTP_200_OK)
         except Exception as e:
@@ -319,8 +311,6 @@ class CreateSensorView(APIView):
         try:
             # Deserialize request data using Pydantic schema
             create_sensor_data = CreateSensorSchema(**request.data)
-            # Validate the deserialized data
-            create_sensor_data.model_validate()
             
             # Check the group exists
             if not Group.objects.filter(pk=create_sensor_data.group_id).exists():
@@ -329,6 +319,13 @@ class CreateSensorView(APIView):
             # Check if the tank exists
             if not Tank.objects.filter(pk=create_sensor_data.tank_id).exists():
                 return Response({'Bad Request': 'Tank does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        
+            # Get tank
+            tank = Tank.objects.get(
+                pk=create_sensor_data.tank_id,
+                group__id=create_sensor_data.group_id,
+                group__user=request.user
+            )
             
             # Get the tank does not have a sensor already
             if Sensor.objects.filter(tank__id=create_sensor_data.tank_id).exists():
@@ -338,15 +335,15 @@ class CreateSensorView(APIView):
             sensor = Sensor(
                 token=create_sensor_data.token,
                 is_active=True,
-                tank_id=create_sensor_data.tank_id
+                tank=tank
             )
             sensor.save()
 
-            sensor_schema = SensorSchema()
-            serialized_sensor = sensor_schema.dump(sensor)
+            # Get created sensor
+            sensor_schema = SensorSchema(**to_dict(sensor))
             
             # Convert to JSON
-            sensor_json = dict(serialized_sensor)
+            sensor_json = sensor_schema.model_dump()
             
             return Response(sensor_json, status=status.HTTP_200_OK)
         except Exception as e:
@@ -358,8 +355,6 @@ class EditSensorView(APIView):
         try:
             # Deserialize request data using Pydantic schema
             edit_sensor_data = EditSensorSchema(**request.data)
-            # Validate the deserialized data
-            edit_sensor_data.model_validate()
             
             # Check the group exists
             if not Group.objects.filter(pk=edit_sensor_data.group_id).exists():
@@ -385,11 +380,11 @@ class EditSensorView(APIView):
             sensor.is_active = edit_sensor_data.is_active
             sensor.save()
             
-            sensor_schema = SensorSchema()
-            serialized_sensor = sensor_schema.dump(sensor)
+            # Get created sensor
+            sensor_schema = SensorSchema(**to_dict(sensor))
             
             # Convert to JSON
-            sensor_json = dict(serialized_sensor)
+            sensor_json = sensor_schema.model_dump()
             
             return Response(sensor_json, status=status.HTTP_200_OK)
         except Sensor.DoesNotExist:
@@ -403,8 +398,6 @@ class DeleteSensorView(APIView):
         try:
             # Deserialize request data using Pydantic schema
             delete_sensor_data = DeleteSensorSchema(**request.data)
-            # Validate the deserialized data
-            delete_sensor_data.model_validate()
             
             # Check the group exists
             if not Group.objects.filter(pk=delete_sensor_data.group_id).exists():
@@ -428,6 +421,6 @@ class DeleteSensorView(APIView):
             # Delete sensor
             sensor.delete()
             
-            return Response({"message": "Sensor deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+            return Response({}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

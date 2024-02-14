@@ -213,11 +213,11 @@ class CustomTokenSignupView(APIView):
 
         # Create a new user
         UserAccount.objects.create(
-            username=email,  # You can customize the username as needed
+            username=email,
             email=email,
             first_name=name,
             last_name=last_name,
-            password=make_password(password)
+            password=password
         )
 
         # Additional steps (e.g., sending a confirmation email) can be added here

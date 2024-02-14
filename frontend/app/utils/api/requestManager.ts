@@ -22,28 +22,6 @@ class RequestManager extends BaseManager {
         return RequestManager.instance;
     }
 
-    public async request_<
-        T extends keyof typeof APIInterface,
-        S extends keyof typeof APIInterface[T],
-    >(
-        group: T,
-        endpoint: S,
-        // @ts-ignore
-        args: Parameters<typeof APIInterface[T][S]["args"]>,
-        authenticate: boolean = true,
-        // @ts-ignore
-    ): Promise<ReturnType<typeof APIInterface[T][S]["args"]>> {
-        // @ts-ignore
-        const { address, method, argsKeys } = APIInterface[group][endpoint as string];
-        console.log(address, method)
-        const obj = Object.fromEntries(args.map((key, index) => [argsKeys[index], key]));
-        const reponse = await this.baseRequest_(method, address, obj, authenticate);
-        if (process.env.NODE_ENV === "development") {
-            console.log(`[${group}][${endpoint as string}]`, reponse);
-        }
-        return reponse;
-    }
-
     public async request<
         T extends keyof typeof APIInterface,
         S extends keyof typeof APIInterface[T],
@@ -58,9 +36,12 @@ class RequestManager extends BaseManager {
         // @ts-ignore
         const { address, method, argsKeys } = APIInterface[group][endpoint as string];
         const obj = Object.fromEntries(args.map((key, index) => [argsKeys[index], key]));
+        if (process.env.NODE_ENV === "development") {
+            console.log(`[${group}][${endpoint as string}] -> request`, obj);
+        }
         const reponse = await this.baseRequestWithReAuth_(method, address, obj, authenticate);
         if (process.env.NODE_ENV === "development") {
-            console.log(`[${group}][${endpoint as string}]`, reponse);
+            console.log(`[${group}][${endpoint as string}] -> response`, reponse);
         }
         return reponse;
     }
@@ -152,7 +133,7 @@ class RequestManager extends BaseManager {
         const isServerError = status !== undefined && status >= 500;
 
         return {
-            data: response?.data,
+            data: response.data,
             request: response?.request,
             status: status,
             statusText: response?.statusText,

@@ -1,6 +1,6 @@
 .groupInfo {
     width: 260px;
-    height: 450px;
+    height: 60%;
 
     .groupInfoContent {
         display: flex;
@@ -88,7 +88,7 @@
 
 .groupDescription {
     width: 260px;
-    height: 240px;
+    height: 20%;
 
     .descriptionContent {
         margin: 10px;
@@ -109,6 +109,27 @@
         .descriptionText {
             font-size: 10px;
             color: #454747;
+            line-height: 21px;
+            margin: 0px 15px;
+        }
+    }
+}
+
+.groupAddTank {
+    width: 260px;
+    height: 10%;
+    background-color: $background-1-dark;
+
+    .addTankContent {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        margin: 10px;
+
+        .text {
+            font-size: 15px;
+            color: $background-1-light;
             line-height: 21px;
             margin: 0px 15px;
         }

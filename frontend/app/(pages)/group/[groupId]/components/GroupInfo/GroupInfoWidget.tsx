@@ -8,8 +8,6 @@ interface IGroupWidgetProps extends ReturnType<typeof mapStateToProps> { }
 
 
 const GroupInfoWidget: React.FunctionComponent<IGroupWidgetProps> = (props: IGroupWidgetProps) => {
-    const size = 125;
-
     return (
         <ContentBox customBoxClass={"groupInfo"}>
             <div className={"groupInfoContent"}>

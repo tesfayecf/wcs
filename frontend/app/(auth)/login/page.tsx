@@ -143,7 +143,6 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
                         />
                     </PopUpTemplate>
                 </div>
-
             </div>
         </CheckAuth>
     )

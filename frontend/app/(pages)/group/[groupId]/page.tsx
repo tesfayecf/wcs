@@ -8,6 +8,7 @@ import GroupDescription from "@/app/(pages)/group/[groupId]/components/GroupInfo
 import InfoWidget from "@/app/(pages)/group/[groupId]/components/InfoWidget/InfoWidget";
 import { ChartData } from "chart.js";
 import DataWidget from "./components/DataWidget/DataWidget";
+import AddTankWidget from "./components/GroupInfo/AddTankWidget";
 
 const groupHandler = GroupHandler.getInstance();
 
@@ -31,6 +32,7 @@ const Group: React.FunctionComponent<IDashboardProps> = (props: IDashboardProps)
             <div className={"status"}>
                 <GroupInfoWidget />
                 <GroupDescription />
+                <AddTankWidget />
             </div>
             <div className={"general"}>
                 <div className={"info"}>

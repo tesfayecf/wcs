@@ -13,6 +13,7 @@ import {
     LineController,
     BarController,
     ChartOptions,
+    ChartData,
 } from 'chart.js';
 import { Chart } from 'react-chartjs-2';
 import { IRootState } from "@/app/utils/store/store";
@@ -53,7 +54,7 @@ export default connect(mapStateToProps, {})(SummaryBarChart)
 
 const labels = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
 
-export const data = {
+export const data: ChartData<"bar" | "line"> = {
     labels,
     datasets: [
         {

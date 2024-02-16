@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export default async function middleware(request: NextRequest) {
     try {
-        // if (request.url.includes("/api")) {
-        //     console.log("Process api route");
-        //     const apiResponse = await apiRequest(request);
-        //     if (apiResponse.status === 401) {
+        console.log("request.nextUrl", request.nextUrl)
 
-        //     }
-        //     const response = NextResponse.next();
-        //     return response
+        if (request.url.includes("/api")) {
+            console.log("Process api route");
+            const apiResponse = await redirectRequest(request);
+            const response = NextResponse.next();
+            return response
+        }
 
 
         // } else {
@@ -20,20 +20,13 @@ export default async function middleware(request: NextRequest) {
         //     return NextResponse.next();
         // }
 
-        console.log(request.nextUrl.searchParams)
-        // //check if request include rsc param
-        if (request.nextUrl.searchParams.has("_rsc")) {
-            console.log(request.url)
-            return NextResponse.next();
-        }
-        // if (request.url.includes("api")) return NextResponse.next();
 
-        const doesHaveTokens = hasTokens(request);
-        console.log(doesHaveTokens)
-        if (!doesHaveTokens) return handleUnauthenticated(request);
-        // const isAccessTokenValid = await acessTokenValid(request)
-        // if (!isAccessTokenValid) return refreshAccessToken(request);
-        // console.log('AUTHENTICATED');
+        // const doesHaveTokens = hasTokens(request);
+        // console.log(doesHaveTokens)
+        // if (!doesHaveTokens) return handleUnauthenticated(request);
+        // // const isAccessTokenValid = await acessTokenValid(request)
+        // // if (!isAccessTokenValid) return refreshAccessToken(request);
+        // // console.log('AUTHENTICATED');
         return NextResponse.next();
 
     } catch (error) {
@@ -44,7 +37,7 @@ export default async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        '/((?!_next/static|_next/image|favicon.ico|api|test).*)',
+        '/((?!_next/static|_next/image|_next/chunks|favicon.ico|test).*)',
     ],
 };
 
@@ -161,7 +154,7 @@ async function makeRequest(request: NextRequest, url: string) {
     return response;
 }
 
-async function apiRequest(request) {
+async function redirectRequest(request) {
     return await makeRequest(request, request.url);
 }
 

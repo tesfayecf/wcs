@@ -39,7 +39,7 @@ const SummaryPieChart: React.FunctionComponent<ISummaryPieChartProps> = (props: 
             datasets: [
                 {
                     data: [], // Replace with your actual data values
-                    backgroundColor: [], // Replace with your desired colors
+                    backgroundColor: "", // Replace with your desired colors
                 },
             ],
         };
@@ -47,7 +47,7 @@ const SummaryPieChart: React.FunctionComponent<ISummaryPieChartProps> = (props: 
         props.groups.map((group, index) => {
             pidData.labels.push(group.name)
             pidData.datasets[0].data.push(Math.random() * 100)
-            pidData.datasets[0].backgroundColor!.push(colors[index])
+            // pidData.datasets[0].backgroundColor.push(colors[index]) // Errir build
         })
 
         return pidData

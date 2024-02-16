@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { IRootState } from '@/app/utils/store/store';
 import ContentBox from '@/app/components/contentBox/ContentBox';
-import { Bar } from 'react-chartjs-2';
+import { Bar, Chart } from 'react-chartjs-2';
 
 import {
     Chart as ChartJS,
@@ -44,7 +44,7 @@ const DataWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
                     CHART SELECTOR
                 </div>
                 <div className={"bar-chart"}>
-                    <Bar data={data} options={options} width={"100%"} height={"100%"} />
+                    <Chart type='bar' data={data} options={options} width={"100%"} height={"100%"} />
                 </div>
             </div>
         </ContentBox >
@@ -62,7 +62,7 @@ export default connect(mapStateToProps, {})(DataWidget)
 
 const labels = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
 
-const data: ChartData<'bar'> = {
+const data: ChartData<"bar" | "line"> = {
     labels: labels,
     datasets: [
         {

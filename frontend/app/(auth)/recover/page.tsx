@@ -1,4 +1,4 @@
-// Import necessary modules and components
+'use client'
 import React, { useState } from "react";
 import FormTemplate from "@/app/components/formTemplate/FormTemplate";
 import AuthHandler from "../AuthHandler";

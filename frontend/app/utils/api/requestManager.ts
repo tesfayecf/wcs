@@ -12,7 +12,6 @@ class RequestManager extends BaseManager {
     private static instance: RequestManager;
     private constructor() {
         super();
-        console.log("RequestManager constructor");
     }
 
     public static getInstance(): RequestManager {
@@ -73,13 +72,13 @@ class RequestManager extends BaseManager {
         try {
             const refreshResponse: APIResponse<any> = await this.baseRequest_("POST", "api/auth/refresh/", obj, false);
             if (refreshResponse.data) {
-                store.dispatch(appActions.setAuth());
+                // store.dispatch(appActions.setIsAuthenticated());
                 store.dispatch(appActions.setAccessToken(refreshResponse.data.access));
                 store.dispatch(appActions.setRefreshToken(refreshResponse.data.refresh));
                 response = await this.baseRequest_(method, address, obj, authenticate);
             } else {
                 response = await this.baseRequest_("POST", "api/auth/logout/", {})
-                store.dispatch(appActions.logout());
+                // store.dispatch(appActions.setIsNotAuthenticated());
             }
         } finally {
             release();
@@ -94,7 +93,7 @@ class RequestManager extends BaseManager {
         // @ts-ignore
     ): Promise<ReturnType<typeof APIInterface[T][S]["args"]>> {
         let token = undefined;
-        if (authenticate) token = store.getState().app.auth.accesToken
+        if (authenticate) token = store.getState().app.authenticationState.accesToken
         try {
             const response: AxiosResponse = await this.request_api.request({
                 method,

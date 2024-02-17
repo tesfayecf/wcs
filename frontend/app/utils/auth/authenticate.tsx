@@ -1,30 +1,33 @@
 'use client';
 import React from 'react';
 import RequestManager from '@/app/utils/api/requestManager';
-import AppHandler from '@/app/app/AppHandler'
-
+import { useRouter } from "next/navigation";
+import setAuthenticationState from './setAuthenticationState';
 
 const requestManager = RequestManager.getInstance();
-const appHandler = AppHandler.getInstance();
 
-export default function Authenticate() {
+
+const Authenticate = () => {
+    const router = useRouter();
+    const { setIsAuthenticated, setIsNotAuthenticated } = setAuthenticationState()
+
     React.useEffect(() => {
-        const verify = async () => {
-            return await requestManager.request("auth", "verify", []);
-        }
+        console.log("Authenticate user")
+        const verify = async () => { return await requestManager.request("auth", "verify", []) };
         verify().then((response) => {
-            if (response.isSuccess) {
-                appHandler.setAuth();
-                appHandler.getUserInfo();
-            } else {
-                if (process.env.NODE_ENV === "development") console.log("Auth failed");
+            // Improve request manager error management
+            if (response.isSuccess) setIsAuthenticated()
+            else {
+                setIsNotAuthenticated()
+                router.push("/login")
             }
         }).catch((error) => {
-            if (process.env.NODE_ENV === "development") console.log("Request failed", error);
-        }).finally(() => {
-            appHandler.finishInitialLoad();
+            setIsNotAuthenticated()
+            router.push("/login")
         })
-    }, []);
+    })
 
-    return null;
+    return null
 }
+
+export default Authenticate;

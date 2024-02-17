@@ -65,7 +65,7 @@ const GroupPopUp: React.FunctionComponent<IFroupPopUpProps> = (props: IFroupPopU
 const mapStateToProps = (state: IRootState) => {
     return {
         showGroupMenu: state.dashboard.showCreateGroupMenu,
-        isFormLoading: state.app.loading.isFormLoading,
+        isFormLoading: state.app.loadingState.isFormLoading,
     }
 }
 

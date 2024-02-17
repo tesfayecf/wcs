@@ -1,7 +1,7 @@
 class LogHandler {
     private static instance: LogHandler;
     private constructor() {
-        console.log("Log handler constructor");
+        // console.log("Log handler constructor");
     }
 
     public static getInstance(): LogHandler {

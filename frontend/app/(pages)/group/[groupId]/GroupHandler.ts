@@ -10,9 +10,7 @@ const websocketManager2 = WebSocketManager2.getInstance();
 
 class GroupHandler {
     private static instance: GroupHandler;
-    private constructor() {
-        console.log("Group handler constructor");
-    }
+    private constructor() { }
 
     public static getInstance(): GroupHandler {
         if (!GroupHandler.instance) {
@@ -23,15 +21,11 @@ class GroupHandler {
 
     /// LOADER \\\
     public async load(params: IGroupParams) {
-        // store.dispatch(appActions.startLoading()); // BUG: infinit rerender
-
         await this.loadParams(params);
         await this.setGroupInfo();
         await this.getTanks();
         // await this.getSensors();
         // this.initializeWSConnections(); // dont wait
-
-        store.dispatch(appActions.finishLoading())
     }
 
     public async loadParams(params: IGroupParams) {
@@ -64,8 +58,6 @@ class GroupHandler {
 
     public async createTank(fields: ITankCreationForm) {
         try {
-            store.dispatch(appActions.startFormLoading())
-
             // Get fields
             const name = fields.name;
             const type = fields.type;
@@ -79,8 +71,6 @@ class GroupHandler {
                 this.getTanks();
             }
             this.setShowTankMenu(false);
-
-            store.dispatch(appActions.finishFormLoading())
         } catch (error) {
             // Log error
         }
@@ -88,8 +78,6 @@ class GroupHandler {
 
     public async editTank(tankId: number, fields: ITankCreationForm) {
         try {
-            store.dispatch(appActions.startFormLoading())
-
             // Get fields
             const name = fields.name;
             const type = fields.type;
@@ -103,8 +91,6 @@ class GroupHandler {
             if (response.isSuccess) {
                 this.getTanks();
             }
-
-            store.dispatch(appActions.finishFormLoading())
         } catch (error) {
             // Log error
         }
@@ -112,8 +98,6 @@ class GroupHandler {
 
     public async deleteTank(tankId: number) {
         try {
-            store.dispatch(appActions.startFormLoading())
-
             const groupId = store.getState().group.groupId;
             const response = await requestManager.request("tank", "deleteTank", [tankId, groupId])
 
@@ -121,8 +105,6 @@ class GroupHandler {
             if (response.isSuccess) {
                 this.getTanks();
             }
-
-            store.dispatch(appActions.finishFormLoading())
         } catch (error) {
             // Log error
         }
@@ -157,8 +139,6 @@ class GroupHandler {
 
     public async createSensor(token: string) {
         try {
-            store.dispatch(appActions.startFormLoading());
-
             // const tankId = store.getState().tank.tankId;
             const tankId = -1;
             const groupId = store.getState().group.groupId;
@@ -166,8 +146,6 @@ class GroupHandler {
             if (response.isSuccess) {
                 this.getSensors();
             }
-
-            store.dispatch(appActions.finishFormLoading());
         } catch (error) {
             // Log error
         }
@@ -175,7 +153,6 @@ class GroupHandler {
 
     public async editSensor() {
         try {
-            store.dispatch(appActions.startFormLoading());
             const sensorId = -1;
             const token = "";
             const is_active = true;
@@ -185,8 +162,6 @@ class GroupHandler {
             if (response.isSuccess) {
                 this.getSensors();
             }
-
-            store.dispatch(appActions.finishFormLoading());
         } catch (error) {
             // Log error
         }
@@ -194,8 +169,6 @@ class GroupHandler {
 
     public async deleteSensor() {
         try {
-            store.dispatch(appActions.startFormLoading());
-
             const sensorId = -1;
             const tankId = -1;
             const groupId = store.getState().group.groupId;
@@ -203,8 +176,6 @@ class GroupHandler {
             if (response.isSuccess) {
                 this.getSensors();
             }
-
-            store.dispatch(appActions.finishFormLoading());
         } catch (error) {
             // Log error
         }

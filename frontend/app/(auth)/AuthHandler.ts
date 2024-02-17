@@ -8,7 +8,7 @@ const requestManager = RequestManager.getInstance();
 class AuthHandler {
     private static instance: AuthHandler;
     private constructor() {
-        console.log("Auth handler constructor");
+        // console.log("Auth handler constructor");
     }
 
     public static getInstance(): AuthHandler {
@@ -20,7 +20,7 @@ class AuthHandler {
 
     public async load() {
         // check user data
-        store.dispatch(appActions.finishLoading())
+        store.dispatch(appActions.setIsNotLoading())
     }
 
 
@@ -29,7 +29,7 @@ class AuthHandler {
     // SIGN UP
     public async signup(fields: ISignupForm) {
         try {
-            store.dispatch(appActions.startLoading());
+            store.dispatch(appActions.setIsLoading());
 
             const firstName = fields.firstName;
             const lastName = fields.lastName;
@@ -44,7 +44,7 @@ class AuthHandler {
                 throw new Error("Error during sign up")
             }
 
-            store.dispatch(appActions.finishLoading());
+            store.dispatch(appActions.setIsNotLoading());
             return response;
         } catch (error) {
             // Log error
@@ -56,17 +56,17 @@ class AuthHandler {
         try {
             const email = fields.email
             const password = fields.password;
-            store.dispatch(appActions.startLoading());
+            store.dispatch(appActions.setIsLoading());
 
             const response = await requestManager.request("auth", "login", [email, password], false);
             if (response.isSuccess) {
-                store.dispatch(appActions.setRefreshToken(response.data.refresh));
-                store.dispatch(appActions.setAccessToken(response.data.access));
+                store.dispatch(appActions.setRefreshToken({ refreshToken: response.data.refresh }));
+                store.dispatch(appActions.setAccessToken({ accesToken: response.data.access }));
             } else {
                 throw new Error("Error during log in")
             }
 
-            store.dispatch(appActions.finishLoading());
+            store.dispatch(appActions.setIsNotLoading());
             return response;
         } catch (error) {
             // Log error
@@ -76,7 +76,7 @@ class AuthHandler {
     // LOGOUT
     public async logout() {
         try {
-            store.dispatch(appActions.startLoading())
+            store.dispatch(appActions.setIsLoading())
             const response = await requestManager.request("auth", "logout", []);
 
             if (response.isSuccess) {
@@ -86,7 +86,7 @@ class AuthHandler {
                 throw new Error("Error during log out")
             }
 
-            store.dispatch(appActions.finishLoading())
+            store.dispatch(appActions.setIsNotLoading())
         } catch (error) {
             // Log error
         }
@@ -98,7 +98,7 @@ class AuthHandler {
             const oldPassword = fields.oldPassword;
             const newPassword = fields.newPassword;
             const confirmPassword = fields.confirmPassword;
-            store.dispatch(appActions.startLoading())
+            store.dispatch(appActions.setIsLoading())
 
             const response = await requestManager.request("auth", "reset", [oldPassword, newPassword, confirmPassword]);
 
@@ -107,7 +107,7 @@ class AuthHandler {
                 throw new Error("Error during sign up")
             }
 
-            store.dispatch(appActions.finishLoading());
+            store.dispatch(appActions.setIsNotLoading());
             return response;
         } catch (error) {
             // Log error

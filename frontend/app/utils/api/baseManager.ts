@@ -15,7 +15,8 @@ class BaseManager {
 
     private initApi() {
         return axios.create({
-            baseURL: `${this.HTTP_PROT}://${this.BASE_URL}:${this.PORT}`,
+            // baseURL: `${this.HTTP_PROT}://${this.BASE_URL}:${this.PORT}`,
+            baseURL: ".",
             withCredentials: true,
             headers: {
                 common: {

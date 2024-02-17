@@ -4,17 +4,17 @@ import { IAppStore, IUserInfo } from '@/app/app/AppTypes';
 // Define the initial state
 const initialState: IAppStore = {
     session: {
-        isAuthenticated: false,
         isConnected: false,
         isAdmin: false,
         isStaff: false,
         isUser: false,
     },
-    auth: {
+    authenticationState: {
+        isAuthenticated: false,
         accesToken: '',
         refreshToken: '',
     },
-    loading: {
+    loadingState: {
         isLoading: true,
         isFormLoading: false,
         loadingText: '',
@@ -34,35 +34,38 @@ const appSlice = createSlice({
     name: 'app',
     initialState,
     reducers: {
-        startLoading: (state) => {
-            state.loading.isLoading = true;
+        setIsLoading: (state) => {
+            state.loadingState.isLoading = true;
         },
-        finishLoading: (state) => {
-            state.loading.isLoading = false;
+        setIsNotLoading: (state) => {
+            state.loadingState.isLoading = false;
         },
-        startFormLoading: (state) => {
-            state.loading.isFormLoading = true;
+        // setLoadingText: (state, action: PayloadAction<{ loadingText: string }>) => {
+        //     state.loadingState.loadingText = action.payload.loadingText;
+        // },
+        // startFormLoading: (state) => {
+        //     state.loadingState.isFormLoading = true;
+        // },
+        // stopFormLoading: (state) => {
+        //     state.loadingState.isFormLoading = false;
+        // },
+        setIsAuthenticated: (state) => {
+            state.authenticationState.isAuthenticated = true;
         },
-        finishFormLoading: (state) => {
-            state.loading.isFormLoading = false;
+        setIsNotAuthenticated: (state) => {
+            state.authenticationState.isAuthenticated = false;
         },
-        setAuth: (state) => {
-            state.session.isAuthenticated = true;
-        },
-        logout: (state) => {
-            state.session.isAuthenticated = false;
-        },
-        setAccessToken: (state, action: PayloadAction<string>) => {
-            state.auth.accesToken = action.payload;
+        setAccessToken: (state, action: PayloadAction<{ accesToken: string }>) => {
+            state.authenticationState.accesToken = action.payload.accesToken; // Store in cookies
         },
         removeAccesToken: (state) => {
-            state.auth.accesToken = '';
+            state.authenticationState.accesToken = '';
         },
-        setRefreshToken: (state, action: PayloadAction<string>) => {
-            state.auth.refreshToken = action.payload;
+        setRefreshToken: (state, action: PayloadAction<{ refreshToken: string }>) => {
+            state.authenticationState.refreshToken = action.payload.refreshToken;
         },
         removeRefreshToken: (state) => {
-            state.auth.refreshToken = '';
+            state.authenticationState.refreshToken = '';
         },
         setUserInfo: (state, action: PayloadAction<IUserInfo>) => {
             state.userInfo = action.payload;

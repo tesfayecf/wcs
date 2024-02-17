@@ -7,19 +7,15 @@ import SummaryWidget from "@/app/(pages)/dashboard/components/SummaryWidget/Summ
 import WeatherWidget from "@/app/(pages)/dashboard/components/WeatherWidget/WeatherWidget";
 import GroupPopUp from "@/app/(pages)/dashboard/components/GroupPopUp/GroupPopUp";
 
-import ToolsBar from "@/app/components/toolsBar/ToolsBar";
 import GroupsInfo from "@/app/(pages)/dashboard/components/GroupsInfo/GroupsInfo";
 import InfoWidget from "./components/InfoWidget/InfoWidget";
-import ContentBox from "@/app/components/contentBox/ContentBox";
 
 interface IDashboardProps { }
 
 const dashboarHandler = DashboardHandler.getInstance();
 
 const Dashboard: React.FunctionComponent<IDashboardProps> = (props: IDashboardProps) => {
-
   React.useEffect(() => {
-
     dashboarHandler.load();
     return () => {
       dashboarHandler.unload();

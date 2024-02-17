@@ -8,17 +8,17 @@ import AuthHandler from "@/app/(auth)/AuthHandler";
 import { ILoginForm } from "@/app/(auth)/AuthTypes"
 import AppHandler from "@/app/app/AppHandler";
 import { IRootState } from "@/app/utils/store/store";
-import CheckAuth from "@/app/utils/auth/checkAuth";
 import LogoIcon from "@/public/svg/LogoIcon";
+import AuthenticationState from "@/app/utils/auth/AuthenticationState";
 
 const authHandler = AuthHandler.getInstance()
-const appHandler = AppHandler.getInstance()
 
 interface ILoginProps { }
 
 const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
     const router = useRouter();
     const [error, setError] = React.useState<boolean>(false)
+
 
     React.useEffect(() => {
         authHandler.load();
@@ -31,19 +31,12 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
         const response = await authHandler.login(fields);
         if (response.status === 200) {
             router.push('./dashboard');
-            appHandler.setAuth();
         } else {
             setError(true)
         }
     }
 
-    const renderTitle = () => {
-        return (
-            <>
-                <h2>LOG IN. BE THE CHANGE</h2>
-            </>
-        )
-    }
+    const renderTitle = () => { return <h2>LOG IN. BE THE CHANGE</h2> }
 
     const titleStyle: React.CSSProperties = {
         fontSize: "16px",
@@ -94,7 +87,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
     )
 
     return (
-        <CheckAuth>
+        <AuthenticationState requireAuth={false} checkAuth={true}>
             <div className={"login"}>
                 <div className="logo">
                     <LogoIcon size={2200} />
@@ -144,7 +137,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
                     </PopUpTemplate>
                 </div>
             </div>
-        </CheckAuth>
+        </AuthenticationState>
     )
 }
 

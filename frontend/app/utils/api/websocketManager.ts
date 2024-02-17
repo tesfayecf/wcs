@@ -13,7 +13,6 @@ class WebSocketManager extends BaseManager {
 
     private constructor() {
         super();
-        console.log("WebSocketManager constructor");
     }
 
     public static getInstance(): WebSocketManager {
@@ -24,7 +23,7 @@ class WebSocketManager extends BaseManager {
     }
 
     private async initWS_(path: string): Promise<WebSocket> {
-        const access_token = store.getState().app.auth.accesToken;
+        const access_token = store.getState().app.authenticationState.accesToken;
         const url = `${this.WS_PROT}://${this.BASE_URL}:${this.PORT}/${path}?token=${access_token}`;
         const ws = new WebSocket(url, []);
 

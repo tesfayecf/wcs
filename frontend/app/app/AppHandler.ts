@@ -6,9 +6,7 @@ import RequestManager from "@/app/utils/api/requestManager";
 const requestManager = RequestManager.getInstance();
 class AppHandler {
     private static instance: AppHandler;
-    private constructor() {
-        console.log("App handler constructor");
-    }
+    private constructor() { }
 
     public static getInstance(): AppHandler {
         if (!AppHandler.instance) {
@@ -25,17 +23,21 @@ class AppHandler {
 
     }
 
-    public setAuth() {
-        store.dispatch(appActions.setAuth());
-    }
+    // public setIsLoading() {
+    //     store.dispatch(appActions.setIsLoading());
+    // }
 
-    public logOut() {
-        store.dispatch(appActions.logout());
-    }
+    // public setIsNotLoading() {
+    //     store.dispatch(appActions.setIsNotLoading())
+    // }
 
-    public finishInitialLoad() {
-        store.dispatch(appActions.finishLoading());
-    }
+    // public setIsAuthenticated() {
+    //     store.dispatch(appActions.setIsAuthenticated());
+    // }
+
+    // public setIsNotAuthenticated() {
+    //     store.dispatch(appActions.setIsNotAuthenticated());
+    // }
 
     public async getUserInfo() {
         const userInfo = await requestManager.request("user", "getUserInfo", []);

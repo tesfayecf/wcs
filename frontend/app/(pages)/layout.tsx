@@ -1,6 +1,6 @@
 import React from 'react'
 import Navbar from '@/app/components/navbar/Navbar'
-import RequireAuth from '@/app//utils/auth/requireAuth'
+import AuthenticationState from '../utils/auth/AuthenticationState';
 
 type IAppLayoutProps = {
     children: React.ReactNode[] | React.ReactNode | undefined | null;
@@ -8,13 +8,13 @@ type IAppLayoutProps = {
 
 export default function RootLayout({ children }: IAppLayoutProps) {
     return (
-        <RequireAuth>
+        <AuthenticationState checkAuth={true} requireAuth={true}>
             <div id="pagesLayout" className={"pagesLayout"}>
                 <Navbar />
                 <div id='pagesContent' className={"pagesContent"}>
                     {children}
                 </div>
             </div >
-        </RequireAuth >
+        </AuthenticationState >
     )
 }

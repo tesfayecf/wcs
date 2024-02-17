@@ -66,7 +66,7 @@ const TankPopUp: React.FunctionComponent<ITankPopUpProps> = (props: ITankPopUpPr
 const mapStateToProps = (state: IRootState) => {
     return {
         showTankMenu: state.group.showTankMenu,
-        isFormLoading: state.app.loading.isFormLoading,
+        isFormLoading: state.app.loadingState.isFormLoading,
     }
 }
 

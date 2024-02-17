@@ -167,7 +167,7 @@ class WebSocketManager2 extends BaseManager {
     }
 
     private constructEndpoint(sensorId: string) {
-        const access_token = store.getState().app.auth.accesToken;
+        const access_token = store.getState().app.authenticationState.accesToken;
         const url = `${this.WS_PROT}://${this.BASE_URL}:${this.PORT}/ws/sensor_data/?token=${access_token}`;
         console.log("Constructed endpoint:", url);
         return url;

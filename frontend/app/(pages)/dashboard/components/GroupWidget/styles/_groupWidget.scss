@@ -9,7 +9,19 @@
         background-color: gray;
     }
 
+    .addGroupContent {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: #c4c3c3;
+
+    }
+
     .groupContent {
+        position: relative;
         height: 100%;
         width: 100%;
         display: flex;
@@ -44,6 +56,13 @@
                 color: #97999a;
                 margin: 5px 15px;
             }
+        }
+
+        .groupSettings {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+
         }
     }
 }

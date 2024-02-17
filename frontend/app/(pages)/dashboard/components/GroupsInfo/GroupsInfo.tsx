@@ -5,6 +5,7 @@ import { IRootState } from "@/app/utils/store/store";
 import DashboardHandler from "@/app/(pages)/dashboard/DashboardHandler";
 import GroupWidget from "@/app/(pages)/dashboard/components/GroupWidget/GroupWidget";
 import { IGroup } from "@/app/(pages)/dashboard/DashboardTypes";
+import ContentBox from "@/app/components/contentBox/ContentBox";
 
 const dashboarHandler = DashboardHandler.getInstance();
 
@@ -14,10 +15,16 @@ const GroupsInfo: React.FunctionComponent<IGroupsInfoProps> = (props: IGroupsInf
 
     const colors = ['#83ecbd', '#e68b77', '#f2c986', '#92c594', '#12f594']
 
+    const onWishToCreateGroup = () => {
+        dashboarHandler.setShowGroupMenu(true);
+    }
+
     const renderGroupsInfo = React.useCallback((groups: IGroup[]) => {
         const widgets = groups.map((tankInfo: IGroup, index: number) =>
             <GroupWidget group={tankInfo} key={index} color={colors[index]} />
         );
+
+        widgets.push(<AddGroupWidget onCreate={onWishToCreateGroup} />)
 
         return widgets
     }, [props.groups])
@@ -32,3 +39,17 @@ const mapStateToProps = (state: IRootState) => {
 }
 
 export default connect(mapStateToProps, {})(GroupsInfo);
+
+interface IAddGroupWidgetProps {
+    onCreate: () => void;
+}
+
+const AddGroupWidget: React.FunctionComponent<IAddGroupWidgetProps> = (props: IAddGroupWidgetProps) => {
+    return (
+        <ContentBox customBoxClass={"groupWidget"}>
+            <div className={"addGroupContent"} onClick={props.onCreate}>
+                ADD NEW GROUP
+            </div>
+        </ContentBox>
+    )
+}

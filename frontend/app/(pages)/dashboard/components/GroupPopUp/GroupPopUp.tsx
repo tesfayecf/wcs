@@ -27,7 +27,7 @@ const GroupPopUp: React.FunctionComponent<IFroupPopUpProps> = (props: IFroupPopU
             onClose={onClose}
         >
             <FormTemplate<IGroupCreationForm>
-                title="Create Tank Group"
+                title="Create Group"
                 externalError={false}
                 externalErrorText={"Invalid data"}
                 onCancel={onClose}

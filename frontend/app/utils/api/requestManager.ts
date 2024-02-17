@@ -36,7 +36,7 @@ class RequestManager extends BaseManager {
         const { address, method, argsKeys } = APIInterface[group][endpoint as string];
         const obj = Object.fromEntries(args.map((key, index) => [argsKeys[index], key]));
         if (process.env.NODE_ENV === "development") {
-            console.log(`[${group}][${endpoint as string}] -> request`, obj);
+            console.log(`[${group}][${endpoint as string}] -> request`, address, obj);
         }
         const reponse = await this.baseRequestWithReAuth_(method, address, obj, authenticate);
         if (process.env.NODE_ENV === "development") {
@@ -72,13 +72,11 @@ class RequestManager extends BaseManager {
         try {
             const refreshResponse: APIResponse<any> = await this.baseRequest_("POST", "api/auth/refresh/", obj, false);
             if (refreshResponse.data) {
-                // store.dispatch(appActions.setIsAuthenticated());
-                store.dispatch(appActions.setAccessToken(refreshResponse.data.access));
-                store.dispatch(appActions.setRefreshToken(refreshResponse.data.refresh));
+                store.dispatch(appActions.setAccessToken({ accesToken: refreshResponse.data.access }));
+                store.dispatch(appActions.setRefreshToken({ refreshToken: refreshResponse.data.refresh }));
                 response = await this.baseRequest_(method, address, obj, authenticate);
             } else {
                 response = await this.baseRequest_("POST", "api/auth/logout/", {})
-                // store.dispatch(appActions.setIsNotAuthenticated());
             }
         } finally {
             release();
@@ -97,7 +95,7 @@ class RequestManager extends BaseManager {
         try {
             const response: AxiosResponse = await this.request_api.request({
                 method,
-                url: `/${address}`,
+                url: `http://127.0.0.1:8000/${address}`,
                 data: obj,
                 headers: {
                     Authorization: authenticate ? `Bearer ${token}` : null,

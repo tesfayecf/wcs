@@ -7,9 +7,7 @@ const requestManager = RequestManager.getInstance();
 
 class AuthHandler {
     private static instance: AuthHandler;
-    private constructor() {
-        // console.log("Auth handler constructor");
-    }
+    private constructor() { }
 
     public static getInstance(): AuthHandler {
         if (!AuthHandler.instance) {
@@ -18,10 +16,7 @@ class AuthHandler {
         return AuthHandler.instance;
     }
 
-    public async load() {
-        // check user data
-        store.dispatch(appActions.setIsNotLoading())
-    }
+    public async load() { }
 
 
     public async unload() { }
@@ -29,8 +24,6 @@ class AuthHandler {
     // SIGN UP
     public async signup(fields: ISignupForm) {
         try {
-            store.dispatch(appActions.setIsLoading());
-
             const firstName = fields.firstName;
             const lastName = fields.lastName;
             const email = fields.email;
@@ -43,8 +36,6 @@ class AuthHandler {
             } else {
                 throw new Error("Error during sign up")
             }
-
-            store.dispatch(appActions.setIsNotLoading());
             return response;
         } catch (error) {
             // Log error
@@ -56,7 +47,6 @@ class AuthHandler {
         try {
             const email = fields.email
             const password = fields.password;
-            store.dispatch(appActions.setIsLoading());
 
             const response = await requestManager.request("auth", "login", [email, password], false);
             if (response.isSuccess) {
@@ -65,8 +55,6 @@ class AuthHandler {
             } else {
                 throw new Error("Error during log in")
             }
-
-            store.dispatch(appActions.setIsNotLoading());
             return response;
         } catch (error) {
             // Log error
@@ -76,7 +64,6 @@ class AuthHandler {
     // LOGOUT
     public async logout() {
         try {
-            store.dispatch(appActions.setIsLoading())
             const response = await requestManager.request("auth", "logout", []);
 
             if (response.isSuccess) {
@@ -85,8 +72,6 @@ class AuthHandler {
             } else {
                 throw new Error("Error during log out")
             }
-
-            store.dispatch(appActions.setIsNotLoading())
         } catch (error) {
             // Log error
         }
@@ -98,7 +83,6 @@ class AuthHandler {
             const oldPassword = fields.oldPassword;
             const newPassword = fields.newPassword;
             const confirmPassword = fields.confirmPassword;
-            store.dispatch(appActions.setIsLoading())
 
             const response = await requestManager.request("auth", "reset", [oldPassword, newPassword, confirmPassword]);
 
@@ -106,8 +90,6 @@ class AuthHandler {
             } else {
                 throw new Error("Error during sign up")
             }
-
-            store.dispatch(appActions.setIsNotLoading());
             return response;
         } catch (error) {
             // Log error

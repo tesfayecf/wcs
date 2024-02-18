@@ -1,6 +1,5 @@
 #include "MQTTManager.h"
 
-#include <ArduinoJson.h>
 #include <Base64.h>
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
@@ -10,6 +9,8 @@
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
 #include "../../utils/utils.h"
+
+#include "JsonBuilder.h"
 
 // Singleton instance
 MQTTManager *MQTTManager::instance = nullptr;
@@ -31,14 +32,14 @@ void MQTTManager::init(AppConfig *config_, Managers *managers_) {
 void MQTTManager::setup() {
     Serial.println("Initializing MQTTManager");
 
-    // Set MQTT basic info
-    this->setMqttBasicInfo();
+    // Set MQTT topics info
+    this->setMQTTInfo();
 
     // Set MQTT connection info
-    this->setMqttConnectionInfo();
+    this->setMQTTConnectionInfo();
 
     // Set MQTT callback function
-    mqttClient.setCallback(callbackFunction);
+    // mqttClient.setCallback(callbackFunction);
 
     // Connect to MQTT broker
     this->connect();
@@ -47,7 +48,7 @@ void MQTTManager::setup() {
     this->subscribe();
 
     // Register client
-    this->registerClient();
+    this->registerSensor();
 
     Serial.println("MQTTManager Initialized");
 }
@@ -55,21 +56,19 @@ void MQTTManager::setup() {
 /// LOOP ///
 void MQTTManager::loop() {
     // Reconnect if disconnected
-    if (!mqttClient.connected()) {
-        reconnect();
-    }
+    // if (!mqttClient.connected()) {
+    //     reconnect();
+    // }
 
     // Update mqtt client connection
     mqttClient.loop();
 }
 
-
 // Connection
 void MQTTManager::connect() {
-    String clientId = this->appConfig->appInfo.sensorId;
     Serial.print("Connecting to MQTT broker: ");
     while (!mqttClient.connected()) {
-        if (mqttClient.connect(clientId.c_str())) {
+        if (mqttClient.connect(this->sensorId.c_str())) {
             Serial.println("MQTT connected");
             return;
         } else {
@@ -84,7 +83,6 @@ void MQTTManager::reconnect() {
     mqttClient.disconnect();
     this->connect();
 }
-
 
 // Callbacks
 void MQTTManager::callbackFunction(char *topic, byte *payload, unsigned int length) {
@@ -105,74 +103,105 @@ void MQTTManager::callbackFunction(char *topic, byte *payload, unsigned int leng
     // }
 }
 
+///////////////////////////////////////////////////////
 // Actions
-void MQTTManager::registerClient() {
-    this->publish("register", MESSAGE_TYPES::COMMAND, new const char*[1]{this->appConfig->mqttManager.sensorKey.c_str()}, 1);
+void MQTTManager::registerSensor() {
+    // Construct message
+    Serial.println("Registering sensor");
+    MQTTMessage message;
+    message.type = MESSAGE_TYPES::REGISTER;
+    message.action = MESSAGE_ACTIONS::REGISTER_SENSOR;
+    message.params[0] = this->sensorId.c_str();
+    message.paramsCount = 1;
+    
+    this->publish_(message, MESSAGE_TYPES::COMMAND);
 }
 
 // Base methods
 void MQTTManager::subscribe() {
     if (mqttClient.connected()) {
         // Config topic
-        mqttClient.subscribe(this->appConfig->mqttManager.commandTopic.c_str());
-        Serial.print("Subscribed to topic: ");
-        Serial.println(this->appConfig->mqttManager.commandTopic.c_str());
+        mqttClient.subscribe(this->commnadTopic.c_str());
+        Serial.print("Subscribed to command topic");
     }
 }
 
-void MQTTManager::publish(const char* action, MESSAGE_TYPES message_type, const char* params[], size_t paramsCount) {
+void MQTTManager::publish_(const MQTTMessage& message, MESSAGE_TYPES message_type) {
     // Create json object
-    StaticJsonDocument<1024> message;
-    JsonObject actionObject = message.createNestedObject("action");
+    // StaticJsonDocument<512> jsonMessage;
+    JsonBuilder jsonMessage;
+
+    // JsonObject actionObject = jsonMessage.createNestedObject("action");
+    JsonBuilder actionObject;
 
     // Add action name
-    actionObject[ETS(ACTION_NAME)] = action;
+    // actionObject[ETS(ACTION_NAME)] = message.action;
+    actionObject.add(ETS(ACTION_NAME), message.action);
 
     // Add message data
-    for (size_t i = 0; i < paramsCount; i++) {
-        String paramName = "p" + String(i);
-        actionObject[paramName.c_str()] = params[i];
+    for (size_t i = 0; i < message.paramsCount; i++) {
+        char paramName[4]; // Assuming the maximum length of parameter name is 3 ("p" + one digit)
+        snprintf(paramName, sizeof(paramName), "p%zu", i);
+        // actionObject[paramName] = message.params[i];
+        actionObject.add(paramName, message.params[i]);
     }
 
-    this->publish_(message, message_type, this->appConfig->mqttManager.dataTopic.c_str());
-}
-
-void MQTTManager::publish_(ArduinoJson::V6213PB2::StaticJsonDocument<1024> &message, MESSAGE_TYPES message_type, const char *topic) {
     // Add sensor metadata
-    this->addMetadata(message);
+    // JsonObject metaObject = jsonMessage.createNestedObject("meta");
+    JsonBuilder metaObject;
+    
+    // metaObject[ETS(MESSAGE_ID)] = "message_id";
+    // metaObject[ETS(SENSOR_TIME)] = millis();
+    // metaObject[ETS(SENSOR_ID)] = this->appConfig->appInfo.sensorId;
+    metaObject.add(ETS(MESSAGE_ID), "message_id");
+    char sensorTime[16];
+    snprintf(sensorTime, sizeof(sensorTime), "%lu", millis()); // Convert millis() to const char*
+    metaObject.add(ETS(SENSOR_TIME), sensorTime);
+    metaObject.add(ETS(SENSOR_ID), this->sensorId.c_str());
+
+    jsonMessage.addObject("action", actionObject);
+    jsonMessage.addObject("meta", metaObject);
 
     // Get max size of websocket message
-    char websocketMessageChar[1024];
+    // char jsonMessageBuffer[512];
     // Serialize message
-    serializeJson(message, websocketMessageChar, 1024);
+    // serializeJson(jsonMessage, jsonMessageBuffer, 512);
+    
+    String jsonMessageStr = jsonMessage.getString();
+    
     // Publish message
-    mqttClient.publish(topic, websocketMessageChar);
+    mqttClient.publish(this->appConfig->mqttManager.dataTopic.c_str(), jsonMessageStr.c_str());
 
     Serial.print("Published message: ");
-    Serial.println(websocketMessageChar);
+    Serial.println(jsonMessageStr);
 }
 
-void MQTTManager::addMetadata(ArduinoJson::V6213PB2::StaticJsonDocument<1024> &message) {
+void MQTTManager::addMetadata(ArduinoJson::V6213PB2::StaticJsonDocument<512> &message) {
     // Create metadata object
     JsonObject metaObject = message.createNestedObject("meta");
     
     metaObject[ETS(MESSAGE_ID)] = "message_id";
     metaObject[ETS(TIMESTAMP)] = now();
-    metaObject[ETS(SENSOR_ID)] = this->appConfig->appInfo.sensorId;
-    metaObject[ETS(SENSOR_TIME)] = millis();
-    metaObject[ETS(MESSAGE_TYPE)] = "message_type";
-    metaObject[ETS(VERSION)] = APP_VERSION;
-    metaObject[ETS(SENOSOR_KEY)] = this->appConfig->mqttManager.sensorKey;
+    metaObject[ETS(SENSOR_ID)] = this->sensorId;
+    // metaObject[ETS(SENSOR_TIME)] = millis();
+    // metaObject[ETS(MESSAGE_TYPE)] = "message_type";
+    // metaObject[ETS(VERSION)] = APP_VERSION;
+    // metaObject[ETS(SENSOR_KEY)] = MQTT_SENSOR_KEY;
 }
+///////////////////////////////////////////////////////
 
 
 // Setters
-void MQTTManager::setMqttBasicInfo() {
+void MQTTManager::setMQTTInfo() {
+    this->sensorId = this->appConfig->appInfo.sensorId;
     // Publish MQTT topics
-    this->appConfig->mqttManager.dataTopic = this->appConfig->appInfo.sensorId;
+    this->dataTopic = this->appConfig->appInfo.sensorId + this->appConfig->mqttManager.dataTopic;
+    this->registerTopic = this->appConfig->mqttManager.registerTopic;
+    // Subscribe MQTT topics
+    this->commnadTopic = this->appConfig->appInfo.sensorId + this->appConfig->mqttManager.commandTopic;
 }
 
-void MQTTManager::setMqttConnectionInfo() {
+void MQTTManager::setMQTTConnectionInfo() {
     mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
     mqttClient.setKeepAlive(MQTT_KEEP_ALIVE);
     mqttClient.setSocketTimeout(MQTT_CONNECTION_TIMEOUT_CUSTOM);

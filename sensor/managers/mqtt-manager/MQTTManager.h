@@ -18,11 +18,18 @@ class MQTTManager {
   WiFiClient wifiClient;
   PubSubClient mqttClient;
 
+  boolean connected; // TODO: use manager status from appConfig
+  boolean connecting; // TODO: use manager status from appConfig
+  String sensorId;
+  String dataTopic;
+  String commnadTopic;
+  String registerTopic;
+
  public:
   /// CONSTRUCTOR ///
   MQTTManager();
 
-  /// INIT ///72
+  /// INIT ///
   void init(AppConfig* config_, Managers* managers_);
 
   /// SETUP ///
@@ -32,7 +39,7 @@ class MQTTManager {
   void loop();
 
   /// PUBLISH ///
-  void publish(const char* action, MESSAGE_TYPES message_type, const char* params[], size_t paramsCount);
+  void publish_(const MQTTMessage& message, MESSAGE_TYPES message_type);
 
  private:
   static MQTTManager* instance;
@@ -41,27 +48,22 @@ class MQTTManager {
   void connect();
   void reconnect();
 
-
   // Callbacks
   static void callbackFunction(char* topic, byte* payload, unsigned int length);
   void statusCallback(uint8_t* payload, unsigned int length);
   void configCallback(uint8_t* payload, unsigned int length);
   void authCallback(uint8_t* payload, unsigned int length);
 
-
   // Actions
-  void registerClient();
-
+  void registerSensor();
 
   // Base methods
   void subscribe();
-  void publish_(ArduinoJson::V6213PB2::StaticJsonDocument<1024> &message, MESSAGE_TYPES message_type, const char *topic);
-  void addMetadata(ArduinoJson::V6213PB2::StaticJsonDocument<1024> &message);
-
+  void addMetadata(ArduinoJson::V6213PB2::StaticJsonDocument<512> &message);
 
   // Setters
-  void setMqttConnectionInfo();
-  void setMqttBasicInfo();
+  void setMQTTConnectionInfo();
+  void setMQTTInfo();
 };
 
 #endif  // MQTT_CONNECTION_MANAGER_H

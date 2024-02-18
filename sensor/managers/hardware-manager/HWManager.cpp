@@ -28,15 +28,39 @@ void HWManager::loop() {
   // Publish sensor data periodically
   if (millis() % UPDATE_RATE == 0) {
     // Read sensor data
-    this->readUltrasonicSensor();
+    this->readDistanceSensor();
     // this->readTemperatureSensor();
+    // this->readHumiditySensor();
 
     // Publish sensor data
     this->publishData();
   }
 }
 
-void HWManager::readUltrasonicSensor() {
+void HWManager::publishData() {
+  Serial.println("Publishing sensor data");
+  Serial.print("Distance: ");
+  Serial.print("Raw: ");
+  Serial.print (this->distanceRAW);
+  Serial.print(" | Cm: ");
+  Serial.println(this->distanceCM);
+  
+  const char* distanceRaw = String(this->distanceRAW).c_str();
+  const char* distanceCm = String(this->distanceCM).c_str();
+
+  MQTTMessage message;
+  message.type = MESSAGE_TYPES::DATA;
+  message.action = MESSAGE_ACTIONS::SENSOR_DATA;
+  message.params[0] = distanceRaw;
+  message.params[1] = distanceCm;
+  message.paramsCount = 2;
+
+  // Publish sensor data
+  // this->managers->mqttManager->test();
+  this->managers->mqttManager->publishMessage(&message);
+}
+
+void HWManager::readDistanceSensor() {
   unsigned int sumDistanceRaw = 0;
   unsigned int sumDistanceCm = 0;
   int validReadings = 0;
@@ -61,28 +85,13 @@ void HWManager::readUltrasonicSensor() {
 
   // Compute the average if there are valid readings
   if (validReadings > 0) {
-    this->distanceRAW = sumDistanceRaw / validReadings;
-    this->distanceCM = sumDistanceCm / validReadings;
+    this->distanceRaw = sumDistanceRaw / validReadings;
+    this->distanceCm = sumDistanceCm / validReadings;
   } else {
     // If no valid readings, set distances to 0
-    this->distanceRAW = 0;
-    this->distanceCM = 0;
+    this->distanceRaw = 0;
+    this->distanceCm = 0;
   }
-}
-
-void HWManager::publishData() {
-  const char* raw = String(this->distanceRAW).c_str();
-  const char* cm = String(this->distanceCM).c_str();
-
-  MQTTMessage message;
-  message.type = MESSAGE_TYPES::DATA;
-  message.action = MESSAGE_ACTIONS::SENSOR_DATA;
-  message.params[0] = raw;
-  message.params[1] = cm;
-  message.paramsCount = 2;
-
-  // Publish sensor data
-  this->managers->mqttManager->publishMessage(message);
 }
 
 unsigned int HWManager::getDistance() {

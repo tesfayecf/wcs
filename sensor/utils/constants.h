@@ -39,7 +39,7 @@
 /// MQTT MANAGER ///
 ////////////////////
 
-#define MQTT_BROKER "192.168.1.11"  // MQTT Broker IP Address
+#define MQTT_BROKER "192.168.1.6"  // MQTT Broker IP Address
 #define MQTT_PORT 1883              // MQTT Broker Port
 
 #define MQTT_VERSION 5  // MQTT Protocol Version (e.g., 3.1, 3.1.1, 5)
@@ -61,6 +61,6 @@
 #define ECHO_PIN D7     // Echo Pin (e.g., for ultrasonic sensor)
 #define TIMEOUT 25200   // Timeout value for hardware operations
 
-#define UPDATE_RATE 60000
+#define UPDATE_RATE 15000
 
 #endif  // CONSTANTS_H

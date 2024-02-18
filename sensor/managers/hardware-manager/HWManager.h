@@ -15,9 +15,8 @@ class HWManager {
     AppConfig* appConfig;
     Managers* managers;
 
-    unsigned int distanceCM;
-    unsigned int distanceRAW;
-    const char* distances[2];
+    unsigned int distanceCm;
+    unsigned int distanceRaw;
 
   public:
     // static Ultrasonic sonar;
@@ -32,12 +31,14 @@ class HWManager {
     // Setup Ultrasonic connection
     void setup();
 
+    // Read and send data
     void loop();
 
-    void readUltrasonicSensor();
+    // Publish to mqtt server
     void publishData();
 
     // Get distance from Ultrasonic sensor
+    void readDistanceSensor();
     unsigned int getDistance();
     unsigned int getDistanceCm();
 };

@@ -65,9 +65,9 @@ void MQTTManager::loop() {
 }
 
 /// PUBLISH ///
-void MQTTManager::publish(const String& topic, const String& message) {
+void MQTTManager::publish(const char* topic, const char* message) {
     if (this->mqttClient.connected()) {
-        this->mqttClient.publish(topic.c_str(), message.c_str());
+        this->mqttClient.publish(topic, message);
     }
     // TODO: Handle case when client is not connected
 }
@@ -121,7 +121,8 @@ void MQTTManager::callbackFunction(char *topic, byte *payload, unsigned int leng
 
 // Actions
 void MQTTManager::subscribeSensor() {
-    Serial.println("Subscribe to command topic");
+    Serial.print("Subscribe to command topic: ");
+    Serial.println(this->commnadTopic);
     this->subscribe(this->commnadTopic);
 }
 
@@ -134,15 +135,15 @@ void MQTTManager::registerSensor() {
     message.params[0] = this->sensorId.c_str();
     message.paramsCount = 1;
     
-    this->publishMessage(message);
+    this->publishMessage(&message);
 }
 
 // Base methods
-void MQTTManager::publishMessage(const MQTTMessage& message) {
+void MQTTManager::publishMessage(const MQTTMessage* messagePtr) {
     // Create main json object
     JsonBuilder jsonMessage;
 
-    // Add action infomation
+    // Add action information
     JsonBuilder actionObject;
     actionObject.add(MESSAGE_PARAMETERS::ACTION_TYPE, TYPE_TO_CHAR(message.type));
     actionObject.add(MESSAGE_PARAMETERS::ACTION_NAME, ACTION_TO_CHAR(message.action));
@@ -181,10 +182,10 @@ void MQTTManager::publishMessage(const MQTTMessage& message) {
 void MQTTManager::setMQTTInfo() {
     this->sensorId = this->appConfig->appInfo.sensorId;
     // Publish MQTT topics
-    this->dataTopic = this->appConfig->appInfo.sensorId + this->appConfig->mqttManager.dataTopic;
-    this->registerTopic = this->appConfig->mqttManager.registerTopic;
+    this->registerTopic = MQTT_REGISTER_TOPIC;
+    this->dataTopic = this->appConfig->appInfo.sensorId + "/" + MQTT_DATA_TOPIC;
     // Subscribe MQTT topics
-    this->commnadTopic = this->appConfig->appInfo.sensorId + this->appConfig->mqttManager.commandTopic;
+    this->commnadTopic = this->appConfig->appInfo.sensorId + "/" + MQTT_COMMAND_TOPIC;
 }
 
 void MQTTManager::setMQTTConnectionInfo() {

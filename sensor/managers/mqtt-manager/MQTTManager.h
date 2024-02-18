@@ -37,17 +37,19 @@ class MQTTManager {
 
   /// LOOP ///
   void loop();
+
+  void test();
  
  private:
   /// PUBLISH ///
-  void publish(const String& topic, const String& message);
+  void publish(const char* topic, const char* message);
 
   /// SUBSCRIBE ///
   void subscribe(const String& topic);
  
  public:
   // Base methods
-  void publishMessage(const MQTTMessage& message);
+  void publishMessage(const MQTTMessage* messagePtr);
 
  private:
   static MQTTManager* instance;

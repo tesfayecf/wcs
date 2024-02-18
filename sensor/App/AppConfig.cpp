@@ -61,10 +61,10 @@ AppConfig::MQTTManager::MQTTManager() {
   connectionTimeout = MQTT_CONNECTION_TIMEOUT_CUSTOM;
 
   // Publish MQTT topics
-  registerTopic = MQTT_REGISTER_TOPIC;
-  dataTopic = MQTT_DATA_TOPIC;
+  this->registerTopic = MQTT_REGISTER_TOPIC; // BUG ALERT
+  this->dataTopic = MQTT_DATA_TOPIC; // BUG ALERT
   // Subscribe MQTT topics
-  commandTopic = MQTT_COMMAND_TOPIC;
+  this->commandTopic = MQTT_COMMAND_TOPIC; // BUG ALERT
 }
 
 /////////////////////////////////////////

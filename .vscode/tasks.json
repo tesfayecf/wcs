@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Start EMQ X Broker - 5.1",
+      "label": "Start EMQ X Broker",
       "type": "shell",
       "command": "C:\\emqx_51\\bin\\emqx.cmd",
       "args": ["start"],
@@ -16,40 +16,12 @@
       "problemMatcher": []
     },
     {
-      "label": "Stop EMQ X Broker - 5.1",
+      "label": "Stop EMQ X Broker",
       "type": "shell",
       "command": "C:\\emqx_51\\bin\\emqx.cmd",
       "args": ["stop"],
       "options": {
         "cwd": "C:\\emqx_51\\bin"
-      },
-      "isBackground": false,
-      "presentation": {
-        "reveal": "silent"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "Start EMQ X Broker - 4.4",
-      "type": "shell",
-      "command": "C:\\emqx_44\\bin\\emqx.cmd",
-      "args": ["start"],
-      "options": {
-        "cwd": "C:\\emqx_44\\bin"
-      },
-      "isBackground": false,
-      "presentation": {
-        "reveal": "silent"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "Stop EMQ X Broker - 4.4",
-      "type": "shell",
-      "command": "C:\\emqx_44\\bin\\emqx.cmd",
-      "args": ["stop"],
-      "options": {
-        "cwd": "C:\\emqx_44\\bin"
       },
       "isBackground": false,
       "presentation": {

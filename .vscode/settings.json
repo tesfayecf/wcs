@@ -19,6 +19,14 @@
   "C_Cpp.vcFormat.newLine.beforeOpenBrace.namespace": "sameLine",
   "C_Cpp.vcFormat.newLine.beforeOpenBrace.type": "sameLine",
   "files.associations": {
-    "string": "cpp"
-  }
+    "string": "cpp",
+    "*.ipp": "cpp",
+    "any": "cpp",
+    "bitset": "cpp",
+    "memory": "cpp",
+    "random": "cpp",
+    "future": "cpp",
+    "optional": "cpp"
+  },
+  "svg.preview.background": "transparent"
 }

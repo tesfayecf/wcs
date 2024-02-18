@@ -99,11 +99,8 @@ class AppConfig {
     // Publish topics
     String dataTopic;       // Data topic of the MQTT connection
     String registerTopic;   // Register topic of the MQTT connection
-
     // Subscribe topic
     String commandTopic;    // Command topic of the MQTT connection
-
-    String sensorKey;       // Sensor key of the MQTT connection
   };
 
   /////////////////////////////

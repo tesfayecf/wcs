@@ -1,6 +1,7 @@
 #ifndef WIFI_CONNECTION_MANAGER_H
 #define WIFI_CONNECTION_MANAGER_H
 
+#include "Arduino.h"
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h>
@@ -8,7 +9,6 @@
 
 #include "../../App/AppConfig.h"
 #include "../../utils/types.h"
-#include "Arduino.h"
 
 class WifiManager {
  private:
@@ -19,7 +19,8 @@ class WifiManager {
   ESP8266WebServer server;
   String ssid;
   String password;
-  boolean connected;
+  boolean connected; // TODO: use manager status from appConfig
+  boolean connecting; // TODO: use manager status from appConfig
 
  public:
   // Constructor
@@ -31,6 +32,7 @@ class WifiManager {
   // Initialize WiFi connection
   void setup();
 
+  // Loop manager to check WiFi connection status
   void loop();
 
   // Check if WiFi is connected

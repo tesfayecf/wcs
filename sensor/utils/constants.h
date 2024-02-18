@@ -47,9 +47,10 @@
 #define MQTT_KEEP_ALIVE 60
 #define MQTT_CONNECTION_TIMEOUT_CUSTOM 10
 
+#define MQTT_DATA_TOPIC "data"  // MQTT Data Topic
 #define MQTT_COMMAND_TOPIC "command"  // MQTT Command Topic
 #define MQTT_REGISTER_TOPIC "server/register"  // MQTT Register Topic
-#define MQTT_SENSOR_KEY "1234567890"
+#define MQTT_SENSOR_KEY "1234567890" // MQTT Sensor key
 
 ////////////////////////
 /// HARDWARE MANAGER ///

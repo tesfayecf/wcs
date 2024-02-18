@@ -11,7 +11,14 @@ struct Managers {
   HWManager* hwManager;
 };
 
-enum MESSAGE_KEYS {
+struct MQTTMessage {
+  MESSAGE_TYPES type;
+  MESSAGE_ACTIONS action;
+  const char* params[5];
+  size_t paramsCount;
+};
+
+enum MESSAGE_PARAMETERS {
   // Metadata
   MESSAGE_ID = 101,
   TIMESTAMP = 102,
@@ -19,13 +26,21 @@ enum MESSAGE_KEYS {
   SENSOR_TIME = 104,
   MESSAGE_TYPE = 105,
   VERSION = 106,
-  SENOSOR_KEY = 107,
-  
+
   // Action
-  ACTION_NAME = 201
+  ACTION_TYPE = 201,
+  ACTION_NAME = 202,
+};
+
+enum MESSAGE_ACTIONS {
+  // Register
+  REGISTER_SENSOR = 0,
+  // Data
+  // Command
 };
 
 enum MESSAGE_TYPES {
+  REGISTER = 0,
   DATA = 1,
   COMMAND = 2,
 };

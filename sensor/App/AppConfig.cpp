@@ -61,11 +61,10 @@ AppConfig::MQTTManager::MQTTManager() {
   connectionTimeout = MQTT_CONNECTION_TIMEOUT_CUSTOM;
 
   // Publish MQTT topics
-  this->appConfig->mqttManager.registerTopic = MQTT_REGISTER_TOPIC;
+  registerTopic = MQTT_REGISTER_TOPIC;
+  dataTopic = MQTT_DATA_TOPIC;
   // Subscribe MQTT topics
-  this->appConfig->mqttManager.commandTopic = MQTT_COMMAND_TOPIC;
-  // Sensor key
-  this->appConfig->mqttManager.sensorKey = MQTT_SENSOR_KEY;
+  commandTopic = MQTT_COMMAND_TOPIC;
 }
 
 /////////////////////////////////////////

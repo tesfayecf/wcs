@@ -37,9 +37,17 @@ class MQTTManager {
 
   /// LOOP ///
   void loop();
-
+ 
+ private:
   /// PUBLISH ///
-  void publish_(const MQTTMessage& message, MESSAGE_TYPES message_type);
+  void publish(const String& topic, const String& message);
+
+  /// SUBSCRIBE ///
+  void subscribe(const String& topic);
+ 
+ public:
+  // Base methods
+  void publishMessage(const MQTTMessage& message);
 
  private:
   static MQTTManager* instance;
@@ -50,16 +58,13 @@ class MQTTManager {
 
   // Callbacks
   static void callbackFunction(char* topic, byte* payload, unsigned int length);
-  void statusCallback(uint8_t* payload, unsigned int length);
-  void configCallback(uint8_t* payload, unsigned int length);
-  void authCallback(uint8_t* payload, unsigned int length);
+  // void statusCallback(uint8_t* payload, unsigned int length);
+  // void configCallback(uint8_t* payload, unsigned int length);
+  // void authCallback(uint8_t* payload, unsigned int length);
 
   // Actions
+  void subscribeSensor();
   void registerSensor();
-
-  // Base methods
-  void subscribe();
-  void addMetadata(ArduinoJson::V6213PB2::StaticJsonDocument<512> &message);
 
   // Setters
   void setMQTTConnectionInfo();

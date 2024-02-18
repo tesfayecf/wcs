@@ -17,24 +17,27 @@ class HWManager {
 
     unsigned int distanceCM;
     unsigned int distanceRAW;
+    const char* distances[2];
 
   public:
     // static Ultrasonic sonar;
     static Sensor ultraSonicSensor;
+    
     // Constructor
     HWManager();
 
     // Initialize manager
     void init(AppConfig* config_, Managers* managers_);
 
-    // Setup US connection
+    // Setup Ultrasonic connection
     void setup();
 
     void loop();
 
-    void readSensorValues(unsigned int& distanceRaw, unsigned int& distanceCm);
+    void readUltrasonicSensor();
+    void publishData();
 
-    // Get distance from US
+    // Get distance from Ultrasonic sensor
     unsigned int getDistance();
     unsigned int getDistanceCm();
 };

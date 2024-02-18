@@ -25,50 +25,64 @@ void HWManager::setup() {
 }
 
 void HWManager::loop() {
-  // Publish sensor data every 60 seconds
-  if (millis() % this->appConfig->hardwareManager.updateRate == 0) {
+  // Publish sensor data periodically
+  if (millis() % UPDATE_RATE == 0) {
     // Read sensor data
-    this->readSensorValues(this->distanceRAW, this->distanceCM);
-    
-    // Convert sensor readings to const char*
-    String distanceRawStr = String(this->distanceRAW);
-    String distanceCmStr = String(this->distanceCM);
+    this->readUltrasonicSensor();
+    // this->readTemperatureSensor();
 
     // Publish sensor data
-    this->managers->mqttManager->publish("sensor/distance", MESSAGE_TYPES::DATA, new const char*[2]{distanceRawStr.c_str(), distanceCmStr.c_str()}, 2);
+    this->publishData();
   }
 }
 
-// TODO: get better reading from boscal branch
-void HWManager::readSensorValues(unsigned int& distanceRaw, unsigned int& distanceCm) {
-  unsigned int distanceRaw_ = 0;
-  unsigned int distanceCM_ = 0;
+void HWManager::readUltrasonicSensor() {
+  unsigned int sumDistanceRaw = 0;
+  unsigned int sumDistanceCm = 0;
+  int validReadings = 0;
 
+  // Take multiple readings
   for (size_t i = 0; i < 10; i++) {
-    distanceRaw_ = getDistance();
-    distanceCM_ = getDistanceCm();
+    unsigned int distanceRaw_ = getDistance();
+    unsigned int distanceCM_ = getDistanceCm();
+    
+    // Print a dot for each reading
     Serial.print(".");
     delay(10);
-    if (distanceRaw_ >= 200 || distanceCM_ >= 3) {
-      break;
+    
+    // Check if readings are faulty
+    if (distanceRaw_ < 200 && distanceCM_ > 0) {
+      sumDistanceRaw += distanceRaw_;
+      sumDistanceCm += distanceCM_;
+      validReadings++;
     }
   }
   Serial.println("");
-  if (distanceRaw_ <= 200) {
-    distanceRaw_ = distanceCM_ * 57.0;
-  } else if (distanceCM_ <= 3) {
-    distanceCM_ = distanceRaw_ / 57.0;
-  }
 
-  // Check if the values are valid and not zero
-  if (distanceRaw_ < 200 && distanceCM_ > 0) {
-    // Update the output variables only if the values are valid
-    distanceRaw = distanceRaw_;
-    distanceCm = distanceCM_;
+  // Compute the average if there are valid readings
+  if (validReadings > 0) {
+    this->distanceRAW = sumDistanceRaw / validReadings;
+    this->distanceCM = sumDistanceCm / validReadings;
   } else {
-    distanceRaw = distanceRaw_;
-    distanceCm = distanceCM_;
+    // If no valid readings, set distances to 0
+    this->distanceRAW = 0;
+    this->distanceCM = 0;
   }
+}
+
+void HWManager::publishData() {
+  const char* raw = String(this->distanceRAW).c_str();
+  const char* cm = String(this->distanceCM).c_str();
+
+  MQTTMessage message;
+  message.type = MESSAGE_TYPES::DATA;
+  message.action = MESSAGE_ACTIONS::SENSOR_DATA;
+  message.params[0] = raw;
+  message.params[1] = cm;
+  message.paramsCount = 2;
+
+  // Publish sensor data
+  this->managers->mqttManager->publishMessage(message);
 }
 
 unsigned int HWManager::getDistance() {

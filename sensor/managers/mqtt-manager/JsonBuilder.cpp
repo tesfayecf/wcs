@@ -25,7 +25,7 @@ JsonBuilder& JsonBuilder::add(MESSAGE_PARAMETERS key, const char* value) {
         isFirstElement = false;
     }
 
-    stream += "\"" + String(ETS(key)) + "\":";
+    stream += "\"" + String(PARAM_TO_CHAR(key)) + "\":";
     appendValue(value);
 
     return *this;
@@ -51,7 +51,7 @@ JsonBuilder& JsonBuilder::addObject(MESSAGE_PARAMETERS key, const JsonBuilder& o
         isFirstElement = false;
     }
 
-    stream += "\"" + String(ETS(key)) + "\":" + object.getString();
+    stream += "\"" + String(PARAM_TO_CHAR(key)) + "\":" + object.getString();
 
     return *this;
 }

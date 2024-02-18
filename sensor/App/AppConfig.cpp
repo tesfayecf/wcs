@@ -23,7 +23,7 @@ AppConfig::BoardInfo::BoardInfo() {}
 
 AppConfig::AppInfo::AppInfo() {
   sensorId = "";
-  startTime = 0;
+  startTime = 0; // TODO: Get from api or server when register
   localTime = 0;
   serverTime = 0;
   authenticated = false;

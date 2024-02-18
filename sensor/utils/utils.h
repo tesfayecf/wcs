@@ -37,13 +37,40 @@ void blink() {
 }
 
 /* 
-  This function returns the string representation of the corresponding message key.
-  Parameters:
-    - key: Enum representing the message key.
-  Returns:
-    - const char*: The string representation of the message key.
+  This function returns the string representation of the corresponding message type.
 */
-const char* ETS(MESSAGE_PARAMETER key) {
+const char* TYPE_TO_CHAR(MESSAGE_TYPES key) {
+  switch (key) {
+    case REGISTER:
+      return "0";
+    case DATA:
+      return "1";
+    case COMMAND:
+      return "2";
+    default:
+      return "9999";
+  }
+}
+
+/* 
+  This function returns the string representation of the corresponding message action.
+*/
+const char* ACTION_TO_CHAR(MESSAGE_ACTIONS key) {
+  switch (key) {
+    case REGISTER_SENSOR:
+      return "0";
+    case SENSOR_DATA:
+      return "1";
+    // Add cases for other actions if needed
+    default:
+      return "9999";
+  }
+}
+
+/* 
+  This function returns the string representation of the corresponding message parameter.
+*/
+const char* PARAM_TO_CHAR(MESSAGE_PARAMETERS key) {
   switch (key) {
     // Metadata
     case MESSAGE_ID:
@@ -54,10 +81,8 @@ const char* ETS(MESSAGE_PARAMETER key) {
       return "103";
     case SENSOR_TIME:
       return "104";
-    case MESSAGE_TYPE:
-      return "105";
     case VERSION:
-      return "106";
+      return "105";
 
     // Action
     case ACTION_TYPE:
@@ -67,8 +92,6 @@ const char* ETS(MESSAGE_PARAMETER key) {
     default:
       return "9999";
   }
-  // Handle the case when the enum value doesn't match any case.
-  return "-";
 }
 
 #endif  // UTILS_H

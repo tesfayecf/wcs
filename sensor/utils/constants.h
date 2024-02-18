@@ -39,7 +39,7 @@
 /// MQTT MANAGER ///
 ////////////////////
 
-#define MQTT_BROKER "192.168.1.16"  // MQTT Broker IP Address
+#define MQTT_BROKER "192.168.1.11"  // MQTT Broker IP Address
 #define MQTT_PORT 1883              // MQTT Broker Port
 
 #define MQTT_VERSION 5  // MQTT Protocol Version (e.g., 3.1, 3.1.1, 5)
@@ -50,7 +50,8 @@
 #define MQTT_DATA_TOPIC "data"  // MQTT Data Topic
 #define MQTT_COMMAND_TOPIC "command"  // MQTT Command Topic
 #define MQTT_REGISTER_TOPIC "server/register"  // MQTT Register Topic
-#define MQTT_SENSOR_KEY "1234567890" // MQTT Sensor key
+#define MQTT_META_KEY "meta"
+#define MQTT_ACTION_KEY "action"
 
 ////////////////////////
 /// HARDWARE MANAGER ///

@@ -15,7 +15,7 @@ class GroupSchema(BaseModel):
     date_modified: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ### CREATE ###
 class CreateGroupSchema(BaseModel):
@@ -24,7 +24,7 @@ class CreateGroupSchema(BaseModel):
     description: str
     
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ### EDIT ###
 class EditGroupSchema(BaseModel):
@@ -34,14 +34,14 @@ class EditGroupSchema(BaseModel):
     description: str
     
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ### DELETE ###
 class DeleteGroupSchema(BaseModel):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ############
 ### TANK ###
@@ -64,7 +64,7 @@ class TankSchema(BaseModel):
     date_modified: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ### GET ###
 class GetTanksSchema(BaseModel):
@@ -78,7 +78,7 @@ class CreateTankSchema(BaseModel):
     group_id: int
     
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ### EDIT ###
 class EditTankSchema(BaseModel):
@@ -90,7 +90,7 @@ class EditTankSchema(BaseModel):
     group_id: int
     
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ### DELETE ###
 class DeleteTankSchema(BaseModel):
@@ -98,7 +98,7 @@ class DeleteTankSchema(BaseModel):
     group_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ##############
 ### SENSOR ###
@@ -112,7 +112,7 @@ class SensorSchema(BaseModel):
     date_modified: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ### GET ###
 class GetSensorSchema(BaseModel):
@@ -126,7 +126,7 @@ class CreateSensorSchema(BaseModel):
     group_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ### EDIT ###
 class EditSensorSchema(BaseModel):
@@ -137,7 +137,7 @@ class EditSensorSchema(BaseModel):
     group_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ### DELETE ###
 class DeleteSensorSchema(BaseModel):
@@ -146,6 +146,6 @@ class DeleteSensorSchema(BaseModel):
     group_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 

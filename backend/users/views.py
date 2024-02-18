@@ -171,7 +171,7 @@ class CustomTokenResetView(APIView):
         # For demonstration purposes, let's assume the password reset was successful
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-class CustomTokenSignupView(APIView):
+class CustomTokenSignupView(TokenObtainPairView):
     """
     Custom view for signing up new users.
 
@@ -197,7 +197,7 @@ class CustomTokenSignupView(APIView):
         last_name = request.data.get('lastName')
         email = request.data.get('email')
         password = request.data.get('password')
-        re_password = request.data.get('rePassword')
+        re_password = request.data.get('confirmPassword')
 
         # Validation: Check if required fields are provided
         if not (name and last_name and email and password and re_password):
@@ -217,7 +217,7 @@ class CustomTokenSignupView(APIView):
             email=email,
             first_name=name,
             last_name=last_name,
-            password=password
+            password=password,
         )
 
         # Additional steps (e.g., sending a confirmation email) can be added here

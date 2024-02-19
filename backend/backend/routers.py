@@ -16,7 +16,7 @@ class TimeSeriesRouter:
     def allow_relation(self, obj1, obj2, **hints):
         if obj1._meta.app_label == self.app and obj2._meta.app_label == self.app:
             return True
-        return False
+        return None
     
     def allow_migrate(self, db, app_label, model_name=None, **hints):
         if app_label == self.app:

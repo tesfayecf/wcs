@@ -1,20 +1,24 @@
 import React from 'react'
 import Navbar from '@/app/components/navbar/Navbar'
-import AuthenticationState from '../utils/auth/AuthenticationState';
+import { authenticate } from '../utils/auth/actions';
+
 
 type IAppLayoutProps = {
     children: React.ReactNode[] | React.ReactNode | undefined | null;
 }
 
-export default function RootLayout({ children }: IAppLayoutProps) {
+export default async function RootLayout({ children }: IAppLayoutProps) {
+
+    // Run server action to authenticate user based on cookies
+    await authenticate()
+
     return (
-        <AuthenticationState checkAuth={true} requireAuth={true}>
-            <div id="pagesLayout" className={"pagesLayout"}>
-                <Navbar />
-                <div id='pagesContent' className={"pagesContent"}>
-                    {children}
-                </div>
-            </div >
-        </AuthenticationState >
+        <div id="pagesLayout" className={"pagesLayout"}>
+            <Navbar />
+            <div id='pagesContent' className={"pagesContent"}>
+                <h1>Dashboard page</h1>
+                {/* {children} */}
+            </div>
+        </div >
     )
 }

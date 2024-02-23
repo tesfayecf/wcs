@@ -2,13 +2,18 @@
 import React from 'react'
 import { login } from '@/app/(test)/test/ssr/login'
 
-
+import { useRouter } from 'next/navigation'
 
 function LoginButton() {
     const [pending, startTransition] = React.useTransition()
+    const router = useRouter()
+
 
     const onLogin = async () => {
-        await login();
+        const loginState = await login();
+        if (loginState) {
+            router.push("./auth")
+        }
     }
 
     return (

@@ -1,10 +1,10 @@
 import React from 'react'
 import LoginButton from '../LoginButton'
-import { authenticate } from '../authenticated/Authenticate'
+import { authenticate } from '../auth/Authenticate'
 
 async function Unauthenticated() {
 
-    // await authenticate()
+    await authenticate()
 
     return (
         <div>

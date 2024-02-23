@@ -8,7 +8,9 @@ export const authenticate = async () => {
 
     // Check if it has cookies
     if (!accessToken || !refreshToken) {
-        redirect("./unauthenticated");
+        console.log("User not authenticated");
+        // redirect("./notauth");
+        return false
     }
 
     console.log("Access Token:", accessToken);
@@ -31,16 +33,16 @@ export const authenticate = async () => {
         if (response.ok) {
             // Access token is valid
             console.log("User authenticated");
-            redirect("./authenticated");
+            return true
         } else {
             // Access token is not valid, handle accordingly
             console.log("User not authenticated");
-            redirect("./unauthenticated");
+            return false
         }
 
     } catch (error) {
         console.error("Error:", error);
-        redirect("./unauthenticated");
+        return false
     }
 }
 

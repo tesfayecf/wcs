@@ -9,22 +9,22 @@
 @import '../app/(auth)/recover/styles/recover';
 
 // PAGES
-@import "../app/(pages)/layout";
+@import "../app/(main)/layout";
 
 // DASHBOARD
-@import '../app/(pages)/dashboard/styles/dashboard';
-@import '../app/(pages)/dashboard/components/SummaryWidget/styles/summaryWidget';
-@import '../app/(pages)/dashboard/components/WeatherWidget/styles/weatherWidget';
-@import '../app/(pages)/dashboard/components/InfoWidget/styles/infoWidget';
-@import '../app/(pages)/dashboard/components/GroupWidget/styles/groupWidget';
-@import '../app/(pages)/dashboard/components/GroupPopUp/styles/groupPopUp';
+@import '../app/(main)/dashboard/styles/dashboard';
+@import '../app/(main)/dashboard/components/SummaryWidget/styles/summaryWidget';
+@import '../app/(main)/dashboard/components/WeatherWidget/styles/weatherWidget';
+@import '../app/(main)/dashboard/components/InfoWidget/styles/infoWidget';
+@import '../app/(main)/dashboard/components/GroupWidget/styles/groupWidget';
+@import '../app/(main)/dashboard/components/GroupPopUp/styles/groupPopUp';
 
 // TANKS
-@import '../app/(pages)/group/[groupId]/styles/group';
-@import '../app/(pages)/group/[groupId]/components/GroupInfo/styles/groupInfo';
-@import '../app/(pages)/group/[groupId]/components/TankWidget/styles/tankWidget';
-@import '../app/(pages)/group/[groupId]/components/DataWidget/styles/DataWidget';
-// @import '../app/(pages)/tanks/components/TankPopUp/styles/tankPopUp'; // Empty --> NOT FOUND!
+@import '../app/(main)/group/[groupId]/styles/group';
+@import '../app/(main)/group/[groupId]/components/GroupInfo/styles/groupInfo';
+@import '../app/(main)/group/[groupId]/components/TankWidget/styles/tankWidget';
+@import '../app/(main)/group/[groupId]/components/DataWidget/styles/DataWidget';
+// @import '../app/(main)/tanks/components/TankPopUp/styles/tankPopUp'; // Empty --> NOT FOUND!
 
 
 // COMPONENTS

@@ -1,6 +1,6 @@
 import { ILoginForm, IResetForm, ISignupForm } from "@/app/(auth)/AuthTypes";
-import { IGroup, IGroupStats } from "@/app/(pages)/dashboard/DashboardTypes";
-import { ISensor, ITank } from "@/app/(pages)/group/[groupId]/GroupTypes";
+import { IGroup, IGroupStats } from "@/app/(main)/dashboard/DashboardTypes";
+import { ISensor, ITank } from "@/app/(main)/group/[groupId]/GroupTypes";
 import { IUserInfo } from "@/app/app/AppTypes";
 
 export interface APIResponse<T> {

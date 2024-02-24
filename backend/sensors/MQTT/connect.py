@@ -1,7 +1,7 @@
 from sensors.MQTT.server import MqttServer
 
 def connect():
-    # Initialize the MQTT manager singleton
+    # Initialize the MQTT manager 
     mqttServer = MqttServer()
     
     # Start broker connection 

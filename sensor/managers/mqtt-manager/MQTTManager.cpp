@@ -4,13 +4,14 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include <TimeLib.h>
+#include <ArduinoJson.h>
 
 #include "../../App/AppConfig.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
 #include "../../utils/utils.h"
 
-#include "JsonBuilder.h"
+#include "CustomJsonDocument.h"
 
 // Singleton instance
 MQTTManager *MQTTManager::instance = nullptr;
@@ -70,6 +71,20 @@ void MQTTManager::publish(const char* topic, const char* message) {
         this->mqttClient.publish(topic, message);
     }
     // TODO: Handle case when client is not connected
+}
+
+void MQTTManager::test() {
+    // Create test message
+
+    MQTTMessage message;
+    message.type = MESSAGE_TYPES::DATA;
+    message.action = MESSAGE_ACTIONS::SENSOR_DATA;
+    message.params[0] = "test";
+    message.paramsCount = 1;
+
+    this->publishMessage(&message);
+
+    Serial.println("Publishing test message");
 }
 
 /// SUBSCRIBE ///   
@@ -138,45 +153,168 @@ void MQTTManager::registerSensor() {
     this->publishMessage(&message);
 }
 
+// // Base methods
+// void MQTTManager::publishMessage(const MQTTMessage* messagePtr) {
+//     if (messagePtr == nullptr) {
+//         // Handle null pointer error
+//         return;
+//     }
+
+//     const MQTTMessage& message = *messagePtr;
+
+//     // Boundary check
+//     if (message.paramsCount > 5) {
+//         Serial.println("Error: paramsCount exceeds array boundary");
+//         return;
+//     }
+
+//     // Ensure params array is not null (optional)
+//     for (size_t i = 0; i < message.paramsCount; i++) {
+//         if (message.params[i] == nullptr) {
+//             Serial.println("Error: Null pointer found in params array");
+//             return;
+//         }
+//     }
+
+//     // Create main json object
+//     JsonBuilder jsonMessage;
+
+//     // Add action information
+//     JsonBuilder actionObject;
+//     actionObject.add(MESSAGE_PARAMETERS::ACTION_TYPE, TYPE_TO_CHAR(message.type));
+//     actionObject.add(MESSAGE_PARAMETERS::ACTION_NAME, ACTION_TO_CHAR(message.action));
+//     // Add message body
+//     for (size_t i = 0; i < message.paramsCount; i++) {
+//         char paramName[4]; // Assuming the maximum length of parameter name is 3 ("p" + one digit)
+//         snprintf(paramName, sizeof(paramName), "p%zu", i);
+//         actionObject.add(paramName, message.params[i]);
+//     }
+
+//     // Add sensor metadata
+//     JsonBuilder metaObject;
+//     metaObject.add(MESSAGE_PARAMETERS::MESSAGE_ID, "message_id");
+//     char serverTime[16];
+//     snprintf(serverTime, sizeof(serverTime), "%lu", this->appConfig->appInfo.serverTime); // Convert millis() to const char*
+//     metaObject.add(MESSAGE_PARAMETERS::TIMESTAMP, serverTime);
+//     metaObject.add(MESSAGE_PARAMETERS::SENSOR_ID, this->sensorId.c_str());
+//     char localTime[16];
+//     snprintf(localTime, sizeof(localTime), "%lu", this->appConfig->appInfo.localTime); // Convert millis() to const char*
+//     metaObject.add(MESSAGE_PARAMETERS::SENSOR_TIME, localTime);
+//     metaObject.add(MESSAGE_PARAMETERS::VERSION, APP_VERSION);
+
+//     jsonMessage.addObject(MQTT_ACTION_KEY, actionObject);
+//     jsonMessage.addObject(MQTT_META_KEY, metaObject);
+    
+//     String jsonMessageStr = jsonMessage.toJson();
+//     // Choose topic based on message type
+//     const char* topic;
+//     switch (message.type) {
+//         case MESSAGE_TYPES::REGISTER:
+//             topic = this->registerTopic.c_str();
+//             break;
+//         case MESSAGE_TYPES::DATA:
+//             topic = this->dataTopic.c_str();
+//             break;
+//         case MESSAGE_TYPES::COMMAND:
+//             topic = this->commnadTopic.c_str();
+//             break;
+//         default:
+//             topic = "default";
+//             break;
+//     }
+
+//     Serial.print("Publish message: ");
+//     Serial.print(topic);
+//     Serial.print(" | ");
+//     Serial.println(jsonMessageStr);
+
+//     // Publish message
+//     this->publish(topic, jsonMessageStr.c_str());
+
+//     // delete[] jsonMessageStr;
+// }
+
 // Base methods
 void MQTTManager::publishMessage(const MQTTMessage* messagePtr) {
-    // Create main json object
-    JsonBuilder jsonMessage;
+    if (messagePtr == nullptr) {
+        // Handle null pointer error
+        return;
+    }
 
-    // Add action information
-    JsonBuilder actionObject;
-    actionObject.add(MESSAGE_PARAMETERS::ACTION_TYPE, TYPE_TO_CHAR(message.type));
-    actionObject.add(MESSAGE_PARAMETERS::ACTION_NAME, ACTION_TO_CHAR(message.action));
+    const MQTTMessage& message = *messagePtr;
+
+    // Boundary check
+    if (message.paramsCount > 5) {
+        Serial.println("Error: paramsCount exceeds array boundary");
+        return;
+    }
+
+    // Ensure params array is not null (optional)
+    for (size_t i = 0; i < message.paramsCount; i++) {
+        if (message.params[i] == nullptr) {
+            Serial.println("Error: Null pointer found in params array");
+            return;
+        }
+    }
+
+    // Create main json object
+    StaticJsonDocument<1024> jsonMessage;
+
+    // // Add action information
+    JsonObject actionObject = jsonMessage.createNestedObject(MQTT_ACTION_KEY);
+    actionObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::ACTION_TYPE)] = TYPE_TO_CHAR(message.type);
+    actionObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::ACTION_NAME)] = ACTION_TO_CHAR(message.action);
     // Add message body
     for (size_t i = 0; i < message.paramsCount; i++) {
         char paramName[4]; // Assuming the maximum length of parameter name is 3 ("p" + one digit)
         snprintf(paramName, sizeof(paramName), "p%zu", i);
-        actionObject.add(paramName, message.params[i]);
+        actionObject[paramName] = message.params[i];
     }
 
-    // Add sensor metadata
-    JsonBuilder metaObject;
-    metaObject.add(MESSAGE_PARAMETERS::MESSAGE_ID, "message_id");
-    char serverTime[16];
-    snprintf(serverTime, sizeof(serverTime), "%lu", this->appConfig->appInfo.serverTime); // Convert millis() to const char*
-    metaObject.add(MESSAGE_PARAMETERS::TIMESTAMP, serverTime);
-    metaObject.add(MESSAGE_PARAMETERS::SENSOR_ID, this->sensorId.c_str());
-    char localTime[16];
-    snprintf(localTime, sizeof(localTime), "%lu", this->appConfig->appInfo.localTime); // Convert millis() to const char*
-    metaObject.add(MESSAGE_PARAMETERS::SENSOR_TIME, localTime);
-    metaObject.add(MESSAGE_PARAMETERS::VERSION, APP_VERSION);
+    // // Add sensor metadata
+    JsonObject metaObject = jsonMessage.createNestedObject(MQTT_META_KEY);
+    metaObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::MESSAGE_ID)] = "message_id";
+    metaObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::TIMESTAMP)] = now();
+    metaObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::SENSOR_TIME)] = millis();
+    metaObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::VERSION)] = APP_VERSION;
+    // metaObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::SENSOR_ID)] = this->sensorId.c_str();
+    // metaObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::TIMESTAMP)] = String(this->appConfig->appInfo.serverTime);
+    // metaObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::SENSOR_TIME)] = String(this->appConfig->appInfo.localTime);
 
-    jsonMessage.addObject(MQTT_ACTION_KEY, actionObject);
-    jsonMessage.addObject(MQTT_META_KEY, metaObject);
+    // Serialize JSON to a string
+    String jsonMessageStr;
+    serializeJson(jsonMessage, jsonMessageStr);
+
+    Serial.println(this->registerTopic);
+    // Serial.println(this->dataTopic.c_str());
+    // Serial.println(this->commnadTopic.c_str());
     
-    String jsonMessageStr = jsonMessage.getString();
+    // Choose topic based on message type
+    // const char* topic;
+    // switch (message.type) {
+    //     case MESSAGE_TYPES::REGISTER:
+    //         topic = this->registerTopic.c_str();
+    //         break;
+    //     case MESSAGE_TYPES::DATA:
+    //         topic = this->dataTopic.c_str();
+    //         break;
+    //     case MESSAGE_TYPES::COMMAND:
+    //         topic = this->commnadTopic.c_str();
+    //         break;
+    //     default:
+    //         topic = "default";
+    //         break;
+    // }
 
-    Serial.print("Published message: ");
-    Serial.println(jsonMessageStr);
+    // Serial.print("Publish message: ");
+    // Serial.print(topic);
+    // Serial.print(" | ");
+    // Serial.println(jsonMessageStr);
 
-    // Publish message
-    this->publish(this->appConfig->mqttManager.dataTopic, jsonMessageStr);
+    // // Publish message
+    // this->publish(topic, jsonMessageStr.c_str());
 }
+
 
 // Setters
 void MQTTManager::setMQTTInfo() {

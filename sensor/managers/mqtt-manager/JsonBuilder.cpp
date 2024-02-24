@@ -1,67 +1,91 @@
-#include "JsonBuilder.h"
-#include "../../utils/types.h"
-#include "../../utils/utils.h"
+// #include "JsonBuilder.h"
+// #include "../../utils/types.h"
+// #include "../../utils/utils.h"
 
-JsonBuilder::JsonBuilder() : isFirstElement(true) {}
+// JsonBuilder::JsonBuilder(int initialCapacity) :
+//     streamCapacity(initialCapacity),
+//     streamLength(0),
+//     isFirstElement(true)
+// {
+//     stream = new char[streamCapacity];
+//     stream[0] = '\0';  // Initialize as empty string
+// }
 
-// Add a key-value pair to the JSON object
-JsonBuilder& JsonBuilder::add(const char* key, const char* value) {
-    if (!isFirstElement) {
-        stream += ",";
-    } else {
-        isFirstElement = false;
-    }
+// // Add destructor
+// JsonBuilder::~JsonBuilder() {
+//     delete[] stream;
+// }
 
-    stream += "\"" + String(key) + "\":";
-    appendValue(value);
+// // Add a key-value pair to the JSON object
+// JsonBuilder& JsonBuilder::add(const char* key, const char* value) {
+//     if (!isFirstElement) {
+//         stream += ",";
+//     } else {
+//         isFirstElement = false;
+//     }
 
-    return *this;
-}
+//     stream += "\"" + String(key) + "\":";
+//     appendValue(value);
+//     return *this;
+// }
 
-JsonBuilder& JsonBuilder::add(MESSAGE_PARAMETERS key, const char* value) {
-    if (!isFirstElement) {
-        stream += ",";
-    } else {
-        isFirstElement = false;
-    }
+// JsonBuilder& JsonBuilder::add(MESSAGE_PARAMETERS key, const char* value) {
+//     if (!isFirstElement) {
+//         stream += ",";
+//     } else {
+//         isFirstElement = false;
+//     }
 
-    stream += "\"" + String(PARAM_TO_CHAR(key)) + "\":";
-    appendValue(value);
+//     stream += "\"" + String(PARAM_TO_CHAR(key)) + "\":";
+//     appendValue(value);
+//     return *this;
+// }
 
-    return *this;
-}
+// // Add a nested JSON object
+// JsonBuilder& JsonBuilder::addObject(const char* key, const JsonBuilder& object) {
+//     if (!isFirstElement) {
+//         stream += ",";
+//     } else {
+//         isFirstElement = false;
+//     }
 
-// Add a nested JSON object
-JsonBuilder& JsonBuilder::addObject(const char* key, const JsonBuilder& object) {
-    if (!isFirstElement) {
-        stream += ",";
-    } else {
-        isFirstElement = false;
-    }
+//     stream += "\"" + String(key) + "\":" + object.toJson();
+//     return *this;
+// }
 
-    stream += "\"" + String(key) + "\":" + object.getString();
+// JsonBuilder& JsonBuilder::addObject(MESSAGE_PARAMETERS key, const JsonBuilder& object) {
+//     if (!isFirstElement) {
+//         stream += ",";
+//     } else {
+//         isFirstElement = false;
+//     }
 
-    return *this;
-}
+//     stream += "\"" + String(PARAM_TO_CHAR(key)) + "\":" + object.toJson();
+//     return *this;
+// }
 
-JsonBuilder& JsonBuilder::addObject(MESSAGE_PARAMETERS key, const JsonBuilder& object) {
-    if (!isFirstElement) {
-        stream += ",";
-    } else {
-        isFirstElement = false;
-    }
+// // Convert the JsonBuilder to a JSON string
+// String JsonBuilder::toJson() const {
+//     return "{" + String(stream) + "}";
+// }
 
-    stream += "\"" + String(PARAM_TO_CHAR(key)) + "\":" + object.getString();
+// // Append a value to the JSON string
+// void JsonBuilder::appendValue(const char* value) {
+//     ensureCapacity(strlen(value) + 3);  // Account for quotes and null terminator
+//     strcat(stream, "\"");
+//     strcat(stream, value);
+//     strcat(stream, "\"");
+// }
 
-    return *this;
-}
-
-// Convert the JsonBuilder to a JSON string
-String JsonBuilder::getString() const {
-    return "{" + stream + "}";
-}
-
-// Append a value to the JSON string
-void JsonBuilder::appendValue(const char* value) {
-    stream += "\"" + String(value) + "\"";
-}
+// // Ensure sufficient capacity in the stream buffer
+// void JsonBuilder::ensureCapacity(int additionalLength) {
+//     if (streamLength + additionalLength + 1 > streamCapacity) {  // +1 for null terminator
+//         // Double the capacity if needed
+//         int newCapacity = streamCapacity * 2;
+//         char* newStream = new char[newCapacity];
+//         strcpy(newStream, stream);
+//         delete[] stream;
+//         stream = newStream;
+//         streamCapacity = newCapacity;
+//     }
+// }

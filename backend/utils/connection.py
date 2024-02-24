@@ -5,6 +5,7 @@ class TOPICS():
     DATA_TOPIC = "data"
     STATUS_TOPIC = "status"
     CONFIG_TOPIC = "config"
+    AUTH_TOPIC = "auth"
 
 class JSON_KEYS(Enum):
     # Wifi status
@@ -63,6 +64,11 @@ class JSON_KEYS(Enum):
     # Log info
     TIMESTAMP = 801
     MESSAGE = 802
+
+    # Authentication
+    PUBLIC_KEY = 901
+    G_PUBLIC_KEY = 902
+    N_PUBLIC_KEY = 903
 
 class MESSAGE_TYPES(Enum):
   # Status
@@ -143,6 +149,11 @@ def ETS(key):
         # Log info
         JSON_KEYS.TIMESTAMP: "801",
         JSON_KEYS.MESSAGE: "802",
+
+        # Authentication
+        JSON_KEYS.PUBLIC_KEY: "901",
+        JSON_KEYS.G_PUBLIC_KEY: "902",
+        JSON_KEYS.N_PUBLIC_KEY: "903",
     }
 
     return enum_mapping.get(key, "0")

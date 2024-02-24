@@ -1,12 +1,14 @@
 import paho.mqtt.client as mqtt
+
+from typing import Dict
 import os, subprocess, json, sys, time
-from sensors.MQTT.utils import TOPICS, JSON_KEYS, ETS
+from utils.connection import TOPICS, JSON_KEYS, ETS
 from sensors.MQTT.client import MqttClient
 
 class MqttServer:
     _instance = None
     version = 51 # 4.4 of 5.1
-    sensors = {}
+    sensors: Dict[str, MqttClient] = {}
     last_message_info = None
 
     ############## CONSTRUCTOR ##############
@@ -64,12 +66,15 @@ class MqttServer:
 
             # Register sensor
             if (message.topic == TOPICS.REGISTER_TOPIC):
-                self.registerSensor(payload)
+                self.register(payload)
+            elif (TOPICS.AUTH_TOPIC in message.topic):
+                self.authenticate(payload)
+                
         except Exception as e:
             print(f"MQTT on_message error: {e}")
 
     ############## MANAGE SENSORS ##############
-    def registerSensor(self, payload):
+    def register(self, payload):
         # Get sensor info
         try:
             data = json.loads(payload)
@@ -81,28 +86,51 @@ class MqttServer:
         # Create client object
         sensor = MqttClient(self, sensor_id)
 
-        # Authenticat client
+        # Send authentication keys to client
         try:
-            isAuth = sensor.authencticate()
-            if not isAuth:
-                raise Exception("Not authenticated")
+            sensor.send_keys()
         except Exception as e: 
             print(f"Authentication error: {e}")
             return
+        
+        self.sensors[sensor_id] = sensor
             
-        # Register sensor new connection
-        try:
-            sensor.register()
-        except Exception as e:
-            print(f"Registration error: {e}")
-            return
+        # # Register sensor new connection
+        # try:
+        #     sensor.register()
+        # except Exception as e:
+        #     print(f"Registration error: {e}")
+        #     return
 
-        # Subscribe to sensor topics
+        # # Subscribe to sensor topics
+        # try:
+        #     sensor.subscribe()
+        # except Exception as e:
+        #     print(f"Subscription error: {e}")
+        #     return
+
+    def authenticate(self, payload):
+        # Check payload has all the required keys
         try:
-            sensor.subscribe()
-        except Exception as e:
-            print(f"Subscription error: {e}")
+            data = json.loads(payload)
+            sensor_id = data[ETS(JSON_KEYS.SENSOR_ID)]
+            timestamp = data[ETS(JSON_KEYS.TIMESTAMP)]
+            g_public_key = data[ETS(JSON_KEYS.G_PUBLIC_KEY)]
+            n_public_key = data[ETS(JSON_KEYS.N_PUBLIC_KEY)]
+            client_public_key = data[ETS(JSON_KEYS.PUBLIC_KEY)]
+        except:
+            print("Invalid payload")
             return
+        
+        try:
+            sensor = self.sensors[sensor_id]
+        except:
+            print("Sensor not found")
+            return
+        
+        sensor.set_connection_key(n_public_key, g_public_key, client_public_key)
+        
+
 
     ############## MANAGE CONNECTION ##############
     def subscribe(self, topic):

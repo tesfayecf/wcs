@@ -61,6 +61,6 @@
 #define ECHO_PIN D7     // Echo Pin (e.g., for ultrasonic sensor)
 #define TIMEOUT 25200   // Timeout value for hardware operations
 
-#define UPDATE_RATE 15000
+#define UPDATE_RATE 10000
 
 #endif  // CONSTANTS_H

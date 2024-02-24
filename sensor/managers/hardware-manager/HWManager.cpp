@@ -41,12 +41,12 @@ void HWManager::publishData() {
   Serial.println("Publishing sensor data");
   Serial.print("Distance: ");
   Serial.print("Raw: ");
-  Serial.print (this->distanceRAW);
+  Serial.print (this->distanceRaw);
   Serial.print(" | Cm: ");
-  Serial.println(this->distanceCM);
+  Serial.println(this->distanceCm);
   
-  const char* distanceRaw = String(this->distanceRAW).c_str();
-  const char* distanceCm = String(this->distanceCM).c_str();
+  const char* distanceRaw = String(this->distanceRaw).c_str();
+  const char* distanceCm = String(this->distanceCm).c_str();
 
   MQTTMessage message;
   message.type = MESSAGE_TYPES::DATA;
@@ -56,7 +56,6 @@ void HWManager::publishData() {
   message.paramsCount = 2;
 
   // Publish sensor data
-  // this->managers->mqttManager->test();
   this->managers->mqttManager->publishMessage(&message);
 }
 
@@ -68,16 +67,16 @@ void HWManager::readDistanceSensor() {
   // Take multiple readings
   for (size_t i = 0; i < 10; i++) {
     unsigned int distanceRaw_ = getDistance();
-    unsigned int distanceCM_ = getDistanceCm();
+    unsigned int distanceCm_ = getDistanceCm();
     
     // Print a dot for each reading
     Serial.print(".");
     delay(10);
     
     // Check if readings are faulty
-    if (distanceRaw_ < 200 && distanceCM_ > 0) {
+    if (distanceRaw_ < 200 && distanceCm_ > 0) {
       sumDistanceRaw += distanceRaw_;
-      sumDistanceCm += distanceCM_;
+      sumDistanceCm += distanceCm_;
       validReadings++;
     }
   }

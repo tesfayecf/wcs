@@ -1,15 +1,11 @@
 'use client'
 import React from "react";
-import { connect } from "react-redux";
 import { useRouter } from "next/navigation";
 import FormTemplate from "@/app/components/formTemplate/FormTemplate";
 import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
 import AuthHandler from "@/app/(auth)/AuthHandler";
 import { ILoginForm } from "@/app/(auth)/AuthTypes"
-import AppHandler from "@/app/app/AppHandler";
-import { IRootState } from "@/app/utils/store/store";
 import LogoIcon from "@/public/svg/LogoIcon";
-import AuthenticationState from "@/app/utils/auth/AuthenticationState";
 
 const authHandler = AuthHandler.getInstance()
 
@@ -18,14 +14,6 @@ interface ILoginProps { }
 const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
     const router = useRouter();
     const [error, setError] = React.useState<boolean>(false)
-
-
-    React.useEffect(() => {
-        authHandler.load();
-        return () => {
-            authHandler.unload();
-        }
-    }, [])
 
     const onLogin = async (fields: ILoginForm) => {
         const response = await authHandler.login(fields);
@@ -38,27 +26,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
 
     const renderTitle = () => { return <h2>LOG IN. BE THE CHANGE</h2> }
 
-    const titleStyle: React.CSSProperties = {
-        fontSize: "16px",
-        fontWeight: "bold",
-        marginTop: "10px",
-        marginBottom: "10px",
-    }
 
-    const acceptButtonStyle: React.CSSProperties = {
-        width: "100%",
-        height: "35px"
-    }
-
-    const additionalButtonStyle: React.CSSProperties = {
-        backgroundColor: "transparent",
-        border: "none",
-        cursor: "pointer"
-    }
-
-    additionalButtonStyle[':hover'] = {
-        backgroundColor: "#55dc9e",  // Replace with the color you want on hover
-    };
 
     const additionalButtons: React.JSX.Element = (
         <div style={{
@@ -87,63 +55,79 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
     )
 
     return (
-        <AuthenticationState requireAuth={false} checkAuth={true}>
-            <div className={"login"}>
-                <div className="logo">
-                    <LogoIcon size={2200} />
-                </div>
-                <div className={"form"}>
-                    <PopUpTemplate
-                        open={true}
-                        onClose={() => { }}
-                        hideBackDrop={true}
-                        paperProps={{
-                            elevation: 0,
-                            style: {
-                                top: "100px"
-                            }
-                        }}
-                    >
-                        <FormTemplate<ILoginForm>
-                            title={renderTitle()}
-                            titleStyle={titleStyle}
-                            externalError={error}
-                            externalErrorText={"Invalid credentials"}
-                            onAccept={onLogin}
-                            onCancel={() => { }}
-                            acceptButton="Log in"
-                            acceptButtonStyle={acceptButtonStyle}
-                            cancelButton=""
-                            showCancelButton={false}
-                            additionalButtons={additionalButtons}
-                            isLoading={false}
-                            fields={[
-                                {
-                                    key: "email",
-                                    name: "Email",
-                                    type: "text",
-                                    placeholder: "",
-                                    textType: "email"
-                                },
-                                {
-                                    key: "password",
-                                    name: "Password",
-                                    type: "text",
-                                    placeholder: "",
-                                    textType: "password",
-                                }
-                            ]}
-                        />
-                    </PopUpTemplate>
-                </div>
+        <div className={"login"}>
+            <div className="logo">
+                <LogoIcon size={2200} />
             </div>
-        </AuthenticationState>
+            <div className={"form"}>
+                <PopUpTemplate
+                    open={true}
+                    onClose={() => { }}
+                    hideBackDrop={true}
+                    paperProps={{
+                        elevation: 0,
+                        style: {
+                            top: "100px"
+                        }
+                    }}
+                >
+                    <FormTemplate<ILoginForm>
+                        title={renderTitle()}
+                        titleStyle={titleStyle}
+                        externalError={error}
+                        externalErrorText={"Invalid credentials"}
+                        onAccept={onLogin}
+                        onCancel={() => { }}
+                        acceptButton="Log in"
+                        acceptButtonStyle={acceptButtonStyle}
+                        cancelButton=""
+                        showCancelButton={false}
+                        additionalButtons={additionalButtons}
+                        isLoading={false}
+                        fields={[
+                            {
+                                key: "email",
+                                name: "Email",
+                                type: "text",
+                                placeholder: "",
+                                textType: "email"
+                            },
+                            {
+                                key: "password",
+                                name: "Password",
+                                type: "text",
+                                placeholder: "",
+                                textType: "password",
+                            }
+                        ]}
+                    />
+                </PopUpTemplate>
+            </div>
+        </div>
     )
 }
 
+export default Login;
 
-const mapStateToProps = (state: IRootState) => {
-    return {}
+
+const titleStyle: React.CSSProperties = {
+    fontSize: "16px",
+    fontWeight: "bold",
+    marginTop: "10px",
+    marginBottom: "10px",
 }
 
-export default connect(mapStateToProps, {})(Login);
+const acceptButtonStyle: React.CSSProperties = {
+    width: "100%",
+    height: "35px"
+}
+
+const additionalButtonStyle: React.CSSProperties = {
+    backgroundColor: "transparent",
+    border: "none",
+    cursor: "pointer"
+}
+
+additionalButtonStyle[':hover'] = {
+    backgroundColor: "#55dc9e",  // Replace with the color you want on hover
+};

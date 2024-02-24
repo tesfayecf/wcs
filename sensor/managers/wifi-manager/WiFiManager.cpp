@@ -117,6 +117,7 @@ bool WifiManager::startConfigPortal() {
 
   server.begin();
   Serial.println("Portal started");
+  this->connected = false;
 
   while (this->connected == false) {
     dnsServer.processNextRequest();

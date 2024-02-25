@@ -2,9 +2,12 @@
     height: 100%;
     width: 100%;
 
+    display: flex;
+    align-items: flex-start;
+
     .mainContent {
         width: 100%;
-        padding-left: 200px;
+        padding-left: $navbar-width-1;
     }
 
     @media (max-width: 800px) {

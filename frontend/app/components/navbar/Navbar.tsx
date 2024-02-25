@@ -1,9 +1,7 @@
-'use client'
 import React from 'react'
 import DashboardIcon from '@/public/svg/DashboardIcon'
 import AnalyticsIcon from '@/public/svg/AnalyticsIcon'
 import SettingsIcon from '@/public/svg/SettingsIcon'
-import LogoSmallIcon from '@/public/svg/LogoSmallIcon'
 import NavKey from '@/app/components/navbar/Navkey'
 
 interface INavbarProps { }
@@ -18,9 +16,6 @@ const Navbar: React.FunctionComponent<INavbarProps> = (props: INavbarProps) => {
 
     return (
         <div id='navbar' className={"navbar"}>
-            <div id='logo' className={"logo"}>
-                <LogoSmallIcon fill='#55dc9e' stroke='#55dc9e' strokeWidth={0.1} size={60} />
-            </div>
             <div id='navkeys' className={"navkeys"}>
                 {renderKeys()}
             </div>
@@ -35,16 +30,16 @@ const navigation = [
     {
         text: 'Dashboard',
         index: '/dashboard',
-        icon: <DashboardIcon size={25} strokeWidth={1.2} />
+        icon: <DashboardIcon size={25} strokeWidth={1.2} fill={'black'} />
     },
     {
         text: 'Analytics',
         index: '/analytics',
-        icon: <AnalyticsIcon size={25} strokeWidth={1.2} />
+        icon: <AnalyticsIcon size={25} strokeWidth={1.2} fill={'black'} />
     },
     {
         text: 'Settings',
         index: '/settings',
-        icon: <SettingsIcon size={25} strokeWidth={1.2} />
+        icon: <SettingsIcon size={25} strokeWidth={1.2} fill={'black'} />
     }
 ]

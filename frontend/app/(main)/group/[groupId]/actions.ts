@@ -2,6 +2,7 @@
 
 import { serverRequest } from "@/app/lib/api/server";
 import { ITank, ITankCreationForm } from "./types";
+import { revalidateTag } from "next/cache";
 
 // Group
 export const getGroup = async (groupId: number) => {

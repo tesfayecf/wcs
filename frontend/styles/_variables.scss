@@ -9,13 +9,19 @@ $background-1-dark: #161717;
 $background-2-dark: #1e1c1e;
 
 // Text colors
-$text-1-light: #666b6b;
-$text-2-light: #97999a;
-$text-3-light: #d4d9da;
+$text-1-light: #323333;
+$text-2-light: #7e7f80;
+$text-3-light: #d1d1d1;
 
 $text-1-dark: #e4e9ea;
 $text-2-dark: #b7b7b6;
 $text-3-dark: #67605f;
+
+// Content box
+$content-box-margin: 10px;
+$content-box-border-radius: 5px;
+$background-color-1: #ffffff;
+$background-color-2: #ffffff;
 
 // Graph colors
 $graph-color-1: #3de198;
@@ -29,7 +35,13 @@ $chart-color-2: #fae499;
 $chart-color-3: #789abd;
 
 // Navbar colors
-$navbar-background-light: #1d1c1f;
-$navbar-background-dark: #121314;
-$navbar-text-light: #848383;
-$navbar-text-dark: #000000;
+$navbar-text-light: #000000;
+$navbar-text-dark: #f0f0f0;
+$navbar-text-hover: #000000;
+$navbar-background-light: #dddddd00;
+$navbar-background-dark: #30303000;
+$navbar-background-hover: #ffffff;
+
+// Navbar width
+$navbar-width-1: 200px;
+$navbar-width-2: 75px;

@@ -13,12 +13,12 @@ const GroupInfoWidget: React.FunctionComponent<IGroupWidgetProps> = (props: IGro
         <ContentBox customBoxClass={"groupInfo"}>
             <div className={"groupInfoContent"}>
                 <div className={"groupHeader"}>
-                    <div className={"groupInfoName"}>
+                    <div className={"name"}>
                         {groupInfo.name}
                     </div>
                 </div>
-                <div className={"groupInfoLevel"}>
-                    <div className={"valueP"}>
+                <div className={"level"}>
+                    <div className={"percentage"}>
                         70 %
                     </div>
                     <div className={"value"}>
@@ -29,11 +29,11 @@ const GroupInfoWidget: React.FunctionComponent<IGroupWidgetProps> = (props: IGro
                     <div className={"groupProperties"}>
                         <div className={"list"}>
                             <DataListElement keyName="Location" value={groupInfo.location} />
-                            {/* <DataListElement keyName="Capacity" value={props.groupStats.totalCapacity} />
-                            <DataListElement keyName="Nº tanks" value={props.groupStats.totalTanks} />
-                            <DataListElement keyName="Avg. level" value={props.groupStats.averageWaterLevel} />
-                            <DataListElement keyName="Min. level" value={props.groupStats.minWaterLevel} />
-                            <DataListElement keyName="Max. level" value={props.groupStats.maxWaterLevel} /> */}
+                            <DataListElement keyName="Capacity" value={0} />
+                            <DataListElement keyName="Nº tanks" value={0} />
+                            <DataListElement keyName="Avg. level" value={0} />
+                            <DataListElement keyName="Min. level" value={0} />
+                            <DataListElement keyName="Max. level" value={0} />
                         </div>
                     </div>
                 </div>

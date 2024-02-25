@@ -14,16 +14,16 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            margin: 0px 25px;
+            margin: 0px 0px 0px 25px;
 
             .title {
                 font-size: 12px;
-                color: #97999a; // $text-2-light:
+                color: $text-2-light; // $text-2-light:
             }
 
             .value {
                 font-size: 20px;
-                color: #454747; //$text-1-light:
+                color: $text-1-light; //$text-1-light:
                 font-weight: 700;
             }
 
@@ -36,7 +36,7 @@
 
                 .value {
                     font-size: 15px;
-                    color: #97999a;
+                    color: $text-2-light;
                     font-weight: 600;
                     white-space: nowrap;
                 }
@@ -44,7 +44,7 @@
                 .text {
                     font-size: 12px;
                     align-items: center;
-                    color: #97999a;
+                    color: $text-2-light;
                     white-space: nowrap;
                 }
             }

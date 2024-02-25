@@ -22,6 +22,8 @@ export interface IStoreInitializer {
 
 export const StoreInitializer: React.FunctionComponent<IStoreInitializer> = (props: IStoreInitializer) => {
     /// App \\\
+    console.log(props)
+
     const setUserInfo = useAppStore(state => state.setUserInfo);
     if (props.userInfo) setUserInfo(props.userInfo);
 
@@ -34,13 +36,16 @@ export const StoreInitializer: React.FunctionComponent<IStoreInitializer> = (pro
 
     /// Group \\\
     const setParams = useGroupStore(state => state.setParams);
-    if (props.groups) setParams({ groupId: props.groupParam })
+    if (props.groupParam) setParams({ groupId: props.groupParam })
 
     const setTanks = useGroupStore(state => state.setTanks);
     if (props.tanks) setTanks(props.tanks)
 
     const setGroupInfo = useGroupStore(state => state.setGroupInfo);
     if (props.groupInfo) setGroupInfo(props.groupInfo)
+
+    const setLoadingState = useAppStore(state => state.setLoadingState);
+    setLoadingState(false)
 
     return null;
 };

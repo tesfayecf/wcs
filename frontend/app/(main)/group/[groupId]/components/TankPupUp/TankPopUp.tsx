@@ -17,8 +17,8 @@ const TankPopUp: React.FunctionComponent<ITankPopUpProps> = (props: ITankPopUpPr
 
     const onCreate = async (fields: ITankCreationForm) => {
         const response = await createTank(fields, groupId);
-        setShowTankMenu(false)
-        if (response.ok) await getTanks(groupId)
+        setShowTankMenu(false);
+        if (response.ok) await getTanks(groupId);
         // else return // Show error message
     }
 

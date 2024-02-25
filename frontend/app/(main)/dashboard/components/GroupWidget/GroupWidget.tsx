@@ -3,6 +3,7 @@ import React from 'react';
 import Link from 'next/link';
 import ContentBox from '@/app/components/contentBox/ContentBox';
 import { IGroup } from '@/app/(main)/dashboard/types';
+import useDashboardStore from '../../store';
 
 type IGroupWidgetProps = {
     group: IGroup,
@@ -10,8 +11,8 @@ type IGroupWidgetProps = {
 }
 
 const GroupWidget: React.FunctionComponent<IGroupWidgetProps> = (props: IGroupWidgetProps) => {
-
     const [hover, setHover] = React.useState<boolean>(false);
+    const setShowGroupMenu = useDashboardStore(state => state.setShowGroupMenu)
 
     const onMouseEnter = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         setHover(true);
@@ -21,10 +22,18 @@ const GroupWidget: React.FunctionComponent<IGroupWidgetProps> = (props: IGroupWi
         setHover(false);
     }
 
-    const onClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const onWishToEdit = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event.preventDefault();
         event.stopPropagation();
         console.log("Edit group");
+        setShowGroupMenu(true);
+    }
+
+    const onWishToDelete = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        console.log("Delete group");
+        setShowGroupMenu(true);
     }
 
     return (
@@ -36,7 +45,10 @@ const GroupWidget: React.FunctionComponent<IGroupWidgetProps> = (props: IGroupWi
                         <div className={"groupName"}>{props.group.name}</div>
                         <div className={"groupLocation"}>{props.group.location}</div>
                     </div>
-                    {hover ? <div className={"groupSettings"} onClick={onClick}> settings </div> : null}
+                    {hover ? <div className={"groupSettings"}>
+                        <div onClick={onWishToEdit}>Edit</div>
+                        <div onClick={onWishToDelete}>Delete</div>
+                    </div> : null}
                 </div>
             </Link >
         </ContentBox >

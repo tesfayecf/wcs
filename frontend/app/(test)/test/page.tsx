@@ -1,9 +1,7 @@
 'use client'
 import React from "react";
-import { connect } from "react-redux";
-import { IRootState } from "@/app/lib/store/store";
 
-interface ITestProps extends ReturnType<typeof mapStateToProps> { }
+interface ITestProps { }
 
 const Test: React.FunctionComponent<ITestProps> = (props: ITestProps) => {
     return (
@@ -11,9 +9,4 @@ const Test: React.FunctionComponent<ITestProps> = (props: ITestProps) => {
     )
 }
 
-function mapStateToProps(state: IRootState) {
-    return {
-    }
-}
-
-export default connect(mapStateToProps, {})(Test)
+export default Test;

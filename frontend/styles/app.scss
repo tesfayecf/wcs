@@ -1,5 +1,4 @@
 // APP styles
-
 @import "./globals";
 @import "./variables";
 
@@ -24,8 +23,7 @@
 @import '../app/(main)/group/[groupId]/components/GroupInfo/styles/groupInfo';
 @import '../app/(main)/group/[groupId]/components/TankWidget/styles/tankWidget';
 @import '../app/(main)/group/[groupId]/components/DataWidget/styles/DataWidget';
-// @import '../app/(main)/tanks/components/TankPopUp/styles/tankPopUp'; // Empty --> NOT FOUND!
-
+@import '../app/(main)/group/[groupId]/components/TankPupUp/styles/tankPopUp';
 
 // COMPONENTS
 @import '../app/components/buttonTemplate/styles/buttonTemplate';

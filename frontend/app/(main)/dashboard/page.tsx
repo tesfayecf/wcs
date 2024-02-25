@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 
 import SummaryWidget from "@/app/(main)/dashboard/components/SummaryWidget/SummaryWidget"
 import WeatherWidget from "@/app/(main)/dashboard/components/WeatherWidget/WeatherWidget";
@@ -10,6 +10,7 @@ import useDashboardStore from "@/app/(main)/dashboard/store";
 import GroupPopUp from "@/app/(main)/dashboard/components/GroupPopUp/GroupPopUp";
 import { StoreInitializer } from "@/app/lib/store/StoreInitializer";
 import { getGroups } from "./actions";
+import Loading from "./loading";
 
 interface IDashboardProps { }
 

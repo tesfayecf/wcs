@@ -42,7 +42,7 @@ const InfoWidget: React.FunctionComponent<IHeaderWidgetProps> = (props: IHeaderW
                 <span className={"value"}>{props.value} {unit}</span>
                 <div className={"change"}>
                     <span className={"value"} style={{ color: color }}>{props.changeValue}% {direction}</span>
-                    <span className={"text"}>  than last month</span>
+                    <span className={"text"}>than last month</span>
                 </div>
             </div>
         )

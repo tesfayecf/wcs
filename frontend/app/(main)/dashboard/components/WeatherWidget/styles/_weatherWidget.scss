@@ -9,7 +9,6 @@
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
-        border-radius: inherit; // It should not be here
 
         .general {
             height: 100%;
@@ -25,24 +24,23 @@
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
-
                 padding: 10px 0px 0px 0px;
 
                 .temperature {
                     font-size: 50px;
-                    color: #454747; //$text-1-light:
+                    color: $text-1-light;
                     font-weight: 700;
                 }
 
                 .location {
                     font-size: 14px;
-                    color: #97999a; // $text-2-light:
+                    color: $text-2-light;
                     margin: 2px;
                 }
 
                 .date {
                     font-size: 14px;
-                    color: #97999a; // $text-2-light:
+                    color: $text-2-light;
                     margin: 2px;
                 }
             }
@@ -65,7 +63,7 @@
             justify-content: space-evenly;
             align-items: center;
             overflow: hidden;
-            color: #454747; //$text-1-light:
+            color: $text-1-light;
 
             .data {
                 display: flex;

@@ -25,13 +25,13 @@
 
             .name {
                 font-size: 25px;
-                color: #454747;
+                color: $text-1-light;
                 font-weight: bold;
             }
 
             .type {
                 font-size: 17px;
-                color: #97999a;
+                color: $text-2-light;
                 font-weight: 700;
             }
 
@@ -49,7 +49,7 @@
                 font-family: Microsoft YaHei, Microsoft YaHei-Bold;
                 font-weight: bold;
                 text-align: LEFT;
-                color: #454747;
+                color: $text-2-light;
             }
 
             .status {

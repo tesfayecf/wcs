@@ -6,7 +6,7 @@ import {
 
 import { Line } from 'react-chartjs-2';
 
-import { IRootState } from "@/app/utils/store/store";
+import { IRootState } from "@/app/lib/store/store";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement,
     LineElement, Title, Legend, Tooltip, Filler

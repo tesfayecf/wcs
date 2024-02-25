@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { serverRequest } from '../api/server';
 
 export const storeAccesToken = async (access: string) => {
-    cookies().set({
+    await cookies().set({
         name: "access",
         value: access,
         httpOnly: true,
@@ -14,7 +14,7 @@ export const storeAccesToken = async (access: string) => {
 }
 
 export const storeRefreshToken = async (refresh: string) => {
-    cookies().set({
+    await cookies().set({
         name: "refresh",
         value: refresh,
         httpOnly: true,
@@ -43,7 +43,7 @@ export const authenticate = async () => {
         const refreshResponse = await serverRequest("auth", "refresh", [])
         if (refreshResponse.ok) {
             console.log("User authenticated - refresh auth");
-            cookies().set({
+            await cookies().set({
                 name: "access",
                 value: refreshResponse.data.access,
                 httpOnly: true,
@@ -83,7 +83,7 @@ export const verify = async () => {
         const refreshResponse = await serverRequest("auth", "refresh", [])
         if (refreshResponse.ok) {
             console.log("Updated access token:", refreshResponse.data.access);
-            cookies().set({
+            await cookies().set({
                 name: "access",
                 value: refreshResponse.data.access,
                 httpOnly: true,

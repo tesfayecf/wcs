@@ -1,8 +1,8 @@
-// import { useStore } from "@/app/utils/store/store";
-import { store } from "@/app/utils/store/store";
+// import { useStore } from "@/app/lib/store/store";
+import { store } from "@/app/lib/store/store";
 import { IGroupCreationForm } from "@/app/(main)/dashboard/DashboardTypes";
 import { dashboardActions } from "@/app/(main)/dashboard/DashboardReducer";
-import RequestManager from "@/app/utils/api/requestManager";
+import RequestManager from "@/app/lib/api/requestManager";
 
 const requestManager = RequestManager.getInstance();
 class DashboardHandler {

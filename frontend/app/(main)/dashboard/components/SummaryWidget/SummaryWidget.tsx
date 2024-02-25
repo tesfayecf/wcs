@@ -1,8 +1,5 @@
-'use client'
 import React from 'react'
-import { connect } from 'react-redux'
 import ContentBox from '@/app/components/contentBox/ContentBox'
-import { IRootState } from '@/app/utils/store/store'
 import SummaryPieChart from '@/app/(main)/dashboard/components/SummaryWidget/SummaryPieChart'
 import SummaryBarChart from '@/app/(main)/dashboard/components/SummaryWidget/SummaryBarChart'
 
@@ -21,10 +18,4 @@ const SummaryWidget: React.FunctionComponent<ISummaryWidgetProps> = (props: ISum
   )
 }
 
-const mapStateToProps = (state: IRootState) => {
-  return {
-    summaryData: state.dashboard.summary
-  }
-}
-
-export default connect(mapStateToProps, {})(SummaryWidget)
+export default SummaryWidget

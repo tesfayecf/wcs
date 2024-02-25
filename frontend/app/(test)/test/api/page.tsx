@@ -1,21 +1,20 @@
 'use client'
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { IRootState } from "@/app/utils/store/store";
 import { TextField, Button, Typography, Select, MenuItem } from "@mui/material";
-import { APIInterface } from "@/app/utils/api/apiInterface";
+import { apiInterface } from "@/app/lib/api/interface";
 import ContentBox from "@/app/components/contentBox/ContentBox";
-import RequestManager from "@/app/utils/api/requestManager";
+import RequestManager from "@/app/lib/api/requestManager";
+import { handleSendRequest } from "./actions";
 
 const requestManager = RequestManager.getInstance();
 
-interface IApiProps extends ReturnType<typeof mapStateToProps> { }
+interface IApiProps { }
 
 const Api: React.FunctionComponent<IApiProps> = (props: IApiProps) => {
     const [endpoints, setEndpoints] = useState([]);
     const [selectedEndpoint, setSelectedEndpoint] = useState<string>("");
     const [selectedEndpointInfo, setSelectedEndpointInfo] = useState<any>(null); // State to hold endpoint details
-    const [requestData, setRequestData] = useState<string>("");
+    const [requestData, setRequestData] = useState<string>("{}");
     const [responseData, setResponseData] = useState<string>("");
 
     useEffect(() => {
@@ -24,12 +23,12 @@ const Api: React.FunctionComponent<IApiProps> = (props: IApiProps) => {
 
     const getEndpoints = () => {
         let endpoints = [];
-        Object.keys(APIInterface).forEach((endpointKey) => {
-            Object.keys(APIInterface[endpointKey]).forEach((endpoint) => {
+        Object.keys(apiInterface).forEach((endpointKey) => {
+            Object.keys(apiInterface[endpointKey]).forEach((endpoint) => {
                 endpoints.push({
                     key: endpoint,
-                    address: APIInterface[endpointKey][endpoint].address,
-                    argKeys: APIInterface[endpointKey][endpoint].argsKeys,
+                    address: apiInterface[endpointKey][endpoint].address,
+                    argKeys: apiInterface[endpointKey][endpoint].argsKeys,
                 });
             });
         });
@@ -42,29 +41,6 @@ const Api: React.FunctionComponent<IApiProps> = (props: IApiProps) => {
         setSelectedEndpointInfo(foundEndpoint);
     };
 
-
-    const handleSendRequest = async () => {
-        try {
-
-            // Find the endpoint key
-            let endpointKey = null;
-            for (const key in APIInterface) {
-                if (APIInterface[key].hasOwnProperty(selectedEndpoint)) {
-                    endpointKey = key;
-                    break;
-                }
-            }
-
-            const requestDataObject = JSON.parse(requestData); // Parse JSON string to object
-            const valuesArray = Object.values(requestDataObject); // Get values from object as array
-
-            const response = await requestManager.request(endpointKey, selectedEndpoint, valuesArray);
-            setResponseData(JSON.stringify(response.data)); // Assuming response needs to be converted to string for display
-        } catch (error) {
-            console.error("Error sending request:", error);
-            setResponseData("Error occurred while sending request"); // Set error message in case of failure
-        }
-    };
 
     return (
         <div style={{ width: "100vw", height: "100vh" }}>
@@ -100,7 +76,10 @@ const Api: React.FunctionComponent<IApiProps> = (props: IApiProps) => {
                             style={{ width: "60%" }}
                         />
                     </div>
-                    <Button variant="contained" color="primary" onClick={handleSendRequest}>
+                    <Button variant="contained" color="primary" onClick={async () => {
+                        const data = await handleSendRequest(selectedEndpoint, requestData);
+                        setResponseData(data);
+                    }}>
                         Send Request
                     </Button>
                     <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "space-between", margin: "20px" }}>
@@ -120,8 +99,4 @@ const Api: React.FunctionComponent<IApiProps> = (props: IApiProps) => {
     );
 };
 
-function mapStateToProps(state: IRootState) {
-    return {};
-}
-
-export default connect(mapStateToProps, {})(Api);
+export default Api;

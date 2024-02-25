@@ -1,10 +1,11 @@
+'use client'
 import React from 'react';
 import { Dialog, PaperProps } from '@mui/material';
 
 interface PopUpTemplateProps {
     open: boolean;
     children: React.ReactNode | React.ReactNode[];
-    onClose: (ev: any) => void;
+    onClose?: (ev: any) => void;
     customStyles?: React.CSSProperties;
     hideBackDrop?: boolean;
     paperProps?: PaperProps;

@@ -2,10 +2,10 @@ import React from "react";
 import { connect } from "react-redux"
 import ContentBox from "@/app/components/contentBox/ContentBox"
 
-import { IRootState } from "@/app/utils/store/store";
+import { IRootState } from "@/app/lib/store/store";
 import { ChartData, ChartOptions } from "chart.js";
 import InfoChart from "@/app/(main)/dashboard/components/InfoWidget/InfoChart";
-import { HEXToRGBA } from "@/app/utils/lib/styles"
+import { HEXToRGBA } from "@/app/lib/lib/styles"
 
 interface IHeaderWidgetProps {
     title: string,

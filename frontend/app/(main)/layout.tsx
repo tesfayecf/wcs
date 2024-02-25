@@ -1,6 +1,8 @@
 import React from 'react'
 import Navbar from '@/app/components/navbar/Navbar'
-import { authenticate } from '../utils/auth/actions';
+import { authenticate } from '@/app/lib/auth/actions';
+import { getGroups, getUserInfo } from './actions';
+import { StoreInitializer } from '@/app/lib/store/StoreInitializer';
 
 
 type IAppLayoutProps = {
@@ -8,16 +10,25 @@ type IAppLayoutProps = {
 }
 
 export default async function RootLayout({ children }: IAppLayoutProps) {
+    //////////////////////////////////////////////////////////
+    await authenticate() // Authenticate user based on cookies
+    //////////////////////////////////////////////////////////
 
-    // Run server action to authenticate user based on cookies
-    await authenticate()
+    //////////////////////////////////////////////////////////
+    ///////////////////// LOAD APP STATE /////////////////////
+    //////////////////////////////////////////////////////////
+
+    /// User info \\\
+    const userInfoResponse = await getUserInfo();
 
     return (
-        <div id="pagesLayout" className={"pagesLayout"}>
+        <div id="mainLayout" className={"mainLayout"}>
+            <StoreInitializer
+                userInfo={userInfoResponse.data}
+            />
             <Navbar />
-            <div id='pagesContent' className={"pagesContent"}>
-                <h1>Dashboard page</h1>
-                {/* {children} */}
+            <div id='mainContent' className={"mainContent"}>
+                {children}
             </div>
         </div >
     )

@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { produce } from "immer";

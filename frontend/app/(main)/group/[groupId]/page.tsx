@@ -1,4 +1,3 @@
-'use client'
 import React from "react";
 import GroupHandler from "./GroupHandler";
 import TanksInfo from "./components/TanksInfo/TanksInfo";
@@ -9,8 +8,9 @@ import InfoWidget from "@/app/(main)/group/[groupId]/components/InfoWidget/InfoW
 import { ChartData } from "chart.js";
 import DataWidget from "./components/DataWidget/DataWidget";
 import AddTankWidget from "./components/GroupInfo/AddTankWidget";
+import { StoreInitializer } from "@/app/lib/store/StoreInitializer";
+import { getGroups, getTanks } from "../../actions";
 
-const groupHandler = GroupHandler.getInstance();
 
 interface IDashboardProps {
     params: {
@@ -18,19 +18,32 @@ interface IDashboardProps {
     }
 }
 
-const Group: React.FunctionComponent<IDashboardProps> = (props: IDashboardProps) => {
+const Group: React.FunctionComponent<IDashboardProps> = async (props: IDashboardProps) => {
 
-    React.useEffect(() => {
-        groupHandler.load(props.params);
-        return () => {
-            groupHandler.unload();
-        }
-    }, [])
+    /** await this.loadParams(params);
+        await this.setGroupInfo();
+        await this.getTanks(); */
+
+    //////////////////////////////////////////////////////////
+    //////////////////// LOAD GROUP STATE ////////////////////
+    //////////////////////////////////////////////////////////
+
+    const tanksResponse = await getTanks(parseInt(props.params.groupId));
+
+    console.log(tanksResponse.data)
+
+    const groupsResponse = await getGroups();
+
 
     return (
         <div className={"group"}>
-            <div className={"status"}>
-                <GroupInfoWidget />
+            <StoreInitializer
+                groupParam={props.params.groupId}
+                tanks={tanksResponse.data}
+            // groupInfo={groupsResponse.data.find(g => g.id == parseInt(props.params.groupId))}
+            />
+            {/*<div className={"status"}>
+                 <GroupInfoWidget />
                 <GroupDescription />
                 <AddTankWidget />
             </div>
@@ -39,15 +52,15 @@ const Group: React.FunctionComponent<IDashboardProps> = (props: IDashboardProps)
                     <InfoWidget title='Inflow' value={241.24} changeValue={23} data={data1} color='#3de198' />
                     <InfoWidget title='Outflow' value={872.27} changeValue={-5} data={data2} color='#e07159' />
                     <InfoWidget title='Savings' value={35} changeValue={5} data={data3} color='#f2c986' />
-                </div>
-                <div className={"tanks"}>
-                    <TanksInfo />
-                </div>
-                <div className={"data"}>
+                </div> */}
+            <div className={"tanks"}>
+                <TanksInfo />
+            </div>
+            {/* <div className={"data"}>
                     <DataWidget />
                 </div>
-            </div>
-            <TankPopUp />
+            </div> */}
+            {/* <TankPopUp /> */}
         </div>
     )
 }

@@ -1,10 +1,7 @@
 export interface IDashboardStore {
     summary: any;
     groups: IGroup[];
-    selectedGroup: number;
-    showCreateGroupMenu: boolean;
-    showEditGroupMenu: boolean;
-    showDeleteGroupMenu: boolean;
+    showGroupMenu: boolean;
 }
 
 export interface IGroup {

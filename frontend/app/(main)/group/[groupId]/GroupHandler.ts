@@ -1,8 +1,8 @@
-import { store } from "@/app/utils/store/store";
+import { store } from "@/app/lib/store/store";
 import { ISensor, ITank, ITankCreationForm, IGroupParams } from "@/app/(main)/group/[groupId]/GroupTypes";
 import { groupActions } from "@/app/(main)/group/[groupId]/GroupReducer";
-import RequestManager from "@/app/utils/api/requestManager";
-import WebSocketManager2 from "@/app/utils/api/websocketManager2";
+import RequestManager from "@/app/lib/api/requestManager";
+import WebSocketManager2 from "@/app/lib/api/websocketManager2";
 import { appActions } from "@/app/app/AppReducer";
 
 const requestManager = RequestManager.getInstance();

@@ -1,7 +1,7 @@
 import { appActions } from "../app/AppReducer";
-import { store } from "../utils/store/store";
+import { store } from "../lib/store/store";
 import { ILoginForm, ISignupForm, IResetForm } from "@/app/(auth)/AuthTypes";
-import RequestManager from '@/app/utils/api/requestManager'
+import RequestManager from '@/app/lib/api/requestManager'
 
 const requestManager = RequestManager.getInstance();
 

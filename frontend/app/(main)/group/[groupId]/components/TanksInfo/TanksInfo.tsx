@@ -1,28 +1,22 @@
 'use client'
 import React from 'react'
-import { connect } from 'react-redux'
-import { IRootState } from '@/app/utils/store/store'
 import TankWidget from '@/app/(main)/group/[groupId]/components/TankWidget/TankWidget'
+import useGroupStore from '@/app/lib/store/groupStore'
 
-interface ITankElementsProps extends ReturnType<typeof mapStateToProps> { }
+interface ITankElementsProps { }
 
 const TanksInfo: React.FunctionComponent<ITankElementsProps> = (props: ITankElementsProps) => {
+    const tanks = useGroupStore(state => state.tanks)
 
     const renderTanksInfo = React.useCallback(() => {
-        const widgets = props.tanks.map((tank, index) =>
+        const widgets = tanks.map((tank, index) =>
             <TankWidget tank={tank} key={index} />
         )
 
         return widgets;
-    }, [props.tanks])
+    }, [tanks])
 
     return renderTanksInfo()
 }
 
-const mapStateToProps = (state: IRootState) => ({
-    tanks: state.group.tanks,
-    sensors: state.group.sensors
-})
-
-
-export default connect(mapStateToProps, {})(TanksInfo)
+export default TanksInfo

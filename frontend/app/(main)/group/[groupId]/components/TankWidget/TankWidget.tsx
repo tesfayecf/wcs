@@ -1,12 +1,10 @@
 'use client'
 import React from 'react';
-import { connect } from 'react-redux';
-import { IRootState } from '@/app/utils/store/store';
 import ConnectedIcon from '@/public/svg/ConnectedIcon';
 import ContentBox from '@/app/components/contentBox/ContentBox';
 import { ITank, ITankStatus } from '@/app/(main)/group/[groupId]/GroupTypes';
 
-interface ITankWidgetWidgetProps extends ReturnType<typeof mapStateToProps> {
+interface ITankWidgetWidgetProps {
     tank: ITank,
 }
 
@@ -16,12 +14,12 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
         let icon = null;
         let color: string = "#f69c68";
 
-        const sensor = props.sensors.find(s => s.tank.id === props.tank.id);
-        if (sensor) {
-            text = sensor.is_active ? "Connected" : "Disconnected"
-            color = sensor.is_active ? "#3de198" : "#e07159"
-            icon = sensor.is_active ? <ConnectedIcon size={30} fill={color} strokeWidth={1} /> : null
-        }
+        // const sensor = props.sensors.find(s => s.tank.id === props.tank.id);
+        // if (sensor) {
+        //     text = sensor.is_active ? "Connected" : "Disconnected"
+        //     color = sensor.is_active ? "#3de198" : "#e07159"
+        //     icon = sensor.is_active ? <ConnectedIcon size={30} fill={color} strokeWidth={1} /> : null
+        // }
 
         return (
             <p style={{ color: color }}>{icon} {text}</p>
@@ -29,11 +27,11 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
     }
 
     const getSensorValue = () => {
-        const sensor = props.sensors.find(s => s.tank.id === props.tank.id)
-        if (!sensor) return ""
-        const sensorData = props.sensorsData[sensor.id]
-        if (!sensorData) return ""
-        return sensorData
+        // const sensor = props.sensors.find(s => s.tank.id === props.tank.id)
+        // if (!sensor) return ""
+        // const sensorData = props.sensorsData[sensor.id]
+        // if (!sensorData) return ""
+        return null
     }
 
     return (
@@ -64,14 +62,7 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
 }
 
 
-function mapStateToProps(state: IRootState) {
-    return {
-        sensorsData: state.group.sensorsData,
-        sensors: state.group.sensors,
-    }
-}
-
-export default connect(mapStateToProps, {})(TankWidget)
+export default TankWidget;
 
 
 interface IDataListElementProps {

@@ -1,7 +1,7 @@
 'use client'
 import React from 'react';
 import { connect } from 'react-redux';
-import { IRootState } from '@/app/utils/store/store';
+import { IRootState } from '@/app/lib/store/store';
 import FormTemplate from '@/app/components/formTemplate/FormTemplate';
 import GroupHandler from '@/app/(main)/group/[groupId]/GroupHandler';
 import PopUpTemplate from '@/app/components/popUpTemplate/PopUpTemplate';

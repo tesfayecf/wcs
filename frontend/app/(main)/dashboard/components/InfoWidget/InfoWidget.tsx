@@ -1,22 +1,19 @@
+'use client'
 import React from "react";
-import { connect } from "react-redux"
 import ContentBox from "@/app/components/contentBox/ContentBox"
 
-import { IRootState } from "@/app/utils/store/store";
 import { ChartData, ChartOptions } from "chart.js";
 import InfoChart from "@/app/(main)/dashboard/components/InfoWidget/InfoChart";
-import { HEXToRGBA } from "@/app/utils/lib/styles"
+import { HEXToRGBA } from "@/app/lib/utils/styles"
 
 interface IHeaderWidgetProps {
     title: string,
     value: number,
     changeValue: number,
-    data: ChartData<'line'>,
     color: string;
 }
 
 const InfoWidget: React.FunctionComponent<IHeaderWidgetProps> = (props: IHeaderWidgetProps) => {
-
 
     const renderTextData = React.useCallback(() => {
         let unit: string;
@@ -77,7 +74,7 @@ const InfoWidget: React.FunctionComponent<IHeaderWidgetProps> = (props: IHeaderW
             <div className={"infoWidgetContent"}>
                 {renderTextData()}
                 <InfoChart
-                    data={props.data}
+                    data={data}
                     options={
                         getCustomOptions(
                             HEXToRGBA(props.color, 0.9),
@@ -90,12 +87,17 @@ const InfoWidget: React.FunctionComponent<IHeaderWidgetProps> = (props: IHeaderW
     )
 }
 
+export default InfoWidget;
 
-const mapStateToProps = (state: IRootState) => {
-    return {}
+const labels = [
+    "1d", "2d", "3d", "4d", "5d", "6d", "7d", "8d", "9d", "10d",
+    "11d", "12d", "13d", "14d", "15d", "16d", "17d", "18d", "19d", "20d"
+];
+
+const data: ChartData<'line'> = {
+    labels: labels,
+    datasets: [{ data: generateRandomData(0, 1, labels.length), }]
 }
-
-export default connect(mapStateToProps, {})(InfoWidget)
 
 const options = {
     responsive: true,
@@ -125,3 +127,12 @@ const options = {
         },
     },
 };
+
+function generateRandomData(min, max, length) {
+    const data = [];
+    for (let i = 0; i < length; i++) {
+        const randomValue = Math.random() * (max - min) + min;
+        data.push(randomValue.toFixed(2)); // Round to 2 decimal places
+    }
+    return data;
+}

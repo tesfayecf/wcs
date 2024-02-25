@@ -1,14 +1,14 @@
-.pagesLayout {
+.mainLayout {
     height: 100%;
     width: 100%;
 
-    .pagesContent {
+    .mainContent {
         width: 100%;
         padding-left: 200px;
     }
 
     @media (max-width: 800px) {
-        .pagesContent {
+        .mainContent {
             padding-left: 75px;
         }
     }

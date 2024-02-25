@@ -3,7 +3,7 @@ import React from "react";
 import FormTemplate from "@/app/components/formTemplate/FormTemplate";
 import AuthHandler from "../AuthHandler";
 import { connect } from "react-redux";
-import { IRootState } from "@/app/utils/store/store";
+import { IRootState } from "@/app/lib/store/store";
 import { ISignupForm } from "../AuthTypes";
 import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
 import { useRouter } from "next/navigation";

@@ -1,7 +1,7 @@
 'use client'
 import React from 'react';
 import { connect } from 'react-redux';
-import { IRootState } from '@/app/utils/store/store';
+import { IRootState } from '@/app/lib/store/store';
 import DashboardHandler from '@/app/(main)/dashboard/DashboardHandler';
 import FormTemplate from '@/app/components/formTemplate/FormTemplate';
 import PopUpTemplate from '@/app/components/popUpTemplate/PopUpTemplate';
@@ -64,7 +64,7 @@ const GroupPopUp: React.FunctionComponent<IFroupPopUpProps> = (props: IFroupPopU
 
 const mapStateToProps = (state: IRootState) => {
     return {
-        showGroupMenu: state.dashboard.showCreateGroupMenu,
+        showGroupMenu: state.dashboard.showGroupMenu,
         isFormLoading: state.app.loadingState.isFormLoading,
     }
 }

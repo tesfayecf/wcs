@@ -1,7 +1,7 @@
 'use client'
-import { store } from "../utils/store/store";
+import { store } from "../lib/store/store";
 import { appActions } from "@/app/app/AppReducer";
-import RequestManager from "@/app/utils/api/requestManager";
+import RequestManager from "@/app/lib/api/requestManager";
 
 const requestManager = RequestManager.getInstance();
 class AppHandler {

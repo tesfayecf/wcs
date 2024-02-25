@@ -8,26 +8,10 @@ export interface IUserInfo {
     last_name: string;
     email: string;
     role: Role;
-    status: Status;
-    avatar?: string;
 }
 
 export interface IAppStore {
-    session: {
-        isConnected: boolean;
-        isAdmin: boolean;
-        isStaff: boolean;
-        isUser: boolean;
-    };
-    authenticationState: {
-        accesToken: string;
-        refreshToken: string;
-        isAuthenticated: boolean;
-    }
-    loadingState: {
-        isLoading: boolean;
-        isFormLoading: boolean;
-        loadingText: string;
-    }
+    isAuthenticated: boolean;
+    isLoading: boolean;
     userInfo: IUserInfo;
 }

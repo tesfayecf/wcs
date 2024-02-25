@@ -1,5 +1,4 @@
 'use client'
-import { connect } from "react-redux"
 import React from 'react';
 import {
     Chart as ChartJS,
@@ -16,7 +15,6 @@ import {
     ChartData,
 } from 'chart.js';
 import { Chart } from 'react-chartjs-2';
-import { IRootState } from "@/app/utils/store/store";
 
 ChartJS.register(
     LinearScale,
@@ -30,10 +28,7 @@ ChartJS.register(
     BarController
 );
 
-interface ISummaryBarChartProps extends ReturnType<typeof mapStateToProps> {
-    // data: ChartData<'bar'>;
-    // options: ChartOptions<'bar'>;
-}
+interface ISummaryBarChartProps { }
 
 const SummaryBarChart: React.FunctionComponent<ISummaryBarChartProps> = (props: ISummaryBarChartProps) => {
 
@@ -45,11 +40,7 @@ const SummaryBarChart: React.FunctionComponent<ISummaryBarChartProps> = (props: 
 }
 
 
-const mapStateToProps = (state: IRootState) => {
-    return {}
-}
-
-export default connect(mapStateToProps, {})(SummaryBarChart)
+export default SummaryBarChart
 
 
 const labels = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];

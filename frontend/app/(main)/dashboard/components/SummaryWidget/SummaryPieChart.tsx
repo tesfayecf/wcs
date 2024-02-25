@@ -1,25 +1,22 @@
 'use client'
 import React from "react"
-import { connect } from "react-redux";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, ArcElement, ChartData, ChartOptions, ChartTypeRegistry, BubbleDataPoint, LegendItem } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
-import { IRootState } from "@/app/utils/store/store";
 import { Point } from "chart.js/dist/core/core.controller";
 
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Legend, Tooltip, Filler);
 
-interface ISummaryPieChartProps extends ReturnType<typeof mapStateToProps> {
-    // data: ChartData<'pie'>;
-    // options: ChartOptions<'pie'>;
-}
+interface ISummaryPieChartProps { }
 
 const SummaryPieChart: React.FunctionComponent<ISummaryPieChartProps> = (props: ISummaryPieChartProps) => {
 
     const colors = ['#83ecbd', '#e68b77', '#f2c986', '#92c594', '#12f594'];
 
     const renderLegend = () => {
-        return props.groups.map((group, index) => {
+
+        const groups = []
+        return groups.map((group, index) => {
             const random = Math.floor(Math.random() * colors.length)
             return (
                 <div key={index} className="legend-item">
@@ -44,7 +41,9 @@ const SummaryPieChart: React.FunctionComponent<ISummaryPieChartProps> = (props: 
             ],
         };
 
-        props.groups.map((group, index) => {
+        const groups = []
+
+        groups.map((group, index) => {
             pidData.labels.push(group.name)
             pidData.datasets[0].data.push(Math.random() * 100)
             // pidData.datasets[0].backgroundColor.push(colors[index]) // Errir build
@@ -65,13 +64,7 @@ const SummaryPieChart: React.FunctionComponent<ISummaryPieChartProps> = (props: 
     );
 }
 
-const mapStateToProps = (state: IRootState) => {
-    return {
-        groups: state.dashboard.groups
-    };
-}
-
-export default connect(mapStateToProps, {})(SummaryPieChart);
+export default SummaryPieChart;
 
 // Dummy Pie Data
 

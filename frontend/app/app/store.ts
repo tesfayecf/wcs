@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { IAppStore, IUserInfo } from '@/app/app/AppTypes';
+import { IAppStore, IUserInfo } from '@/app/app/types';
 
 const defaultUserInfo: IUserInfo = {
     id: -1,

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { IGroupStore, ITank, IGroupParams } from '@/app/(main)/group/[groupId]/GroupTypes';
-import { IGroup, IGroupStats } from '@/app/(main)/dashboard/DashboardTypes';
+import { IGroupStore, ITank, IGroupParams } from '@/app/(main)/group/[groupId]/types';
+import { IGroup, IGroupStats } from '@/app/(main)/dashboard/types';
 
 interface IGroupActions {
     setParams: (params: IGroupParams) => void;

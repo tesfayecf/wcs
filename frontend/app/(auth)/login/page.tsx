@@ -1,11 +1,11 @@
 'use client'
 import React from "react";
+import Link from "next/link";
 import FormTemplate from "@/app/components/formTemplate/FormTemplate";
 import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
-import { ILoginForm } from "@/app/(auth)/AuthTypes"
+import { ILoginForm } from "@/app/(auth)/types"
 import LogoIcon from "@/public/svg/LogoIcon";
-import { loginAction } from "./actions";
-import Link from "next/link";
+import { login } from "@/app/(auth)/actions";
 
 interface ILoginProps { }
 
@@ -41,7 +41,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
                         titleStyle={titleStyle}
                         externalError={false}
                         externalErrorText={"Invalid credentials"}
-                        onAccept={loginAction}
+                        onAccept={login}
                         onCancel={() => { }}
                         acceptButton="Log in"
                         acceptButtonStyle={acceptButtonStyle}
@@ -74,6 +74,18 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
 
 export default Login;
 
+const titleStyle: React.CSSProperties = {
+    fontSize: "16px",
+    fontWeight: "bold",
+    marginTop: "10px",
+    marginBottom: "10px",
+}
+
+const acceptButtonStyle: React.CSSProperties = {
+    width: "100%",
+    height: "35px"
+}
+
 const additionalButtonsContainer: React.CSSProperties = {
     display: "flex",
     flexDirection: "row",
@@ -93,15 +105,3 @@ const additionalButtonStyle: React.CSSProperties = {
 additionalButtonStyle[':hover'] = {
     backgroundColor: "#55dc9e",
 };
-
-const titleStyle: React.CSSProperties = {
-    fontSize: "16px",
-    fontWeight: "bold",
-    marginTop: "10px",
-    marginBottom: "10px",
-}
-
-const acceptButtonStyle: React.CSSProperties = {
-    width: "100%",
-    height: "35px"
-}

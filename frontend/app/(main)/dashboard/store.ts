@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { IDashboardStore, IGroup } from '@/app/(main)/dashboard/DashboardTypes';
+import { IDashboardStore, IGroup } from '@/app/(main)/dashboard/types';
 
 interface IDashboardStoreActions {
     setGroups: (groups: IGroup[]) => void;

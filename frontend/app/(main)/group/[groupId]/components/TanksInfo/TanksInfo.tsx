@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import TankWidget from '@/app/(main)/group/[groupId]/components/TankWidget/TankWidget'
-import useGroupStore from '@/app/lib/store/groupStore'
+import useGroupStore from '@/app/(main)/group/[groupId]/store'
 
 interface ITankElementsProps { }
 

@@ -1,6 +1,6 @@
 "use server";
 import { cookies } from 'next/headers'
-import { ILoginForm } from '../AuthTypes';
+import { ILoginForm } from './types';
 import { serverRequest } from '@/app/lib/api/server';
 
 interface StoreTokenRequest {
@@ -26,7 +26,7 @@ export async function storeTokens(request: StoreTokenRequest) {
     })
 }
 
-export const loginAction = async (loginForm: ILoginForm) => {
+export const login = async (loginForm: ILoginForm) => {
     try {
         const response = await serverRequest("auth", "login", [loginForm.email, loginForm.password], false);
         if (response) {

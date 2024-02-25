@@ -1,37 +1,14 @@
 'use client'
-import React, { useState } from "react";
+import React from "react";
 import FormTemplate from "@/app/components/formTemplate/FormTemplate";
-import AuthHandler from "../AuthHandler";
 import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
-import { IResetForm } from "../AuthTypes";
-
-const authHandler = AuthHandler.getInstance();
+import { IResetForm } from "../types";
 
 interface IResetProps { }
 
 const Reset: React.FunctionComponent<IResetProps> = (props: IResetProps) => {
-    const [error, setError] = useState<boolean>(false);
 
     const onResetPassword = async (fields: IResetForm) => { };
-
-    const renderTitle = () => {
-        return (
-            <>
-                <h1>SMATER+</h1>
-                <h2>RESET PASSWORD</h2>
-            </>
-        );
-    };
-
-    const titleStyle: React.CSSProperties = {
-        fontSize: "16px",
-        fontWeight: "bold",
-    };
-
-    const acceptButtonStyle: React.CSSProperties = {
-        width: "100%",
-        height: "35px",
-    };
 
     return (
         <div className={"reset"}>
@@ -45,9 +22,9 @@ const Reset: React.FunctionComponent<IResetProps> = (props: IResetProps) => {
                     }}
                 >
                     <FormTemplate<IResetForm>
-                        title={renderTitle()}
+                        title={<h2>RESET PASSWORD</h2>}
                         titleStyle={titleStyle}
-                        externalError={error}
+                        externalError={false}
                         externalErrorText={"Invalid email or error message"}
                         onAccept={onResetPassword}
                         onCancel={() => { }}
@@ -87,3 +64,14 @@ const Reset: React.FunctionComponent<IResetProps> = (props: IResetProps) => {
 };
 
 export default Reset;
+
+
+const titleStyle: React.CSSProperties = {
+    fontSize: "16px",
+    fontWeight: "bold",
+};
+
+const acceptButtonStyle: React.CSSProperties = {
+    width: "100%",
+    height: "35px",
+};

@@ -3,10 +3,7 @@ import React, { useState, useEffect } from "react";
 import { TextField, Button, Typography, Select, MenuItem } from "@mui/material";
 import { apiInterface } from "@/app/lib/api/interface";
 import ContentBox from "@/app/components/contentBox/ContentBox";
-import RequestManager from "@/app/lib/api/requestManager";
 import { handleSendRequest } from "./actions";
-
-const requestManager = RequestManager.getInstance();
 
 interface IApiProps { }
 

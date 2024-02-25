@@ -2,7 +2,7 @@
 import React from 'react';
 import ConnectedIcon from '@/public/svg/ConnectedIcon';
 import ContentBox from '@/app/components/contentBox/ContentBox';
-import { ITank, ITankStatus } from '@/app/(main)/group/[groupId]/GroupTypes';
+import { ITank, ITankStatus } from '@/app/(main)/group/[groupId]/types';
 
 interface ITankWidgetWidgetProps {
     tank: ITank,

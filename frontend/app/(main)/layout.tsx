@@ -1,8 +1,9 @@
 import React from 'react'
 import Navbar from '@/app/components/navbar/Navbar'
 import { authenticate } from '@/app/lib/auth/actions';
-import { getGroups, getUserInfo } from './actions';
+import { getUserInfo } from './actions';
 import { StoreInitializer } from '@/app/lib/store/StoreInitializer';
+import { redirect } from 'next/navigation';
 
 
 type IAppLayoutProps = {
@@ -11,7 +12,7 @@ type IAppLayoutProps = {
 
 export default async function RootLayout({ children }: IAppLayoutProps) {
     //////////////////////////////////////////////////////////
-    await authenticate() // Authenticate user based on cookies
+    if (!await authenticate()) redirect("/login") // Authenticate user
     //////////////////////////////////////////////////////////
 
     //////////////////////////////////////////////////////////

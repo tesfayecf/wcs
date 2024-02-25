@@ -1,7 +1,7 @@
-import { ILoginForm, IResetForm, ISignupForm } from "@/app/(auth)/AuthTypes";
-import { IGroup, IGroupStats } from "@/app/(main)/dashboard/DashboardTypes";
-import { ISensor, ITank } from "@/app/(main)/group/[groupId]/GroupTypes";
-import { IUserInfo } from "@/app/app/AppTypes";
+import { ILoginForm, IResetForm, ISignupForm } from "@/app/(auth)/types";
+import { IGroup, IGroupStats } from "@/app/(main)/dashboard/types";
+import { ISensor, ITank } from "@/app/(main)/group/[groupId]/types";
+import { IUserInfo } from "@/app/app/types";
 
 export interface APIResponse<T> {
     data?: T;

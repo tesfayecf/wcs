@@ -1,12 +1,13 @@
 'use client'
 import React from "react";
-import { connect } from "react-redux";
-import { IRootState } from "@/app/lib/store/store";
 import ContentBox from "@/app/components/contentBox/ContentBox";
+import useGroupStore from "@/app/(main)/group/[groupId]/store";
 
-interface IGroupDescriptionProps extends ReturnType<typeof mapStateToProps> { }
+interface IGroupDescriptionProps { }
 
 const GroupDescription: React.FunctionComponent<IGroupDescriptionProps> = (props: IGroupDescriptionProps) => {
+    const description = useGroupStore(state => state.groupInfo.description)
+
     return (
         <ContentBox customBoxClass={"groupDescription"}>
             <div className={"descriptionContent"}>
@@ -14,18 +15,11 @@ const GroupDescription: React.FunctionComponent<IGroupDescriptionProps> = (props
                     Description
                 </div>
                 <div className={"descriptionText"}>
-                    {props.description}
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque non dui sollicitudin, finibus ipsum in, faucibus felis. Mauris nisi orci, vestibulum in urna a, porttitor dignissim velit.
+                    {description}
                 </div>
             </div>
         </ContentBox>
     )
 }
 
-function mapStateToProps(state: IRootState) {
-    return {
-        description: state.group.groupInfo.description,
-    }
-}
-
-export default connect(mapStateToProps, {})(GroupDescription)
+export default GroupDescription;

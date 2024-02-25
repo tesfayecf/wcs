@@ -1,41 +1,39 @@
 'use client'
 import React from 'react';
-import { connect } from 'react-redux';
-import { IRootState } from '@/app/lib/store/store';
-import DashboardHandler from '@/app/(main)/dashboard/DashboardHandler';
 import FormTemplate from '@/app/components/formTemplate/FormTemplate';
 import PopUpTemplate from '@/app/components/popUpTemplate/PopUpTemplate';
-import { IGroupCreationForm } from '@/app/(main)/dashboard/DashboardTypes';
+import { IGroupCreationForm } from '@/app/(main)/dashboard/types';
+import useDashboardStore from '@/app/(main)/dashboard/store';
+import { createGroup, getGroups } from '../../actions';
 
-const dashboardHandler = DashboardHandler.getInstance();
-
-interface IFroupPopUpProps extends ReturnType<typeof mapStateToProps> { }
+interface IFroupPopUpProps { }
 
 const GroupPopUp: React.FunctionComponent<IFroupPopUpProps> = (props: IFroupPopUpProps) => {
-
-    const onClose = (ev: any) => {
-        dashboardHandler.setShowGroupMenu(false);
-    }
+    const showGroupMenu = useDashboardStore((state) => state.showGroupMenu);
+    const setShowGroupMenu = useDashboardStore((state) => state.setShowGroupMenu);
 
     const onCreate = async (fields: IGroupCreationForm) => {
-        await dashboardHandler.createGroup(fields);
+        const response = await createGroup(fields);
+        setShowGroupMenu(false)
+        if (response.ok) await getGroups()
+        // else return // Show error message
     }
 
     return (
         <PopUpTemplate
-            open={props.showGroupMenu}
-            onClose={onClose}
+            open={showGroupMenu}
+            onClose={() => setShowGroupMenu(false)}
         >
             <FormTemplate<IGroupCreationForm>
                 title="Create Group"
                 externalError={false}
                 externalErrorText={"Invalid data"}
-                onCancel={onClose}
+                onCancel={() => setShowGroupMenu(false)}
                 onAccept={onCreate}
                 acceptButton="Create"
                 cancelButton="Cancel"
                 showCancelButton={true}
-                isLoading={props.isFormLoading}
+                isLoading={false}
                 fields={[
                     {
                         key: "name",
@@ -62,13 +60,6 @@ const GroupPopUp: React.FunctionComponent<IFroupPopUpProps> = (props: IFroupPopU
     )
 };
 
-const mapStateToProps = (state: IRootState) => {
-    return {
-        showGroupMenu: state.dashboard.showGroupMenu,
-        isFormLoading: state.app.loadingState.isFormLoading,
-    }
-}
-
-export default connect(mapStateToProps, {})(GroupPopUp);
+export default GroupPopUp;
 
 

@@ -1,25 +1,17 @@
 'use client'
 import React from 'react';
-import { connect } from 'react-redux';
-import { IRootState } from '@/app/lib/store/store';
 import ContentBox from '@/app/components/contentBox/ContentBox';
+import useGroupStore from '@/app/(main)/group/[groupId]/store';
 
-import GroupHandler from '@/app/(main)/group/[groupId]/GroupHandler';
-
-const groupHandler = GroupHandler.getInstance();
-
-interface IAddTankWidgetWidgetProps extends ReturnType<typeof mapStateToProps> { }
+interface IAddTankWidgetWidgetProps { }
 
 const AddTankWidget: React.FunctionComponent<IAddTankWidgetWidgetProps> = (props: IAddTankWidgetWidgetProps) => {
-
-    const onClick = () => {
-        groupHandler.setShowTankMenu(true)
-    }
+    const setShowTankMenu = useGroupStore((state) => state.setShowTankMenu)
 
     return (
         <ContentBox customBoxClass={"groupAddTank"}>
             <div className={"addTankContent"}>
-                <div className={"text"} onClick={onClick}>
+                <div className={"text"} onClick={() => setShowTankMenu(true)}>
                     Add new tank
                 </div>
             </div>
@@ -27,8 +19,4 @@ const AddTankWidget: React.FunctionComponent<IAddTankWidgetWidgetProps> = (props
     )
 }
 
-function mapStateToProps(state: IRootState) {
-    return {}
-}
-
-export default connect(mapStateToProps, {})(AddTankWidget)
+export default AddTankWidget;

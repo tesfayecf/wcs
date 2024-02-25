@@ -1,19 +1,20 @@
 'use client'
 import React from 'react';
-import { connect } from 'react-redux';
-import { IRootState } from '@/app/lib/store/store';
 import ContentBox from '@/app/components/contentBox/ContentBox';
+import useGroupStore from '@/app/(main)/group/[groupId]/store';
 
-interface IGroupWidgetProps extends ReturnType<typeof mapStateToProps> { }
+interface IGroupWidgetProps { }
 
 
 const GroupInfoWidget: React.FunctionComponent<IGroupWidgetProps> = (props: IGroupWidgetProps) => {
+    const groupInfo = useGroupStore((state) => state.groupInfo)
+
     return (
         <ContentBox customBoxClass={"groupInfo"}>
             <div className={"groupInfoContent"}>
                 <div className={"groupHeader"}>
                     <div className={"groupInfoName"}>
-                        {props.groupInfo.name}
+                        {groupInfo.name}
                     </div>
                 </div>
                 <div className={"groupInfoLevel"}>
@@ -27,12 +28,12 @@ const GroupInfoWidget: React.FunctionComponent<IGroupWidgetProps> = (props: IGro
                 <div className={"groupData"}>
                     <div className={"groupProperties"}>
                         <div className={"list"}>
-                            <DataListElement keyName="Location" value={props.groupInfo.location} />
-                            <DataListElement keyName="Capacity" value={props.groupStats.totalCapacity} />
+                            <DataListElement keyName="Location" value={groupInfo.location} />
+                            {/* <DataListElement keyName="Capacity" value={props.groupStats.totalCapacity} />
                             <DataListElement keyName="Nº tanks" value={props.groupStats.totalTanks} />
                             <DataListElement keyName="Avg. level" value={props.groupStats.averageWaterLevel} />
                             <DataListElement keyName="Min. level" value={props.groupStats.minWaterLevel} />
-                            <DataListElement keyName="Max. level" value={props.groupStats.maxWaterLevel} />
+                            <DataListElement keyName="Max. level" value={props.groupStats.maxWaterLevel} /> */}
                         </div>
                     </div>
                 </div>
@@ -41,15 +42,7 @@ const GroupInfoWidget: React.FunctionComponent<IGroupWidgetProps> = (props: IGro
     )
 }
 
-function mapStateToProps(state: IRootState) {
-    return {
-        groupInfo: state.group.groupInfo,
-        groupStats: state.group.groupStats
-    }
-}
-
-export default connect(mapStateToProps, {})(GroupInfoWidget)
-
+export default GroupInfoWidget;
 
 
 interface IDataListElementProps {

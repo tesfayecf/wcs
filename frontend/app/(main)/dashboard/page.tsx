@@ -5,12 +5,11 @@ import WeatherWidget from "@/app/(main)/dashboard/components/WeatherWidget/Weath
 
 import GroupsInfo from "@/app/(main)/dashboard/components/GroupsInfo/GroupsInfo";
 import InfoWidget from "./components/InfoWidget/InfoWidget";
-import useDashboardStore from "@/app/lib/store/dashboardStore";
+import useDashboardStore from "@/app/(main)/dashboard/store";
 
 import GroupPopUp from "@/app/(main)/dashboard/components/GroupPopUp/GroupPopUp";
 import { StoreInitializer } from "@/app/lib/store/StoreInitializer";
-
-import { getGroups } from "../actions";
+import { getGroups } from "./actions";
 
 interface IDashboardProps { }
 
@@ -41,7 +40,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = async (props: IDashb
       <div className={"groups"}>
         <GroupsInfo />
       </div>
-      {/* <GroupPopUp /> */}
+      <GroupPopUp />
     </div >
   )
 }

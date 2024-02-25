@@ -1,41 +1,42 @@
 'use client'
 import React from 'react';
-import { connect } from 'react-redux';
-import { IRootState } from '@/app/lib/store/store';
 import FormTemplate from '@/app/components/formTemplate/FormTemplate';
-import GroupHandler from '@/app/(main)/group/[groupId]/GroupHandler';
 import PopUpTemplate from '@/app/components/popUpTemplate/PopUpTemplate';
-import { ITankCreationForm } from '@/app/(main)/group/[groupId]/GroupTypes';
+import { ITankCreationForm } from '@/app/(main)/group/[groupId]/types';
 
-const groupHandler = GroupHandler.getInstance();
+import { createTank, getTanks } from '../../actions';
+import useGroupStore from '@/app/(main)/group/[groupId]/store';
 
-interface ITankPopUpProps extends ReturnType<typeof mapStateToProps> { }
+
+interface ITankPopUpProps { }
 
 const TankPopUp: React.FunctionComponent<ITankPopUpProps> = (props: ITankPopUpProps) => {
+    const groupId = useGroupStore(state => state.groupId);
+    const showTankMenu = useGroupStore(state => state.showTankMenu);
+    const setShowTankMenu = useGroupStore(state => state.setShowTankMenu);
 
-    const onClose = () => {
-        groupHandler.setShowTankMenu(false);
-    }
-
-    const onCreate = (fields: ITankCreationForm) => {
-        groupHandler.createTank(fields);
+    const onCreate = async (fields: ITankCreationForm) => {
+        const response = await createTank(fields, groupId);
+        setShowTankMenu(false)
+        if (response.ok) await getTanks(groupId)
+        // else return // Show error message
     }
 
     return (
         <PopUpTemplate
-            open={props.showTankMenu}
-            onClose={onClose}
+            open={showTankMenu}
+            onClose={() => setShowTankMenu(false)}
         >
             <FormTemplate<ITankCreationForm>
                 title="Create Tank"
                 externalError={false}
                 externalErrorText={"Invalid data"}
-                onCancel={onClose}
+                onCancel={() => setShowTankMenu(false)}
                 onAccept={onCreate}
                 acceptButton="Create"
                 cancelButton="Cancel"
                 showCancelButton={true}
-                isLoading={props.isFormLoading}
+                isLoading={false}
                 fields={[
                     {
                         key: "name",
@@ -63,13 +64,6 @@ const TankPopUp: React.FunctionComponent<ITankPopUpProps> = (props: ITankPopUpPr
     )
 };
 
-const mapStateToProps = (state: IRootState) => {
-    return {
-        showTankMenu: state.group.showTankMenu,
-        isFormLoading: state.app.loadingState.isFormLoading,
-    }
-}
-
-export default connect(mapStateToProps, {})(TankPopUp);
+export default TankPopUp;
 
 

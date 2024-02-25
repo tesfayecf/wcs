@@ -1,17 +1,20 @@
 'use client'
-import { IUserInfo } from "@/app/app/AppTypes";
-import useAppStore from "./appStore";
-import useDashboardStore from "./dashboardStore";
-import { IGroup } from "@/app/(main)/dashboard/DashboardTypes";
-import useGroupStore from "./groupStore";
-import { ITank } from "@/app/(main)/group/[groupId]/GroupTypes";
+import { IUserInfo } from "@/app/app/types";
+import useAppStore from "../../app/store";
+import useDashboardStore from "../../(main)/dashboard/store";
+import { IGroup } from "@/app/(main)/dashboard/types";
+import useGroupStore from "../../(main)/group/[groupId]/store";
+import { ITank } from "@/app/(main)/group/[groupId]/types";
 
 export interface IStoreInitializer {
+    /// App \\\
     userInfo?: IUserInfo;
 
+    /// Dashboard \\\
     groups?: IGroup[];
     summary?: any;
 
+    /// Group \\\
     groupParam?: string;
     tanks?: ITank[];
     groupInfo?: IGroup;
@@ -38,13 +41,6 @@ export const StoreInitializer: React.FunctionComponent<IStoreInitializer> = (pro
 
     const setGroupInfo = useGroupStore(state => state.setGroupInfo);
     if (props.groupInfo) setGroupInfo(props.groupInfo)
-
-    console.log("StoreInitializer", props)
-
-    if (props.userInfo) {
-        return <></>
-    }
-
 
     return null;
 };

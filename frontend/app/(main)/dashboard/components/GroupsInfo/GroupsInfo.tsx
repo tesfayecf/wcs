@@ -1,14 +1,10 @@
 'use client'
 import React from "react";
-import { connect } from "react-redux";
-import { IRootState } from "@/app/lib/store/store";
-import DashboardHandler from "@/app/(main)/dashboard/DashboardHandler";
 import GroupWidget from "@/app/(main)/dashboard/components/GroupWidget/GroupWidget";
-import { IGroup } from "@/app/(main)/dashboard/DashboardTypes";
+import { IGroup } from "@/app/(main)/dashboard/types";
 import ContentBox from "@/app/components/contentBox/ContentBox";
-import useDashboardStore from "@/app/lib/store/dashboardStore";
+import useDashboardStore from "@/app/(main)/dashboard/store";
 
-const dashboarHandler = DashboardHandler.getInstance();
 
 interface IGroupsInfoProps { }
 

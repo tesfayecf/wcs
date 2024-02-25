@@ -1,101 +1,44 @@
 'use client'
 import React from "react";
+import Link from "next/link";
 import FormTemplate from "@/app/components/formTemplate/FormTemplate";
-import AuthHandler from "../AuthHandler";
-import { connect } from "react-redux";
-import { IRootState } from "@/app/lib/store/store";
-import { ISignupForm } from "../AuthTypes";
+import { ISignupForm } from "@/app/(auth)/types";
 import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
-import { useRouter } from "next/navigation";
 import LogoIcon from "@/public/svg/LogoIcon";
 
 // test signup password: kcswOpy35P
 
-const authHandler = AuthHandler.getInstance()
 
-interface ISignupProps extends ReturnType<typeof mapStateToProps> { }
+interface ISignupProps { }
 
 const Signup: React.FunctionComponent<ISignupProps> = (props: ISignupProps) => {
-    const router = useRouter();
-    const [error, setError] = React.useState<boolean>(false)
 
-    const onSignup = async (fields: ISignupForm) => {
-        const response = await authHandler.signup(fields);
-        if (response.status === 200) {
-            router.push('./login');
-        } else {
-            setError(true)
-        }
-    }
-
-    const renderTitle = () => {
-        return (
-            <>
-                <h2>SIGN UP. BE THE CHANGE</h2>
-            </>
-        )
-    }
-
-    const titleStyle: React.CSSProperties = {
-        fontSize: "16px",
-        fontWeight: "bold",
-    }
-
-    const acceptButtonStyle: React.CSSProperties = {
-        width: "100%",
-        height: "35px"
-    }
-
-    const additionalButtonStyle: React.CSSProperties = {
-        backgroundColor: "transparent",
-        border: "none",
-        cursor: "pointer"
-    }
-
-    additionalButtonStyle[':hover'] = {
-        backgroundColor: "#55dc9e",  // Replace with the color you want on hover
-    };
+    const onSignup = async (fields: ISignupForm) => { }
 
     const additionalButtons: React.JSX.Element = (
-        <div style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            margin: "5px 5px",
-            padding: "0px 45px"
-        }}>
-            <button
-                onClick={() => {
-                    router.push('./login')
-                }}
-                style={additionalButtonStyle}>
+        <div style={additionalButtonsContainer}>
+            <Link href={"./login"} style={additionalButtonStyle}>
                 Log in
-            </button>
+            </Link>
         </div>
     )
 
     return (
         <div className={"signup"}>
-            <div className={"logo"}>
-                <LogoIcon size={2200} />
-            </div>
+            <div className="logo"> <LogoIcon size={2200} /> </div>
             <div className={"form"}>
                 <PopUpTemplate
                     open={true}
-                    onClose={() => { }}
                     hideBackDrop={true}
                     paperProps={{
                         elevation: 0,
-                        style: {
-                            top: "-15px"
-                        }
+                        style: { top: "-15px" }
                     }}
                 >
                     <FormTemplate<ISignupForm>
-                        title={renderTitle()}
+                        title={<h2>SIGN UP. BE THE CHANGE</h2>}
                         titleStyle={titleStyle}
-                        externalError={error}
+                        externalError={false}
                         externalErrorText={"Invalid credentials"}
                         onAccept={onSignup}
                         onCancel={() => { }}
@@ -150,9 +93,34 @@ const Signup: React.FunctionComponent<ISignupProps> = (props: ISignupProps) => {
     return null
 }
 
-function mapStateToProps(state: IRootState) {
-    return {
-    }
+export default Signup;
+
+
+const titleStyle: React.CSSProperties = {
+    fontSize: "16px",
+    fontWeight: "bold",
 }
 
-export default connect(mapStateToProps, {})(Signup)
+const acceptButtonStyle: React.CSSProperties = {
+    width: "100%",
+    height: "35px"
+}
+
+const additionalButtonStyle: React.CSSProperties = {
+    backgroundColor: "transparent",
+    border: "none",
+    cursor: "pointer"
+}
+
+additionalButtonStyle[':hover'] = {
+    backgroundColor: "#55dc9e",  // Replace with the color you want on hover
+};
+
+const additionalButtonsContainer: React.CSSProperties = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    margin: "5px 5px",
+    padding: "0px 45px"
+}

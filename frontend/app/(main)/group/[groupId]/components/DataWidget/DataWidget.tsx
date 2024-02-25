@@ -1,9 +1,7 @@
 'use client'
 import React from 'react';
-import { connect } from 'react-redux';
-import { IRootState } from '@/app/lib/store/store';
 import ContentBox from '@/app/components/contentBox/ContentBox';
-import { Bar, Chart } from 'react-chartjs-2';
+import { Chart } from 'react-chartjs-2';
 
 import {
     Chart as ChartJS,
@@ -32,8 +30,7 @@ ChartJS.register(
     BarController
 );
 
-interface ITankWidgetWidgetProps extends ReturnType<typeof mapStateToProps> {
-}
+interface ITankWidgetWidgetProps { }
 
 const DataWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITankWidgetWidgetProps) => {
 
@@ -52,13 +49,7 @@ const DataWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
     )
 }
 
-
-function mapStateToProps(state: IRootState) {
-    return {}
-}
-
-export default connect(mapStateToProps, {})(DataWidget)
-
+export default DataWidget;
 
 const labels = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
 

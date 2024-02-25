@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import ContentBox from '@/app/components/contentBox/ContentBox';
-import { IGroup } from '@/app/(main)/dashboard/DashboardTypes';
+import { IGroup } from '@/app/(main)/dashboard/types';
 
 type IGroupWidgetProps = {
     group: IGroup,

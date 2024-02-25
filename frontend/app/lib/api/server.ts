@@ -1,7 +1,7 @@
 'use server'
-
 import { cookies } from "next/headers";
 import { apiInterface } from "./interface";
+import { refresh } from "../auth/actions";
 
 export interface ServerResponse<T> {
     ok: boolean;
@@ -45,13 +45,35 @@ export async function serverRequest<
     // Clone the response to use the body more than once
     const clonedResponse = response.clone();
     const responseData = await clonedResponse.json();
+
     // @ts-ignore
-    const serverResponse: ServerResponse<ReturnType<typeof apiInterface[T][S]["args"]>> = {
-        ok: clonedResponse.ok,
-        data: clonedResponse.ok ? responseData : undefined,
-        error: clonedResponse.ok ? undefined : responseData,
-        status: clonedResponse.status,
-        statusText: clonedResponse.statusText,
+    let serverResponse: ServerResponse<ReturnType<typeof apiInterface[T][S]["args"]>>;
+
+    if (clonedResponse.ok) {
+        serverResponse = {
+            ok: clonedResponse.ok,
+            data: responseData,
+            error: undefined,
+            status: clonedResponse.status,
+            statusText: clonedResponse.statusText,
+        }
+    } else {
+        serverResponse = {
+            ok: false,
+            data: undefined,
+            error: responseData,
+            status: clonedResponse.status,
+            statusText: clonedResponse.statusText,
+        };
+        // Check for authentication error (e.g., 401 Unauthorized)
+        if (authenticate && response.status === 401) {
+            // Attempt to refresh token and retry the request
+            if (await refresh()) {
+                // Retry the original request
+                return serverRequest(group, endpoint, args, authenticate);
+            }
+        }
     }
+
     return serverResponse;
 }

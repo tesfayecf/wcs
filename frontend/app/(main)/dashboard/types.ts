@@ -1,6 +1,9 @@
+import { IMenu } from "@/app/app/types";
+
 export interface IDashboardStore {
     summary: any;
     groups: IGroup[];
+    groupMenu: IMenu;
     showGroupMenu: boolean;
 }
 

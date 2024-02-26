@@ -37,6 +37,8 @@ export const editGroup = async (groupId: number, fields: IGroupCreationForm) => 
         if (response.ok) {
             revalidateTag("editGroup")
         }
+
+        return response;
     }
     catch (error) {
         // Log error
@@ -49,6 +51,8 @@ export const deleteGroup = async (groupId: number) => {
         if (response.ok) {
             revalidateTag("deleteGroup")
         }
+
+        return response;
     } catch (error) {
         // Log error
     }

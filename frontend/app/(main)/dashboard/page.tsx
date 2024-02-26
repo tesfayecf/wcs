@@ -10,7 +10,7 @@ import useDashboardStore from "@/app/(main)/dashboard/store";
 import GroupPopUp from "@/app/(main)/dashboard/components/GroupPopUp/GroupPopUp";
 import { StoreInitializer } from "@/app/lib/store/StoreInitializer";
 import { getGroups } from "./actions";
-import Loading from "./loading";
+// import Loading from "./loading";
 
 interface IDashboardProps { }
 

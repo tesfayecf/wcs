@@ -10,6 +10,12 @@ export interface IUserInfo {
     role: Role;
 }
 
+export interface IMenu {
+    show: boolean;
+    mode: "create" | "edit" | "delete" | "";
+    id: number;
+}
+
 export interface IAppStore {
     isAuthenticated: boolean;
     isLoading: boolean;

@@ -10,7 +10,7 @@ interface IGroupsInfoProps { }
 
 const GroupsInfo: React.FunctionComponent<IGroupsInfoProps> = (props: IGroupsInfoProps) => {
     const groups = useDashboardStore((state) => state.groups)
-    const setShowCreateGroupMenu = useDashboardStore((state) => state.setShowGroupMenu)
+    const setGroupMenu = useDashboardStore((state) => state.setGroupMenu)
 
     const colors = ['#83ecbd', '#e68b77', '#f2c986', '#92c594', '#12f594']
 
@@ -19,8 +19,7 @@ const GroupsInfo: React.FunctionComponent<IGroupsInfoProps> = (props: IGroupsInf
             <GroupWidget group={tankInfo} key={index} color={colors[index]} />
         );
 
-        widgets.push(<AddGroupWidget onCreate={() => setShowCreateGroupMenu(true)} />)
-
+        widgets.push(<AddGroupWidget onCreate={() => setGroupMenu({ show: true, id: -1, mode: "create" })} />)
         return widgets
     }, [groups])
 

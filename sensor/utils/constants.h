@@ -15,6 +15,7 @@
 #define APP_VERSION "0.1"
 
 #define EEPROM_SIZE 512
+#define CYCLE_TIME 1000
 
 /// INFO ///
 
@@ -61,6 +62,6 @@
 #define ECHO_PIN D7     // Echo Pin (e.g., for ultrasonic sensor)
 #define TIMEOUT 25200   // Timeout value for hardware operations
 
-#define UPDATE_RATE 10000
+#define LOG_RATE 10000
 
 #endif  // CONSTANTS_H

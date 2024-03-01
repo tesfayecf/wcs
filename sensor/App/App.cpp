@@ -35,9 +35,6 @@ void App::setup() {
     // Set Board info
     this->setAppInfo();
 
-    // Initialize sensor time
-    setTime(this->appConfig.appInfo.startTime);
-
     // Create managers
     wifiManager = new WifiManager();
     mqttManager = new MQTTManager();
@@ -50,20 +47,15 @@ void App::setup() {
 
     // Set up managers
     wifiManager->setup();
-    blink();
-
     mqttManager->setup();
-    blink();
-
     hwManager->setup();
-    blink();
 
+    blink();
     digitalWrite(LED_BUILTIN, LOW);
 }
 
 void App::loop() {
-    // Loop every second (1000ms)
-    if (millis() % 1000 == 0) {
+    if (millis() % CYCLE_TIME == 0) {
         // Update time
         this->appConfig.appInfo.localTime = millis();
         this->appConfig.appInfo.serverTime = now();
@@ -104,4 +96,7 @@ void App::setAppInfo() {
     String boardChipIdStr = this->appConfig.boardInfo.boardChipId;
     // Generate board id
     this->appConfig.appInfo.sensorId = generateId(boardChipIdStr, flashChipIdStr);
+
+    // Initialize sensor time
+    setTime(this->appConfig.appInfo.startTime);
 }

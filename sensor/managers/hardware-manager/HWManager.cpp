@@ -26,7 +26,7 @@ void HWManager::setup() {
 
 void HWManager::loop() {
   // Publish sensor data periodically
-  if (millis() % UPDATE_RATE == 0) {
+  if (millis() % LOG_RATE == 0) {
     // Read sensor data
     this->readDistanceSensor();
     // this->readTemperatureSensor();

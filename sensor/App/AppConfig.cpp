@@ -60,11 +60,11 @@ AppConfig::MQTTManager::MQTTManager() {
   version = MQTT_VERSION;
   connectionTimeout = MQTT_CONNECTION_TIMEOUT_CUSTOM;
 
-  // Publish MQTT topics
-  this->registerTopic = MQTT_REGISTER_TOPIC; // BUG ALERT
-  this->dataTopic = MQTT_DATA_TOPIC; // BUG ALERT
-  // Subscribe MQTT topics
-  this->commandTopic = MQTT_COMMAND_TOPIC; // BUG ALERT
+  // Publish topics
+  registerTopic = MQTT_REGISTER_TOPIC;
+  dataTopic = MQTT_DATA_TOPIC;
+  // Subscribe topics
+  commandTopic = MQTT_COMMAND_TOPIC;
 }
 
 /////////////////////////////////////////
@@ -74,5 +74,5 @@ AppConfig::MQTTManager::MQTTManager() {
 AppConfig::HardwareManager::HardwareManager() {
   status = {false, false, false, false, false, "", 0};
 
-  updateRate = UPDATE_RATE;
+  updateRate = LOG_RATE;
 }

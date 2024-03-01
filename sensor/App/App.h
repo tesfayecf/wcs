@@ -11,12 +11,12 @@
 #include "./AppConfig.h"
 
 class App {
- private:
+ public:
   AppConfig appConfig;
-  Managers managers;
-  WifiManager* wifiManager_;
-  MQTTManager* mqttManager_;
-  HWManager* hwManager_;
+  
+  WifiManager* wifiManager;
+  MQTTManager* mqttManager;
+  HWManager* hwManager;
 
  public:
   /**

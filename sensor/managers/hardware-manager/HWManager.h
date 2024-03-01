@@ -10,10 +10,12 @@
 #include "../../utils/types.h"
 #include "Arduino.h"
 
+class App;
+
 class HWManager {
   private:
+    App* app;
     AppConfig* appConfig;
-    Managers* managers;
 
     unsigned int distanceCm;
     unsigned int distanceRaw;
@@ -26,7 +28,7 @@ class HWManager {
     HWManager();
 
     // Initialize manager
-    void init(AppConfig* config_, Managers* managers_);
+    void init(App* app_, AppConfig* config_);
 
     // Setup Ultrasonic connection
     void setup();

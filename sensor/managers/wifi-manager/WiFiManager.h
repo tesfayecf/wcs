@@ -10,10 +10,12 @@
 #include "../../App/AppConfig.h"
 #include "../../utils/types.h"
 
+class App;
+
 class WifiManager {
  private:
+  App* app;
   AppConfig* appConfig;
-  Managers* managers;
 
  private:
   ESP8266WebServer server;
@@ -27,7 +29,7 @@ class WifiManager {
   WifiManager();
 
   // Initialize manager
-  void init(AppConfig* config_, Managers* managers_);
+  void init(App* app_, AppConfig* config_);
 
   // Initialize WiFi connection
   void setup();

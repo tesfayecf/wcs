@@ -11,9 +11,9 @@ WifiManager::WifiManager() : server(SERVER_PORT) {
   this->password = "";
 }
 
-void WifiManager::init(AppConfig* config_, Managers* managers_) {
+void WifiManager::init(App* app_, AppConfig* config_) {
   Serial.println("WifiManager init");
-  managers = managers_;
+  app = app_;
   appConfig = config_;
 }
 

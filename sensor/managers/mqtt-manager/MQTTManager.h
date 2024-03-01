@@ -10,10 +10,12 @@
 #include "../../utils/types.h"
 #include "Arduino.h"
 
+class App;
+
 class MQTTManager {
  private:
+  App* app;
   AppConfig* appConfig;
-  Managers* managers;
 
   WiFiClient wifiClient;
   PubSubClient mqttClient;
@@ -21,6 +23,7 @@ class MQTTManager {
   boolean connected; // TODO: use manager status from appConfig
   boolean connecting; // TODO: use manager status from appConfig
   String sensorId;
+
   String dataTopic;
   String commnadTopic;
   String registerTopic;
@@ -30,7 +33,7 @@ class MQTTManager {
   MQTTManager();
 
   /// INIT ///
-  void init(AppConfig* config_, Managers* managers_);
+  void init(App* app_, AppConfig* config_);
 
   /// SETUP ///
   void setup();

@@ -12,9 +12,9 @@ Sensor HWManager::ultraSonicSensor(TRIGGER_PIN, ECHO_PIN, TIMEOUT);
 
 HWManager::HWManager() {}
 
-void HWManager::init(AppConfig* config_, Managers* managers_) {
+void HWManager::init(App* app_, AppConfig* config_) {
   Serial.println("HWManager init");
-  managers = managers_;
+  app = app_;
   appConfig = config_;
 }
 
@@ -49,6 +49,7 @@ void HWManager::publishData() {
   const char* distanceCm = String(this->distanceCm).c_str();
 
   MQTTMessage message;
+  // message.topic = this->appConfig.appInfo.sensorId + "/" + MQTT_DATA_TOPIC;
   message.type = MESSAGE_TYPES::DATA;
   message.action = MESSAGE_ACTIONS::SENSOR_DATA;
   message.params[0] = distanceRaw;
@@ -56,7 +57,7 @@ void HWManager::publishData() {
   message.paramsCount = 2;
 
   // Publish sensor data
-  this->managers->mqttManager->publishMessage(&message);
+  this->app->mqttManager->publishMessage(&message);
 }
 
 void HWManager::readDistanceSensor() {

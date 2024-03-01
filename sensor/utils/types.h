@@ -1,16 +1,6 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-class WifiManager;
-class MQTTManager;
-class HWManager;
-
-struct Managers {
-  WifiManager* wifiManager;
-  MQTTManager* mqttManager;
-  HWManager* hwManager;
-};
-
 enum MESSAGE_TYPES {
   REGISTER = 0,
   DATA = 1,
@@ -29,9 +19,9 @@ enum MESSAGE_PARAMETERS {
   // Metadata
   MESSAGE_ID = 101,
   TIMESTAMP = 102,
-  SENSOR_ID = 103,
-  SENSOR_TIME = 104,
-  VERSION = 105,
+  SENSOR_TIME = 103,
+  VERSION = 104,
+  SENSOR_ID = 105,
 
   // Action
   ACTION_TYPE = 201,

@@ -25,6 +25,19 @@ String generateId(String boardId, String flashChipId) {
   return md5.toString();
 }
 
+// Function to generate a random string
+String generateRandomString(int length) {
+  String randomString = "";
+  String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; // Include all characters you want to include in the random string
+
+  for (int i = 0; i < length; i++) {
+    int randomIndex = random(characters.length()); // Get a random index within the length of the characters string
+    randomString += characters.charAt(randomIndex); // Append the character at the random index to the random string
+  }
+
+  return randomString;
+}
+
 /* 
   This function is used to blink the built-in LED.
   The LED turns on for 100 milliseconds, then turns off for 100 milliseconds.
@@ -77,11 +90,11 @@ const char* PARAM_TO_CHAR(MESSAGE_PARAMETERS key) {
       return "101";
     case TIMESTAMP:
       return "102";
-    case SENSOR_ID:
-      return "103";
     case SENSOR_TIME:
-      return "104";
+      return "103";
     case VERSION:
+      return "104";
+    case SENSOR_ID:
       return "105";
 
     // Action

@@ -23,10 +23,7 @@
 #include "./AppConfig.h"
 
 App::App(const AppConfig &config) :
-    wifiManager_(nullptr), mqttManager_(nullptr), hwManager_(nullptr), appConfig(config) {
-    managers.wifiManager = wifiManager_;
-    managers.mqttManager = mqttManager_;
-    managers.hwManager = hwManager_;
+    wifiManager(nullptr), mqttManager(nullptr), hwManager(nullptr), appConfig(config) {
 }
 
 void App::setup() {
@@ -38,28 +35,28 @@ void App::setup() {
     // Set Board info
     this->setAppInfo();
 
-    // Create managers
-    wifiManager_ = new WifiManager();
-    mqttManager_ = new MQTTManager();
-    hwManager_ = new HWManager();
-
-    // Initialize managers
-    wifiManager_->init(&this->appConfig, &this->managers);
-    mqttManager_->init(&this->appConfig, &this->managers);
-    hwManager_->init(&this->appConfig, &this->managers);
-
-    // Set up managers
-    wifiManager_->setup();
-    blink();
-
-    mqttManager_->setup();
-    blink();
-
-    hwManager_->setup();
-    blink();
-
     // Initialize sensor time
     setTime(this->appConfig.appInfo.startTime);
+
+    // Create managers
+    wifiManager = new WifiManager();
+    mqttManager = new MQTTManager();
+    hwManager = new HWManager();
+
+    // Initialize managers
+    wifiManager->init(this, &this->appConfig);
+    mqttManager->init(this, &this->appConfig);
+    hwManager->init(this, &this->appConfig);
+
+    // Set up managers
+    wifiManager->setup();
+    blink();
+
+    mqttManager->setup();
+    blink();
+
+    hwManager->setup();
+    blink();
 
     digitalWrite(LED_BUILTIN, LOW);
 }
@@ -72,14 +69,13 @@ void App::loop() {
         this->appConfig.appInfo.serverTime = now();
 
         // Loop managers
-        wifiManager_->loop(); // Check wifi connection
-        mqttManager_->loop(); // Check mqtt messages
-        hwManager_->loop();   // Check hardware connection
+        wifiManager->loop(); // Check wifi connection
+        mqttManager->loop(); // Check mqtt messages
+        hwManager->loop();   // Check hardware connection
     }
 }
 
-void App::stop() {
-}
+void App::stop() { }
 
 void App::restart() {
     ESP.restart();

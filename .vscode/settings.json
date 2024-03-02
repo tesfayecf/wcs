@@ -26,7 +26,8 @@
     "memory": "cpp",
     "random": "cpp",
     "future": "cpp",
-    "optional": "cpp"
+    "optional": "cpp",
+    "*.tcc": "cpp"
   },
   "svg.preview.background": "transparent"
 }

@@ -19,42 +19,26 @@ class App {
   HWManager* hwManager;
 
  public:
-  /**
-   * @brief Constructor for the App class.
-   *
-   * @param config The AppConfig object.
-   */
+  // Constructor for the App class.
   App(const AppConfig& config);
 
-  /**
-   * @brief Sets up the application.
-   */
+  // Sets up the application.
   void setup();
 
-  /**
-   * @brief Main loop for the application.
-   */
+  // Main loop for the application.
   void loop();
 
-  /**
-   * @brief Stops the application.
-   */
+  // Stops the application.
   void stop();
 
-  /**
-   * @brief Restarts the application.
-   */
+  // Restarts the application.
   void restart();
 
  private:
-  /**
-   * @brief Sets the board information in the AppConfig object.
-   */
+  // Sets the board information in the AppConfig object.
   void setBoardInfo();
 
-  /**
-   * @brief Sets the sensor information in the AppConfig object.
-   */
+  // Sets the sensor information in the AppConfig object.
   void setAppInfo();
 };
 

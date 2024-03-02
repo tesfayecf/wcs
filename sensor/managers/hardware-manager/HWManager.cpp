@@ -7,29 +7,26 @@
 #include "../../utils/types.h"
 #include "Sensor.h"
 
-// NewPing HWManager::sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
-Sensor HWManager::ultraSonicSensor(TRIGGER_PIN, ECHO_PIN, TIMEOUT);
+HWManager::HWManager() : distanceSensor(TRIGGER_PIN, ECHO_PIN, TIMEOUT) {}
 
-HWManager::HWManager() {}
-
-void HWManager::init(App* app_, AppConfig* config_) {
-  Serial.println("HWManager init");
-  app = app_;
-  appConfig = config_;
+void HWManager::init() {
+  Serial.println("HWManager initialized");
 }
 
 void HWManager::setup() {
-  Serial.println("Initializing HWManager");
-  // check sensor works
-  Serial.println("HWManager Initialized");
+  Serial.println("HWManager setup");
 }
 
 void HWManager::loop() {
   // Publish sensor data periodically
   if (millis() % LOG_RATE == 0) {
-    // Read sensor data
+    // Distance
     this->readDistanceSensor();
+
+    // Temperature
     // this->readTemperatureSensor();
+
+    // Humidity
     // this->readHumiditySensor();
 
     // Publish sensor data
@@ -37,27 +34,18 @@ void HWManager::loop() {
   }
 }
 
-void HWManager::publishData() {
-  Serial.println("Publishing sensor data");
-  Serial.print("Distance: ");
-  Serial.print("Raw: ");
-  Serial.print (this->distanceRaw);
-  Serial.print(" | Cm: ");
-  Serial.println(this->distanceCm);
-  
-  const char* distanceRaw = String(this->distanceRaw).c_str();
-  const char* distanceCm = String(this->distanceCm).c_str();
 
+void HWManager::publishData() {
+  // Create data message
   MQTTMessage message;
-  // message.topic = this->appConfig.appInfo.sensorId + "/" + MQTT_DATA_TOPIC;
   message.type = MESSAGE_TYPES::DATA;
   message.action = MESSAGE_ACTIONS::SENSOR_DATA;
-  message.params[0] = distanceRaw;
-  message.params[1] = distanceCm;
+  message.params[0] = String(this->distanceRaw).c_str();
+  message.params[1] = String(this->distanceCm).c_str();
   message.paramsCount = 2;
 
   // Publish sensor data
-  this->app->mqttManager->publishMessage(&message);
+  this->app->mqttManager->publish(&message);
 }
 
 void HWManager::readDistanceSensor() {
@@ -67,8 +55,10 @@ void HWManager::readDistanceSensor() {
 
   // Take multiple readings
   for (size_t i = 0; i < 10; i++) {
-    unsigned int distanceRaw_ = getDistance();
-    unsigned int distanceCm_ = getDistanceCm();
+    // unsigned int distanceRaw_ = getDistance();
+    unsigned int distanceRaw_ = this->distanceSensor.rawRead();
+    // unsigned int distanceCm_ = getDistanceCm();
+    unsigned int distanceCm_ = this->distanceSensor.read();
     
     // Print a dot for each reading
     Serial.print(".");
@@ -92,14 +82,4 @@ void HWManager::readDistanceSensor() {
     this->distanceRaw = 0;
     this->distanceCm = 0;
   }
-}
-
-unsigned int HWManager::getDistance() {
-  unsigned int distance = HWManager::ultraSonicSensor.rawRead();
-  return distance;
-}
-
-unsigned int HWManager::getDistanceCm() {
-  unsigned int distance = HWManager::ultraSonicSensor.read();
-  return distance;
 }

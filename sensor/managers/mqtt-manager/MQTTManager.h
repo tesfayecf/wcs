@@ -8,72 +8,68 @@
 #include "../../App/AppConfig.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
-#include "Arduino.h"
+#include "../BaseManager.h"
 
 class App;
 
-class MQTTManager {
- private:
-  App* app;
-  AppConfig* appConfig;
+class MQTTManager : public BaseManager {
+  private:
+    WiFiClient wifiClient;
+    PubSubClient mqttClient;
 
-  WiFiClient wifiClient;
-  PubSubClient mqttClient;
+    boolean connected;
+    boolean connecting;
+    String sensorId;
 
-  boolean connected; // TODO: use manager status from appConfig
-  boolean connecting; // TODO: use manager status from appConfig
-  String sensorId;
+    String dataTopic;
+    String commnadTopic;
+    String registerTopic;
+  
+  public:
+    MQTTManager();
 
-  String dataTopic;
-  String commnadTopic;
-  String registerTopic;
+    // Initialize manager
+    void init() override;
 
- public:
-  /// CONSTRUCTOR ///
-  MQTTManager();
+    // Setup MQTT connection
+    void setup() override;
 
-  /// INIT ///
-  void init(App* app_, AppConfig* config_);
+    // Loop manager to check MQTT connection status
+    void loop() override;
 
-  /// SETUP ///
-  void setup();
+    // Publish message to MQTT topic
+    void publish(const MQTTMessage* messagePtr);
+    
 
-  /// LOOP ///
-  void loop();
+    // Subscribe to MQTT topic
+    void subscribe(const String& topic);
 
-  void test();
- 
- private:
-  /// PUBLISH ///
-  void publish(const char* topic, const char* message);
+  private:
+    // Connection
+    // Connect to MQTT broker
+    void connect();
 
-  /// SUBSCRIBE ///
-  void subscribe(const String& topic);
- 
- public:
-  // Base methods
-  void publishMessage(const MQTTMessage* messagePtr);
+    // Reconnect to MQTT broker
+    void reconnect();
 
- private:
-  static MQTTManager* instance;
+    // Callbacks
+    // MQTT callback function
+    static void callbackFunction(char* topic, byte* payload, unsigned int length);
+    // void statusCallback(uint8_t* payload, unsigned int length);
+    // void configCallback(uint8_t* payload, unsigned int length);
+    // void authCallback(uint8_t* payload, unsigned int length);
 
-  // Connection
-  void connect();
-  void reconnect();
+    // Actions
+    // Subscribe to sensor command topic
+    void subscribeSensor();
 
-  // Callbacks
-  static void callbackFunction(char* topic, byte* payload, unsigned int length);
-  // void statusCallback(uint8_t* payload, unsigned int length);
-  // void configCallback(uint8_t* payload, unsigned int length);
-  // void authCallback(uint8_t* payload, unsigned int length);
+    // Register sensor with MQTT broker
+    void registerSensor();
 
-  // Actions
-  void subscribeSensor();
-  void registerSensor();
-
-  // Setters
-  void setMQTTConnectionInfo();
-  void setMQTTInfo();
+    // Setters
+    // Set MQTT topics and connection information
+    void setConnectionInfo();
+    void setTopics();
 };
 
 #endif  // MQTT_CONNECTION_MANAGER_H

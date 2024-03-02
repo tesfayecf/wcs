@@ -1,48 +1,40 @@
 #ifndef HW_CONNECTION_MANAGER_H
 #define HW_CONNECTION_MANAGER_H
 
-// #include <NewPing.h>
-#include "Sensor.h"
-// #include <Wire.h>
-
 #include "../../App/AppConfig.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
-#include "Arduino.h"
+#include "../BaseManager.h"
+#include "Sensor.h"
 
 class App;
 
-class HWManager {
+class HWManager : public BaseManager {
   private:
-    App* app;
-    AppConfig* appConfig;
-
+    // Distance
+    Sensor distanceSensor;
     unsigned int distanceCm;
     unsigned int distanceRaw;
 
   public:
-    // static Ultrasonic sonar;
-    static Sensor ultraSonicSensor;
-    
     // Constructor
     HWManager();
 
     // Initialize manager
-    void init(App* app_, AppConfig* config_);
+    void init() override;
 
     // Setup Ultrasonic connection
-    void setup();
+    void setup() override;
 
     // Read and send data
-    void loop();
+    void loop() override;
 
+  private:
     // Publish to mqtt server
     void publishData();
 
     // Get distance from Ultrasonic sensor
     void readDistanceSensor();
-    unsigned int getDistance();
-    unsigned int getDistanceCm();
 };
 
 #endif  // HW_CONNECTION_MANAGER_H

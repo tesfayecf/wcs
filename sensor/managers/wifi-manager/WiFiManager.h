@@ -1,7 +1,6 @@
 #ifndef WIFI_CONNECTION_MANAGER_H
 #define WIFI_CONNECTION_MANAGER_H
 
-#include "Arduino.h"
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h>
@@ -9,54 +8,58 @@
 
 #include "../../App/AppConfig.h"
 #include "../../utils/types.h"
+#include "../BaseManager.h"
 
 class App;
 
-class WifiManager {
- private:
-  App* app;
-  AppConfig* appConfig;
+class WifiManager : public BaseManager {
+private:
+    ESP8266WebServer server;
+    String ssid;
+    String password;
+    boolean connected;
+    boolean connecting;
 
- private:
-  ESP8266WebServer server;
-  String ssid;
-  String password;
-  boolean connected; // TODO: use manager status from appConfig
-  boolean connecting; // TODO: use manager status from appConfig
+public:
+    // Constructor
+    WifiManager();
 
- public:
-  // Constructor
-  WifiManager();
+    // Initialize manager
+    void init() override;
 
-  // Initialize manager
-  void init(App* app_, AppConfig* config_);
+    // Setup WiFi connection
+    void setup() override;
 
-  // Initialize WiFi connection
-  void setup();
+    // Loop manager to check WiFi connection status
+    void loop() override;
 
-  // Loop manager to check WiFi connection status
-  void loop();
+private:
+    // Establish WiFi connection
+    boolean connect();
 
-  // Check if WiFi is connected
-  bool isConnected();
+    // Start WiFi connection
+    boolean startConnection();
 
-  // Get the WiFi connection status
-  wl_status_t getStatus();
+    // Set WiFi connection parameters
+    void setConnectionInfo();
 
- private:
-  boolean autoConnect();
-  boolean connect();
+    // Start configuration portal
+    boolean startConfigPortal();
 
-  boolean startConfigPortal();
-  void renderMainPage();
-  void receiveCredentials();
+    // Render main configuration page
+    void renderMainPage();
 
-  boolean getWifiCredentials();
-  boolean storeWifiCredentials(const String &ssid, const String &password);
-  
-  // Utils
-  String toStringIp(IPAddress ip);
-  void setWifiConnectionInfo();
+    // Read WiFi credentials from EEPROM
+    boolean readCredentials();
+
+    // Receive WiFi credentials from configuration page
+    boolean getCredentials();
+
+    // Store WiFi credentials in EEPROM
+    boolean storeCredentials(const String &ssid, const String &password);
+
+    // Convert IP address to string
+    String ipToString(IPAddress ip);
 };
 
 #endif  // WIFI_CONNECTION_MANAGER_H

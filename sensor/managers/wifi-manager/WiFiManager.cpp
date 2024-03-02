@@ -6,65 +6,65 @@
 #include "WebPage.h"
 
 WifiManager::WifiManager() : server(SERVER_PORT) {
-  Serial.println("WifiManager constructor");
   this->ssid = "";
   this->password = "";
 }
 
-void WifiManager::init(App* app_, AppConfig* config_) {
-  Serial.println("WifiManager init");
-  app = app_;
-  appConfig = config_;
+void WifiManager::init() {
+  Serial.println("WifiManager initialized");
 }
 
 void WifiManager::setup() {
-  Serial.println("Initializing WifiManager");
-
+  // Start EEPROM memory
   EEPROM.begin(EEPROM_SIZE);
 
   // Connect to WiFi
-  if (!this->autoConnect()) {
-    Serial.println("WifiManager initialization failed");
+  if (!this->connect()) {
+    Serial.println("WiFi connection failed");
     return;
   }
 
-  Serial.println("WifiManager Initialized");
+  Serial.println("WifiManager setup");
 }
 
 void WifiManager::loop() {
   // Check if WiFi is connected and continue loop
-  if (!WiFi.status() == WL_CONNECTED) {
+  if (WiFi.status() != WL_CONNECTED) {
     this->connected = false;
     Serial.println("WiFi connection lost");
-    this->autoConnect();
+    this->connect();
     return;
   }
 }
 
-bool WifiManager::autoConnect() {
-  Serial.println("AutoConnect started");
+
+boolean WifiManager::connect() {
   this->connecting = true;
-  if (this->getWifiCredentials()) {
-    if (this->connect()) {
+  this->connected = false;
+  if (this->readCredentials()) {
+    if (this->startConnection()) {
+      this->connected = true;
+      this->connecting = false;
+      this->setConnectionInfo();
       return true;
     }
   }
   return this->startConfigPortal();
 }
 
-bool WifiManager::connect() {
-  Serial.print("Connecting to Wifi: ");
+boolean WifiManager::startConnection() {
+  Serial.print("Wifi connection: ");
 
   IPAddress IP(192, 168, 1, 101);
   IPAddress GATEWAY(192, 168, 1, 1);
   IPAddress SUBNET(255, 255, 0, 0);
   if (!WiFi.config(IP, GATEWAY, SUBNET)) {
-    Serial.println("WiFi.config failed");
+    Serial.println("ERROR -> Config");
     return false;
   }
 
   if (!WiFi.begin(this->ssid, this->password)) {
-    Serial.println("WiFi.begin failed");
+    Serial.println("ERROR -> Begin");
     return false;
   }
 
@@ -74,20 +74,28 @@ bool WifiManager::connect() {
     r++;
     Serial.print(".");
     if (r == 150) {
-      Serial.println("WiFi.begin timed out");
+      Serial.println("ERROR -> Timeout");
       return false;
     };
   }
 
-  Serial.println("Connected to wifi!");
-  this->connected = true;
-  this->connecting = false;
-  this->setWifiConnectionInfo();
+  Serial.println("SUCCES");
   return true;
 }
 
-bool WifiManager::startConfigPortal() {
-  Serial.println("Starting config portal");
+void WifiManager::setConnectionInfo() {
+  this->appConfig->wifiManager.ssid = WiFi.SSID();
+  this->appConfig->wifiManager.ip = WiFi.localIP();
+  this->appConfig->wifiManager.hostname = WiFi.hostname();
+  this->appConfig->wifiManager.gateway = WiFi.gatewayIP();
+  this->appConfig->wifiManager.subnet = WiFi.subnetMask();
+  this->appConfig->wifiManager.mac = WiFi.macAddress();
+  this->appConfig->wifiManager.rssi = WiFi.RSSI();
+  this->appConfig->wifiManager.channel = WiFi.channel();
+}
+
+boolean WifiManager::startConfigPortal() {
+  Serial.println("Start config portal");
 
   WiFi.mode(WIFI_OFF);
   delay(100);
@@ -101,37 +109,35 @@ bool WifiManager::startConfigPortal() {
   }
 
   String portalSSID = "WCS-sensor-" + String(ESP.getChipId()); // Get from appConfig
-  Serial.print("Portal SSID: ");
+  Serial.print("Portal SSID: "); 
   Serial.println(portalSSID);
 
   DNSServer dnsServer;
   dnsServer.start(53, "*", APIP);  // DNS spoofing (Only for HTTP)
 
   WiFi.softAP(portalSSID);
-  bool res = WiFi.setHostname("WCS_config");
+  boolean res = WiFi.setHostname("WCS_config");
 
   server.on("/", HTTP_GET, [this]() { this->renderMainPage(); });
   server.on("/setCredentials", HTTP_POST,
-            [this]() { this->receiveCredentials(); });
+            [this]() { this->getCredentials(); });
   server.onNotFound([this]() { this->renderMainPage(); });
 
   server.begin();
-  Serial.println("Portal started");
-  this->connected = false;
 
-  while (this->connected == false) {
+  while (WiFi.status() != WL_CONNECTED) {
     dnsServer.processNextRequest();
     server.handleClient();
     delay(10);
   }
 
-  Serial.println("Portal closed");
+  Serial.println("Close config portal");
   return this->connected;
 }
 
 void WifiManager::renderMainPage() {
-  String serverLoc = toStringIp(server.client().localIP());
-  bool doRedirect = serverLoc != server.hostHeader();
+  String serverLoc = ipToString(server.client().localIP());
+  boolean doRedirect = serverLoc != server.hostHeader();
   if (doRedirect) {
     server.sendHeader(F("Location"), (String)F("http://") + serverLoc, true);
     server.send(302, "text/plain", "");
@@ -145,21 +151,7 @@ void WifiManager::renderMainPage() {
   server.send(200, "text/html", mainPage);
 }
 
-void WifiManager::receiveCredentials() {
-  // Wifi credentials received
-  String ssid = server.arg("ssid");
-  String password = server.arg("password");
-  if (this->storeWifiCredentials(ssid, password)) {
-    if (this->connect()) {
-      server.send(200, "text/html", "OK");
-      return;
-    }
-  }
-  server.send(200, "text/html", "FAIL");
-  return;
-}
-
-bool WifiManager::getWifiCredentials() {
+boolean WifiManager::readCredentials() {
   delay(10);
 
   String ssid_ = "";
@@ -188,7 +180,20 @@ bool WifiManager::getWifiCredentials() {
   return true;
 }
 
-bool WifiManager::storeWifiCredentials(const String& ssid, const String& password) {
+boolean WifiManager::getCredentials() {
+  String ssid = server.arg("ssid");
+  String password = server.arg("password");
+  if (this->storeCredentials(ssid, password)) {
+    if (this->connect()) {
+      server.send(200, "text/html", "OK");
+      return true;
+    }
+  }
+  server.send(200, "text/html", "FAIL");
+  return false;
+}
+
+boolean WifiManager::storeCredentials(const String& ssid, const String& password) {
   // Check if SSID and password lengths exceed the allocated space
   if (ssid.length() > (PASSWORD_START_ADDR - SSID_START_ADDR - 1) ||
       password.length() > (EEPROM_SIZE - PASSWORD_START_ADDR - 1)) {
@@ -249,7 +254,7 @@ bool WifiManager::storeWifiCredentials(const String& ssid, const String& passwor
   return true;
 }
 
-String WifiManager::toStringIp(IPAddress ip) {
+String WifiManager::ipToString(IPAddress ip) {
   String res = "";
   for (int i = 0; i < 3; i++) {
     res += String((ip >> (8 * i)) & 0xFF) + ".";
@@ -257,18 +262,3 @@ String WifiManager::toStringIp(IPAddress ip) {
   res += String(((ip >> 8 * 3)) & 0xFF);
   return res;
 }
-
-void WifiManager::setWifiConnectionInfo() {
-  this->appConfig->wifiManager.ssid = WiFi.SSID();
-  this->appConfig->wifiManager.ip = WiFi.localIP();
-  this->appConfig->wifiManager.hostname = WiFi.hostname();
-  this->appConfig->wifiManager.gateway = WiFi.gatewayIP();
-  this->appConfig->wifiManager.subnet = WiFi.subnetMask();
-  this->appConfig->wifiManager.mac = WiFi.macAddress();
-  this->appConfig->wifiManager.rssi = WiFi.RSSI();
-  this->appConfig->wifiManager.channel = WiFi.channel();
-}
-
-bool WifiManager::isConnected() { return WiFi.status() == WL_CONNECTED; }
-
-wl_status_t WifiManager::getStatus() { return WiFi.status(); }

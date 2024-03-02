@@ -2,6 +2,9 @@
 
 #include <TimeLib.h>
 
+#include "../managers/BaseManager.cpp" // BUG ALERT
+#include "../managers/BaseManager.h"
+
 #include "../../managers/hardware-manager/HWManager.cpp"  // BUG ALERT
 #include "../../managers/hardware-manager/HWManager.h"
 
@@ -41,14 +44,14 @@ void App::setup() {
     hwManager = new HWManager();
 
     // Initialize managers
-    wifiManager->init(this, &this->appConfig);
-    mqttManager->init(this, &this->appConfig);
-    hwManager->init(this, &this->appConfig);
+    wifiManager->init_(this, &this->appConfig);
+    mqttManager->init_(this, &this->appConfig);
+    hwManager->init_(this, &this->appConfig);
 
     // Set up managers
-    wifiManager->setup();
-    mqttManager->setup();
-    hwManager->setup();
+    wifiManager->setup_();
+    mqttManager->setup_();
+    hwManager->setup_();
 
     blink();
     digitalWrite(LED_BUILTIN, LOW);
@@ -61,9 +64,9 @@ void App::loop() {
         this->appConfig.appInfo.serverTime = now();
 
         // Loop managers
-        wifiManager->loop(); // Check wifi connection
-        mqttManager->loop(); // Check mqtt messages
-        hwManager->loop();   // Check hardware connection
+        wifiManager->loop_(); // Check wifi connection
+        mqttManager->loop_(); // Check mqtt messages
+        hwManager->loop_();   // Check hardware connection
     }
 }
 

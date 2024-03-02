@@ -35,4 +35,13 @@ struct MQTTMessage {
   size_t paramsCount;
 };
 
+enum LogLevel {
+  VERBOSE = 0,
+  NOTICE,
+  WARNING,
+  ERROR,
+  FATAL,
+  SILENT
+};
+
 #endif  // TYPES_H

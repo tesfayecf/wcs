@@ -5,6 +5,9 @@
 #include "../managers/BaseManager.cpp" // BUG ALERT
 #include "../managers/BaseManager.h"
 
+#include "./Logger.cpp" // BUG ALERT
+#include "./Logger.h"
+
 #include "../../managers/hardware-manager/HWManager.cpp"  // BUG ALERT
 #include "../../managers/hardware-manager/HWManager.h"
 
@@ -52,6 +55,9 @@ void App::setup() {
     wifiManager->setup_();
     mqttManager->setup_();
     hwManager->setup_();
+
+    Logger::setLogLevel(VERBOSE);
+    Logger::verbose("Set up finished");
 
     blink();
     digitalWrite(LED_BUILTIN, LOW);

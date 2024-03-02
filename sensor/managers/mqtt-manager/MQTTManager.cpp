@@ -142,7 +142,7 @@ void MQTTManager::connect() {
             return;
         } else {
             delay(100);
-            print(".")
+            Serial.print(".");
             r++;
             if (r == 150) {
                 Serial.println("ERROR -> Timeout");

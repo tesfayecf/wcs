@@ -107,6 +107,10 @@ DATABASES = {
         "PASSWORD": environ.get('TIMESERIES_DB_PASSWORD'),
         "HOST": environ.get('TIMESERIES_DB_HOST'),
         "PORT": environ.get('TIMESERIES_DB_PORT'),
+    },
+    'test': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'test_database',
     }
 }
 ################################################
@@ -162,13 +166,7 @@ DJOSER ={
     'TOKEN_MODEL': None,
 }
 
-# Name access token
-AUTH_COOKIE = 'access'
-################################################
-
-
-################ AUTHENTICATION COOKIE ################
-AUTH_COOKIE = "acces"
+AUTH_COOKIE = "access"
 AUTH_COOKIE_MAX_AGE = 60*60*24
 AUTH_COOKIE_ACCES_MAX_AGE = 60*5 
 AUTH_COOKIE_REFRESH_MAX_AGE = 60*60*24

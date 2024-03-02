@@ -220,8 +220,6 @@ class CustomTokenSignupView(TokenObtainPairView):
             password=password,
         )
 
-        # Additional steps (e.g., sending a confirmation email) can be added here
-
         return Response({'detail': 'User registered successfully.'}, status=status.HTTP_200_OK)
 
 

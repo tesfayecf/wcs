@@ -66,7 +66,7 @@ class CreateGroupView(APIView):
 class EditGroupView(APIView):
     def post(self, request):
         try:
-            # Deserialize request data using Pydantic schema
+            # Deserialize request data
             edit_group_data = EditGroupSchema(**request.data)
             
             # Check the group exists
@@ -85,7 +85,7 @@ class EditGroupView(APIView):
             group.description = edit_group_data.description
             group.save()
             
-            # Get created group
+            # Get edited group
             group_schema = GroupSchema(**to_dict(group))
             
             # Convert to JSON
@@ -99,7 +99,7 @@ class EditGroupView(APIView):
 class DeleteGroupView(APIView):
     def post(self, request):
         try:
-            # Deserialize request data using Pydantic schema
+            # Deserialize request data
             delete_group_data = DeleteGroupSchema(**request.data)
 
             # Check the group exists
@@ -143,7 +143,7 @@ class GetGroupStatsView(APIView):
 class GetTanksView(APIView):
     def post(self, request):
         try:
-            # Deserialize request data using Pydantic schema
+            # Deserialize request data
             get_group_data = GetTanksSchema(**request.data)
 
             # Check the group exists
@@ -168,7 +168,7 @@ class GetTanksView(APIView):
 class CreateTankView(APIView):
     def post(self, request):
             try:
-                # Deserialize request data using Pydantic schema
+                # Deserialize request data
                 create_tank_data = CreateTankSchema(**request.data)
                 
                 # Check the group exists
@@ -205,7 +205,7 @@ class CreateTankView(APIView):
 class EditTankView(APIView):
     def post(self, request):
         try:
-            # Deserialize request data using Pydantic schema
+            # Deserialize request data
             edit_tank_data = EditTankSchema(**request.data)
             
             # Check the group exists
@@ -229,7 +229,7 @@ class EditTankView(APIView):
             tank.capacity = edit_tank_data.capacity
             tank.save()
             
-            # Get created tank
+            # Get edited tank
             tank_schema = TankSchema(**to_dict(tank))
             
             # Convert to JSON
@@ -243,7 +243,7 @@ class EditTankView(APIView):
 class DeleteTankView(APIView):
     def post(self, request):
         try:
-            # Deserialize request data using Pydantic schema
+            # Deserialize request data
             delete_tank_data = DeleteTankSchema(**request.data)
             # Validate the deserialized data
             delete_tank_data.model_validate()
@@ -279,7 +279,7 @@ class DeleteTankView(APIView):
 class GetSensorView(APIView):
     def post(self, request):
         try:
-            # Deserialize request data using Pydantic schema
+            # Deserialize request data
             get_sensor_data = GetSensorSchema(**request.data)
 
             # Check the group exists
@@ -295,10 +295,8 @@ class GetSensorView(APIView):
                 tank__group__id=get_sensor_data.group_id
             )
             
-            # Get created sensor
             sensor_schema = SensorSchema(**to_dict(sensor))
             
-            # Convert to JSON
             sensor_json = sensor_schema.model_dump()
             
             return Response(sensor_json, status=status.HTTP_200_OK)
@@ -309,7 +307,7 @@ class GetSensorView(APIView):
 class CreateSensorView(APIView):
     def post(self, request):
         try:
-            # Deserialize request data using Pydantic schema
+            # Deserialize request data
             create_sensor_data = CreateSensorSchema(**request.data)
             
             # Check the group exists
@@ -353,7 +351,7 @@ class CreateSensorView(APIView):
 class EditSensorView(APIView):
     def post(self, request):
         try:
-            # Deserialize request data using Pydantic schema
+            # Deserialize request data
             edit_sensor_data = EditSensorSchema(**request.data)
             
             # Check the group exists
@@ -380,7 +378,7 @@ class EditSensorView(APIView):
             sensor.is_active = edit_sensor_data.is_active
             sensor.save()
             
-            # Get created sensor
+            # Get edited sensor
             sensor_schema = SensorSchema(**to_dict(sensor))
             
             # Convert to JSON
@@ -396,7 +394,7 @@ class EditSensorView(APIView):
 class DeleteSensorView(APIView):
     def post(self, request):
         try:
-            # Deserialize request data using Pydantic schema
+            # Deserialize request data
             delete_sensor_data = DeleteSensorSchema(**request.data)
             
             # Check the group exists

@@ -8,7 +8,6 @@ class Sensor {
   public:
     Sensor(uint8_t trigPin, uint8_t echoPin, unsigned long timeOut = 20000UL);
     unsigned int read();
-    unsigned int rawRead();
     void setTimeout(unsigned long timeOut) {timeout = timeOut;}
     void setUnits(Units units) {this->units = units;}
 

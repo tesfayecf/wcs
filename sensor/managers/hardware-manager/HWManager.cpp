@@ -40,34 +40,31 @@ void HWManager::publishData() {
   MQTTMessage message;
   message.type = MESSAGE_TYPES::DATA;
   message.action = MESSAGE_ACTIONS::SENSOR_DATA;
-  message.params[0] = String(this->distanceRaw).c_str();
-  message.params[1] = String(this->distanceCm).c_str();
-  message.paramsCount = 2;
+  // message.params[0] = String(this->distance).c_str();
+  String distance = "0";
+  message.params[0] = distance.c_str();
+  message.paramsCount = 1;
 
   // Publish sensor data
   this->app->mqttManager->publish(&message);
 }
 
 void HWManager::readDistanceSensor() {
-  unsigned int sumDistanceRaw = 0;
-  unsigned int sumDistanceCm = 0;
+  unsigned int sumDistance = 0;
   int validReadings = 0;
 
   // Take multiple readings
   for (size_t i = 0; i < 10; i++) {
-    // unsigned int distanceRaw_ = getDistance();
-    unsigned int distanceRaw_ = this->distanceSensor.rawRead();
-    // unsigned int distanceCm_ = getDistanceCm();
-    unsigned int distanceCm_ = this->distanceSensor.read();
+    // unsigned int distance_ = getDistance();
+    unsigned int distance_ = this->distanceSensor.read();
     
     // Print a dot for each reading
     Serial.print(".");
     delay(10);
     
     // Check if readings are faulty
-    if (distanceRaw_ < 200 && distanceCm_ > 0) {
-      sumDistanceRaw += distanceRaw_;
-      sumDistanceCm += distanceCm_;
+    if (distance_ < 200) {
+      sumDistance += distance_;
       validReadings++;
     }
   }
@@ -75,11 +72,9 @@ void HWManager::readDistanceSensor() {
 
   // Compute the average if there are valid readings
   if (validReadings > 0) {
-    this->distanceRaw = sumDistanceRaw / validReadings;
-    this->distanceCm = sumDistanceCm / validReadings;
+    this->distance = sumDistance / validReadings;
   } else {
     // If no valid readings, set distances to 0
-    this->distanceRaw = 0;
-    this->distanceCm = 0;
+    this->distance = 0;
   }
 }

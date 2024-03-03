@@ -13,8 +13,7 @@ class HWManager : public BaseManager {
   private:
     // Distance
     Sensor distanceSensor;
-    unsigned int distanceCm;
-    unsigned int distanceRaw;
+    unsigned int distance;
 
   public:
     // Constructor

@@ -34,9 +34,5 @@ unsigned int Sensor::timing() {
 }
 
 unsigned int Sensor::read() {
-  return timing() / units / 2;  //distance by divisor
-}
-
-unsigned int Sensor::rawRead() {
   return timing() / 2;
 }

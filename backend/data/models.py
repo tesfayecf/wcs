@@ -55,9 +55,9 @@ class Tank(TimeStampedModel):
 ##############
 
 class Sensor(TimeStampedModel):
-    token = models.CharField(max_length=100, unique=True)
+    sensor_id = models.CharField(max_length=100, unique=True)
     is_active = models.BooleanField(default=True)
     tank = models.ForeignKey("data.Tank", on_delete=models.CASCADE, related_name='sensor')
 
     def __str__(self):
-        return f"{self.token}"
+        return f"{self.sensor_id}"

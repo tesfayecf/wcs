@@ -89,7 +89,7 @@ ASGI_APPLICATION = "backend.routing.application"
 
 
 ################ DATABASE ################
-DATABASE_ROUTERS = ['backend.routers.TimeSeriesRouter']
+# DATABASE_ROUTERS = ['backend.routers.TimeSeriesRouter']
 
 DATABASES = {
     "default": {

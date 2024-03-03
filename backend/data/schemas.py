@@ -121,7 +121,7 @@ class GetSensorSchema(BaseModel):
 
 ### CREATE ###
 class CreateSensorSchema(BaseModel):
-    token: str
+    sensor_id: str
     tank_id: int
     group_id: int
 
@@ -131,7 +131,7 @@ class CreateSensorSchema(BaseModel):
 ### EDIT ###
 class EditSensorSchema(BaseModel):
     id: int
-    token: str
+    sensor_id: str
     is_active: bool
     tank_id: int
     group_id: int
@@ -141,7 +141,7 @@ class EditSensorSchema(BaseModel):
 
 ### DELETE ###
 class DeleteSensorSchema(BaseModel):
-    id: int
+    sensor_id: int
     tank_id: int
     group_id: int
 

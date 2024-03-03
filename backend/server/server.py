@@ -3,7 +3,9 @@ import paho.mqtt.client as mqtt
 from paho.mqtt.client import MQTTMessage
 from .types import Topics, Actions, Types, Parameters
 from data.models import Sensor
+from sensors.models import SensorReading
 from .schemas import MQTTMessageSchema
+
 
 # Listen to signal to start serever
 def start_mqtt_server(sender, **kwargs):
@@ -67,36 +69,37 @@ class MqttServer:
         try:
             id = message.topic.split("/")[0]
             topic = message.topic.split("/")[-1]
-            
+            # Process payload            
             payload = self.parse_payload(message.payload)
+            print(payload)
 
             # Register sensor
             if (topic == Topics.REGISTER):
                 self.register(id, payload)
             if (topic == Topics.DATA):
-                self.log(id, payload)
+                self.data(id, payload)
         except Exception as e:
             print(f"MQTT on_message error: {e}")
 
     def parse_payload(self, payload):
-        payload_json = json.loads(payload)
         payload_parsed = {}
-        
+        payload_json = json.loads(payload)
+        # Read actoin
         action = payload_json['action']
         payload_parsed['action'] = {}
         payload_parsed['action']['type'] = action[str(Parameters.ACTION_TYPE.value[0])]
         payload_parsed['action']['name'] = action[str(Parameters.ACTION_NAME.value[0])]
-        # Read params
+        # Read action params
         for i in range(len(action) - 2):
             payload_parsed['action'][str('parameter') + str(i)] = action[str('p') + str(i)]
-        
-        metadata = payload_json['meta']
+        # Read meta
+        meta = payload_json['meta']
         payload_parsed['metadata'] = {}
-        payload_parsed['metadata']['timestamp'] = metadata[str(Parameters.TIMESTAMP.value[0])]
-        payload_parsed['metadata']['version'] = metadata[str(Parameters.VERSION.value[0])]
-        payload_parsed['metadata']['sensor_id'] = metadata[str(Parameters.SENSOR_TIME.value[0])]
-        payload_parsed['metadata']['message_id'] = metadata[str(Parameters.MESSAGE_ID.value[0])]
-        payload_parsed['metadata']['sensor_time'] = metadata[str(Parameters.SENSOR_TIME.value[0])]
+        payload_parsed['metadata']['timestamp'] = meta[str(Parameters.TIMESTAMP.value[0])]
+        payload_parsed['metadata']['version'] = meta[str(Parameters.VERSION.value[0])]
+        payload_parsed['metadata']['sensor_time'] = meta[str(Parameters.SENSOR_TIME.value[0])]
+        payload_parsed['metadata']['message_id'] = meta[str(Parameters.MESSAGE_ID.value[0])]
+        payload_parsed['metadata']['sensor_id'] = meta[str(Parameters.SENSOR_ID.value[0])]
         
         return payload_parsed
 
@@ -104,15 +107,30 @@ class MqttServer:
         print("Registering sensor")
         pass      
     
-    def log(self, id, payload):
-        # Get sensor id from database based on id
+    def data(self, id, payload):
+        # Get sensor from database based on id
         sensor = Sensor.objects.get(token=id)
-        try:           
-            print(payload)
-        except Exception as e:
-            print(f"Invalid payload: {e}")
-            return  
-    
+        
+        # Check sensor is found
+        if not sensor:
+            print("Sensor not found")
+            return
+        
+        # # Check sensor is active
+        if not sensor.is_active:
+            print("Sensor is not active")
+            return
+        
+        if payload['action']['type'] == str(Actions.SENSOR_DATA.value[0]):
+            self.log_data(sensor, payload)
+
+    def log_data(self, sensor, payload):
+        # Store log in database
+        SensorReading.objects.create(
+            level=payload['action']['parameter0'],
+            sensor_id=sensor.id
+        )
+       
     def subscribe(self, topic):
         if not self.server_client.is_connected():
             print("Error: MQTT Client not connected.")

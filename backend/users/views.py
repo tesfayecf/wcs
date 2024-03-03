@@ -9,7 +9,6 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView
 )
 from users.models import UserAccount
-from django.contrib.auth.hashers import make_password
 
 
 class CustomProviderAuthView(ProviderAuthView):

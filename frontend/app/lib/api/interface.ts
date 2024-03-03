@@ -125,22 +125,22 @@ export const apiInterface = {
             argsKeys: ["tank_id", "group_id"],
         },
         createSensor: {
-            args: (token: string, tank_id: number, group_id: number) => { return },
+            args: (sensor_id: string, tank_id: number, group_id: number) => { return },
             address: "api/data/create-sensor/",
             method: "POST",
-            argsKeys: ["token", "tank_id", "group_id",],
+            argsKeys: ["sensor_id", "tank_id", "group_id",],
         },
         editSensor: {
-            args: (id: number, token: string, is_active: boolean, tank_id: number, group_id: number,) => { return },
+            args: (id: number, sensor_id: string, is_active: boolean, tank_id: number, group_id: number,) => { return },
             address: "api/data/edit-sensor/",
             method: "POST",
-            argsKeys: ["id", "token", "is_active", "tank_id", "group_id"],
+            argsKeys: ["id", "sensor_id", "is_active", "tank_id", "group_id"],
         },
         deleteSensor: {
-            args: (id: number, tank_id: number, group_id: number) => { return },
+            args: (sensor_id: number, tank_id: number, group_id: number) => { return },
             address: "api/data/delete-sensor/",
             method: "POST",
-            argsKeys: ["id", "tank_id", "group_id"],
+            argsKeys: ["sensor_id", "tank_id", "group_id"],
         }
     },
     dashboard: {}

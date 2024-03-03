@@ -1,7 +1,7 @@
 'use server'
 
 import { serverRequest } from "@/app/lib/api/server";
-import { ITank, ITankCreationForm } from "./types";
+import { ISensorCreationForm, ITank, ITankCreationForm } from "./types";
 import { revalidateTag } from "next/cache";
 
 // Group
@@ -66,41 +66,35 @@ export const getSensor = async (tankId: number, groupId: number) => {
     }
 }
 
-export const createSensor = async (token: string, tankId: number, groupId: number) => {
+export const createSensor = async (fields: ISensorCreationForm, tankId: number, groupId: number) => {
     try {
-        // const tankId = store.getState().tank.tankId;
-        const response = await serverRequest("sensor", "createSensor", [token, tankId, groupId]);
+        // Get fields
+        const sensorId = fields.sensorId;
+
+        const response = await serverRequest("sensor", "createSensor", [sensorId, tankId, groupId]);
         return response;
     } catch (error) {
         // Log error
     }
 }
 
-export const editSensor = async () => {
+export const editSensor = async (id, tankId, groupId, fields: ISensorCreationForm) => {
     try {
-        // const sensorId = -1;
-        // const token = "";
-        // const is_active = true;
-        // const tankId = -1;
-        // const groupId = store.getState().group.groupId;
-        // const response = await serverRequest("sensor", "editSensor", [sensorId, token, is_active, tankId, groupId]);
-        // if (response.isSuccess) {
-        //     this.getSensors();
-        // }
+        // Get fields
+        const sensorId = fields.sensorId;
+        const isActive = true;
+
+        const response = await serverRequest("sensor", "editSensor", [id, sensorId, isActive, tankId, groupId]);
+        return response;
     } catch (error) {
         // Log error
     }
 }
 
-export const deleteSensor = async () => {
+export const deleteSensor = async (sensorId: number, tankId: number, groupId: number) => {
     try {
-        // const sensorId = -1;
-        // const tankId = -1;
-        // const groupId = store.getState().group.groupId;
-        // const response = await serverRequest("sensor", "deleteSensor", [sensorId, tankId, groupId]);
-        // if (response.isSuccess) {
-        //     this.getSensors();
-        // }
+        const response = await serverRequest("sensor", "deleteSensor", [sensorId, tankId, groupId]);
+        return response
     } catch (error) {
         // Log error
     }

@@ -22,9 +22,7 @@ class TimescaleModel(models.Model):
 # ### READING ###
 # ###############
 class SensorReading(TimescaleModel):
-    level = models.FloatField(null=True, blank=True)
-    temperature = models.FloatField(null=True, blank=True)
-    humidity = models.FloatField(null=True, blank=True)
+    distance = models.FloatField(null=True, blank=True)
     sensor_id = models.IntegerField(default=-1)
     
     def __str__(self):

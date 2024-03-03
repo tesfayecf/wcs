@@ -331,7 +331,7 @@ class CreateSensorView(APIView):
             
             # Create a new Sensor object
             sensor = Sensor(
-                token=create_sensor_data.token,
+                sensor_id=create_sensor_data.sensor_id,
                 is_active=True,
                 tank=tank
             )
@@ -374,7 +374,7 @@ class EditSensorView(APIView):
             )
             
             # Update sensor fields
-            sensor.token = edit_sensor_data.token
+            sensor.sensor_id = edit_sensor_data.sensor_id
             sensor.is_active = edit_sensor_data.is_active
             sensor.save()
             
@@ -411,7 +411,7 @@ class DeleteSensorView(APIView):
                         
             # Get the sensor to delete
             sensor = Sensor.objects.get(
-                pk=delete_sensor_data.id,
+                pk=delete_sensor_data.sensor_id,
                 tank__id=delete_sensor_data.tank_id,
                 tank__group__user=request.user
             )

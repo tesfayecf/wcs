@@ -60,24 +60,30 @@ class MqttServer:
         # Subscribe to register topic
         self.subscribe(Topics.REGISTER)
         
-        # Subscribe to sensors data topic
+        # Subscribe to sensors topics
         sensors = Sensor.objects.all()
         for sensor in sensors:
-            self.subscribe(sensor.token + "/" + Topics.DATA)
+            self.subscribe(sensor.sensor_id + "/" + Topics.DATA)
+            self.subscribe(sensor.sensor_id + "/" + Topics.COMMAND)
     
     def on_message(self, client, userdata, message: MQTTMessage):
         try:
-            id = message.topic.split("/")[0]
+            # Get info from topic
+            sensor_id = message.topic.split("/")[0]
             topic = message.topic.split("/")[-1]
-            # Process payload            
+            # Parse payload            
             payload = self.parse_payload(message.payload)
-            print(payload)
-
-            # Register sensor
+            # Process payload
             if (topic == Topics.REGISTER):
-                self.register(id, payload)
+                # Register sensor
+                self.register(sensor_id, payload)
             if (topic == Topics.DATA):
-                self.data(id, payload)
+                # Log sensor data
+                self.data(sensor_id, payload)
+            if (topic == Topics.COMMAND):
+                # Process command
+                # self.command(id, payload)
+                pass
         except Exception as e:
             print(f"MQTT on_message error: {e}")
 
@@ -103,32 +109,33 @@ class MqttServer:
         
         return payload_parsed
 
-    def register(self, id, payload):
+    def register(self, sensor_id, payload):
         print("Registering sensor")
         pass      
     
-    def data(self, id, payload):
+    def data(self, sensor_id, payload):
         # Get sensor from database based on id
-        sensor = Sensor.objects.get(token=id)
+        sensor = Sensor.objects.get(sensor_id=sensor_id)
         
         # Check sensor is found
         if not sensor:
             print("Sensor not found")
             return
         
-        # # Check sensor is active
+        # Check sensor is active
         if not sensor.is_active:
             print("Sensor is not active")
             return
         
+        # Process data
         if payload['action']['type'] == str(Actions.SENSOR_DATA.value[0]):
             self.log_data(sensor, payload)
 
     def log_data(self, sensor, payload):
         # Store log in database
         SensorReading.objects.create(
-            level=payload['action']['parameter0'],
-            sensor_id=sensor.id
+            distance=payload['action']['parameter0'],
+            sensor_id=sensor.sensor_id
         )
        
     def subscribe(self, topic):

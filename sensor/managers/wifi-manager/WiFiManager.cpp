@@ -55,13 +55,13 @@ boolean WifiManager::connect() {
 boolean WifiManager::startConnection() {
   Serial.print("Wifi connection: ");
 
-  IPAddress IP(192, 168, 1, 101);
-  IPAddress GATEWAY(192, 168, 1, 1);
-  IPAddress SUBNET(255, 255, 0, 0);
-  if (!WiFi.config(IP, GATEWAY, SUBNET)) {
-    Serial.println("ERROR -> Config");
-    return false;
-  }
+  // IPAddress IP(192, 168, 1, 101);
+  // IPAddress GATEWAY(192, 168, 1, 1);
+  // IPAddress SUBNET(255, 255, 0, 0);
+  // if (!WiFi.config(IP, GATEWAY, SUBNET)) {
+  //   Serial.println("ERROR -> Config");
+  //   return false;
+  // }
 
   if (!WiFi.begin(this->ssid, this->password)) {
     Serial.println("ERROR -> Begin");

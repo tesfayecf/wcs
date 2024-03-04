@@ -1,10 +1,9 @@
-import os, time, json
+import os, time, json, random
 import paho.mqtt.client as mqtt
-from paho.mqtt.client import MQTTMessage
-from .types import Topics, Actions, Types, Parameters
+
 from data.models import Sensor
 from sensors.models import SensorReading
-from .schemas import MQTTMessageSchema
+from .types import Topics, Actions, Types, Parameters
 
 
 # Listen to signal to start serever
@@ -17,8 +16,10 @@ def start_mqtt_server(sender, **kwargs):
 class MqttServer:
     _instance = None
     version = os.environ.get('MQTT_BROKER_VERSION')
-    connections = {}
-    server_client = None
+    
+    def __init__(self):
+        self._initialized = False
+        self.server_client = None
     
     def __new__(cls):
         if cls._instance is None:
@@ -28,11 +29,9 @@ class MqttServer:
 
     def start(self):
         try:
-            if self._initialized:
-                return
-            
             if self.server_client and self.server_client.is_connected():
                 print("MQTT server already connected")
+                self._initialized = True  # Marking as initialized to prevent reinitialization
                 return
 
             # Connect to mqtt broker
@@ -49,7 +48,6 @@ class MqttServer:
 
             self.server_client.loop_start()
 
-            self._initialized = True
             print("MQTT server started")
             # BUG: Wait for server to connect to broker
             time.sleep(1)
@@ -66,7 +64,7 @@ class MqttServer:
             self.subscribe(sensor.sensor_id + "/" + Topics.DATA)
             self.subscribe(sensor.sensor_id + "/" + Topics.COMMAND)
     
-    def on_message(self, client, userdata, message: MQTTMessage):
+    def on_message(self, client, userdata, message: mqtt.MQTTMessage):
         try:
             # Get info from topic
             sensor_id = message.topic.split("/")[0]
@@ -82,7 +80,7 @@ class MqttServer:
                 self.data(sensor_id, payload)
             if (topic == Topics.COMMAND):
                 # Process command
-                # self.command(id, payload)
+                self.command(sensor_id, payload)
                 pass
         except Exception as e:
             print(f"MQTT on_message error: {e}")
@@ -114,29 +112,36 @@ class MqttServer:
         pass      
     
     def data(self, sensor_id, payload):
-        # Get sensor from database based on id
-        sensor = Sensor.objects.get(sensor_id=sensor_id)
-        
-        # Check sensor is found
-        if not sensor:
-            print("Sensor not found")
-            return
-        
-        # Check sensor is active
-        if not sensor.is_active:
-            print("Sensor is not active")
-            return
-        
-        # Process data
-        if payload['action']['type'] == str(Actions.SENSOR_DATA.value[0]):
-            self.log_data(sensor, payload)
+        try:
+            # Get sensor from database based on id
+            sensor = Sensor.objects.get(sensor_id=sensor_id)
+            
+            # Check sensor is found
+            if not sensor:
+                print("Sensor not found")
+                return
+            
+            # Check sensor is active
+            if not sensor.is_active:
+                print("Sensor is not active")
+                return
+            
+            # Process data
+            if payload['action']['type'] == str(Actions.SENSOR_DATA.value[0]):
+                self.log_data(sensor, payload)
+        except Exception as e:
+            print(f"MQTT data error: {e}")
 
     def log_data(self, sensor, payload):
         # Store log in database
-        SensorReading.objects.create(
-            distance=payload['action']['parameter0'],
-            sensor_id=sensor.sensor_id
+        SensorReading.timescale.create(
+            # distance=payload['action']['parameter0'],
+            distance=random.uniform(0, 100),
+            sensor=sensor
         )
+    
+    def command(sensor_id, payload):
+        pass
        
     def subscribe(self, topic):
         if not self.server_client.is_connected():

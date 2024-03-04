@@ -1,4 +1,5 @@
 from django.db import models
+from timescale.db.models.models import TimescaleModel
 
 from timescale.db.models.fields import TimescaleDateTimeField
 from timescale.db.models.managers import TimescaleManager
@@ -11,39 +12,40 @@ class TimescaleModel(models.Model):
     TimescaleDateTimeField already present. This is an abstract class it should
     be inheritted by another class for use.
     """
-    time = TimescaleDateTimeField(interval="1 minute",default=now) # 1 minute
-    objects = TimescaleManager()
+    time = TimescaleDateTimeField(interval="1 minute", default=now) # 1 minute
+    objects = models.Manager()
+    timescale = TimescaleManager()
 
     class Meta:
         abstract = True
 
 
-# ###############
-# ### READING ###
-# ###############
+###############
+### READING ###
+###############
 class SensorReading(TimescaleModel):
     distance = models.FloatField(null=True, blank=True)
-    sensor_id = models.IntegerField(default=-1)
+    sensor = models.ForeignKey('data.Sensor', on_delete=models.CASCADE)
     
     def __str__(self):
-        return f"Sensor: {self.sensor_id} "
+        return f"Sensor: {self.sensor} Distance: {self.distance} "
 
 
-# ###########
-# ### LOG ###
-# ###########
+###########
+### LOG ###
+###########
 class SensorStatus(models.TextChoices):
-    NORMAL = ('Normal', 'Normal')
+    INFO = ('Info', 'Info')
     WARNING = ('Warning', 'Warning')
     ERROR = ('Error', 'Error')
 
 class SensorLog(TimescaleModel):
-    status = models.CharField(max_length=25, choices=SensorStatus.choices, default=SensorStatus.NORMAL)
+    status = models.CharField(max_length=25, choices=SensorStatus.choices, default=SensorStatus.INFO)
     status_message = models.TextField(null=True, blank=True)
     signal_strength = models.IntegerField(null=True, blank=True)
     battery_voltage = models.FloatField(null=True, blank=True)
     battery_percentage = models.IntegerField(null=True, blank=True)
-    sensor_id = models.IntegerField(default=-1)
+    sensor = models.ForeignKey('data.Sensor', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Sensor: {self.sensor_id} Status: {self.status}"
+        return f"Sensor: {self.sensor} Status: {self.status}"

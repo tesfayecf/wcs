@@ -106,7 +106,7 @@ class DeleteTankSchema(BaseModel):
 
 class SensorSchema(BaseModel):
     id: int
-    token: str
+    sensor_id: str
     is_active: bool
     date_created: datetime
     date_modified: datetime

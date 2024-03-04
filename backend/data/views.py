@@ -1,8 +1,6 @@
 from .models import Tank, Group, Sensor
 from .schemas import *
 
-import json
-from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -21,8 +19,7 @@ def to_dict(model):
 class GetGroupsView(APIView):
     def post(self, request):
         try:
-            user = request.user
-            groups = Group.objects.filter(user=user)
+            groups = Group.objects.filter(user=request.user)
 
             groups_json = []
             for group in groups:
@@ -37,6 +34,7 @@ class GetGroupsView(APIView):
 class CreateGroupView(APIView):
     def post(self, request):
         try:
+            # Deserialize request data
             create_group_data = CreateGroupSchema(**request.data)
                        
             # Check if a group with the same name already exists
@@ -70,7 +68,7 @@ class EditGroupView(APIView):
             edit_group_data = EditGroupSchema(**request.data)
             
             # Check the group exists
-            if not Group.objects.filter(pk=edit_group_data.id).exists():
+            if not Group.objects.filter(pk=edit_group_data.id, user=request.user).exists():
                 return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
             
             # Get the group to edit
@@ -103,7 +101,7 @@ class DeleteGroupView(APIView):
             delete_group_data = DeleteGroupSchema(**request.data)
 
             # Check the group exists
-            if not Group.objects.filter(pk=delete_group_data.id).exists():
+            if not Group.objects.filter(pk=delete_group_data.id, user=request.user).exists():
                 return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
             
             # Get the group to delete
@@ -147,9 +145,10 @@ class GetTanksView(APIView):
             get_group_data = GetTanksSchema(**request.data)
 
             # Check the group exists
-            if not Group.objects.filter(pk=get_group_data.group_id).exists():
+            if not Group.objects.filter(pk=get_group_data.group_id, user=request.user).exists():
                 return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
             
+            # Get the tanks in the group
             tanks = Tank.objects.filter(
                 group__id=get_group_data.group_id,
                 group__user=request.user
@@ -172,10 +171,9 @@ class CreateTankView(APIView):
                 create_tank_data = CreateTankSchema(**request.data)
                 
                 # Check the group exists
-                if not Group.objects.filter(pk=create_tank_data.group_id, user=request.user).exists():
+                group = Group.objects.filter(pk=create_tank_data.group_id, user=request.user).first()
+                if not group:
                     return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-                # Get the group
-                group = Group.objects.get(pk=create_tank_data.group_id, user=request.user)
 
                 # Check if a tank with the same name already exists
                 if Tank.objects.filter(name=create_tank_data.name, group__id=create_tank_data.group_id, group__user=request.user).exists():
@@ -245,8 +243,6 @@ class DeleteTankView(APIView):
         try:
             # Deserialize request data
             delete_tank_data = DeleteTankSchema(**request.data)
-            # Validate the deserialized data
-            delete_tank_data.model_validate()
             
             # Check the group exists
             if not Group.objects.filter(pk=delete_tank_data.group_id, user=request.user).exists():
@@ -290,13 +286,16 @@ class GetSensorView(APIView):
             if not Tank.objects.filter(pk=get_sensor_data.tank_id).exists():
                 return Response({'Bad Request': 'Tank does not exist'}, status=status.HTTP_400_BAD_REQUEST)
             
+            # Get sensors in tank
             sensor = Sensor.objects.filter(
                 tank__id=get_sensor_data.tank_id,
                 tank__group__id=get_sensor_data.group_id
             )
             
+            # Get sensor
             sensor_schema = SensorSchema(**to_dict(sensor))
             
+            # Convert to JSON
             sensor_json = sensor_schema.model_dump()
             
             return Response(sensor_json, status=status.HTTP_200_OK)
@@ -311,11 +310,11 @@ class CreateSensorView(APIView):
             create_sensor_data = CreateSensorSchema(**request.data)
             
             # Check the group exists
-            if not Group.objects.filter(pk=create_sensor_data.group_id).exists():
+            if not Group.objects.filter(pk=create_sensor_data.group_id, user=request.user).exists():
                 return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
                 
             # Check if the tank exists
-            if not Tank.objects.filter(pk=create_sensor_data.tank_id).exists():
+            if not Tank.objects.filter(pk=create_sensor_data.tank_id, user=request.user).exists():
                 return Response({'Bad Request': 'Tank does not exist'}, status=status.HTTP_400_BAD_REQUEST)
         
             # Get tank
@@ -325,8 +324,8 @@ class CreateSensorView(APIView):
                 group__user=request.user
             )
             
-            # Get the tank does not have a sensor already
-            if Sensor.objects.filter(tank__id=create_sensor_data.tank_id).exists():
+            # Check the tank does not have a sensor already
+            if Sensor.objects.filter(tank__id=create_sensor_data.tank_id, user=request.user).exists():
                 return Response({'Bad Request': 'Tank already has a sensor'}, status=status.HTTP_400_BAD_REQUEST)
             
             # Create a new Sensor object

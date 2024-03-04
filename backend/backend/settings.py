@@ -93,7 +93,7 @@ ASGI_APPLICATION = "backend.routing.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": environ.get('DEFAULT_DB_ENGINE'),
+        "ENGINE": environ.get('TIMESERIES_DB_ENGINE'),
         "NAME": environ.get('DEFAULT_DB_NAME'),
         "USER": environ.get('DEFAULT_DB_USER'),
         "PASSWORD": environ.get('DEFAULT_DB_PASSWORD'),
@@ -194,3 +194,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 ################ CUSTOM USER MODEL ################
 AUTH_USER_MODEL = 'users.UserAccount'
 ################################################
+
+######################## TESTING ########################
+TEST_RUNNER = "redgreenunittest.django.runner.RedGreenDiscoverRunner"
+#########################################################
+

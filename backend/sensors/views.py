@@ -29,24 +29,47 @@ class GetSensorReadingsView(APIView):
     def post(self, request):
         try:
             # Deserialize request data
-            data = GetSensorReadingsSchema(**request.data)
+            # data = GetSensorReadingsSchema(**request.data)
+            data = GetSensorReadingsSchema(
+                id=1,
+                start_time='2024-02-01T00:00:00',
+                end_time='2024-05-02T00:00:00',
+                timeframe='5',
+                period='minutes'
+            )
             
             # Check sensor exists
-            if not Sensor.objects.filter(pk=data.id, tank__group__user=request.user).exists():
+            sensor = Sensor.objects.filter(pk=data.id, tank__group__user=request.user).first()
+            if not sensor:
                 return Response({'Bad Request': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
                        
             # Get sensor readings
             readings = SensorReading.timescale.filter(
-                sensor__sensor_id=data.id,
+                sensor=sensor,
                 time__range=(data.start_time, data.end_time)
-            ).order_by('time').time_bucket('time', f"{data.period} {data.timeframe}")
+            )
             
+            # Bucket readings
+            readings = readings.time_bucket(
+                'time', 
+                f"{str(data.timeframe)} {data.period}"
+            )
+            
+            # Get distance values
+            readings = readings.annotate(
+                distance=F('distance')
+            )
+                        
             # Serialize sensor readings
             readings_json = []
             for reading in readings:
-                reading_json = SensorReadingSchema(**to_dict(reading))
+                reading_json = SensorReadingSchema(
+                    time=reading['bucket'],
+                    distance=reading['distance'],
+                )
                 readings_json.append(reading_json.model_dump())
-                
+            
+            return Response(readings_json, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         

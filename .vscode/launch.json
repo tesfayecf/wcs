@@ -32,7 +32,7 @@
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/backend/manage.py",
-      "args": ["runserver"],
+      "args": ["runserver", "--noreload"],
       "django": true,
       "console": "integratedTerminal"
     },
@@ -60,7 +60,7 @@
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/backend/manage.py",
-      "args": ["runserver"],
+      "args": ["runserver", "--noreload"],
       "django": true,
       "console": "integratedTerminal"
     },

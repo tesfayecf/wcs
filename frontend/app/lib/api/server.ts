@@ -33,7 +33,7 @@ export async function serverRequest<
     const refreshToken = cookies().get("refresh")?.value;
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    if (authenticate) headers.append("Cookie", `acces=${accesToken};`);
+    if (authenticate) headers.append("Cookie", `access=${accesToken};`);
     if (authenticate) headers.append("Cookie", `refresh=${refreshToken};`);
     // Send fetch request
     const response = await fetch(`http://127.0.0.1:8000/${address}`, {

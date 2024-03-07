@@ -147,6 +147,12 @@ export const apiInterface = {
             address: "api/sensors/sensor-readings/",
             method: "POST",
             argsKeys: [],
+        },
+        sensorStats: {
+            args: () => { return {} as any },
+            address: "api/sensors/sensor-stats/",
+            method: "POST",
+            argsKeys: [],
         }
     },
     dashboard: {}

@@ -1,12 +1,8 @@
 import { IGroup, IGroupStats } from "../../dashboard/types";
 
-export interface ITankCreationForm {
-    name: string;
-    type: string;
-    capacity: number;
-    is_active: boolean;
+export interface IGroupParams {
+    groupId: string;
 }
-
 export interface IGroupStore {
     tankId: number;
     tanks: ITank[];
@@ -31,19 +27,22 @@ export interface ITank {
     is_Active: boolean;
 }
 
-export interface IGroupParams {
-    groupId: string;
+export interface ITankCreationForm {
+    name: string;
+    type: string;
+    capacity: number;
+    is_active: boolean;
 }
 
 export type ITankStatus = "Connected" | "Disconnected" | "Undefined"
+
 export interface ISensor {
     id: string;
-    serial_number: string;
-    manufacturer: string;
-    model: string;
+    sensor_id: string;
     is_active: boolean;
-    tank: {
-        id: number;
-        name: string;
-    },
+    tank_id: number;
+}
+
+export interface ISensorCreationForm {
+    sensorId: string;
 }

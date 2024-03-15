@@ -3,7 +3,7 @@ from .views import *
 
 urlpatterns = [
     # summary
-    # path('summary/', GetSummaryView.as_view()),
+    path('summary/', GetSummaryView.as_view()),
 
     # group
     path('groups/', GetGroupsView.as_view()),

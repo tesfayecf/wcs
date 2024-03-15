@@ -1,3 +1,5 @@
+import random
+
 from .models import Tank, Group, Sensor
 from .schemas import *
 
@@ -10,6 +12,26 @@ def to_dict(model):
     for field in model._meta.fields:
         model_dict[field.name] = getattr(model, field.name)
     return model_dict
+
+###############
+### SUMMARY ###
+###############
+
+class GetSummaryView(APIView):
+    def post(self, request):
+        try:
+            groups = Group.objects.filter(user=request.user)
+            
+            summary_json = {
+                "level": [random.randrange(0, 100) for g in groups],
+                "inflow": [random.randrange(0, 100) for g in range(10)],
+                "outflow": [random.randrange(0, 100) for g in range(10)],
+                "savings": [random.randrange(0, 100) for g in range(10)]
+            }
+
+            return Response(summary_json, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 #############
 ### GROUP ###

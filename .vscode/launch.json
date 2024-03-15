@@ -11,7 +11,7 @@
       "env": {
         "NODE_ENV": "development"
       },
-      "runtimeArgs": ["run", "dev::next::turbo", "--inspect"],
+      "runtimeArgs": ["run", "dev::turbo", "--inspect"],
       "console": "integratedTerminal"
     },
     {
@@ -24,7 +24,7 @@
       "env": {
         "NODE_ENV": "development"
       },
-      "runtimeArgs": ["run-script", "dev::next", "--inspect"],
+      "runtimeArgs": ["run-script", "dev", "--inspect"],
       "console": "integratedTerminal"
     },
     {
@@ -52,7 +52,7 @@
       "cwd": "${workspaceFolder}/frontend",
       "runtimeExecutable": "npm",
       "restart": true,
-      "runtimeArgs": ["run-script", "dev::start"],
+      "runtimeArgs": ["run-script", "start"],
       "console": "integratedTerminal"
     },
     {

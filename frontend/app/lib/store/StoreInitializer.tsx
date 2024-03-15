@@ -2,7 +2,7 @@
 import { IUserInfo } from "@/app/app/types";
 import useAppStore from "../../app/store";
 import useDashboardStore from "../../(main)/dashboard/store";
-import { IGroup } from "@/app/(main)/dashboard/types";
+import { IGroup, ISummary } from "@/app/(main)/dashboard/types";
 import useGroupStore from "../../(main)/group/[groupId]/store";
 import { ITank } from "@/app/(main)/group/[groupId]/types";
 
@@ -12,7 +12,7 @@ export interface IStoreInitializer {
 
     /// Dashboard \\\
     groups?: IGroup[];
-    summary?: any;
+    summary?: ISummary;
 
     /// Group \\\
     groupParam?: string;
@@ -22,8 +22,6 @@ export interface IStoreInitializer {
 
 export const StoreInitializer: React.FunctionComponent<IStoreInitializer> = (props: IStoreInitializer) => {
     /// App \\\
-    console.log(props)
-
     const setUserInfo = useAppStore(state => state.setUserInfo);
     if (props.userInfo) setUserInfo(props.userInfo);
 

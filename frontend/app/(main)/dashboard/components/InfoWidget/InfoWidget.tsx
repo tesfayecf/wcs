@@ -41,8 +41,8 @@ const InfoWidget: React.FunctionComponent<IHeaderWidgetProps> = (props: IHeaderW
                 <span className={"title"}>{props.title}</span>
                 <span className={"value"}>{props.value} {unit}</span>
                 <div className={"change"}>
-                    <span className={"value"} style={{ color: color }}>{props.changeValue}% {direction}</span>
-                    <span className={"text"}>than last month</span>
+                    <span className={"change-value"} style={{ color: color }}>{props.changeValue}% {direction}</span>
+                    <span className={"change-text"}>than last month</span>
                 </div>
             </div>
         )
@@ -78,7 +78,7 @@ const InfoWidget: React.FunctionComponent<IHeaderWidgetProps> = (props: IHeaderW
                     options={
                         getCustomOptions(
                             HEXToRGBA(props.color, 0.9),
-                            HEXToRGBA(props.color, 0.1)
+                            HEXToRGBA(props.color, 0.01)
                         )
                     }
                 />

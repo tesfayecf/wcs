@@ -6,10 +6,12 @@ import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
 import { ILoginForm } from "@/app/(auth)/types"
 import LogoIcon from "@/public/svg/LogoIcon";
 import { login } from "@/app/(auth)/actions";
+import { useRouter } from 'next/navigation'
 
 interface ILoginProps { }
 
 const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
+    const router = useRouter()
 
     const renderAdditionalButtons: () => JSX.Element | null = () => {
         return (
@@ -22,6 +24,11 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
                 </Link>
             </div >
         )
+    }
+
+    const onLogin = (loginForm: ILoginForm) => {
+        const response = login(loginForm);
+        if (response) router.push('/dashboard');
     }
 
     return (
@@ -41,7 +48,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
                         titleStyle={titleStyle}
                         externalError={false}
                         externalErrorText={"Invalid credentials"}
-                        onAccept={login}
+                        onAccept={onLogin}
                         onCancel={() => { }}
                         acceptButton="Log in"
                         acceptButtonStyle={acceptButtonStyle}

@@ -1,5 +1,5 @@
 import { ILoginForm, IResetForm, ISignupForm } from "@/app/(auth)/types";
-import { IGroup, IGroupStats } from "@/app/(main)/dashboard/types";
+import { IGroup, IGroupStats, ISummary } from "@/app/(main)/dashboard/types";
 import { ISensor, ITank } from "@/app/(main)/group/[groupId]/types";
 import { IUserInfo } from "@/app/app/types";
 
@@ -155,5 +155,12 @@ export const apiInterface = {
             argsKeys: [],
         }
     },
-    dashboard: {}
+    dashboard: {
+        summary: {
+            args: () => { return {} as ISummary },
+            address: "api/data/summary/",
+            method: "POST",
+            argsKeys: [],
+        }
+    }
 } as const;

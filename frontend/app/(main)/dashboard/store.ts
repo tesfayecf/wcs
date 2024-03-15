@@ -1,17 +1,22 @@
 import { create } from 'zustand';
 import { IMenu } from '@/app/app/types';
-import { IDashboardStore, IGroup } from '@/app/(main)/dashboard/types';
+import { IDashboardStore, IGroup, ISummary } from '@/app/(main)/dashboard/types';
 
 interface IDashboardStoreActions {
     setGroups: (groups: IGroup[]) => void;
-    setSummary: (summary: any) => void;
+    setSummary: (summary: ISummary) => void;
     setGroupMenu: (groupMenu: IMenu) => void;
     setShowGroupMenu: (state: boolean) => void;
 };
 
 const useDashboardStore = create<IDashboardStore & IDashboardStoreActions>((set) => ({
     groups: [],
-    summary: {},
+    summary: {
+        level: [],
+        inflow: [],
+        outflow: [],
+        savings: [],
+    },
     groupMenu: {
         show: false,
         mode: "",

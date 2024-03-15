@@ -14,8 +14,8 @@ const NavKey: React.FunctionComponent<NavKeyProps> = ({ text, index, icon }) => 
     const selected = pathName.includes(index);
 
     return (
-        <Link href={index} passHref style={{ textDecoration: "inherit", color: selected ? "#55dc9e" : "white" }}>
-            <div className={"navkey"}>
+        <Link href={index} passHref style={{ textDecoration: "inherit" }}>
+            <div className={`navkey ${selected ? "selected" : ""}`}>
                 <div id='icon' className={"icon"}>
                     {icon}
                 </div>

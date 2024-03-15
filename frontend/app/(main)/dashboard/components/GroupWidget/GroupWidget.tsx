@@ -51,7 +51,7 @@ const GroupWidget: React.FunctionComponent<IGroupWidgetProps> = (props: IGroupWi
                         <div className={"groupName"}>{props.group.name}</div>
                         <div className={"groupLocation"}>{props.group.location}</div>
                     </div>
-                    {hover ? <div className={"groupSettings"}>
+                    {hover ? <div className={"groupSettings"} style={{ textDecoration: 'none' }}>
                         <div className={"edit"} onClick={onWishToEdit}>Edit</div>
                         <div className={"delete"} onClick={onWishToDelete}>Delete</div>
                     </div> : null}

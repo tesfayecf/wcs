@@ -1,5 +1,4 @@
 'use server'
-
 import { serverRequest } from "@/app/lib/api/server"
 import { IGroupCreationForm } from "./types"
 import { revalidateTag } from "next/cache"
@@ -50,6 +49,20 @@ export const deleteGroup = async (groupId: number) => {
         const response = await serverRequest("group", "deleteGroup", [groupId]);
         if (response.ok) {
             revalidateTag("deleteGroup")
+        }
+
+        return response;
+    } catch (error) {
+        // Log error
+    }
+}
+
+export const getSummary = async () => {
+    try {
+        const response = await serverRequest("dashboard", "summary", []);
+        console.log(response)
+        if (response.ok) {
+            revalidateTag("getSummary")
         }
 
         return response;

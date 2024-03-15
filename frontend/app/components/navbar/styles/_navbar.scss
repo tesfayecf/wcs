@@ -24,6 +24,7 @@
             padding: 20px 0px 20px 40px;
             color: $navbar-text-light;
             font-weight: 700;
+            border-radius: 0px 10px 10px 0px;
 
             .icon {
                 display: flex;
@@ -38,15 +39,18 @@
             }
 
             &:hover {
-                background-color: $navbar-background-hover;
+                background-color: $navbar-hover-background-light;
+                color: $navbar-hover-text-light;
+            }
+        }
 
-                .text {
-                    color: $navbar-text-hover;
-                }
+        .selected {
+            background-color: $navbar-selected-background-light;
+            border-radius: 0px 10px 10px 0px;
 
-                .logo {
-                    color: $navbar-text-hover;
-                }
+            &:hover {
+                background-color: $navbar-selected-background-light;
+                color: $navbar-text-light;
             }
         }
     }

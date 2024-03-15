@@ -3,21 +3,19 @@ import React from "react"
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, ArcElement, ChartData, ChartOptions, ChartTypeRegistry, BubbleDataPoint, LegendItem } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import { Point } from "chart.js/dist/core/core.controller";
-
+import useDashboardStore from "../../store";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Legend, Tooltip, Filler);
 
 interface ISummaryPieChartProps { }
 
 const SummaryPieChart: React.FunctionComponent<ISummaryPieChartProps> = (props: ISummaryPieChartProps) => {
-
-    const colors = ['#83ecbd', '#e68b77', '#f2c986', '#92c594', '#12f594'];
+    const groups = useDashboardStore((state) => state.groups);
+    const summary = useDashboardStore((state) => state.summary);
+    const colors = ['#77c4a9', '#fae499', '#789abd', '#92c594', '#12f594'];
 
     const renderLegend = () => {
-
-        const groups = []
         return groups.map((group, index) => {
-            const random = Math.floor(Math.random() * colors.length)
             return (
                 <div key={index} className="legend-item">
                     <span className={"dot"} style={{ backgroundColor: colors[index] }}></span>
@@ -29,27 +27,22 @@ const SummaryPieChart: React.FunctionComponent<ISummaryPieChartProps> = (props: 
         });
     }
 
-    const getPieData = () => {
-
-        const pidData: ChartData<'pie'> = {
-            labels: [],
-            datasets: [
-                {
-                    data: [], // Replace with your actual data values
-                    backgroundColor: "", // Replace with your desired colors
-                },
-            ],
-        };
-
-        const groups = []
-
+    const getData = () => {
+        const pieData = { ...defaultPieData }
+        pieData.datasets[0].data = summary.level;
         groups.map((group, index) => {
-            pidData.labels.push(group.name)
-            pidData.datasets[0].data.push(Math.random() * 100)
-            // pidData.datasets[0].backgroundColor.push(colors[index]) // Errir build
+            pieData.labels.push(group.name)
+            // pieData.datasets[0].data.push(summary.level[index])
+            //@ts-ignore
+            pieData.datasets[0].backgroundColor.push(colors[index]) // Error build
         })
 
-        return pidData
+        return pieData
+    }
+
+    const getOptions = () => {
+        const pieOptions = { ...defaultPieOptions };
+        return pieOptions
     }
 
     return (
@@ -58,16 +51,13 @@ const SummaryPieChart: React.FunctionComponent<ISummaryPieChartProps> = (props: 
                 {renderLegend()}
             </div>
             <div className={"chart"}>
-                <Pie data={getPieData()} options={defaultPieOptions} width={"100%"} />
+                <Pie data={getData()} options={getOptions()} />
             </div>
         </div>
     );
 }
 
 export default SummaryPieChart;
-
-// Dummy Pie Data
-
 
 const generateLabels = (chart: ChartJS<keyof ChartTypeRegistry, (number | [number, number] | Point | BubbleDataPoint)[], unknown>) => {
     let legendItems: LegendItem[] = []
@@ -81,11 +71,26 @@ const generateLabels = (chart: ChartJS<keyof ChartTypeRegistry, (number | [numbe
     return legendItems
 }
 
+const defaultPieData: ChartData<'pie'> = {
+    labels: [],
+    datasets: [
+        {
+            data: [],
+            backgroundColor: [],
+            borderColor: "rgba(0,0,0,0)",
+            spacing: 5,
+            hoverBorderWidth: 10,
+            hoverOffset: 7,
+        },
+    ],
+};
+
 // Dummy Pie Options
 const defaultPieOptions: ChartOptions<'pie'> = {
     responsive: true,
     maintainAspectRatio: false,
-    cutout: '40%',
+    cutout: '50%',
+    radius: "150%",
     plugins: {
         legend: {
             display: false,

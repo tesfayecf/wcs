@@ -106,29 +106,5 @@ export const verify = async () => {
 }
 
 export const refresh = async () => {
-    // const accesToken = cookies().get("access")?.value;
-    // const refreshToken = cookies().get("refresh")?.value;
-
-    // // Check if it has cookies
-    // if (!accesToken || !refreshToken) {
-    //     console.log("User not authenticated refresh");
-    //     return false
-    // }
-
-    // const refreshResponse = await serverRequest("auth", "refresh", [])
-    // if (refreshResponse.ok) {
-    //     console.log("Updated access token:", refreshResponse.data.access);
-    //     await cookies().set({
-    //         name: "access",
-    //         value: refreshResponse.data.access,
-    //         httpOnly: true,
-    //         sameSite: "strict",
-    //         secure: true,
-    //     })
-    //     return true
-    // }
-
-    // // Access and refresh tokens are not valid, redirect to login
-    // console.log("Refresh tokens is not valid - refresh");
     return false;
 }

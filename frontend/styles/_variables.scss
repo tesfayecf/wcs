@@ -1,14 +1,14 @@
 // CONSTANTS
 $app-color: #55dc9e;
 
-// Backgound colors
-$background-1-light: #eff1f2;
-$background-2-light: #eceff1;
+// Backgound color
+$background-1-light: #e9ebee; // DONE
+$background-2-light: #eff1f3; // DONE
 
 $background-1-dark: #161717;
 $background-2-dark: #1e1c1e;
 
-// Text colors
+// Text color
 $text-1-light: #323333;
 $text-2-light: #7e7f80;
 $text-3-light: #d1d1d1;
@@ -20,27 +20,34 @@ $text-3-dark: #67605f;
 // Content box
 $content-box-margin: 10px;
 $content-box-border-radius: 5px;
-$background-color-1: #ffffff;
-$background-color-2: #ffffff;
 
-// Graph colors
-$graph-color-1: #3de198;
-$graph-color-2: #f2c986;
-$graph-color-3: #f69c68;
-$graph-color-4: #e07159;
+// Graph color
+$graph-color-1: #47e29a;
+$graph-color-2: #f4c987;
+$graph-color-3: #f9a638;
+$graph-color-4: #f89a69;
 
-// Chart colors
+// Chart color
 $chart-color-1: #77c4a9;
 $chart-color-2: #fae499;
 $chart-color-3: #789abd;
 
-// Navbar colors
-$navbar-text-light: #000000;
-$navbar-text-dark: #f0f0f0;
-$navbar-text-hover: #000000;
-$navbar-background-light: #dddddd00;
-$navbar-background-dark: #30303000;
-$navbar-background-hover: #ffffff;
+// Navbar color
+$navbar-text-light: #323333;
+$navbar-text-dark: #e4e9ea;
+
+$navbar-background-light: #00000000;
+$navbar-background-dark: #00000000;
+
+$navbar-hover-text-light: #323333;
+$navbar-hover-text-dark: #e4e9ea;
+
+$navbar-hover-background-light: #f3f3f3;
+$navbar-hover-background-dark: #ffffff;
+
+$navbar-selected-background-light: #ffffff;
+$navbar-selected-background-dark: #ffffff;
+
 
 // Navbar width
 $navbar-width-1: 200px;

@@ -34,14 +34,14 @@
                 gap: 5px;
                 align-items: center;
 
-                .value {
+                .change-value {
                     font-size: 15px;
                     color: $text-2-light;
                     font-weight: 600;
                     white-space: nowrap;
                 }
 
-                .text {
+                .change-text {
                     font-size: 12px;
                     align-items: center;
                     color: $text-2-light;
@@ -52,11 +52,9 @@
 
         .line-chart {
             position: relative;
-            right: 10px;
-            bottom: 5px;
-            height: 55px;
-            width: 65%;
-            padding: 3px 0px;
+            right: 20px;
+            height: 60%;
+            width: 100%;
 
             .chart {
                 width: 100%;

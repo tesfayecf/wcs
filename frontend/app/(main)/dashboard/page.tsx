@@ -9,7 +9,7 @@ import useDashboardStore from "@/app/(main)/dashboard/store";
 
 import GroupPopUp from "@/app/(main)/dashboard/components/GroupPopUp/GroupPopUp";
 import { StoreInitializer } from "@/app/lib/store/StoreInitializer";
-import { getGroups } from "./actions";
+import { getGroups, getSummary } from "./actions";
 // import Loading from "./loading";
 
 interface IDashboardProps { }
@@ -21,6 +21,8 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = async (props: IDashb
   //////////////////////////////////////////////////////////
 
   const groupsResponse = await getGroups();
+
+  const summaryResponse = await getSummary();
   // Get groups stats
   // Get groups summary
 
@@ -28,6 +30,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = async (props: IDashb
     <div className={"dashboard"}>
       <StoreInitializer
         groups={groupsResponse.data}
+        summary={summaryResponse.data}
       />
       <div className={"status"}>
         <SummaryWidget />

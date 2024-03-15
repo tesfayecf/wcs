@@ -37,10 +37,7 @@ const DataWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
     return (
         <ContentBox customBoxClass={"dataWidget"}>
             <div className={"dataWidgetContent"}>
-                <div className={"selector"}>
-                    CHART SELECTOR
-                </div>
-                <div className={"bar-chart"}>
+                <div className={"chart"}>
                     <Chart type='bar' data={data} options={options} width={"100%"} height={"100%"} />
                 </div>
             </div>

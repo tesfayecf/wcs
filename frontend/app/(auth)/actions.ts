@@ -9,7 +9,7 @@ interface StoreTokenRequest {
 }
 
 export async function storeTokens(request: StoreTokenRequest) {
-    cookies().set({
+    await cookies().set({
         name: "access",
         value: request.access,
         httpOnly: true,
@@ -17,7 +17,7 @@ export async function storeTokens(request: StoreTokenRequest) {
         secure: true,
     })
 
-    cookies().set({
+    await cookies().set({
         name: "refresh",
         value: request.refresh,
         httpOnly: true,
@@ -31,8 +31,27 @@ export const login = async (loginForm: ILoginForm) => {
         const response = await serverRequest("auth", "login", [loginForm.email, loginForm.password], false);
         if (response) {
             console.log("Login successful");
-            storeTokens({ access: response.data.access, refresh: response.data.refresh, });
-            return true
+            // storeTokens({ access: response.data.access, refresh: response.data.refresh, });
+            if (response.data.access && response.data.refresh) {
+                await cookies().set({
+                    name: "access",
+                    value: response.data.access,
+                    httpOnly: true,
+                    sameSite: "strict",
+                    secure: true,
+                })
+                await cookies().set({
+                    name: "refresh",
+                    value: response.data.refresh,
+                    httpOnly: true,
+                    sameSite: "strict",
+                    secure: true,
+                })
+                return true
+            } else {
+                console.error("Tokens not found");
+                return false
+            }
         } else {
             console.error("Login failed");
             return false

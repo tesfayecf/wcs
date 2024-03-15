@@ -2,6 +2,9 @@
 @import "./globals";
 @import "./variables";
 
+// TEST
+@import "../app/(test)/test/charts/styles/charts";
+
 // AUTH
 @import "../app/(auth)/login/styles/login";
 @import '../app/(auth)/signup/styles/signup';

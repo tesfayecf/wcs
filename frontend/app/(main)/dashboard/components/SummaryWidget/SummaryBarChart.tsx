@@ -15,6 +15,7 @@ import {
     ChartData,
 } from 'chart.js';
 import { Chart } from 'react-chartjs-2';
+import useDashboardStore from '../../store';
 
 ChartJS.register(
     LinearScale,
@@ -31,10 +32,20 @@ ChartJS.register(
 interface ISummaryBarChartProps { }
 
 const SummaryBarChart: React.FunctionComponent<ISummaryBarChartProps> = (props: ISummaryBarChartProps) => {
+    const summary = useDashboardStore((state) => state.summary);
+
+    const getData = () => {
+        const chartData = { ...defaultChartData };
+        chartData.datasets[0].data = [...summary.savings];
+        chartData.datasets[1].data = summary.inflow;
+        chartData.datasets[2].data = summary.outflow;
+
+        return chartData;
+    }
 
     return (
         <div className={"bar-chart"}>
-            <Chart type='bar' data={data} options={defaultBarOptions} width={"100%"} />
+            <Chart type='bar' data={getData()} options={defaultBarOptions} />
         </div>
     )
 }
@@ -43,43 +54,38 @@ const SummaryBarChart: React.FunctionComponent<ISummaryBarChartProps> = (props: 
 export default SummaryBarChart
 
 
-const labels = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
+const labels = ['M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
+// const labels = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
 
-export const data: ChartData<"bar" | "line"> = {
+const defaultChartData: ChartData<"bar" | "line"> = {
     labels,
     datasets: [
         {
             type: 'line' as const,
             label: 'Savings',
-            borderColor: '#f2c986',
-            borderWidth: 2,
-            fill: false,
+            borderColor: 'rgba(0,0,0,0)',
             pointRadius: 0,
             cubicInterpolationMode: 'monotone',
             tension: 0.4,
-            data: generateRandomData(0, 100, labels.length),
+            data: [],
         },
         {
             type: 'bar' as const,
             label: 'Inflow',
             backgroundColor: '#83ecbd',
-            data: generateRandomData(0, 100, labels.length),
-            borderColor: 'white',
-            borderWidth: 2,
+            borderColor: 'rgba(0,0,0,0)',
+            borderWidth: 0,
             hoverBackgroundColor: '#37dd93',
-            hoverBorderColor: 'white',
-            // borderRadius: 10,
+            data: [],
         },
         {
             type: 'bar' as const,
             label: 'Outflow',
             backgroundColor: '#e68b77',
-            data: generateRandomData(0, 100, labels.length),
-            borderColor: 'white',
-            borderWidth: 2,
+            borderColor: 'rgba(0,0,0,0)',
+            borderWidth: 0,
             hoverBackgroundColor: '#e96649',
-            hoverBorderColor: 'white',
-            // borderRadius: 10,
+            data: [],
         },
     ],
 };
@@ -92,7 +98,7 @@ const defaultBarOptions: ChartOptions<'bar'> = {
     maintainAspectRatio: false,
     plugins: {
         legend: {
-            display: true, // Remove legend
+            display: false, // Remove legend
         },
     },
     scales: {

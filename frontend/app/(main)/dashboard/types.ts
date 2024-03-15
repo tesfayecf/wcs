@@ -1,7 +1,7 @@
 import { IMenu } from "@/app/app/types";
 
 export interface IDashboardStore {
-    summary: any;
+    summary: ISummary;
     groups: IGroup[];
     groupMenu: IMenu;
     showGroupMenu: boolean;
@@ -14,6 +14,12 @@ export interface IGroup {
     description: string;
 }
 
+export interface IGroupCreationForm {
+    name: string,
+    location: string,
+    description: string
+}
+
 export interface IGroupStats {
     totalTanks: number,
     averageWaterLevel: number,
@@ -22,8 +28,9 @@ export interface IGroupStats {
     totalCapacity: number,
 }
 
-export interface IGroupCreationForm {
-    name: string,
-    location: string,
-    description: string
+export interface ISummary {
+    level: number[],
+    inflow: number[],
+    outflow: number[],
+    savings: number[],
 }

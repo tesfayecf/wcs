@@ -18,7 +18,7 @@ const InfoChart: React.FunctionComponent<IheaderChartProps> = (props: IheaderCha
 
     return (
         <div className={"line-chart"} >
-            <Line id={"infoChart"} data={props.data} options={props.options} width={"100%"} />
+            <Line id={"infoChart"} data={props.data} options={props.options} />
         </div>
     )
 }

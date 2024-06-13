@@ -6,6 +6,7 @@
 #include "../../managers/hardware-manager/HWManager.h"
 #include "../../managers/mqtt-manager/MQTTManager.h"
 #include "../../managers/wifi-manager/WifiManager.h"
+
 #include "../utils/constants.h"
 #include "../utils/types.h"
 #include "./AppConfig.h"

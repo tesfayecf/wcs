@@ -13,6 +13,8 @@ enum MESSAGE_ACTIONS {
   // Data
   SENSOR_DATA = 1,
   // Command
+  GET_STATUS = 2,
+  GET_SENSOR_ID = 3,
 };
 
 enum MESSAGE_PARAMETERS {
@@ -24,7 +26,7 @@ enum MESSAGE_PARAMETERS {
   SENSOR_ID = 105,
 
   // Action
-  ACTION_TYPE = 201,
+  MESSAGE_TYPE = 201,
   ACTION_NAME = 202,
 };
 

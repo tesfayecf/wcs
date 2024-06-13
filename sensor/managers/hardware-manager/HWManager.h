@@ -34,6 +34,12 @@ class HWManager : public BaseManager {
 
     // Get distance from Ultrasonic sensor
     void readDistanceSensor();
+
+    // Get temperature from temperature sensor
+    // void readTemperatureSensor();
+
+    // Get humidity from humidity sensor
+    // void readHumiditySensor();
 };
 
 #endif  // HW_CONNECTION_MANAGER_H

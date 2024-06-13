@@ -5,16 +5,15 @@
 
 #include "./AppConfig.h"
 
-///////////////////////////////
-/// ManagerStatus Structure ///
-///////////////////////////////
+////////////////////////////////
+/// Manager Status Interface ///
+////////////////////////////////
 
 struct ManagerStatus {
   bool initialized;    // Indicates whether the manager is initialized
   bool connected;      // Indicates whether the manager is connected
   bool connecting;     // Indicates whether the manager is currently connecting
-  bool disconnecting;  // Indicates whether the manager is currently
-                       // disconnecting
+  bool disconnecting;  // Indicates whether the manager is currently disconnecting
   bool hasError;       // Indicates whether an error has occurred
   String error;        // Error message
   int status;          // Status of the manager
@@ -39,7 +38,7 @@ class AppConfig {
     uint32_t boardFlashChipRealSize;  // Real size of the flash chip on the board
     uint8_t boardCpuFreqMHz;          // CPU frequency of the board in MHz
     uint32_t boardFreeHeap;           // Amount of free heap memory on the board
-    String boardHeapFragmentation;    // Heap fragmentation of the board
+    uint8_t boardHeapFragmentation;    // Heap fragmentation of the board
     uint32_t boardSketchSize;         // Size of the sketch on the board
     uint32_t boardFreeSketchSpace;    // Amount of free sketch space on the board
     String boardSketchMD5;            // MD5 hash of the sketch on the board
@@ -68,8 +67,10 @@ class AppConfig {
 
   class WifiManager {
    public:
+    // Manager status
     ManagerStatus status;
 
+    // Wifi connection info
     String ssid;        // SSID of the WiFi connection
     IPAddress ip;       // IP address of the WiFi connection
     String hostname;    // Hostname of the WiFi connection
@@ -86,7 +87,8 @@ class AppConfig {
   /////////////////////////
 
   class MQTTManager {
-   public:
+    public:
+    // Manager status
     ManagerStatus status;
 
     // MQTT connection info
@@ -94,7 +96,6 @@ class AppConfig {
     int keepAlive;          // Keep-alive interval of the MQTT connection
     int version;            // Version of the MQTT connection
     int connectionTimeout;  // Connection timeout of the MQTT connection
-
 
     // Publish topics
     String dataTopic;       // Data topic of the MQTT connection
@@ -109,8 +110,10 @@ class AppConfig {
 
   class HardwareManager {
    public:
+    // Manager status
     ManagerStatus status;
 
+    // Hardware info
     int updateRate;
   };
 

@@ -64,7 +64,10 @@ const char* ACTION_TO_CHAR(MESSAGE_ACTIONS key) {
       return "0";
     case SENSOR_DATA:
       return "1";
-    // Add cases for other actions if needed
+    case GET_STATUS:
+      return "2";
+    case GET_SENSOR_ID:
+      return "3";
     default:
       return "9999";
   }
@@ -88,7 +91,7 @@ const char* PARAM_TO_CHAR(MESSAGE_PARAMETERS key) {
       return "105";
 
     // Action
-    case ACTION_TYPE:
+    case MESSAGE_TYPE:
       return "201";
     case ACTION_NAME:
       return "202";

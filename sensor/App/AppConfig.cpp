@@ -5,9 +5,9 @@
 #include "../utils/constants.h"
 #include "./AppConfig.h"
 
-////////////////////////////////////
-/// AppConfig Class Constructors ///
-////////////////////////////////////
+///////////////////////////////////
+/// AppConfig Class Constructor ///
+///////////////////////////////////
 
 AppConfig::AppConfig() {}
 
@@ -58,12 +58,10 @@ AppConfig::MQTTManager::MQTTManager() {
   maxPacketSize = MQTT_MAX_PACKET_SIZE;
   keepAlive = MQTT_KEEP_ALIVE;
   version = MQTT_VERSION;
-  connectionTimeout = MQTT_CONNECTION_TIMEOUT_CUSTOM;
+  connectionTimeout = MQTT_CONNECTION_TIMEOUT;
 
-  // Publish topics
   registerTopic = MQTT_REGISTER_TOPIC;
   dataTopic = MQTT_DATA_TOPIC;
-  // Subscribe topics
   commandTopic = MQTT_COMMAND_TOPIC;
 }
 

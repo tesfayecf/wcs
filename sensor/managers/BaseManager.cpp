@@ -7,7 +7,6 @@ BaseManager::BaseManager() {}
 void BaseManager::init_(App* app_, AppConfig* config_) {
     app = app_;
     appConfig = config_;
-    Serial.println("BaseManager::init_");
 
     // Call the virtual init function
     this->init();

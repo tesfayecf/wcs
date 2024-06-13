@@ -5,9 +5,6 @@
 #include "../managers/BaseManager.cpp" // BUG ALERT
 #include "../managers/BaseManager.h"
 
-#include "./Logger.cpp" // BUG ALERT
-#include "./Logger.h"
-
 #include "../../managers/hardware-manager/HWManager.cpp"  // BUG ALERT
 #include "../../managers/hardware-manager/HWManager.h"
 
@@ -26,6 +23,7 @@
 #include "../utils/constants.h"
 #include "../utils/types.h"
 #include "../utils/utils.h"
+#include "../misc/logger.h"
 #include "./AppConfig.h"
 
 App::App(const AppConfig &config) :
@@ -35,6 +33,10 @@ App::App(const AppConfig &config) :
 void App::setup() {
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, HIGH);
+
+    // Initialize logger
+    Logger::setLogLevel(VERBOSE);
+    Logger::notice("App::setup()", "App initialized");
 
     // Set App info
     this->setBoardInfo();
@@ -56,17 +58,19 @@ void App::setup() {
     mqttManager->setup_();
     hwManager->setup_();
 
-    Logger::setLogLevel(VERBOSE);
-    Logger::verbose("Set up finished");
-
     blink();
     digitalWrite(LED_BUILTIN, LOW);
+    Logger::notice("App::setup()", "App set up finished");
 }
 
 void App::loop() {
-    if (millis() % CYCLE_TIME == 0) {
+    static unsigned long lastMillis = 0;
+    unsigned long currentMillis = millis();
+    if (currentMillis - lastMillis >= CYCLE_TIME) {
+        lastMillis = currentMillis;
+
         // Update time
-        this->appConfig.appInfo.localTime = millis();
+        this->appConfig.appInfo.localTime = currentMillis;
         this->appConfig.appInfo.serverTime = now();
 
         // Loop managers
@@ -84,18 +88,31 @@ void App::restart() {
 
 void App::setBoardInfo() {
     this->appConfig.boardInfo.boardChipId = ESP.getChipId();
+    Logger::verbose("App::setBoardInfo()", "Board Chip Id: " + String(this->appConfig.boardInfo.boardChipId));
     this->appConfig.boardInfo.boardFlashChipId = ESP.getFlashChipId();
+    Logger::verbose("App::setBoardInfo()", "Board Flash Chip Id: " + String(this->appConfig.boardInfo.boardFlashChipId));
     this->appConfig.boardInfo.boardCoreVersion = ESP.getCoreVersion();
+    Logger::verbose("App::setBoardInfo()", "Board Core Version: " + String(this->appConfig.boardInfo.boardCoreVersion));
     this->appConfig.boardInfo.boardFlashChipSize = ESP.getFlashChipSize();
+    Logger::verbose("App::setBoardInfo()", "Board Flash Chip Size: " + String(this->appConfig.boardInfo.boardFlashChipSize));
     this->appConfig.boardInfo.boardFlashChipRealSize = ESP.getFlashChipRealSize();
+    Logger::verbose("App::setBoardInfo()", "Board Flash Chip Real Size: " + String(this->appConfig.boardInfo.boardFlashChipRealSize));
     this->appConfig.boardInfo.boardCpuFreqMHz = ESP.getCpuFreqMHz();
+    Logger::verbose("App::setBoardInfo()", "Board Cpu Freq MHz: " + String(this->appConfig.boardInfo.boardCpuFreqMHz));
     this->appConfig.boardInfo.boardFreeHeap = ESP.getFreeHeap();
+    Logger::verbose("App::setBoardInfo()", "Board Free Heap: " + String(this->appConfig.boardInfo.boardFreeHeap));
     this->appConfig.boardInfo.boardHeapFragmentation = ESP.getHeapFragmentation();
+    Logger::verbose("App::setBoardInfo()", "Board Heap Fragmentation: " + String(this->appConfig.boardInfo.boardHeapFragmentation));
     this->appConfig.boardInfo.boardSketchSize = ESP.getSketchSize();
+    Logger::verbose("App::setBoardInfo()", "Board Sketch Size: " + String(this->appConfig.boardInfo.boardSketchSize));
     this->appConfig.boardInfo.boardFreeSketchSpace = ESP.getFreeSketchSpace();
+    Logger::verbose("App::setBoardInfo()", "Board Free Sketch Space: " + String(this->appConfig.boardInfo.boardFreeSketchSpace));
     this->appConfig.boardInfo.boardSketchMD5 = ESP.getSketchMD5();
+    Logger::verbose("App::setBoardInfo()", "Board Sketch MD5: " + String(this->appConfig.boardInfo.boardSketchMD5));
     this->appConfig.boardInfo.boardFlashChipSpeed = ESP.getFlashChipSpeed();
+    Logger::verbose("App::setBoardInfo()", "Board Flash Chip Speed: " + String(this->appConfig.boardInfo.boardFlashChipSpeed));
     this->appConfig.boardInfo.boardCycleCount = ESP.getCycleCount();
+    Logger::verbose("App::setBoardInfo()", "Board Cycle Count: " + String(this->appConfig.boardInfo.boardCycleCount));
 }
 
 void App::setAppInfo() {
@@ -105,7 +122,9 @@ void App::setAppInfo() {
     String boardChipIdStr = this->appConfig.boardInfo.boardChipId;
     // Generate board id
     this->appConfig.appInfo.sensorId = generateId(boardChipIdStr, flashChipIdStr);
+    Logger::verbose("App::setAppInfo()", "Sensor Id: " + this->appConfig.appInfo.sensorId);
 
     // Initialize sensor time
     setTime(this->appConfig.appInfo.startTime);
+    Logger::verbose("App::setAppInfo()", "Sensor time initialized");
 }

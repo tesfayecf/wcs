@@ -7,6 +7,7 @@
 #include <ArduinoJson.h>
 
 #include "../../App/AppConfig.h"
+#include "../../misc/logger.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
 #include "../../utils/utils.h"
@@ -14,10 +15,15 @@
 MQTTManager::MQTTManager() : mqttClient(wifiClient) {}
 
 void MQTTManager::init() {
-    Serial.println("MQTTManager Initialized");
+    Logger::notice("MQTTManager::init", "MQTTManager Initialized");
 }
 
 void MQTTManager::setup() {
+    Logger::notice("MQTTManager::setup", "MQTTManager Setup");
+
+    // Set MQTT broker info
+    // this->setBrokerInfo();
+
     // Set MQTT topics info
     this->setTopics();
 
@@ -25,23 +31,24 @@ void MQTTManager::setup() {
     this->setConnectionInfo();
 
     // Set MQTT callback function
-    // mqttClient.setCallback(callbackFunction);
+    mqttClient.setCallback(callbackFunction);
 
     // Connect to MQTT broker
     this->connect();
 
-    // Subscribe to command topic
+    // Subscribe to topics
     this->subscribeSensor();
 
     // Register sensor
     this->registerSensor();
 
-    Serial.println("MQTTManager setup");
+    Logger::notice("MQTTManager::setup", "MQTTManager Setup");
 }
 
 void MQTTManager::loop() {
     // Reconnect if disconnected
     if (!mqttClient.connected()) {
+        Logger::warning("MQTTManager::loop", "MQTT disconnected, reconnecting...");
         reconnect();
     }
 
@@ -51,6 +58,7 @@ void MQTTManager::loop() {
 
 void MQTTManager::publish(const MQTTMessage* messagePtr) {
     if (messagePtr == nullptr) {
+        Logger::error("MQTTManager::publish", "Null pointer passed as message");
         return;
     }
 
@@ -58,14 +66,14 @@ void MQTTManager::publish(const MQTTMessage* messagePtr) {
 
     // Boundary check
     if (message.paramsCount > 5) {
-        Serial.println("Error: paramsCount exceeds array boundary");
+        Logger::error("MQTTManager::publish", "paramsCount exceeds array boundary");
         return;
     }
 
     // Ensure params array is not null (optional)
     for (size_t i = 0; i < message.paramsCount; i++) {
         if (message.params[i] == nullptr) {
-            Serial.println("Error: Null pointer found in params array");
+            Logger::error("MQTTManager::publish", "Null pointer found in params array");
             return;
         }
     }
@@ -75,7 +83,7 @@ void MQTTManager::publish(const MQTTMessage* messagePtr) {
 
     // Add action information
     JsonObject actionObject = jsonMessage.createNestedObject(MQTT_ACTION_KEY);
-    actionObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::ACTION_TYPE)] = TYPE_TO_CHAR(message.type);
+    actionObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::MESSAGE_TYPE)] = TYPE_TO_CHAR(message.type);
     actionObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::ACTION_NAME)] = ACTION_TO_CHAR(message.action);
     // Add message body
     for (size_t i = 0; i < message.paramsCount; i++) {
@@ -113,20 +121,21 @@ void MQTTManager::publish(const MQTTMessage* messagePtr) {
             break;
     }
 
-    Serial.print("Publish message: ");
-    Serial.print(topic);
-    Serial.print(" | ");
-    Serial.println(jsonMessageStr);
-
     // Publish message
     if (this->mqttClient.connected()) {
         this->mqttClient.publish(topic, jsonMessageStr.c_str());
+        Logger::notice("MQTTManager::publish", "Message Published");
+        Logger::verbose("MQTTManager::publish", "Message: " + jsonMessageStr);
+        Logger::verbose("MQTTManager::publish", "Topic: " + String(topic));
+        Logger::verbose("MQTTManager::publish", "Message type: " + String(TYPE_TO_CHAR(message.type)));
+        Logger::verbose("MQTTManager::publish", "Action name: " + String(ACTION_TO_CHAR(message.action)));
     }
 }
 
 void MQTTManager::subscribe(const String& topic) {
     if (this->mqttClient.connected()) {
         this->mqttClient.subscribe(topic.c_str());
+        Logger::notice("MQTTManager::subscribe", "Subscribed to topic: " + topic);
     }
     // TODO: Handle case when client is not connected
 }
@@ -134,23 +143,21 @@ void MQTTManager::subscribe(const String& topic) {
 
 // Connection
 void MQTTManager::connect() {
-    Serial.print("MQTT connection: ");
+    Logger::notice("MQTTManager::connect", "Connecting to MQTT broker");
     int r = 0;
     while (!mqttClient.connected()) {
         if (mqttClient.connect(this->appConfig->appInfo.sensorId.c_str())) {
-            Serial.println("SUCCES");
+            Logger::verbose("MQTTManager::connect", "Connected to MQTT broker");
             return;
         } else {
             delay(100);
-            Serial.print(".");
             r++;
             if (r == 150) {
-                Serial.println("ERROR -> Timeout");
+                Logger::error("MQTTManager::connect", "Failed to connect to MQTT broker");
                 return;
             }
         }
     }
-    Serial.println("SUCCES");
 }
 
 void MQTTManager::reconnect() {
@@ -160,21 +167,13 @@ void MQTTManager::reconnect() {
 
 // Callbacks
 void MQTTManager::callbackFunction(char *topic, byte *payload, unsigned int length) {
-    Serial.println("Received MQTT message");
-    Serial.print("Topic: ");
-    Serial.println(topic);
-    Serial.print("Payload: ");
-    Serial.write(payload, length);
-    Serial.println();
-    payload[length] = '\0'; // Add a null terminator to the payload
+    Logger::notice("MQTTManager::callbackFunction", "Received MQTT message");
+    Logger::verbose("MQTTManager::callbackFunction", "Topic: " + String(topic));
+    Logger::verbose("MQTTManager::callbackFunction", "Payload: " + String((char*)payload));
+    Logger::verbose("MQTTManager::callbackFunction", "Length: " + String(length));
 
-    // if (strcmp(topic, instance->appConfig->mqttManager.statusTopic.c_str()) == 0) {
-    //     instance->statusCallback(payload, length);
-    // } else if (strcmp(topic, instance->appConfig->mqttManager.configTopic.c_str()) == 0) {
-    //     instance->configCallback(payload, length);
-    // } else if (strcmp(topic, instance->appConfig->mqttManager.authTopic.c_str()) == 0) {
-    //     instance->authCallback(payload, length);
-    // }
+    // Process message
+    // MQTTMessage message;
 }
 
 // Actions
@@ -185,7 +184,7 @@ void MQTTManager::subscribeSensor() {
 
 void MQTTManager::registerSensor() {
     // Construct message
-    Serial.println("Registering sensor");
+    Logger::verbose("MQTTManager::registerSensor", "Registering sensor");
     MQTTMessage message;
     message.type = MESSAGE_TYPES::REGISTER;
     message.action = MESSAGE_ACTIONS::REGISTER_SENSOR;
@@ -198,15 +197,19 @@ void MQTTManager::registerSensor() {
 // Setters
 void MQTTManager::setTopics() {
     // Publish MQTT topics
-    this->registerTopic = MQTT_REGISTER_TOPIC;
+    this->registerTopic = String("server") + "/" + MQTT_REGISTER_TOPIC;
     this->dataTopic = this->appConfig->appInfo.sensorId + "/" + MQTT_DATA_TOPIC;
     // Subscribe MQTT topics
     this->commnadTopic = this->appConfig->appInfo.sensorId + "/" + MQTT_COMMAND_TOPIC;
+
+    Logger::verbose("MQTTManager::setTopics", "Topics set succesfully");
 }
 
 void MQTTManager::setConnectionInfo() {
     mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
     mqttClient.setKeepAlive(MQTT_KEEP_ALIVE);
-    mqttClient.setSocketTimeout(MQTT_CONNECTION_TIMEOUT_CUSTOM);
+    mqttClient.setSocketTimeout(MQTT_CONNECTION_TIMEOUT);
     mqttClient.setBufferSize(MQTT_MAX_PACKET_SIZE);
+
+    Logger::verbose("MQTTManager::setConnectionInfo", "Connection info set succesfully");
 }

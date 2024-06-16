@@ -1,21 +1,28 @@
 'use server'
 
-import { serverRequest } from "@/app/lib/api/server";
+import { serverRequest } from "@/app/lib/api/request";
 import { ISensorCreationForm, ITank, ITankCreationForm } from "./types";
 import { revalidateTag } from "next/cache";
 
 // Group
 export const getGroup = async (groupId: number) => {
-    const response = await serverRequest("group", "getGroups", []);
+    // Make request
+    const response = await serverRequest("group", "getGroups", []); // TODO: make request or single group. 
     if (!response.ok) return undefined
-
     // Filter groups by id
     return response.data.filter(group => group.id === groupId)[0] || undefined;
 }
 
 // TANK
 export const getTanks = async (groupId: number) => {
-    return await serverRequest("tank", "getTanks", [groupId]);
+    try {
+        // Make request
+        const response = await serverRequest("tank", "getTanks", [groupId]);
+        if (response.ok) revalidateTag("getTanks");
+        return response;
+    } catch (error) {
+        // Log error
+    }
 }
 
 export const createTank = async (fields: ITankCreationForm, groupId: number) => {
@@ -24,7 +31,7 @@ export const createTank = async (fields: ITankCreationForm, groupId: number) => 
         const name = fields.name;
         const type = fields.type;
         const capacity = fields.capacity;
-
+        // Make request
         const response = await serverRequest("tank", "createTank", [name, type, capacity, groupId]);
         return response;
     } catch (error) {
@@ -39,7 +46,7 @@ export const editTank = async (tankId: number, groupId: number, fields: ITankCre
         const type = fields.type;
         const capacity = fields.capacity;
         const is_active = true;
-
+        // Make request
         const response = await serverRequest("tank", "editTank", [tankId, name, type, capacity, is_active, groupId]);
         return response;
     } catch (error) {
@@ -49,6 +56,7 @@ export const editTank = async (tankId: number, groupId: number, fields: ITankCre
 
 export const deleteTank = async (tankId: number, groupId: number) => {
     try {
+        // Make request
         const response = await serverRequest("tank", "deleteTank", [tankId, groupId]);
         return response;
     } catch (error) {
@@ -70,7 +78,7 @@ export const createSensor = async (fields: ISensorCreationForm, tankId: number, 
     try {
         // Get fields
         const sensorId = fields.sensorId;
-
+        // Make request
         const response = await serverRequest("sensor", "createSensor", [sensorId, tankId, groupId]);
         return response;
     } catch (error) {
@@ -83,7 +91,7 @@ export const editSensor = async (id, tankId, groupId, fields: ISensorCreationFor
         // Get fields
         const sensorId = fields.sensorId;
         const isActive = true;
-
+        // Make request
         const response = await serverRequest("sensor", "editSensor", [id, sensorId, isActive, tankId, groupId]);
         return response;
     } catch (error) {
@@ -93,6 +101,7 @@ export const editSensor = async (id, tankId, groupId, fields: ISensorCreationFor
 
 export const deleteSensor = async (sensorId: number, tankId: number, groupId: number) => {
     try {
+        // Make request
         const response = await serverRequest("sensor", "deleteSensor", [sensorId, tankId, groupId]);
         return response
     } catch (error) {

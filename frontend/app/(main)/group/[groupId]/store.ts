@@ -3,6 +3,7 @@ import { IGroupStore, ITank, IGroupParams } from '@/app/(main)/group/[groupId]/t
 import { IGroup, IGroupStats } from '@/app/(main)/dashboard/types';
 
 interface IGroupActions {
+    setState(state: Partial<IGroupStore>): void;
     setParams: (params: IGroupParams) => void;
     setTanks: (tanks: ITank[]) => void;
     setGroupInfo: (groupInfo: IGroup) => void;
@@ -13,6 +14,7 @@ interface IGroupActions {
 }
 
 const useGroupStore = create<IGroupStore & IGroupActions>((set) => ({
+    /// Store ///
     tankId: -1,
     groupId: -1,
     tanks: [],
@@ -33,7 +35,9 @@ const useGroupStore = create<IGroupStore & IGroupActions>((set) => ({
     },
     showTankMenu: false,
 
-    // Actions
+    /// Actions ///
+    setState: (state: Partial<IGroupStore>) => set((prev) => ({ ...prev, ...state })),
+    // Setters
     setParams: (params: IGroupParams) => set((state) => ({ ...state, groupId: parseInt(params.groupId) })),
     setTanks: (tanks: ITank[]) => set((state) => ({ ...state, tanks })),
     setGroupInfo: (groupInfo: IGroup) => set((state) => ({ ...state, groupInfo })),

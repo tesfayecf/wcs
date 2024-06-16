@@ -1,7 +1,7 @@
 'use server'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation';
-import { serverRequest } from '../api/server';
+import { serverRequest } from '../api/request';
 
 export const storeAccesToken = async (access: string) => {
     await cookies().set({
@@ -30,7 +30,8 @@ export const authenticate = async () => {
     // Check if it has cookies
     if (!accesToken || !refreshToken) {
         console.log("User not authenticated -> auth");
-        redirect("/login");
+        // redirect("/login");
+        return false;
     }
 
     try {

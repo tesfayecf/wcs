@@ -16,7 +16,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
     const renderAdditionalButtons: () => JSX.Element | null = () => {
         return (
             <div style={additionalButtonsContainer}>
-                <Link href={'/reset'} style={additionalButtonStyle}>
+                <Link href={'/recover'} style={additionalButtonStyle}>
                     Forgot password?
                 </Link>
                 <Link href={'/signup'} style={additionalButtonStyle}>

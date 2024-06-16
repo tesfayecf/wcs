@@ -26,7 +26,7 @@ export async function serverRequest<
     const { address, method, argsKeys } = apiInterface[group][endpoint as string];
     const obj = Object.fromEntries(args.map((key, index) => [argsKeys[index], key]));
     if (process.env.NODE_ENV === "development") {
-        console.log(`[${group}][${endpoint as string}] -> request`, address);
+        console.log(`[${group}][${endpoint as string}] -> `, address);
     }
     // Construct headers
     const accesToken = cookies().get("access")?.value;

@@ -18,18 +18,22 @@ interface IDashboardProps {
 }
 
 const Group: React.FunctionComponent<IDashboardProps> = async (props: IDashboardProps) => {
+
     //////////////////////////////////////////////////////////
     //////////////////// LOAD GROUP STATE ////////////////////
     //////////////////////////////////////////////////////////
+
     const tanksResponse = await getTanks(parseInt(props.params.groupId));
     const groupResponse = await getGroup(parseInt(props.params.groupId));
 
     return (
         <div className={"group"}>
             <StoreInitializer
-                groupParam={props.params.groupId}
-                tanks={tanksResponse.data}
-                groupInfo={groupResponse}
+                group={{
+                    groupParam: props.params.groupId,
+                    tanks: tanksResponse.data,
+                    groupInfo: groupResponse
+                }}
             />
             <div className={"status"}>
                 <GroupInfoWidget />

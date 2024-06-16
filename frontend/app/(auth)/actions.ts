@@ -1,7 +1,7 @@
 "use server";
 import { cookies } from 'next/headers'
 import { ILoginForm } from './types';
-import { serverRequest } from '@/app/lib/api/server';
+import { serverRequest } from '@/app/lib/api/request';
 
 interface StoreTokenRequest {
     access: string
@@ -30,7 +30,6 @@ export const login = async (loginForm: ILoginForm) => {
     try {
         const response = await serverRequest("auth", "login", [loginForm.email, loginForm.password], false);
         if (response) {
-            console.log("Login successful");
             // storeTokens({ access: response.data.access, refresh: response.data.refresh, });
             if (response.data.access && response.data.refresh) {
                 await cookies().set({
@@ -47,6 +46,7 @@ export const login = async (loginForm: ILoginForm) => {
                     sameSite: "strict",
                     secure: true,
                 })
+                console.log("Login successful");
                 return true
             } else {
                 console.error("Tokens not found");

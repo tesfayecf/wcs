@@ -142,13 +142,13 @@ export const apiInterface = {
             method: "POST",
             argsKeys: ["sensor_id", "tank_id", "group_id"],
         },
-        sensorReadings: {
+        getSensorReadings: {
             args: () => { return {} as any },
             address: "api/sensors/sensor-readings/",
             method: "POST",
             argsKeys: [],
         },
-        sensorStats: {
+        getSensorStats: {
             args: () => { return {} as any },
             address: "api/sensors/sensor-stats/",
             method: "POST",
@@ -156,9 +156,17 @@ export const apiInterface = {
         }
     },
     dashboard: {
-        summary: {
+        getSummary: {
             args: () => { return {} as ISummary },
             address: "api/data/summary/",
+            method: "POST",
+            argsKeys: [],
+        }
+    },
+    weather: {
+        getWeatherInfo: {
+            args: () => { return {} as any },
+            address: "api/weather/",
             method: "POST",
             argsKeys: [],
         }

@@ -1,7 +1,7 @@
 'use server'
 
 import { apiInterface } from "@/app/lib/api/interface";
-import { serverRequest } from "@/app/lib/api/server";
+import { serverRequest } from "@/app/lib/api/request";
 
 export const handleSendRequest = async (selectedEndpoint, requestData) => {
     // Find the endpoint key

@@ -21,6 +21,8 @@ ALLOWED_HOSTS = environ.get('ALLOWED_HOSTS').split(',')
 # Secure proxy SSL header
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+# Weather API key
+OPENWEATHERMAP_API_KEY = environ.get('OPENWEATHERMAP_API_KEY')
 
 ################ APPLICATIONS ################
 # Application definition
@@ -37,7 +39,8 @@ INSTALLED_APPS = [
     "user_visit",
     "data",
     "users",
-    "sensors"
+    "sensors",
+    "weather",
 ]
 
 # Channels definition
@@ -90,7 +93,6 @@ ASGI_APPLICATION = "backend.routing.application"
 
 ################ DATABASE ################
 # DATABASE_ROUTERS = ['backend.routers.TimeSeriesRouter']
-
 DATABASES = {
     "default": {
         "ENGINE": environ.get('TIMESERIES_DB_ENGINE'),
@@ -115,6 +117,19 @@ DATABASES = {
 }
 ################################################
 
+################ CACHE ################
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',  # Optional unique identifier for the cache instance
+        'TIMEOUT': 3600,  # Default timeout in seconds (300 seconds = 5 minutes)
+        'OPTIONS': {
+            'MAX_ENTRIES': 100,  # Maximum number of cache entries
+            'CULL_FREQUENCY': 15,  # Fraction of entries to be removed when max is reached
+        }
+    }
+}
+################################################
 
 ################ PASSWORD VALIDATION ################
 AUTH_PASSWORD_VALIDATORS = [

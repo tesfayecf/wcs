@@ -90,7 +90,7 @@ class MqttServer:
     def on_connect(self, client, userdata, flags, reason_code, properties):
         if reason_code == 0:
             print("Successfully connected to MQTT broker")
-            self._subscribe(Topic.REGISTER.value)
+            self._subscribe(Topic.REGISTER)
             self.subscribe_topics()
         else:
             print(f"Failed to connect to MQTT broker. Reason code: {reason_code}")
@@ -210,8 +210,8 @@ class MqttServer:
     def subscribe_topics(self):
         sensors = Sensor.objects.all()
         for sensor in sensors:
-            self._subscribe(f"{sensor.sensor_id}/{Topic.DATA.value}")
-            self._subscribe(f"{sensor.sensor_id}/{Topic.COMMAND.value}")
+            self._subscribe(f"{sensor.sensor_id}/{Topic.DATA}")
+            self._subscribe(f"{sensor.sensor_id}/{Topic.COMMAND}")
 
     def _subscribe(self, topic: Union[str, tuple, list]):
         if not self.server_client or not self.server_client.is_connected():

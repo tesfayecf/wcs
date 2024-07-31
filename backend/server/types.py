@@ -1,31 +1,44 @@
 from enum import Enum
 
-class Topics:
+class Topic:
     REGISTER = "register"
     DATA = "data"
     COMMAND = "command"
+
+class MessageParam(Enum):
+    ACTION = 'a'
+    META = 'm'
     
-class Types(Enum):
-    REGISTER = 0
-    DATA = 1
-    COMMAND = 2
+class ActionParam(Enum):
+    TYPE = 't'
+    NAME = 'n'
+    PARAMS = 'p'
+    PARAMS_COUNT = 'pc'
 
-class Actions(Enum):
-    # Register
-    REGISTER_SENSOR = 0,
-    # Data
-    SENSOR_DATA = 1,
-    # Command
+class ActionType(Enum):
+    REGISTER = 'r'
+    DATA = 'd'
+    COMMAND = 'c'
 
+class RegisterAction(Enum):
+    NEW_SENSOR = 'n'
+    UPDATE_SENSOR = 'u'
+    REMOVE_SENSOR = 'r'
 
-class Parameters(Enum):
-    # Metadata
-    MESSAGE_ID = 101,
-    TIMESTAMP = 102,
-    SENSOR_TIME = 103,
-    VERSION = 104,
-    SENSOR_ID = 105,
+class DataAction(Enum):
+    SENSOR_READING = 's'
+    BATCH_READINGS = 'b'
+    ERROR_REPORT = 'e'
 
-    # Action
-    ACTION_TYPE = 201,
-    ACTION_NAME = 202,
+class CommandAction(Enum):
+    SET_INTERVAL = 'i'
+    CALIBRATE = 'c'
+    UPDATE_FIRMWARE = 'f'
+    RESET = 'r'
+
+class MetaParam(Enum):
+    MESSAGE_ID = 'mid'
+    TIMESTAMP = 'ts'
+    SENSOR_TIME = 'st'
+    VERSION = 'v'
+    SENSOR_ID = 'sid'

@@ -26,6 +26,25 @@ class Group(TimeStampedModel):
 
     def __str__(self):
         return self.name
+    
+    def total_tanks(self):
+        return self.tanks.count()
+    
+    def total_active_tanks(self):
+        return self.tanks.filter(is_active=True).count()
+    
+    def total_capacity(self):
+        return sum(tank.capacity for tank in self.tanks.all())
+    
+    def total_active_capacity(self):
+        return sum(tank.capacity for tank in self.tanks.filter(is_active=True))
+    
+    def total_sensors(self):
+        return sum(tank.sensor.count() for tank in self.tanks.all())
+    
+    def total_active_sensors(self):
+        return sum(tank.sensor.filter(is_active=True).count() for tank in self.tanks.filter(is_active=True))
+
 
 ############
 ### TANK ###

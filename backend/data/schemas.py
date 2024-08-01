@@ -2,11 +2,15 @@ from pydantic import BaseModel
 from datetime import datetime
 from enum import Enum
 
+class BaseSchema(BaseModel):
+    class Config:
+        from_attributes = True
+
 #############
 ### GROUP ###
 #############
 
-class GroupSchema(BaseModel):
+class GroupSchema(BaseSchema):
     id: int
     name: str
     location: str
@@ -18,7 +22,7 @@ class GroupSchema(BaseModel):
         from_attributes = True
 
 ### CREATE ###
-class CreateGroupSchema(BaseModel):
+class CreateGroupSchema(BaseSchema):
     name: str
     location: str
     description: str
@@ -27,7 +31,7 @@ class CreateGroupSchema(BaseModel):
         from_attributes = True
 
 ### EDIT ###
-class EditGroupSchema(BaseModel):
+class EditGroupSchema(BaseSchema):
     id: int
     name: str
     location: str
@@ -37,7 +41,13 @@ class EditGroupSchema(BaseModel):
         from_attributes = True
 
 ### DELETE ###
-class DeleteGroupSchema(BaseModel):
+class DeleteGroupSchema(BaseSchema):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+class GetGroupSchema(BaseSchema):
     id: int
 
     class Config:
@@ -54,7 +64,7 @@ class TankType(str, Enum):
     TANK = 'Tank'
     OTHER = 'Other'
 
-class TankSchema(BaseModel):
+class TankSchema(BaseSchema):
     id: int
     name: str
     type: TankType
@@ -67,11 +77,11 @@ class TankSchema(BaseModel):
         from_attributes = True
 
 ### GET ###
-class GetTanksSchema(BaseModel):
+class GetTanksSchema(BaseSchema):
     group_id: int
 
 ### CREATE ###
-class CreateTankSchema(BaseModel):
+class CreateTankSchema(BaseSchema):
     name: str
     type: TankType
     capacity: int
@@ -81,7 +91,7 @@ class CreateTankSchema(BaseModel):
         from_attributes = True
 
 ### EDIT ###
-class EditTankSchema(BaseModel):
+class EditTankSchema(BaseSchema):
     id: int
     name: str
     type: TankType
@@ -93,7 +103,7 @@ class EditTankSchema(BaseModel):
         from_attributes = True
 
 ### DELETE ###
-class DeleteTankSchema(BaseModel):
+class DeleteTankSchema(BaseSchema):
     id: int
     group_id: int
 
@@ -104,7 +114,7 @@ class DeleteTankSchema(BaseModel):
 ### SENSOR ###
 ##############
 
-class SensorSchema(BaseModel):
+class SensorSchema(BaseSchema):
     id: int
     sensor_id: str
     is_active: bool
@@ -115,12 +125,12 @@ class SensorSchema(BaseModel):
         from_attributes = True
 
 ### GET ###
-class GetSensorSchema(BaseModel):
+class GetSensorSchema(BaseSchema):
     tank_id: int
     group_id: int
 
 ### CREATE ###
-class CreateSensorSchema(BaseModel):
+class CreateSensorSchema(BaseSchema):
     sensor_id: str
     tank_id: int
     group_id: int
@@ -129,7 +139,7 @@ class CreateSensorSchema(BaseModel):
         from_attributes = True
 
 ### EDIT ###
-class EditSensorSchema(BaseModel):
+class EditSensorSchema(BaseSchema):
     id: int
     sensor_id: str
     is_active: bool
@@ -140,7 +150,7 @@ class EditSensorSchema(BaseModel):
         from_attributes = True
 
 ### DELETE ###
-class DeleteSensorSchema(BaseModel):
+class DeleteSensorSchema(BaseSchema):
     sensor_id: int
     tank_id: int
     group_id: int

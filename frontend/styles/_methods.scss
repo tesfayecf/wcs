@@ -1,0 +1,80 @@
+// Color modification methods
+
+// Lighten a color by a percentage
+@function lighten-color($color, $percentage) {
+    @return lighten($color, $percentage);
+}
+
+// Darken a color by a percentage
+@function darken-color($color, $percentage) {
+    @return darken($color, $percentage);
+}
+
+// Adjust the saturation of a color
+@function saturate-color($color, $amount) {
+    @return saturate($color, $amount);
+}
+
+// Desaturate a color
+@function desaturate-color($color, $amount) {
+    @return desaturate($color, $amount);
+}
+
+// Adjust the opacity of a color
+@function adjust-opacity($color, $opacity) {
+    @return rgba($color, $opacity);
+}
+
+// Mix two colors
+@function mix-colors($color1, $color2, $weight: 50%) {
+    @return mix($color1, $color2, $weight);
+}
+
+// Invert a color
+@function invert-color($color) {
+    @return invert($color);
+}
+
+// Create a tint of a color (mix with white)
+@function tint-color($color, $percentage) {
+    @return mix(white, $color, $percentage);
+}
+
+// Create a shade of a color (mix with black)
+@function shade-color($color, $percentage) {
+    @return mix(black, $color, $percentage);
+}
+
+// Adjust the hue of a color
+@function adjust-hue-color($color, $degrees) {
+    @return adjust-hue($color, $degrees);
+}
+
+// Generate a complementary color
+@function complementary-color($color) {
+    @return adjust-hue($color, 180);
+}
+
+// Generate an analogous color scheme
+@function analogous-colors($color, $angle: 30) {
+    $color1: adjust-hue($color, $angle);
+    $color2: adjust-hue($color, -$angle);
+    @return ($color, $color1, $color2);
+}
+
+// Generate a triadic color scheme
+@function triadic-colors($color) {
+    $color1: adjust-hue($color, 120);
+    $color2: adjust-hue($color, 240);
+    @return ($color, $color1, $color2);
+}
+
+// Generate a color palette based on a base color
+@function generate-palette($base-color, $steps: 5) {
+    $palette: ();
+    @for $i from 1 through $steps {
+        $lightness: (100 / ($steps + 1)) * $i;
+        $palette: append($palette, lighten($base-color, $lightness), comma);
+    }
+    @return $palette;
+}

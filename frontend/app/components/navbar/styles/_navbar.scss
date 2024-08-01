@@ -2,11 +2,12 @@
     height: 100%;
     width: $navbar-width-1;
     position: fixed;
-
-    background-color: $navbar-background-dark;
+    // background-color: $navbar-background-light;
+    background-color: $background-1-light;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    transition: width $transition-speed $transition-easing;
 
     .navkeys {
         height: 100%;
@@ -23,8 +24,10 @@
             gap: 20px;
             padding: 20px 0px 20px 40px;
             color: $navbar-text-light;
-            font-weight: 700;
-            border-radius: 0px 10px 10px 0px;
+            font-weight: $font-weight-bold;
+            border-radius: 0 10px 10px 0;
+            transition: background-color $transition-speed $transition-easing,
+                color $transition-speed $transition-easing;
 
             .icon {
                 display: flex;
@@ -46,7 +49,7 @@
 
         .selected {
             background-color: $navbar-selected-background-light;
-            border-radius: 0px 10px 10px 0px;
+            box-shadow: rgba(221, 224, 226, 1) -2.4px 2.4px 3.2px;
 
             &:hover {
                 background-color: $navbar-selected-background-light;
@@ -56,13 +59,12 @@
     }
 }
 
-
-@media (max-width: 800px) {
+@media (max-width: $breakpoint-md) {
     .navbar {
         width: $navbar-width-2;
     }
 
-    .navkey_text {
+    .navkey .text {
         display: none !important;
     }
 }

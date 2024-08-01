@@ -1,6 +1,7 @@
 // APP styles
-@import "./globals";
 @import "./variables";
+@import "./globals";
+@import "./methods";
 
 // TEST
 @import "../app/(test)/test/charts/styles/charts";
@@ -28,7 +29,7 @@
 @import '../app/(main)/group/[groupId]/components/TankPupUp/styles/tankPopUp';
 
 // COMPONENTS
-@import '../app/components/buttonTemplate/styles/buttonTemplate';
+@import '../app/components/button/styles/button';
 @import '../app/components/contentBox/styles/contentBox';
 @import '../app/components/formTemplate/styles/formTemplate';
 @import '../app/components/formTemplate/styles/customForm';

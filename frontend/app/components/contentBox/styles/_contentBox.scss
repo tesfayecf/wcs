@@ -1,6 +1,20 @@
 .content_box {
     margin: $content-box-margin;
     border-radius: $content-box-border-radius;
-    background-color: $background-2-light;
-    box-shadow: rgba(221, 224, 226, 255) -2.4px 2.4px 3.2px;
+    background-color: $content-box-backgroun-color;
+    box-shadow: $content-box-shadow;
+
+    transition: box-shadow $transition-speed $transition-easing,
+        transform $transition-speed $transition-easing;
+
+    // Improved typography
+    color: $text-1-light;
+    font-family: $font-family-primary;
+    line-height: 1.5;
+
+    // Hover effect for interactive boxes
+    &:hover {
+        box-shadow: $content-box-shadow-hover;
+        transform: translateY(-2px);
+    }
 }

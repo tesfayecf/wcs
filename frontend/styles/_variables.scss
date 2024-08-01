@@ -1,14 +1,75 @@
+///////////////////////////////////////////////////////////////////////////////////
+// // CONSTANTS
+// $app-color: #55dc9e;
+
+// // Backgound color
+// $background-1-light: #e9ebee; // DONE
+// $background-2-light: #eff1f3; // DONE
+
+// $background-1-dark: #161717;
+// $background-2-dark: #1e1c1e;
+
+// // Text color
+// $text-1-light: #323333;
+// $text-2-light: #7e7f80;
+// $text-3-light: #d1d1d1;
+
+// $text-1-dark: #e4e9ea;
+// $text-2-dark: #b7b7b6;
+// $text-3-dark: #67605f;
+
+// // Content box
+// $content-box-margin: 10px;
+// $content-box-border-radius: 5px;
+
+// // Graph color
+// $graph-color-1: #47e29a;
+// $graph-color-2: #f4c987;
+// $graph-color-3: #f9a638;
+// $graph-color-4: #f89a69;
+
+// // Chart color
+// $chart-color-1: #77c4a9;
+// $chart-color-2: #fae499;
+// $chart-color-3: #789abd;
+
+// // Navbar color
+// $navbar-text-light: #323333;
+// $navbar-text-dark: #e4e9ea;
+
+// $navbar-background-light: #00000000;
+// $navbar-background-dark: #00000000;
+
+// $navbar-hover-text-light: #323333;
+// $navbar-hover-text-dark: #e4e9ea;
+
+// $navbar-hover-background-light: #f3f3f3;
+// $navbar-hover-background-dark: #ffffff;
+
+// $navbar-selected-background-light: #ffffff;
+// $navbar-selected-background-dark: #ffffff;
+
+
+// // Navbar width
+// $navbar-width-1: 200px;
+// $navbar-width-2: 75px;
+///////////////////////////////////////////////////////////////////////////////////
+
 // CONSTANTS
 $app-color: #55dc9e;
+$app-color-light: lighten($app-color, 15%);
+$app-color-dark: darken($app-color, 15%);
 
-// Backgound color
-$background-1-light: #e9ebee; // DONE
-$background-2-light: #eff1f3; // DONE
+// Background colors
+$background-1-light: #e9ebee;
+$background-2-light: #eff1f3;
+$background-3-light: #f5f7f9;
 
 $background-1-dark: #161717;
 $background-2-dark: #1e1c1e;
+$background-3-dark: #252527;
 
-// Text color
+// Text colors
 $text-1-light: #323333;
 $text-2-light: #7e7f80;
 $text-3-light: #d1d1d1;
@@ -18,37 +79,74 @@ $text-2-dark: #b7b7b6;
 $text-3-dark: #67605f;
 
 // Content box
+$content-box-backgroun-color: #ffffff;
 $content-box-margin: 10px;
 $content-box-border-radius: 5px;
+$content-box-shadow: rgba(221, 224, 226, 255) -2.4px 2.4px 3.2px;
+$content-box-shadow-hover: 0 5px 15px rgba(0, 0, 0, 0.1);
 
-// Graph color
+// Graph colors
 $graph-color-1: #47e29a;
 $graph-color-2: #f4c987;
 $graph-color-3: #f9a638;
 $graph-color-4: #f89a69;
+$graph-color-5: #e74c3c;
 
-// Chart color
+// Chart colors
 $chart-color-1: #77c4a9;
 $chart-color-2: #fae499;
 $chart-color-3: #789abd;
+$chart-color-4: #d17a72;
+$chart-color-5: #9b59b6;
 
-// Navbar color
+// Navbar colors
 $navbar-text-light: #323333;
 $navbar-text-dark: #e4e9ea;
 
-$navbar-background-light: #00000000;
-$navbar-background-dark: #00000000;
+$navbar-background-light: rgba(255, 255, 255, 0.473);
+$navbar-background-dark: rgba(22, 23, 23, 0.8);
 
 $navbar-hover-text-light: #323333;
 $navbar-hover-text-dark: #e4e9ea;
 
 $navbar-hover-background-light: #f3f3f3;
-$navbar-hover-background-dark: #ffffff;
+$navbar-hover-background-dark: #2c2d2d;
 
 $navbar-selected-background-light: #ffffff;
-$navbar-selected-background-dark: #ffffff;
-
+$navbar-selected-background-dark: #3a3b3b;
 
 // Navbar width
 $navbar-width-1: 200px;
 $navbar-width-2: 75px;
+
+// Breakpoints
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+// Transitions
+$transition-speed: 0.3s;
+$transition-easing: ease-in-out;
+
+// Z-index
+$z-index-navbar: 1000;
+$z-index-modal: 2000;
+$z-index-tooltip: 3000;
+
+// Fonts
+$font-family-primary: "Inter var", ui-sans-serif, system-ui, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+$font-size-base: 16px;
+$font-size-sm: 14px;
+$font-size-lg: 18px;
+
+$font-weight-normal: 400;
+$font-weight-bold: 700;
+
+// Spacing
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;

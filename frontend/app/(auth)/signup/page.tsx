@@ -1,7 +1,7 @@
 'use client'
 import React from "react";
 import Link from "next/link";
-import FormTemplate from "@/app/components/formTemplate/FormTemplate";
+import FormTemplate from "@/app/components/form/Form";
 import { ISignupForm } from "@/app/(auth)/types";
 import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
 import LogoIcon from "@/public/svg/LogoIcon";

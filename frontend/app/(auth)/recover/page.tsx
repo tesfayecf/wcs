@@ -1,6 +1,6 @@
 'use client'
 import React from "react";
-import FormTemplate from "@/app/components/formTemplate/FormTemplate";
+import FormTemplate from "@/app/components/form/Form";
 import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
 import { IResetForm } from "../types";
 

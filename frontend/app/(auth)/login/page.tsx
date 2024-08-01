@@ -1,8 +1,8 @@
 'use client'
 import React from "react";
 import Link from "next/link";
-import FormTemplate from "@/app/components/form/Form";
-import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
+import Form from "@/app/components/form/Form";
+import Popup from "@/app/components/popup/popup";
 import { ILoginForm } from "@/app/(auth)/types"
 import LogoIcon from "@/public/svg/LogoIcon";
 import { login } from "@/app/(auth)/actions";
@@ -35,7 +35,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
         <div className={"login"}>
             <div className="logo"> <LogoIcon size={2200} /> </div>
             <div className={"form"}>
-                <PopUpTemplate
+                <Popup
                     open={true}
                     hideBackDrop={true}
                     paperProps={{
@@ -43,7 +43,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
                         style: { top: "75px" }
                     }}
                 >
-                    <FormTemplate<ILoginForm>
+                    <Form<ILoginForm>
                         title={<h2>LOG IN. BE THE CHANGE</h2>}
                         titleStyle={titleStyle}
                         externalError={false}
@@ -73,7 +73,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
                             }
                         ]}
                     />
-                </PopUpTemplate>
+                </Popup>
             </div>
         </div>
     )

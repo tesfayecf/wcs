@@ -2,7 +2,7 @@
 import React from 'react';
 import { Dialog, PaperProps } from '@mui/material';
 
-interface PopUpTemplateProps {
+interface PopupProps {
     open: boolean;
     children: React.ReactNode | React.ReactNode[];
     onClose?: (ev: any) => void;
@@ -11,9 +11,7 @@ interface PopUpTemplateProps {
     paperProps?: PaperProps;
 }
 
-const PopUpTemplate: React.FunctionComponent<PopUpTemplateProps> = (
-    props: PopUpTemplateProps
-) => {
+const Popup: React.FunctionComponent<PopupProps> = (props: PopupProps) => {
     const handleKeyDown = (event: any) => {
         if (event.key === 'Escape') {
             props.onClose(event);
@@ -35,4 +33,4 @@ const PopUpTemplate: React.FunctionComponent<PopUpTemplateProps> = (
     );
 };
 
-export default PopUpTemplate;
+export default Popup;

@@ -1,7 +1,7 @@
 'use client'
 import React from "react";
-import FormTemplate from "@/app/components/form/Form";
-import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
+import Form from "@/app/components/form/Form";
+import Popup from "@/app/components/popup/popup";
 import { IResetForm } from "../types";
 
 interface IResetProps { }
@@ -13,7 +13,7 @@ const Reset: React.FunctionComponent<IResetProps> = (props: IResetProps) => {
     return (
         <div className={"reset"}>
             <div className={"form"}>
-                <PopUpTemplate
+                <Popup
                     open={true}
                     onClose={() => { }}
                     hideBackDrop={true}
@@ -21,7 +21,7 @@ const Reset: React.FunctionComponent<IResetProps> = (props: IResetProps) => {
                         elevation: 0,
                     }}
                 >
-                    <FormTemplate<IResetForm>
+                    <Form<IResetForm>
                         title={<h2>RESET PASSWORD</h2>}
                         titleStyle={titleStyle}
                         externalError={false}
@@ -57,7 +57,7 @@ const Reset: React.FunctionComponent<IResetProps> = (props: IResetProps) => {
                             },
                         ]}
                     />
-                </PopUpTemplate>
+                </Popup>
             </div>
         </div>
     );

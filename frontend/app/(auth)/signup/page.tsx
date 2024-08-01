@@ -1,9 +1,9 @@
 'use client'
 import React from "react";
 import Link from "next/link";
-import FormTemplate from "@/app/components/form/Form";
+import Form from "@/app/components/form/Form";
 import { ISignupForm } from "@/app/(auth)/types";
-import PopUpTemplate from "@/app/components/popUpTemplate/PopUpTemplate";
+import Popup from "@/app/components/popup/popup";
 import LogoIcon from "@/public/svg/LogoIcon";
 
 // test signup password: kcswOpy35P
@@ -27,7 +27,7 @@ const Signup: React.FunctionComponent<ISignupProps> = (props: ISignupProps) => {
         <div className={"signup"}>
             <div className="logo"> <LogoIcon size={2200} /> </div>
             <div className={"form"}>
-                <PopUpTemplate
+                <Popup
                     open={true}
                     hideBackDrop={true}
                     paperProps={{
@@ -35,7 +35,7 @@ const Signup: React.FunctionComponent<ISignupProps> = (props: ISignupProps) => {
                         style: { top: "-15px" }
                     }}
                 >
-                    <FormTemplate<ISignupForm>
+                    <Form<ISignupForm>
                         title={<h2>SIGN UP. BE THE CHANGE</h2>}
                         titleStyle={titleStyle}
                         externalError={false}
@@ -86,7 +86,7 @@ const Signup: React.FunctionComponent<ISignupProps> = (props: ISignupProps) => {
                             }
                         ]}
                     />
-                </PopUpTemplate>
+                </Popup>
             </div>
         </div>
     )

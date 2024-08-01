@@ -67,7 +67,7 @@ interface IInternalField<T> {
     errorText: string;
 }
 
-const FormTemplate = <T extends Record<string, any>>(props: IFormProps<T>) => {
+const Form = <T extends Record<string, any>>(props: IFormProps<T>) => {
     const { onCancel, onAccept, isLoading } = props;
     const [formErrors, setFormErrors] = React.useState<boolean>(false);
     const [internalFields, setInternalFields] = React.useState<IInternalField<T>[]>(
@@ -254,7 +254,7 @@ const FormTemplate = <T extends Record<string, any>>(props: IFormProps<T>) => {
     );
 };
 
-export default FormTemplate;
+export default Form;
 
 interface IBaseField {
     key: string;

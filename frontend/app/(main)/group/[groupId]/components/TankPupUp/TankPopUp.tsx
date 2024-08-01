@@ -1,7 +1,7 @@
 'use client'
 import React from 'react';
-import FormTemplate from '@/app/components/form/Form';
-import PopUpTemplate from '@/app/components/popUpTemplate/PopUpTemplate';
+import Form from '@/app/components/form/Form';
+import Popup from '@/app/components/popup/popup';
 import { ITankCreationForm } from '@/app/(main)/group/[groupId]/types';
 
 import { createTank, getTanks } from '../../actions';
@@ -23,11 +23,11 @@ const TankPopUp: React.FunctionComponent<ITankPopUpProps> = (props: ITankPopUpPr
     }
 
     return (
-        <PopUpTemplate
+        <Popup
             open={showTankMenu}
             onClose={() => setShowTankMenu(false)}
         >
-            <FormTemplate<ITankCreationForm>
+            <Form<ITankCreationForm>
                 title="Create Tank"
                 externalError={false}
                 externalErrorText={"Invalid data"}
@@ -60,7 +60,7 @@ const TankPopUp: React.FunctionComponent<ITankPopUpProps> = (props: ITankPopUpPr
                     },
                 ]}
             />
-        </PopUpTemplate>
+        </Popup>
     )
 };
 

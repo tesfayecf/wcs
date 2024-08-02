@@ -1,7 +1,7 @@
 'use server'
+import { revalidateTag } from "next/cache"
 import { serverRequest } from "@/app/lib/api/request"
 import { IGroupCreationForm } from "./types"
-import { revalidateTag } from "next/cache"
 
 
 export const getGroups = async () => {
@@ -62,6 +62,17 @@ export const getSummary = async () => {
         // Make request
         const response = await serverRequest("dashboard", "getSummary", []);
         if (response.ok) revalidateTag("getSummary");
+        return response;
+    } catch (error) {
+        // Log error
+    }
+}
+
+export const getCurrentWeatherData = async (city_name: string) => {
+    try {
+        // Make request
+        const response = await serverRequest("weather", "getCurrentWeatherInfo", [city_name]);
+        if (response.ok) revalidateTag("getCurrentWeatherData");
         return response;
     } catch (error) {
         // Log error

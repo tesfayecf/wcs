@@ -6,7 +6,7 @@ import useGroupStore from "@/app/(main)/group/[groupId]/store";
 interface IGroupDescriptionProps { }
 
 const GroupDescription: React.FunctionComponent<IGroupDescriptionProps> = (props: IGroupDescriptionProps) => {
-    const description = useGroupStore(state => state.groupInfo.description)
+    const description = useGroupStore(state => state.group.description)
 
     return (
         <ContentBox customBoxClass={"groupDescription"}>

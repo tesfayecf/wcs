@@ -5,9 +5,10 @@ import useGroupStore from '@/app/(main)/group/[groupId]/store';
 
 interface IGroupWidgetProps { }
 
+// TOOD: maybe rename to groupStats
 
 const GroupInfoWidget: React.FunctionComponent<IGroupWidgetProps> = (props: IGroupWidgetProps) => {
-    const groupInfo = useGroupStore((state) => state.groupInfo)
+    const groupInfo = useGroupStore((state) => state.group)
 
     return (
         <ContentBox customBoxClass={"groupInfo"}>

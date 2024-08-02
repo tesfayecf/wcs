@@ -2,7 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import Form from "@/app/components/form/Form";
-import Popup from "@/app/components/popup/popup";
+import Popup from "@/app/components/popup/Popup";
 import { ILoginForm } from "@/app/(auth)/types"
 import LogoIcon from "@/public/svg/LogoIcon";
 import { login } from "@/app/(auth)/actions";

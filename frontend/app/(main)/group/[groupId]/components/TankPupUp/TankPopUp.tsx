@@ -1,7 +1,7 @@
 'use client'
 import React from 'react';
 import Form from '@/app/components/form/Form';
-import Popup from '@/app/components/popup/popup';
+import Popup from '@/app/components/popup/Popup';
 import { ITankCreationForm } from '@/app/(main)/group/[groupId]/types';
 
 import { createTank, getTanks } from '../../actions';

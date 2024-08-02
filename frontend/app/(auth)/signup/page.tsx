@@ -3,7 +3,7 @@ import React from "react";
 import Link from "next/link";
 import Form from "@/app/components/form/Form";
 import { ISignupForm } from "@/app/(auth)/types";
-import Popup from "@/app/components/popup/popup";
+import Popup from "@/app/components/popup/Popup";
 import LogoIcon from "@/public/svg/LogoIcon";
 
 // test signup password: kcswOpy35P

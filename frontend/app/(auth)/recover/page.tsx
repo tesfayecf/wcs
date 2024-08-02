@@ -1,7 +1,7 @@
 'use client'
 import React from "react";
 import Form from "@/app/components/form/Form";
-import Popup from "@/app/components/popup/popup";
+import Popup from "@/app/components/popup/Popup";
 import { IResetForm } from "../types";
 
 interface IResetProps { }

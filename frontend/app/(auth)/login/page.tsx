@@ -37,7 +37,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
             <div className={"form"}>
                 <Popup
                     open={true}
-                    hideBackDrop={true}
+                    hideBackdrop={true}
                     paperProps={{
                         elevation: 0,
                         style: { top: "75px" }

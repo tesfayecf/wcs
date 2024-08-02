@@ -25,28 +25,28 @@
                 flex-direction: column;
                 justify-content: flex-start;
                 align-items: center;
-                margin: 0px 10px 0px 25px;
+                margin: 0 $spacing-sm 0 $spacing-lg;
 
                 .legend-item {
                     display: flex;
                     flex-direction: row;
                     justify-content: flex-start;
                     align-items: baseline;
-                    gap: 7px;
+                    gap: $spacing-xs;
 
                     .dot {
-                        height: 7px;
-                        width: 7px;
+                        height: $spacing-xs;
+                        width: $spacing-xs;
                         border-radius: 50%;
                         display: inline-block;
-                        background-color: black;
+                        background-color: $text-1-light;
                     }
 
                     .label {
-                        font-size: 12px;
-                        color: #97999a; // $text-2-light:
-                        margin: 2px;
-                        text-wrap: nowrap;
+                        font-size: $font-size-sm - 2px;
+                        color: $text-1-light;
+                        margin: $spacing-xxs;
+                        white-space: nowrap;
                     }
                 }
             }
@@ -54,7 +54,6 @@
             .chart {
                 position: relative;
                 height: 100%;
-                // margin: 10px -40px;
 
                 canvas {
                     height: 100%;
@@ -68,9 +67,8 @@
             width: 100%;
             position: relative;
 
-
             canvas {
-                margin: 10px
+                margin: $spacing-sm;
             }
         }
     }

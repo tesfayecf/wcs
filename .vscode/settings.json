@@ -46,7 +46,10 @@
     "streambuf": "cpp",
     "system_error": "cpp",
     "tuple": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "array": "cpp",
+    "initializer_list": "cpp",
+    "regex": "cpp"
   },
   "svg.preview.background": "transparent"
 }

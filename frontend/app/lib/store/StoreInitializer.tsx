@@ -19,8 +19,8 @@ export interface IStoreInitializer {
     /// Group \\\
     group?: {
         groupParam?: string;
+        group?: IGroup;
         tanks?: ITank[];
-        groupInfo?: IGroup;
     }
 }
 

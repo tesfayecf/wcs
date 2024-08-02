@@ -1,6 +1,6 @@
 import { ILoginForm, IResetForm, ISignupForm } from "@/app/(auth)/types";
 import { IGroup, IGroupStats, ISummary } from "@/app/(main)/dashboard/types";
-import { ISensor, ITank } from "@/app/(main)/group/[groupId]/types";
+import { ISensor, ISensorreading as ISensorReading, ITank } from "@/app/(main)/group/[groupId]/types";
 import { IUserInfo } from "@/app/app/types";
 
 export interface APIResponse<T> {
@@ -143,16 +143,22 @@ export const apiInterface = {
             argsKeys: ["sensor_id", "tank_id", "group_id"],
         },
         getSensorReadings: {
-            args: () => { return {} as any },
-            address: "api/sensors/sensor-readings/",
+            args: (sensor_id: string) => { return {} as ISensorReading[] },
+            address: "api/sensors/readings/",
             method: "POST",
-            argsKeys: [],
+            argsKeys: ["sensor_id"],
         },
-        getSensorStats: {
-            args: () => { return {} as any },
-            address: "api/sensors/sensor-stats/",
+        getSensorLastReading: {
+            args: (sensor_id: string) => { return {} as ISensorReading },
+            address: "api/sensors/last-reading/",
             method: "POST",
-            argsKeys: [],
+            argsKeys: ["sensor_id"],
+        },
+        getSensorFlow: {
+            args: (sensor_id: string) => { return {} as any },
+            address: "api/sensors/flow/",
+            method: "POST",
+            argsKeys: ["sensor_id"],
         }
     },
     dashboard: {
@@ -164,11 +170,17 @@ export const apiInterface = {
         }
     },
     weather: {
-        getWeatherInfo: {
-            args: () => { return {} as any },
-            address: "api/weather/",
+        getCurrentWeatherInfo: {
+            args: (city_name: string) => { return {} as any },
+            address: "api/weather/current/",
             method: "POST",
-            argsKeys: [],
+            argsKeys: ["city_name"],
+        },
+        getForecastWeatherInfo: {
+            args: (city_name: string) => { return {} as any },
+            address: "api/weather/forecast/",
+            method: "POST",
+            argsKeys: ["city_name"],
         }
     }
 } as const;

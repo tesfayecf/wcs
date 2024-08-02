@@ -1,32 +1,42 @@
 'use client'
-import React from 'react';
-import { Dialog, PaperProps } from '@mui/material';
 
+import React, { useEffect, useCallback } from 'react';
+import { Dialog, PaperProps, Fade } from '@mui/material';
 interface PopupProps {
     open: boolean;
     children: React.ReactNode | React.ReactNode[];
-    onClose?: (ev: any) => void;
+    onClose?: (ev: KeyboardEvent) => void;
+    onEnter?: (ev: KeyboardEvent) => void;
     customStyles?: React.CSSProperties;
-    hideBackDrop?: boolean;
+    hideBackdrop?: boolean;
     paperProps?: PaperProps;
+    fullScreen?: boolean;
+    maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
+    transitionDuration?: number;
 }
 
 const Popup: React.FunctionComponent<PopupProps> = (props: PopupProps) => {
-    const handleKeyDown = (event: any) => {
-        if (event.key === 'Escape') {
-            props.onClose(event);
-        }
-    };
+    const handleKeyDown = useCallback((event: KeyboardEvent) => {
+        if (event.key === 'Escape' && props.onClose) props.onClose(event);
+        else if (event.key === 'Enter' && props.onEnter) props.onEnter(event);
+    }, [props.onClose, props.onEnter]);
+
+    useEffect(() => {
+        if (open) document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);;
+    }, [open, handleKeyDown]);
 
     return (
         <Dialog
-            className={'popUp'}
+            className="popUp"
             style={props.customStyles}
             open={props.open}
             onClose={props.onClose}
-            hideBackdrop={props.hideBackDrop}
-            onKeyDown={handleKeyDown}
+            fullScreen={props.fullScreen}
+            maxWidth={props.maxWidth ?? 'sm'}
+            hideBackdrop={props.hideBackdrop}
             PaperProps={props.paperProps}
+            TransitionComponent={Fade}
         >
             {props.children}
         </Dialog>

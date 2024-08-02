@@ -1,37 +1,27 @@
 'use client'
 import React from 'react';
-import ConnectedIcon from '@/public/svg/ConnectedIcon';
 import ContentBox from '@/app/components/contentBox/ContentBox';
 import { ITank, ITankStatus } from '@/app/(main)/group/[groupId]/types';
+import { getSensorLastReading } from '../../actions';
 
 interface ITankWidgetWidgetProps {
     tank: ITank,
 }
 
-const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITankWidgetWidgetProps) => {
-    const getStatus = () => {
+const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = async (props: ITankWidgetWidgetProps) => {
+
+    const getSensorStatus = () => {
         let text: ITankStatus = "Undefined";
         let icon = null;
         let color: string = "#f69c68";
-
-        // const sensor = props.sensors.find(s => s.tank.id === props.tank.id);
-        // if (sensor) {
-        //     text = sensor.is_active ? "Connected" : "Disconnected"
-        //     color = sensor.is_active ? "#3de198" : "#e07159"
-        //     icon = sensor.is_active ? <ConnectedIcon size={30} fill={color} strokeWidth={1} /> : null
-        // }
 
         return (
             <p style={{ color: color }}>{icon} {text}</p>
         )
     }
 
-    const getSensorValue = () => {
-        // const sensor = props.sensors.find(s => s.tank.id === props.tank.id)
-        // if (!sensor) return ""
-        // const sensorData = props.sensorsData[sensor.id]
-        // if (!sensorData) return ""
-        return null
+    const getSensorReading = async () => {
+        return Math.round(Math.random() * 100)
     }
 
     return (
@@ -48,10 +38,10 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
                 </div>
                 <div className={"tankData"}>
                     <div className={"level"}>
-                        {getSensorValue()}
+                        {getSensorReading()}
                     </div>
                     <div className={"status"}>
-                        {getStatus()}
+                        {getSensorStatus()}
                     </div>
                 </div>
             </div>
@@ -78,13 +68,4 @@ const DataListElement: React.FunctionComponent<IDataListElementProps> = (props: 
         </div>
     )
 
-}
-
-
-const waterAnimation = () => {
-    return (
-        <span className={"main"}>
-
-        </span>
-    )
 }

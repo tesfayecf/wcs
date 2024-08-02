@@ -1,9 +1,9 @@
 import React from 'react'
-import Navbar from '@/app/components/navbar/Navbar'
-import { authenticate } from '@/app/lib/auth/actions';
-import { getUserInfo, getWeatherInfo } from './actions';
-import { StoreInitializer } from '@/app/lib/store/StoreInitializer';
 import { redirect } from 'next/navigation';
+import { StoreInitializer } from '@/app/lib/store/StoreInitializer';
+import { authenticate } from '@/app/lib/auth/actions';
+import { getUserInfo } from '@/app/(main)/actions';
+import Navbar from '@/app/components/navbar/Navbar'
 
 
 type IAppLayoutProps = {
@@ -12,7 +12,7 @@ type IAppLayoutProps = {
 
 export default async function RootLayout({ children }: IAppLayoutProps) {
     //////////////////////////////////////////////////////////
-    if (!await authenticate()) redirect("/login"); // Authenticate user
+    if (!await authenticate()) redirect("/login"); /////////// Authenticate user
     //////////////////////////////////////////////////////////
 
     //////////////////////////////////////////////////////////
@@ -21,7 +21,6 @@ export default async function RootLayout({ children }: IAppLayoutProps) {
 
     /// User info \\\
     const userInfoResponse = await getUserInfo();
-    // const weatherDataResponse = await getWeatherInfo()
 
     return (
         <div id="mainLayout" className={"mainLayout"}>

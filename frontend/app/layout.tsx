@@ -1,7 +1,5 @@
 import React from 'react'
 import "../styles/app.css"
-import LoadingState from './lib/utils/loading';
-import { AntdRegistry } from '@ant-design/nextjs-registry';
 
 type IAppLayoutProps = {
     children: React.ReactNode[] | React.ReactNode | undefined | null;
@@ -16,8 +14,7 @@ export default function RootLayout({ children }: IAppLayoutProps) {
                 <title>WCS</title>
             </head>
             <body>
-                {/* <LoadingState /> */}
-                <AntdRegistry>{children}</AntdRegistry>
+                {children}
             </body>
         </html>
     )

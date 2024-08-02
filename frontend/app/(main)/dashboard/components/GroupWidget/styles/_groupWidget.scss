@@ -1,12 +1,12 @@
 .groupWidget {
-    height: 150px;
+    height: $group-widget-height;
 
     .disabled {
-        opacity: 0.3;
+        opacity: $group-widget-disabled-opacity;
         width: 100%;
         height: 100%;
         border-radius: inherit;
-        background-color: gray;
+        background-color: $text-3-light;
     }
 
     .addGroupContent {
@@ -28,47 +28,46 @@
 
         .groupBanner {
             width: 100%;
-            height: 20px;
+            height: 100%;
         }
 
         .groupInfo {
             width: 100%;
-            height: 80px;
-            padding: 5px;
+            height: $spacing-xl * 2.5;
+            padding: $spacing-xs;
 
             .groupName {
-                font-size: 20px;
+                font-size: $font-size-lg;
                 text-align: start;
                 color: $text-1-light;
-                font-weight: 700;
-                margin: 5px 15px;
+                font-weight: $font-weight-bold;
+                margin: $spacing-xs $spacing-sm;
             }
 
             .groupLocation {
-                font-size: 14px;
-                font-weight: 500;
+                font-size: $font-size-sm;
+                font-weight: $font-weight-normal;
                 text-align: start;
                 color: $text-2-light;
-                margin: 5px 15px;
+                margin: $spacing-xs $spacing-sm;
             }
         }
 
         .groupSettings {
             position: absolute;
             display: flex;
-            font-size: 14px;
-            font-weight: 500;
-            gap: 5px;
-            bottom: 20px;
-            right: 20px;
-            text-decoration: inherit;
+            font-size: $font-size-sm;
+            font-weight: $font-weight-normal;
+            bottom: $spacing-lg;
+            text-decoration: none;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 $spacing-lg;
 
-            // .edit {}
-
+            .edit,
             .delete {
                 text-decoration: inherit;
             }
-
         }
     }
 }

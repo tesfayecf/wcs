@@ -1,111 +1,91 @@
 'use server'
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation';
 import { serverRequest } from '../api/request';
 
-export const storeAccesToken = async (access: string) => {
-    await cookies().set({
-        name: "access",
-        value: access,
-        httpOnly: true,
-        sameSite: "strict",
-        secure: true,
-    })
-}
+const COOKIE_OPTIONS = {
+    httpOnly: true,
+    sameSite: "strict" as const,
+    secure: process.env.NODE_ENV !== "development",
+    maxAge: 60 * 60 * 24 * 7, // 1 week
+};
 
-export const storeRefreshToken = async (refresh: string) => {
+const storeToken = async (name: 'access' | 'refresh', value: string) => {
     await cookies().set({
-        name: "refresh",
-        value: refresh,
-        httpOnly: true,
-        sameSite: "strict",
-        secure: true,
-    })
-}
+        name,
+        value,
+        ...COOKIE_OPTIONS,
+    });
+};
 
-export const authenticate = async () => {
-    const accesToken = cookies().get("access")?.value;
+export const storeAccessToken = (access: string) => storeToken('access', access);
+export const storeRefreshToken = (refresh: string) => storeToken('refresh', refresh);
+
+const getTokens = () => {
+    const accessToken = cookies().get("access")?.value;
     const refreshToken = cookies().get("refresh")?.value;
+    return { accessToken, refreshToken };
+};
 
-    // Check if it has cookies
-    if (!accesToken || !refreshToken) {
+export const authenticate = async (): Promise<boolean> => {
+    const { accessToken, refreshToken } = getTokens();
+
+    if (!accessToken || !refreshToken) {
         console.log("User not authenticated -> auth");
-        // redirect("/login");
         return false;
     }
 
     try {
-        const accessReponse = await serverRequest("auth", "verify", [accesToken])
-        if (accessReponse.ok) {
+        const accessResponse = await serverRequest("auth", "verify", [accessToken]);
+        if (accessResponse.ok) {
             console.log("User authenticated - access auth");
-            return true
-        }
-
-        const refreshResponse = await serverRequest("auth", "refresh", [])
-        if (refreshResponse.ok) {
-            console.log("User authenticated - refresh auth");
-            await cookies().set({
-                name: "access",
-                value: refreshResponse.data.access,
-                httpOnly: true,
-                sameSite: "strict",
-                secure: true,
-            })
-            return true
-        }
-
-        // Access and refresh tokens are not valid, redirect to login
-        console.log("Access and refresh tokens are not valid verify");
-        // redirect("./login");
-        return false;
-
-    } catch (error) {
-        console.error("Error:", error);
-        // redirect("./login");
-        return false;
-    }
-}
-
-export const verify = async () => {
-    const accesToken = cookies().get("access")?.value;
-    const refreshToken = cookies().get("refresh")?.value;
-
-    // Check if it has cookies
-    if (!accesToken || !refreshToken) {
-        console.log("User not authenticated verify");
-        return false
-    }
-
-    try {
-        const accessReponse = await serverRequest("auth", "verify", [accesToken])
-        if (accessReponse.ok) {
-            console.log("User authenticated - access verify");
             return true;
         }
 
-        const refreshResponse = await serverRequest("auth", "refresh", [])
-        if (refreshResponse.ok) {
-            console.log("Updated access token:", refreshResponse.data.access);
-            await cookies().set({
-                name: "access",
-                value: refreshResponse.data.access,
-                httpOnly: true,
-                sameSite: "strict",
-                secure: true,
-            })
-            return true
-        }
-
-        // Access and refresh tokens are not valid, redirect to login
-        console.log("Access and refresh tokens are not valid - verify");
-        return false;
-
+        return await refreshAccessToken();
     } catch (error) {
-        console.error("Error:", error);
+        console.error("Authentication error:", error);
         return false;
     }
-}
+};
 
-export const refresh = async () => {
-    return false;
-}
+export const verify = async (): Promise<boolean> => {
+    const { accessToken, refreshToken } = getTokens();
+
+    if (!accessToken || !refreshToken) {
+        console.log("User not verified");
+        return false;
+    }
+
+    try {
+        const accessResponse = await serverRequest("auth", "verify", [accessToken]);
+        if (accessResponse.ok) {
+            console.log("User access verified");
+            return true;
+        }
+
+        return await refreshAccessToken();
+    } catch (error) {
+        console.error("Verification error:", error);
+        return false;
+    }
+};
+
+const refreshAccessToken = async (): Promise<boolean> => {
+    try {
+        const refreshResponse = await serverRequest("auth", "refresh", []);
+        if (refreshResponse.ok && refreshResponse.data?.access) {
+            console.log("Updated access token");
+            await storeAccessToken(refreshResponse.data.access);
+            return true;
+        }
+        console.log("Failed to refresh access token");
+        return false;
+    } catch (error) {
+        console.error("Refresh error:", error);
+        return false;
+    }
+};
+
+export const refresh = async (): Promise<boolean> => {
+    return await refreshAccessToken();
+};

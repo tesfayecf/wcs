@@ -33,7 +33,7 @@ export const apiInterface = {
             argsKeys: ["email", "password"],
         },
         logout: {
-            args: () => { return }, // void
+            args: () => { return },
             address: "api/auth/logout/",
             method: "POST",
             argsKeys: []

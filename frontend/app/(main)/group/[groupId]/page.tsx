@@ -23,16 +23,17 @@ const Group: React.FunctionComponent<IDashboardProps> = async (props: IDashboard
     //////////////////// LOAD GROUP STATE ////////////////////
     //////////////////////////////////////////////////////////
 
+    const groupResponse = await getGroup(parseInt(props.params.groupId)); // TODO: get all group (info, description, ...) here. Then distribite to components with props or state.
+    // const groupStatsResponse = await getGroupStats(parseInt(props.params.groupId)); // TODO: Get group stats here.
     const tanksResponse = await getTanks(parseInt(props.params.groupId));
-    const groupResponse = await getGroup(parseInt(props.params.groupId));
 
     return (
         <div className={"group"}>
             <StoreInitializer
                 group={{
                     groupParam: props.params.groupId,
-                    tanks: tanksResponse.data,
-                    groupInfo: groupResponse
+                    group: groupResponse,
+                    tanks: tanksResponse,
                 }}
             />
             <div className={"status"}>

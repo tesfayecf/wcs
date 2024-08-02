@@ -4,16 +4,12 @@ export interface IGroupParams {
     groupId: string;
 }
 export interface IGroupStore {
-    tankId: number;
-    tanks: ITank[];
-
-    sensors: ISensor[];
-    sensorsData: Record<string, any>;
-
     groupId: number;
-    groupInfo: IGroup;
+    group: IGroup;
     groupStats: IGroupStats;
 
+    tankId: number;
+    tanks: ITank[];
     showTankMenu: boolean;
 }
 
@@ -24,7 +20,8 @@ export interface ITank {
     type: string;
     date_created: Date;
     date_modified: Date;
-    is_Active: boolean;
+    is_active: boolean;
+    sensor?: ISensor
 }
 
 export interface ITankCreationForm {
@@ -45,4 +42,9 @@ export interface ISensor {
 
 export interface ISensorCreationForm {
     sensorId: string;
+}
+
+export interface ISensorreading {
+    time: Date;
+    distance: number;
 }

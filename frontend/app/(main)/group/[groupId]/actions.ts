@@ -1,7 +1,7 @@
 'use server'
 
 import { serverRequest } from "@/app/lib/api/request";
-import { ISensorCreationForm, ITank, ITankCreationForm } from "./types";
+import { ISensor, ISensorCreationForm, ITank, ITankCreationForm } from "./types";
 import { revalidateTag } from "next/cache";
 
 // Group
@@ -18,8 +18,20 @@ export const getTanks = async (groupId: number) => {
     try {
         // Make request
         const response = await serverRequest("tank", "getTanks", [groupId]);
-        if (response.ok) revalidateTag("getTanks");
-        return response;
+        if (response.ok) {
+            revalidateTag("getTanks");
+            const tanks = response.data;
+            // Get tanks sensor
+            await Promise.all(tanks.map(async (tank) => {
+                const sensor = await getSensor(tank.id, groupId);
+                if (!sensor.ok) return;
+                tank.sensor = sensor.data;
+            }));
+
+            return tanks
+        } else {
+            return []
+        }
     } catch (error) {
         // Log error
     }
@@ -108,3 +120,37 @@ export const deleteSensor = async (sensorId: number, tankId: number, groupId: nu
         // Log error
     }
 }
+
+
+export const getSensorReadings = async (sensorId: string) => {
+    try {
+        // Make request
+        const response = await serverRequest("sensor", "getSensorReadings", [sensorId]);
+        if (!response.ok) return []
+        return response;
+    } catch (error) {
+        // Log error
+    }
+}
+
+export const getSensorLastReading = async (sensorId: string) => {
+    try {
+        // Make request
+        const response = await serverRequest("sensor", "getSensorLastReading", [sensorId]);
+        if (!response.ok) return undefined
+        return response;
+    } catch (error) {
+        // Log error
+    }
+}
+
+// export const getSensorStatus = async (sensorId: string) => {
+//     try {
+//         // Make request
+//         const response = await serverRequest("sensor", "getSensorStatus", [sensorId]);
+//         if (!response.ok) return undefined
+//         return response;
+//     } catch (error) {
+//         // Log error
+//     }
+// }

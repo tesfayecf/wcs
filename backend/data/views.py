@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from .schemas import *
 from .models import Tank, Group, Sensor
-from ..utils.misc import model_to_dict
+from utils.misc import model_to_dict
 
 # Cache timeout in seconds (e.g., 5 minutes)
 CACHE_TIMEOUT = 300
@@ -18,6 +18,7 @@ CACHE_TIMEOUT = 300
 ### SUMMARY ###
 ###############
 
+### GET ###
 class GetSummaryView(APIView):
     def post(self, request):
         try:
@@ -34,24 +35,12 @@ class GetSummaryView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 #############
 ### GROUP ###
 #############
 
 ### GET ###
-class GetGroupsView(APIView):
-    def post(self, request):
-        try:
-            # If not in cache, retrieve from database
-            groups = Group.objects.filter(user=request.user)
-            
-            # Serialize groups
-            groups_json = [GroupSchema(**model_to_dict(group)).model_dump() for group in groups]
-
-            return Response(groups_json, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 class GetGroupView(APIView):
     def post(self, request):
         try:
@@ -82,6 +71,19 @@ class GetGroupView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class GetGroupsView(APIView):
+    def post(self, request):
+        try:
+            # If not in cache, retrieve from database
+            groups = Group.objects.filter(user=request.user)
+            
+            # Serialize groups
+            groups_json = [GroupSchema(**model_to_dict(group)).model_dump() for group in groups]
+
+            return Response(groups_json, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 ### CREATE ###
 class CreateGroupView(APIView):
@@ -289,6 +291,30 @@ def get_group(group_id: int, user) -> Group:
 ############
 
 ### GET ###
+class GetTankView(APIView):
+    def post(self, request):
+        try:
+            # Deserialize request data
+            get_tank_data = GetTankSchema(**request.data)
+
+            # Check if the group exists
+            group = get_group(get_tank_data.group_id, request.user)
+            if not group:
+                return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Retrieve the tank
+            tank = Tank.objects.filter(pk=get_tank_data.id, group__id=get_tank_data.group_id, group__user=request.user).first()
+            if not tank:
+                return Response({'Bad Request': 'Tank does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Serialize the tank
+            tank_schema = TankSchema(**model_to_dict(tank))
+            tank_json = tank_schema.model_dump()
+
+            return Response(tank_json, status=status.HTTP_200_OK)
+        except ValidationError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 class GetTanksView(APIView):
     def post(self, request):
         try:
@@ -325,6 +351,7 @@ class CreateTankView(APIView):
                 return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Check if a tank with the same name already exists
+
             if Tank.objects.filter(name=create_tank_data.name, group__id=create_tank_data.group_id, group__user=request.user).exists():
                 return Response({'Bad Request': 'Tank with the same name already exists'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -367,6 +394,10 @@ class EditTankView(APIView):
             if not group:
                 return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
+            # Check if a tank with the same name already exists in the same group
+            if Tank.objects.filter(name=edit_tank_data.name, group__id=edit_tank_data.group_id, group__user=request.user).exclude(pk=edit_tank_data.id).exists():
+                return Response({'Bad Request': 'Tank with the same name already exists'}, status=status.HTTP_400_BAD_REQUEST)
+
             # Retrieve and update the tank
             tank = Tank.objects.filter(pk=edit_tank_data.id, group__id=edit_tank_data.group_id, group__user=request.user).first()
             if not tank:
@@ -381,6 +412,10 @@ class EditTankView(APIView):
             # Serialize the edited tank
             tank_schema = TankSchema(**model_to_dict(tank))
             tank_json = tank_schema.model_dump()
+
+            # Cache the data for future requests
+            cache_key = f"tank_{tank_schema.id}"
+            cache.set(cache_key, tank, timeout=CACHE_TIMEOUT)
 
             return Response(tank_json, status=status.HTTP_200_OK)
         except ValidationError as e:
@@ -421,6 +456,32 @@ def remove_tanks_cache(group_id: int):
     cache_key = f"tank_{group_id}"
     cache.delete(cache_key)
 
+def get_tank(tank_id: int, group_id: int, user) -> Tank:
+    """Check if the tank exists in the cache and the database."""
+    cache_key = f"tank_{tank_id}"
+
+    try:
+        # Attempt to retrieve the tank from the cache
+        cached_tank = cache.get(cache_key)
+
+        if cached_tank:
+            # Return Tank object form cache
+            return cached_tank
+
+        # Attempt to retrieve the tank from the database
+        tank = Tank.objects.filter(pk=tank_id, group__id=group_id, group__user=user).first()
+
+        if tank:
+            # Store Tank object in cache
+            cache.set(cache_key, tank, timeout=CACHE_TIMEOUT)
+
+        return tank
+
+    except Exception as e:
+        # Log the exception for debugging purposes
+        print(f"Error retrieving tank {tank_id}: {e}")
+        return None
+    
 
 ##############
 ### SENSOR ###
@@ -441,19 +502,50 @@ class GetSensorView(APIView):
             if not Tank.objects.filter(pk=get_sensor_data.tank_id).exists():
                 return Response({'Bad Request': 'Tank does not exist'}, status=status.HTTP_400_BAD_REQUEST)
             
-            # Get sensors in tank
-            sensor = Sensor.objects.filter(
+            # Get sensors in tank (There must be olny one)
+            sensors = Sensor.objects.filter(
                 tank__id=get_sensor_data.tank_id,
                 tank__group__id=get_sensor_data.group_id
             )
             
-            # Get sensor
-            sensor_schema = SensorSchema(**to_dict(sensor))
+            # Get sensor 
+            sensors_json = [] 
+            for sensor in sensors:
+                # Serialize the sensor
+                sensor_schema = SensorSchema(**model_to_dict(sensor))
+                sensors_json.append(sensor_schema.model_dump())
+
+                # Cache the data for future requests
+                cache_key = f"sensor_{sensor_schema.id}"
+                cache.set(cache_key, sensor, timeout=CACHE_TIMEOUT)
+                
+            if len(sensors_json) > 1:
+                return Response({'Bad Request': 'More than one sensor in this tank'}, status=status.HTTP_400_BAD_REQUEST)
+            elif len(sensors_json) == 0:
+                return Response({'Bad Request': 'No sensors in this tank'}, status=status.HTTP_400_BAD_REQUEST)
             
-            # Convert to JSON
-            sensor_json = sensor_schema.model_dump()
-            
-            return Response(sensor_json, status=status.HTTP_200_OK)
+            return Response(sensors_json[0], status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class GetSensorsView(APIView):
+    def post(self, request):
+        try:
+            # Get sensors of user
+            sensors = Sensor.objects.filter(tank__group__user=request.user)
+
+            # Get sensor 
+            sensors_json = [] 
+            for sensor in sensors:
+                # Serialize the sensor
+                sensor_schema = SensorSchema(**model_to_dict(sensor))
+                sensors_json.append(sensor_schema.model_dump())
+
+                # Cache the data for future requests
+                cache_key = f"sensor_{sensor_schema.id}"
+                cache.set(cache_key, sensor, timeout=CACHE_TIMEOUT)
+
+            return Response(sensors_json, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -491,11 +583,13 @@ class CreateSensorView(APIView):
             )
             sensor.save()
 
-            # Get created sensor
-            sensor_schema = SensorSchema(**to_dict(sensor))
-            
-            # Convert to JSON
+            # Serialize the created sensor
+            sensor_schema = SensorSchema(**model_to_dict(sensor))
             sensor_json = sensor_schema.model_dump()
+
+            # Cache the data for future requests
+            cache_key = f"sensor_{sensor_schema.id}"
+            cache.set(cache_key, sensor, timeout=CACHE_TIMEOUT)
             
             return Response(sensor_json, status=status.HTTP_200_OK)
         except Exception as e:
@@ -507,6 +601,9 @@ class EditSensorView(APIView):
         try:
             # Deserialize request data
             edit_sensor_data = EditSensorSchema(**request.data)
+
+            # Remove cache for this senosr
+            remove_sensors_cache(edit_sensor_data.sensor_id)
             
             # Check the group exists
             if not Group.objects.filter(pk=edit_sensor_data.group_id).exists():
@@ -532,12 +629,14 @@ class EditSensorView(APIView):
             sensor.is_active = edit_sensor_data.is_active
             sensor.save()
             
-            # Get edited sensor
-            sensor_schema = SensorSchema(**to_dict(sensor))
-            
-            # Convert to JSON
+            # Serialize the edited sensor
+            sensor_schema = SensorSchema(**model_to_dict(sensor))
             sensor_json = sensor_schema.model_dump()
             
+            # Cache the data for future requests
+            cache_key = f"sensor_{sensor_schema.id}"
+            cache.set(cache_key, sensor, timeout=CACHE_TIMEOUT)
+
             return Response(sensor_json, status=status.HTTP_200_OK)
         except Sensor.DoesNotExist:
             return Response({"error": "Sensor not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -551,6 +650,9 @@ class DeleteSensorView(APIView):
             # Deserialize request data
             delete_sensor_data = DeleteSensorSchema(**request.data)
             
+            # Remove cache for this senosr
+            remove_sensors_cache(delete_sensor_data.sensor_id)
+
             # Check the group exists
             if not Group.objects.filter(pk=delete_sensor_data.group_id).exists():
                 return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
@@ -576,3 +678,34 @@ class DeleteSensorView(APIView):
             return Response({}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+### CACHE ### 
+def remove_sensors_cache(group_id: int):
+    """Remove all cached information for sensors in a specific group."""
+    cache_key = f"sensor_{group_id}"
+    cache.delete(cache_key)
+
+def get_sensor(sensor_id: int, tank_id: int, group_id: int, user) -> Sensor:
+    """Check if the sensor exists in the cache and the database."""
+    cache_key = f"sensor_{sensor_id}"
+
+    try:
+        # Attempt to retrieve the sensor from the cache
+        cached_sensor = cache.get(cache_key)
+
+        if cached_sensor:
+            # Return Sensor object form cache
+            return cached_sensor
+
+        # Attempt to retrieve the sensor from the database
+        sensor = Sensor.objects.filter(pk=sensor_id, tank__id=tank_id, tank__group__id=group_id, tank__group__user=user).first()
+
+        if sensor:
+            # Store Sensor object in cache
+            cache.set(cache_key, sensor, timeout=CACHE_TIMEOUT)
+
+        return sensor
+
+    except Exception as e:
+        # Log the exception for debugging purposes
+        print(f"Error retrieving sensor {sensor_id}: {e}")

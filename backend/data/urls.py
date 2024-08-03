@@ -6,13 +6,15 @@ urlpatterns = [
     path('summary/', GetSummaryView.as_view()),
 
     # group
+    path('group/', GetGroupView.as_view()),
     path('groups/', GetGroupsView.as_view()),
     path('create-group/', CreateGroupView.as_view()),
     path('edit-group/', EditGroupView.as_view()),
     path('delete-group/', DeleteGroupView.as_view()),
-    # path('group-stats/', GetGroupStatsView.as_view()),
+    path('group-info/', GetGroupStatsView.as_view()),
 
     # tank
+    path('tank/', GetTankView.as_view()),
     path('tanks/', GetTanksView.as_view()),
     path('create-tank/', CreateTankView.as_view()),
     path('edit-tank/', EditTankView.as_view()),
@@ -21,6 +23,7 @@ urlpatterns = [
 
     # sensor
     path('sensor/', GetSensorView.as_view()),
+    path('sensors/', GetSensorsView.as_view()),
     path('create-sensor/', CreateSensorView.as_view()),
     path('edit-sensor/', EditSensorView.as_view()),
     path('delete-sensor/', DeleteSensorView.as_view()),

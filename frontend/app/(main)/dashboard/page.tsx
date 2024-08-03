@@ -1,14 +1,11 @@
-import React, { Suspense } from "react";
-
+import React from "react";
 import SummaryWidget from "@/app/(main)/dashboard/components/SummaryWidget/SummaryWidget"
 import WeatherWidget from "@/app/(main)/dashboard/components/WeatherWidget/WeatherWidget";
-
 import GroupsInfo from "@/app/(main)/dashboard/components/GroupsInfo/GroupsInfo";
-import InfoWidget from "./components/InfoWidget/InfoWidget";
-
+import InfoWidget from "@/app/(main)/dashboard/components/InfoWidget/InfoWidget";
 import GroupPopUp from "@/app/(main)/dashboard/components/GroupPopUp/GroupPopUp";
 import { StoreInitializer } from "@/app/lib/store/StoreInitializer";
-import { getGroups, getSummary } from "./actions";
+import { getGroups, getSummary } from "@/app/(main)/dashboard/actions";
 
 interface IDashboardProps { }
 

@@ -6,6 +6,10 @@ type IAppLayoutProps = {
 }
 
 export default async function RootLayout({ children }: IAppLayoutProps) {
+    ////////////////////////////////////////////////////
+    // if (!(await verify())) redirect("/login"); ////// Authenticate user (Server Side)
+    ////////////////////////////////////////////////////
+
     return (
         <div id="authLayout">
             <Verify />

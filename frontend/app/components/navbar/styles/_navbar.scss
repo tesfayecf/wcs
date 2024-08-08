@@ -2,12 +2,12 @@
     height: 100%;
     width: $navbar-width-1;
     position: fixed;
-    // background-color: $navbar-background-light;
-    background-color: $background-1-light;
+    background-color: $navbar-background-light;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     transition: width $transition-speed $transition-easing;
+    padding-right: $spacing-sm;
 
     .navkeys {
         height: 100%;
@@ -15,6 +15,7 @@
         display: flex;
         flex-direction: column;
         margin-top: 35px;
+        gap: $spacing-sm;
 
         .navkey {
             display: flex;
@@ -22,7 +23,7 @@
             justify-content: flex-start;
             align-items: center;
             gap: 20px;
-            padding: 20px 0px 20px 40px;
+            padding: 20px 0px 20px 25px;
             color: $navbar-text-light;
             font-weight: $font-weight-bold;
             border-radius: 0 10px 10px 0;
@@ -39,6 +40,7 @@
                 display: flex;
                 justify-content: flex-start;
                 align-items: center;
+                color: white;
             }
 
             &:hover {
@@ -49,7 +51,11 @@
 
         .selected {
             background-color: $navbar-selected-background-light;
-            box-shadow: rgba(221, 224, 226, 1) -2.4px 2.4px 3.2px;
+            box-shadow: #dde0e2 -2.4px 2.4px 3.2px;
+
+            .text {
+                color: black;
+            }
 
             &:hover {
                 background-color: $navbar-selected-background-light;

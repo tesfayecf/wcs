@@ -28,7 +28,7 @@ class SensorReading(TimescaleModel):
     sensor = models.ForeignKey('data.Sensor', on_delete=models.CASCADE)
     
     def __str__(self):
-        return f"Sensor: {self.sensor} Distance: {self.distance} "
+        return f"Distance: {self.distance}"
 
 
 ###########

@@ -2,24 +2,30 @@ from pydantic import BaseModel
 from datetime import datetime
 from enum import Enum
 
-#####################
-### SENOR READING ###
-#####################
+######################
+### SENOR READINGS ###
+######################
 
 class SensorReadingSchema(BaseModel):
     distance: float
-    time: datetime
+    time: int
 
     class Config:
         from_attributes = True
 
 class GetSensorReadingsSchema(BaseModel):
-    id: int
+    sensor_id: str
+    timeframe: int
+    period: str
+    start_time: datetime
+    end_time: datetime 
+
+class GetLastSensorReadingSchema(BaseModel):
+    sensor_id: str
+    
+class GetSensorFlowSchema(BaseModel):
+    sensor_id: str
     timeframe: int
     period: str
     start_time: datetime
     end_time: datetime
-    
-
-class GetLastSensorReadingSchema(BaseModel):
-    id: int

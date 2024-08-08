@@ -3,6 +3,8 @@ from .views import *
 
 urlpatterns = [
     # sensor readings
-    path('sensor-readings/', GetSensorReadingsView.as_view()),
-    path('sensor-stats/', GetNetFlowView.as_view()),
+    path('readings/', GetSensorReadingsView.as_view()),
+    path('last-reading/', GetSensorLastReadingView.as_view()),
+    path('flow/', GetSensorFlowView.as_view()),
+    # path('stats/', GetSensorStatsView.as_view()),
 ]

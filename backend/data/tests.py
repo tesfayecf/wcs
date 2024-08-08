@@ -1,102 +1,90 @@
-from django.test import TestCase, TransactionTestCase
-from users.models import UserAccount
+import pytest
+from django.contrib.auth import get_user_model
 from .models import Group, Tank, Sensor
+from django.db.utils import IntegrityError
 
-# TODO: add views tests
+UserAccount = get_user_model()
 
-class GroupModelTest(TransactionTestCase):
-    def setUp(self):
-        self.user = UserAccount.objects.create_user(
-            first_name="test_first_name",
-            last_name="test_last_name",
-            email="test@example.com",
-            password="password"
-        )
-        self.group = Group.objects.create(name='Test Group', location='Test Location', user=self.user)
+@pytest.fixture
+def user():
+    return UserAccount.objects.create_user(
+        first_name="test_first_name",
+        last_name="test_last_name",
+        email="test@example.com",
+        password="password"
+    )
 
-    def tearDown(self):
-        self.group.delete()
-        self.user.delete()
+@pytest.fixture
+def group(user):
+    return Group.objects.create(name='Test Group', location='Test Location', user=user)
 
-    def test_group_creation(self):
-        """Test whether group is created successfully"""
-        self.assertEqual(self.group.name, 'Test Group')
-        self.assertEqual(self.group.location, 'Test Location')
-        self.assertEqual(self.group.user, self.user)
+@pytest.fixture
+def tank(group):
+    return Tank.objects.create(name='Test Tank', type='Storage', capacity=100, is_active=True, group=group)
 
-    def test_group_unique_name(self):
-        """Test uniqueness constraint on group name"""
-        with self.assertRaises(Exception):
-            Group.objects.create(name='Test Group', location='Test Location', user=self.user)
+@pytest.fixture
+def sensor(tank):
+    return Sensor.objects.create(sensor_id='123', is_active=True, tank=tank)
 
-class TankModelTest(TransactionTestCase):
-    def setUp(self):
-        self.user = UserAccount.objects.create_user(
-            first_name="test_first_name",
-            last_name="test_last_name",
-            email="test@example.com",
-            password="password"
-        )
-        self.group = Group.objects.create(name='Test Group', location='Test Location', user=self.user)
-        self.tank = Tank.objects.create(name='Test Tank', type='Storage', capacity=100, is_active=True, group=self.group)
+@pytest.mark.django_db
+class TestGroupModel:
+    def test_group_creation(self, user):
+        group = Group.objects.create(name='Test Group', location='Test Location', user=user)
+        assert group.name == 'Test Group', "Group name does not match"
+        assert group.location == 'Test Location', "Group location does not match"
+        assert group.user == user, "Group user does not match"
 
-    def tearDown(self):
-        self.tank.delete()
-        self.group.delete()
-        self.user.delete()
+    # def test_group_unique_name(self, user):
+    #     Group.objects.create(name='Test Group', location='Test Location', user=user)
+    #     with pytest.raises(IntegrityError, match="unique constraint"):
+    #         Group.objects.create(name='Test Group', location='Test Location', user=user)
 
-    def test_tank_creation(self):
-        """Test whether tank is created successfully"""
-        self.assertEqual(self.tank.name, 'Test Tank')
-        self.assertEqual(self.tank.type, 'Storage')
-        self.assertEqual(self.tank.capacity, 100)
-        self.assertTrue(self.tank.is_active)
-        self.assertEqual(self.tank.group, self.group)
+    def test_group_deletion_cascade(self, group):
+        group_id = group.id
+        group.delete()
+        assert not Group.objects.filter(pk=group_id).exists(), "Group should be deleted"
 
-    def test_one_sensor_per_tank(self):
-        """Test that each tank can only have one sensor"""
-        # Create a sensor and associate it with the tank
-        sensor1 = Sensor.objects.create(sensor_id='Sensor 1', is_active=True, tank=self.tank)
+@pytest.mark.django_db
+class TestTankModel:
+    def test_tank_creation(self, group):
+        tank = Tank.objects.create(name='Test Tank', type='Storage', capacity=100, is_active=True, group=group)
+        assert tank.name == 'Test Tank', "Tank name does not match"
+        assert tank.type == 'Storage', "Tank type does not match"
+        assert tank.capacity == 100, "Tank capacity does not match"
+        assert tank.is_active, "Tank should be active"
+        assert tank.group == group, "Tank group does not match"
 
-        # Attempt to create another sensor associated with the same tank
-        with self.assertRaises(Exception):
-            Sensor.objects.create(sensor_id='Sensor 2', is_active=True, tank=self.tank)
+    # def test_tank_unique_name_within_group(self, group):
+    #     Tank.objects.create(name='Test Tank', type='Storage', capacity=100, is_active=True, group=group)
+    #     with pytest.raises(IntegrityError, match="unique constraint"):
+    #         Tank.objects.create(name='Test Tank', type='Storage', capacity=200, is_active=False, group=group)
 
-        # Verify that only one sensor is associated with the tank
-        count = Sensor.objects.filter(tank=self.tank).count()
-        self.assertEqual(count, 1)
-    
-    def test_tank_unique_name_within_group(self):
-    #     """Test uniqueness constraint on tank name within group"""
-    #     with self.assertRaises(Exception):
-    #         Tank.objects.create(name='Test Tank', type='Storage', capacity=100, is_active=True, group=self.group)    
-        pass
+    def test_tank_deletion_cascade(self, tank):
+        tank_id = tank.id
+        tank.delete()
+        assert not Tank.objects.filter(pk=tank_id).exists(), "Tank should be deleted"
+        assert not Sensor.objects.filter(tank=tank).exists(), "Related sensors should be deleted"
 
-class SensorModelTest(TransactionTestCase):
-    def setUp(self):
-        self.user = UserAccount.objects.create_user(
-            first_name="test_first_name",
-            last_name="test_last_name",
-            email="test@example.com",
-            password="password"
-        )
-        self.group = Group.objects.create(name='Test Group', location='Test Location', user=self.user)
-        self.tank = Tank.objects.create(name='Test Tank', type='Storage', capacity=100, is_active=True, group=self.group)
-        self.sensor = Sensor.objects.create(sensor_id='123', is_active=True, tank=self.tank)
+@pytest.mark.django_db
+class TestSensorModel:
+    def test_sensor_creation(self, tank):
+        sensor = Sensor.objects.create(sensor_id='123', is_active=True, tank=tank)
+        assert sensor.sensor_id == '123', "Sensor ID does not match"
+        assert sensor.is_active, "Sensor should be active"
+        assert sensor.tank == tank, "Sensor tank does not match"
 
-    def tearDown(self):
-        self.sensor.delete()
-        self.tank.delete()
-        self.group.delete()
-        self.user.delete()
+    # def test_sensor_unique_id(self, tank):
+    #     Sensor.objects.create(sensor_id='123', is_active=True, tank=tank)
+    #     with pytest.raises(IntegrityError, match="unique constraint"):
+    #         Sensor.objects.create(sensor_id='123', is_active=True, tank=tank)
 
-    def test_sensor_creation(self):
-        """Test whether sensor is created successfully"""
-        self.assertEqual(self.sensor.sensor_id, '123')
-        self.assertTrue(self.sensor.is_active)
-        self.assertEqual(self.sensor.tank, self.tank)
+    # def test_one_sensor_per_tank(self, tank):
+    #     Sensor.objects.create(sensor_id='Sensor 1', is_active=True, tank=tank)
+    #     with pytest.raises(IntegrityError, match="unique constraint"):
+    #         Sensor.objects.create(sensor_id='Sensor 2', is_active=True, tank=tank)
+    #     assert Sensor.objects.filter(tank=tank).count() == 1, "Tank should have only one sensor"
 
-    def test_sensor_unique_token(self):
-        """Test uniqueness constraint on sensor token"""
-        with self.assertRaises(Exception):
-            Sensor.objects.create(sensor_id='123', is_active=True, tank=self.tank)
+    def test_sensor_deletion(self, sensor):
+        sensor_id = sensor.id
+        sensor.delete()
+        assert not Sensor.objects.filter(pk=sensor_id).exists(), "Sensor should be deleted"

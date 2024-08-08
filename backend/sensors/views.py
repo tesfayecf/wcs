@@ -359,3 +359,38 @@ class GetSensorStatsView(APIView):
 
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+###################
+### SENSOR LOGS ###
+###################
+
+# class GetSensorLogsView(APIView):
+#     def post(self, request):
+#         try:
+#             # Deserialize request data
+#             data = GetSensorLogsSchema(**request.data)
+
+#             # Check sensor exists
+#             sensor = Sensor.objects.filter(pk=data.id, tank__group__user=request.user).first()
+#             if not sensor:
+#                 return Response({'Bad Request': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Get sensor logs within timeframe
+#             logs = SensorLog.objects.filter(
+#                 sensor=sensor,
+#                 time__range=(data.start_time, data.end_time)
+#             )
+
+#             # Serialize and return response data
+#             data = [
+#                 {
+#                     'time': log.time,
+#                     'message': log.message,
+#                 }
+#                 for log in logs
+#             ]
+#             return Response(data, status=status.HTTP_200_OK)
+
+#         except Exception as e:
+#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR

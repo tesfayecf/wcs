@@ -95,7 +95,7 @@ ASGI_APPLICATION = "backend.routing.application"
 # DATABASE_ROUTERS = ['backend.routers.TimeSeriesRouter']
 DATABASES = {
     "default": {
-        "ENGINE": environ.get('TIMESERIES_DB_ENGINE'),
+        "ENGINE": environ.get('DEFAULT_DB_ENGINE'),
         "NAME": environ.get('DEFAULT_DB_NAME'),
         "USER": environ.get('DEFAULT_DB_USER'),
         "PASSWORD": environ.get('DEFAULT_DB_PASSWORD'),

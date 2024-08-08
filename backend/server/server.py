@@ -72,7 +72,7 @@ class MqttServer:
                 raise ConnectionError("Failed to connect to MQTT broker")
 
             self.server_client.loop_start()
-            print("MQTT server started")
+            print("MQTT server client started")
             
             # Wait for connection to establish
             for _ in range(10):  # Try for 5 seconds (10 * 0.5s)

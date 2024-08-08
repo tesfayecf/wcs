@@ -24,24 +24,70 @@
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
-                padding: 10px 0px 0px 0px;
+                padding: $spacing-md 0 0 0;
 
                 .temperature {
                     font-size: 50px;
                     color: $text-1-light;
-                    font-weight: 700;
+                    font-weight: $font-weight-bold;
                 }
 
                 .location {
-                    font-size: 14px;
+                    font-size: $font-size-sm;
                     color: $text-2-light;
-                    margin: 2px;
+                    margin: $spacing-xxs;
                 }
 
                 .date {
-                    font-size: 14px;
+                    font-size: $font-size-sm;
                     color: $text-2-light;
-                    margin: 2px;
+                    margin: $spacing-xxs;
+                }
+            }
+
+            .stats {
+                height: 100%;
+                display: flex;
+                display: none;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+
+                .stat-section {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+
+                    .stat-section-title {
+                        font-size: $font-size-sm;
+                        font-weight: $font-weight-bold;
+                        text-align: center;
+                    }
+
+                    .stat-section-content {
+                        display: flex;
+                        flex-direction: row;
+                        gap: $spacing-lg;
+                        justify-content: space-evenly;
+
+                        .stat {
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+
+                            .stat-title {
+                                font-size: $font-size-sm;
+                                font-weight: $font-weight-medium;
+                                text-align: center;
+                            }
+
+                            .stat-value {
+                                font-size: $font-size-base;
+                                font-weight: $font-weight-normal;
+                                text-align: center;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -71,9 +117,9 @@
                 justify-content: space-between;
 
                 .date {
-                    font-size: 12px;
+                    font-size: $font-size-sm;
                     text-align: center;
-                    margin-top: 15px;
+                    margin-top: $spacing-md;
                 }
 
                 .icon {
@@ -83,7 +129,7 @@
                 }
 
                 .temperature {
-                    font-size: 14px;
+                    font-size: $font-size-sm;
                     text-align: center;
                     white-space: nowrap;
                 }
@@ -97,12 +143,12 @@
             flex-direction: row;
             justify-content: center;
             align-items: center;
-            gap: 7px;
-            margin: 0px 0px 10px 0px;
+            gap: $spacing-xs;
+            margin: 0 0 $spacing-md 0;
 
             .dot {
-                height: 7px;
-                width: 7px;
+                height: $spacing-xs;
+                width: $spacing-xs;
                 border-radius: 50%;
                 display: inline-block;
             }

@@ -14,7 +14,8 @@
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
     z-index: 800;
 

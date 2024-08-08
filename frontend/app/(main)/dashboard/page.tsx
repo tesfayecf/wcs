@@ -1,11 +1,15 @@
 import React from "react";
+
 import SummaryWidget from "@/app/(main)/dashboard/components/SummaryWidget/SummaryWidget"
 import WeatherWidget from "@/app/(main)/dashboard/components/WeatherWidget/WeatherWidget";
+
 import GroupsInfo from "@/app/(main)/dashboard/components/GroupsInfo/GroupsInfo";
 import InfoWidget from "@/app/(main)/dashboard/components/InfoWidget/InfoWidget";
+
 import GroupPopUp from "@/app/(main)/dashboard/components/GroupPopUp/GroupPopUp";
+
 import { StoreInitializer } from "@/app/lib/store/StoreInitializer";
-import { getGroups, getSummary } from "@/app/(main)/dashboard/actions";
+import { getCurrentWeather, getForecastWeather, getGroups, getSummary } from "@/app/(main)/dashboard/actions";
 
 interface IDashboardProps { }
 
@@ -15,33 +19,40 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = async (props: IDashb
   ////////////////// LOAD DASHBOARD STATE //////////////////
   //////////////////////////////////////////////////////////
 
-  const groupsResponse = await getGroups();
-  const summaryResponse = await getSummary();
-  // Get groups stats
-  // Get groups summary
+  const [
+    groupsRes,
+    summaryRes,
+    currentWeatherRes,
+    forecastWeatherRes
+  ] = await Promise.all([
+    getGroups(),
+    getSummary(),
+    getCurrentWeather(),
+    getForecastWeather()
+  ]);
 
   return (
     <div className={"dashboard"}>
       <StoreInitializer
         dashboard={
           {
-            groups: groupsResponse.data,
-            summary: summaryResponse.data
+            groups: groupsRes.data,
+            summary: summaryRes.data,
+            currentWeather: currentWeatherRes.data,
+            forecastWeather: forecastWeatherRes.data
           }
         }
       />
       <div className={"status"}>
         <SummaryWidget />
-        <WeatherWidget />
+        <WeatherWidget current={currentWeatherRes.data} forecast={forecastWeatherRes.data} />
       </div>
       <div className={"info"}>
-        <InfoWidget title='Inflow' value={15.24} changeValue={23} color='#3de198' />
-        <InfoWidget title='Outflow' value={36.27} changeValue={-5} color='#e07159' />
-        <InfoWidget title='Savings' value={35} changeValue={5} color='#f2c986' />
+        <InfoWidget title='Inflow' data={summaryRes.data.inflow} color='#3de198' unit="L" timeframe="d" />
+        <InfoWidget title='Outflow' data={summaryRes.data.outflow} color='#e07159' unit="L" timeframe="d" />
+        <InfoWidget title='Savings' data={summaryRes.data.savings} color='#f2c986' unit="€" timeframe="d" />
       </div>
-      <div className={"groups"}>
-        <GroupsInfo />
-      </div>
+      <GroupsInfo groups={groupsRes.data} />
       <GroupPopUp />
     </div >
   )

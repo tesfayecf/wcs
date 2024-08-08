@@ -12,54 +12,42 @@
 
         .pie-chart {
             height: 100%;
-            width: 50%;
+            width: 100%;
             display: flex;
             flex-direction: row;
-            justify-content: flex-start;
-            align-items: center;
 
-            .legend {
-                height: 100%;
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
-                align-items: center;
-                margin: 0 $spacing-sm 0 $spacing-lg;
+            // .legend {
+            //     height: 100%;
+            //     width: 100%;
+            //     display: flex;
+            //     flex-direction: column;
+            //     justify-content: flex-start;
+            //     align-items: center;
+            //     margin: 0 $spacing-sm 0 $spacing-lg;
 
-                .legend-item {
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: flex-start;
-                    align-items: baseline;
-                    gap: $spacing-xs;
+            //     .legend-item {
+            //         display: flex;
+            //         flex-direction: row;
+            //         justify-content: flex-start;
+            //         align-items: baseline;
+            //         gap: $spacing-xs;
 
-                    .dot {
-                        height: $spacing-xs;
-                        width: $spacing-xs;
-                        border-radius: 50%;
-                        display: inline-block;
-                        background-color: $text-1-light;
-                    }
+            //         .dot {
+            //             height: $spacing-xs;
+            //             width: $spacing-xs;
+            //             border-radius: 50%;
+            //             display: inline-block;
+            //             background-color: $text-1-light;
+            //         }
 
-                    .label {
-                        font-size: $font-size-sm - 2px;
-                        color: $text-1-light;
-                        margin: $spacing-xxs;
-                        white-space: nowrap;
-                    }
-                }
-            }
-
-            .chart {
-                position: relative;
-                height: 100%;
-
-                canvas {
-                    height: 100%;
-                    width: 100%;
-                }
-            }
+            //         .label {
+            //             font-size: $font-size-sm - 2px;
+            //             color: $text-1-light;
+            //             margin: $spacing-xxs;
+            //             white-space: nowrap;
+            //         }
+            //     }
+            // }
         }
 
         .bar-chart {

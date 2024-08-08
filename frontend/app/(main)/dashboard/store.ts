@@ -29,6 +29,9 @@ const useDashboardStore = create<IDashboardStore & IDashboardStoreActions>((set)
         id: 0
     },
     showGroupMenu: false,
+    // Weather
+    currentWeather: null,
+    forecastWeather: [],
 
     /// Actions ///
     setState: (state: Partial<IDashboardStore>) => set((prev) => ({ ...prev, ...state })),

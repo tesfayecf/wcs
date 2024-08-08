@@ -5,6 +5,8 @@ export interface IDashboardStore {
     groups: IGroup[];
     groupMenu: IMenu;
     showGroupMenu: boolean;
+    currentWeather: ICurrentWeather | null;
+    forecastWeather: IForecastWeather[];
 }
 
 export interface IGroup {
@@ -35,7 +37,7 @@ export interface ISummary {
     savings: number[],
 }
 
-export interface CurrentWeatherInfo {
+export interface ICurrentWeather {
     city_name: string;
     coord: {
         lon: number;
@@ -59,3 +61,20 @@ export interface CurrentWeatherInfo {
     };
     timestamp: string;
 };
+
+export interface IForecastWeather {
+    date: string;
+    description: string;
+    icon: string;
+    temperature: {
+        min: number;
+        max: number;
+    },
+    wind: number;
+    humidity: number;
+}
+
+export interface ITemperature {
+    min: number
+    max: number
+}

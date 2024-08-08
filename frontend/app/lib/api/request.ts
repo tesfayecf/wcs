@@ -1,7 +1,7 @@
 'use server'
 import { cookies } from "next/headers";
 import { apiInterface } from "./interface";
-import { refresh } from "../auth/actions";
+import { refresh, getTokens } from "../auth/actions";
 
 export interface ServerResponse<T> {
     ok: boolean;
@@ -45,6 +45,7 @@ export async function serverRequest<
             credentials: authenticate ? 'include' : "omit",
             headers,
             body: JSON.stringify(obj),
+            next: { tags: [endpoint as string] },
         });
 
         const responseData = await response.json();
@@ -58,8 +59,8 @@ export async function serverRequest<
             };
         } else {
             if (authenticate && response.status === 401) {
-                const refreshSuccessful = await refresh();
-                if (refreshSuccessful) return serverRequest(group, endpoint, args, authenticate);
+                // const refreshSuccessful = await refresh();
+                // if (refreshSuccessful) return serverRequest(group, endpoint, args, authenticate);
             }
 
             return {

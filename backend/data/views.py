@@ -2,6 +2,7 @@ import random
 from pydantic import ValidationError
 
 from django.core.cache import cache
+from django.db.models import Count, Sum, Q
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -34,7 +35,6 @@ class GetSummaryView(APIView):
             return Response(summary_json, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 #############
 ### GROUP ###
@@ -192,18 +192,27 @@ class GetGroupInfoView(APIView):
             if cached_info:
                 return Response(cached_info, status=status.HTTP_200_OK)
 
-            # Retrieve the group
-            group = Group.objects.filter(pk=get_group_data.id, user=request.user).first()
+            # Retrieve the group with annotated fields
+            group = Group.objects.filter(pk=get_group_data.id, user=request.user).annotate(
+                total_tanks=Coutt('tanks'),
+                total_active_tanks=Count('tanks', filter=Q(tanks__is_active=True)),
+                total_capacity=Sum('tanks__capacity'),
+                total_active_capacity=Sum('tanks__capacity', filter=Q(tanks__is_active=True)),
+                total_sensors=Count('tanks__sensor'),
+                total_active_sensors=Count('tanks__sensor', filter=Q(tanks__sensor__is_active=True))
+            ).first()
+
             if not group:
                 return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
+            # Prepare the info dictionary using the annotated fields
             info = {
-                'total_tanks': group.total_tanks(),
-                'total_active_tanks': group.total_active_tanks(),
-                'total_capacity': group.total_capacity(),
-                'total_active_capacity': group.total_active_capacity(),
-                'total_sensors': group.total_sensors(),
-                'total_active_sensors': group.total_active_sensors(),
+                'total_tanks': group.total_tanks,
+                'total_active_tanks': group.total_active_tanks,
+                'total_capacity': group.total_capacity or 0,
+                'total_active_capacity': group.total_active_capacity or 0,
+                'total_sensors': group.total_sensors,
+                'total_active_sensors': group.total_active_sensors,
             }
 
             # Cache the information for future requests
@@ -284,7 +293,6 @@ def get_group(group_id: int, user) -> Group:
         # Log the exception for debugging purposes
         print(f"Error retrieving group {group_id}: {e}")
         return None
-
 
 ############
 ### TANK ###
@@ -482,7 +490,6 @@ def get_tank(tank_id: int, group_id: int, user) -> Tank:
         print(f"Error retrieving tank {tank_id}: {e}")
         return None
     
-
 ##############
 ### SENSOR ###
 ##############

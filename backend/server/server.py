@@ -6,10 +6,7 @@ import paho.mqtt.client as mqtt
 from data.models import Sensor
 from sensors.models import SensorReading
 from .types import (
-    Topic, 
-    MessageParam, 
-    ActionParam, MetaParam,
-    ActionType, 
+    Topic,  MetaParam, ActionType,  
     RegisterAction, DataAction, CommandAction
 )
 from .message import MQTTMessage
@@ -52,7 +49,12 @@ class MqttServer:
             server_id=os.getenv('MQTT_SERVER_ID'),
             server_username=os.getenv('MQTT_SERVER_USERNAME'),
         )
-
+        self.handlers = {
+            Topic.REGISTER: self.handle_register,
+            Topic.DATA: self.handle_data,
+            Topic.COMMAND: self.handle_command
+        }
+    
     def start(self):
         if self.server_client and self.server_client.is_connected():
             print("MQTT server already connected")
@@ -86,12 +88,12 @@ class MqttServer:
             print(f"MQTT connection error: {e}")
             self.cleanup()
 
-    # CALLBACK
+    # CALLBACKS
     def on_connect(self, client, userdata, flags, reason_code, properties):
         if reason_code == 0:
             print("Successfully connected to MQTT broker")
             self._subscribe(Topic.REGISTER)
-            self.subscribe_topics()
+            self.subscribe_sensors_topics()
         else:
             print(f"Failed to connect to MQTT broker. Reason code: {reason_code}")
 
@@ -108,17 +110,11 @@ class MqttServer:
                 raise ValueError("Sensor ID mismatch")
 
             # Handle topic
-            handlers = {
-                Topic.REGISTER: self.handle_register,
-                Topic.DATA: self.handle_data,
-                Topic.COMMAND: self.handle_command
-            }
-
-            handler = handlers.get(mqqt_msg.topic)
+            handler = self.handlers.get(mqqt_msg.topic)
             if handler:
                 handler(mqqt_msg)
             else:
-                print(f"Unhandled topic: {mqqt_msg.topic}")
+                raise ValueError(f"Unknown topic: {mqqt_msg.topic}")
 
         except json.JSONDecodeError:
             print("Invalid JSON in message payload")
@@ -127,20 +123,27 @@ class MqttServer:
 
     # REGISTER
     def handle_register(self, msg: MQTTMessage):
-        sensor_id = msg.meta[MetaParam.SENSOR_ID]
-        print(f"Handling register action for sensor: {sensor_id}")
-        
-        if msg.action == RegisterAction.NEW_SENSOR:
-            # self.register_new_sensor(sensor_id, msg.payload)
-            pass
-        elif msg.action == RegisterAction.UPDATE_SENSOR:
-            # self.update_sensor(sensor_id, msg.payload)
-            pass
-        elif msg.action == RegisterAction.REMOVE_SENSOR:
-            # self.remove_sensor(sensor_id)
-            pass
-        else:
-            print(f"Unknown register action: {msg.action}")
+        try:
+            sensor_id = msg.meta[MetaParam.SENSOR_ID]
+            print(f"Handling register action for sensor: {sensor_id}")
+            
+            if msg.action == RegisterAction.NEW_SENSOR:
+                # Add sensor to database
+                Sensor.objects.create(sensor_id=sensor_id)
+                self.subscribe_to_sensor(sensor_id=sensor_id)
+            elif msg.action == RegisterAction.UPDATE_SENSOR:
+                # self.update_sensor(sensor_id, msg.payload)
+                pass
+            elif msg.action == RegisterAction.REMOVE_SENSOR:
+                # self.remove_sensor(sensor_id)
+                Sensor.objects.get(sensor_id=sensor_id).delete()
+                self.unsubscribe_from_sensor(sensor_id=sensor_id)
+                pass
+            else:
+                raise ValueError(f"Unknown register action: {msg.action}")
+
+        except Exception as e:
+            print(f"Error handling register action: {e}")
 
     # DATA
     def handle_data(self, msg: MQTTMessage):
@@ -207,11 +210,18 @@ class MqttServer:
             print(f"Published message to topic: {topic.value}")
 
     # SUBSCRIBE
-    def subscribe_topics(self):
+    def subscribe_sensors_topics(self):
         sensors = Sensor.objects.all()
         for sensor in sensors:
-            self._subscribe(f"{sensor.sensor_id}/{Topic.DATA}")
-            self._subscribe(f"{sensor.sensor_id}/{Topic.COMMAND}")
+            self.subscribe_to_sensor(sensor.sensor_id)
+        
+    def subscribe_to_sensor(self, sensor_id: str):
+        self._subscribe(f"{sensor_id}/{Topic.DATA}")
+        self._subscribe(f"{sensor_id}/{Topic.COMMAND}")
+    
+    def unsubscribe_from_sensor(self, sensor_id: str):
+        self._unsubscribe(f"{sensor_id}/{Topic.DATA}")
+        self._unsubscribe(f"{sensor_id}/{Topic.COMMAND}")
 
     def _subscribe(self, topic: Union[str, tuple, list]):
         if not self.server_client or not self.server_client.is_connected():
@@ -242,6 +252,13 @@ class MqttServer:
         self.server_client.subscribe(topic, qos)
         print(f"Subscribed to topic: {topic} with QoS: {qos}")
 
+    # UNSUBSCRIBE
+    def _unsubscribe(self, topic: str):
+        if not self.server_client or not self.server_client.is_connected():
+            raise ConnectionError("MQTT Client not connected")
+
+        self.server_client.unsubscribe(topic)
+        print(f"Unsubscribed from topic: {topic}")
 
     def disconnect(self):
         if self.server_client and self.server_client.is_connected():

@@ -9,9 +9,3 @@ class BaseSchema(BaseModel):
 ###############
 ### WEATHER ###
 ###############
-
-class GetWeatherSchema(BaseSchema):
-    city_name: str
-    
-    class Config:
-        from_attributes = True

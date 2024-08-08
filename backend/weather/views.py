@@ -1,27 +1,29 @@
-import json
+import random
 import requests
 from datetime import timedelta, datetime
 from typing import Dict, Any, List
 from pydantic import ValidationError
 
-from django.conf import settings
 from django.utils import timezone
 from django.core.cache import cache
+from django.conf import settings
 
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .client import WeatherAPIClient
-from .schemas import GetWeatherSchema
 from .models import CurrentWeatherData, DailyWeatherData
+from utils.misc import _get_seconds_until_next_hour
+
+api_client = WeatherAPIClient()
 
 class GetCurrentWeatherView(APIView):
     def post(self, request):
         try:
-            # Validate incoming data using Pydantic schema
-            get_weather_data = GetWeatherSchema(**request.data)
-            city_name = get_weather_data.city_name.lower()
+            # Get city from user info
+            user = request.user
+            city_name = random.choice(["girona", "barcelona", "madrid", "valencia"])
 
             # Try to get data from cache first
             cache_key = f"current_weather_{city_name}"
@@ -33,12 +35,11 @@ class GetCurrentWeatherView(APIView):
             weather_data = CurrentWeatherData.objects.filter(city_name=city_name).first()
             if weather_data and (timezone.now() - weather_data.timestamp) < timedelta(hours=1):
                 response_data = self._format_current_weather_response(weather_data)
-                cache_timeout = self._get_seconds_until_next_hour()
+                cache_timeout = _get_seconds_until_next_hour()
                 cache.set(cache_key, response_data, timeout=cache_timeout)
                 return Response(response_data, status=status.HTTP_200_OK)
 
             # Fetch new data from API
-            api_client = WeatherAPIClient()
             weather_data_json = api_client.get_current_weather(city_name)
 
             # Update or create weather data in the database
@@ -105,40 +106,38 @@ class GetCurrentWeatherView(APIView):
 class GetForecastWeatherView(APIView):
     def post(self, request):
         try:
-            # Validate incoming data using schema
-            get_weather_data = GetWeatherSchema(**request.data)
-            city_name = get_weather_data.city_name.lower()
+            user = request.user
+            city_name = random.choice(["girona", "barcelona", "madrid", "valencia"])
 
-            # Try to get data from cache first
             cache_key = f"forecast_weather_{city_name}"
             cached_data = cache.get(cache_key)
             if cached_data:
                 return Response(cached_data, status=status.HTTP_200_OK)
 
-            # Get today's date and next five days
             today = timezone.now().date()
             next_five_days = [today + timedelta(days=i) for i in range(5)]
 
-            # Check if data already exists in database
-            existing_data = DailyWeatherData.objects.filter(city_name=city_name, date__in=next_five_days)
+            if settings.DEBUG:
+                existing_data = DailyWeatherData.objects.filter(city_name=city_name).order_by('date')
+            else:
+                existing_data = DailyWeatherData.objects.filter(city_name=city_name, date__in=next_five_days)
 
             if existing_data.count() == 5:
-                response_data = {"data": [self._format_weather_data(entry) for entry in existing_data]}
+                response_data = [self._format_weather_data(entry) for entry in existing_data]
                 cache_timeout = _get_seconds_until_next_hour()
                 cache.set(cache_key, response_data, timeout=cache_timeout)
                 return Response(response_data, status=status.HTTP_200_OK)
 
-            # Fetch new data from API
-            api_client = WeatherAPIClient()
             forecast_data = api_client.get_forecast(city_name)
             
-            # Process API response and store data
-            self._process_and_store_forecast_data(city_name, forecast_data['list'])
+            self._process_and_store_forecast_data(city_name, forecast_data)
 
-            # Retrieve and return updated data from database
-            updated_data = DailyWeatherData.objects.filter(city_name=city_name, date__in=next_five_days)
-            response_data = {"data": [self._format_weather_data(entry) for entry in updated_data]}
-            cache_timeout = self._get_seconds_until_next_hour()
+            if settings.DEBUG:
+                updated_data = DailyWeatherData.objects.filter(city_name=city_name).order_by('date')
+            else:
+                updated_data = DailyWeatherData.objects.filter(city_name=city_name, date__in=next_five_days)
+            response_data = [self._format_weather_data(entry) for entry in updated_data]
+            cache_timeout = _get_seconds_until_next_hour()
             cache.set(cache_key, response_data, timeout=cache_timeout)
             return Response(response_data, status=status.HTTP_200_OK)
 
@@ -149,77 +148,81 @@ class GetForecastWeatherView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def _process_and_store_forecast_data(self, city_name: str, forecast_list: List[Dict[str, Any]]):
-        """Process forecast data and store it in the database."""
-        daily_data = self._aggregate_forecast_data(forecast_list)
-        
+    def _process_and_store_forecast_data(self, city_name: str, forecast_data: Dict[str, Any]):
+        """Process forecast data and store each day separately in the database."""
+        daily_data = self._aggregate_forecast_data(forecast_data['list'])
         for date_obj, data in daily_data.items():
             DailyWeatherData.objects.update_or_create(
                 city_name=city_name,
                 date=date_obj,
                 defaults={
-                    "lon": data["coords"][0],
-                    "lat": data["coords"][1],
-                    "temperature": sum(data["temps"]) / len(data["temps"]),
-                    "feels_like": sum(data["feels_likes"]) / len(data["feels_likes"]),
-                    "temp_min": min(data["temp_mins"]),
-                    "temp_max": max(data["temp_maxs"]),
-                    "pressure": int(sum(data["pressures"]) / len(data["pressures"])),
-                    "humidity": int(sum(data["humidities"]) / len(data["humidities"])),
-                    "weather_main": max(set(data["weather_mains"]), key=data["weather_mains"].count),
-                    "weather_description": max(set(data["weather_descriptions"]), key=data["weather_descriptions"].count),
-                    "wind_speed": sum(data["wind_speeds"]) / len(data["wind_speeds"]),
-                    "wind_deg": int(sum(data["wind_degs"]) / len(data["wind_degs"])),
+                    "lon": forecast_data['city']['coord']['lon'],
+                    "lat": forecast_data['city']['coord']['lat'],
+                    "temperature": data["temp"],
+                    "feels_like": data["feels_like"],
+                    "temp_min": data["temp_min"],
+                    "temp_max": data["temp_max"],
+                    "pressure": data["pressure"],
+                    "humidity": data["humidity"],
+                    "weather_main": data["weather_main"],
+                    "weather_description": data["weather_description"],
+                    "wind_speed": data["wind_speed"],
+                    "wind_deg": data["wind_deg"],
                     "timestamp": timezone.now()
                 }
             )
 
-    def _aggregate_forecast_data(self, forecast_list: List[Dict[str, Any]]) -> Dict[datetime.date, Dict[str, List]]:
-        """Aggregate forecast data by day."""
+    def _aggregate_forecast_data(self, forecast_list: List[Dict[str, Any]]) -> Dict[datetime.date, Dict[str, Any]]:
+        """Aggregate forecast data by day, keeping the data for 12:00 (noon) each day."""
         daily_data = {}
         for entry in forecast_list:
-            date_obj = datetime.strptime(entry['dt_txt'].split()[0], '%Y-%m-%d').date()
-            if date_obj not in daily_data:
+            date_obj = datetime.strptime(entry['dt_txt'], '%Y-%m-%d %H:%M:%S').date()
+            time = datetime.strptime(entry['dt_txt'], '%Y-%m-%d %H:%M:%S').time()
+            
+            # We'll use the data for 12:00 (noon) each day
+            if time.hour == 12 or date_obj not in daily_data:
+                main = entry['main']
+                weather = entry['weather'][0]
+                wind = entry['wind']
+
                 daily_data[date_obj] = {
-                    "coords": [entry['coord']['lon'], entry['coord']['lat']],
-                    "temps": [], "feels_likes": [], "temp_mins": [], "temp_maxs": [],
-                    "pressures": [], "humidities": [], "wind_speeds": [], "wind_degs": [],
-                    "weather_mains": [], "weather_descriptions": []
+                    "temp": main['temp'],
+                    "feels_like": main['feels_like'],
+                    "temp_min": main['temp_min'],
+                    "temp_max": main['temp_max'],
+                    "pressure": main['pressure'],
+                    "humidity": main['humidity'],
+                    "weather_main": weather['main'],
+                    "weather_description": weather['description'],
+                    "wind_speed": wind['speed'],
+                    "wind_deg": wind['deg']
                 }
-
-            main = entry['main']
-            weather = entry['weather'][0]
-            wind = entry['wind']
-
-            for key in ['temp', 'feels_like', 'temp_min', 'temp_max', 'pressure', 'humidity']:
-                daily_data[date_obj][f"{key}s"].append(main[key])
-            daily_data[date_obj]["wind_speeds"].append(wind["speed"])
-            daily_data[date_obj]["wind_degs"].append(wind["deg"])
-            daily_data[date_obj]["weather_mains"].append(weather["main"])
-            daily_data[date_obj]["weather_descriptions"].append(weather["description"])
 
         return daily_data
 
     def _format_weather_data(self, entry: DailyWeatherData) -> Dict[str, Any]:
         """Format DailyWeatherData instance for API response."""
         return {
-            "city_name": entry.city_name,
             "date": entry.date,
-            "temperature": entry.temperature,
-            "feels_like": entry.feels_like,
-            "temp_min": entry.temp_min,
-            "temp_max": entry.temp_max,
-            "pressure": entry.pressure,
-            "humidity": entry.humidity,
-            "weather_main": entry.weather_main,
-            "weather_description": entry.weather_description,
-            "wind_speed": entry.wind_speed,
-            "wind_deg": entry.wind_deg,
-            "timestamp": entry.timestamp
+            "description": entry.weather_description,
+            "icon": self._get_weather_icon(entry.weather_main),
+            "temperature": {
+                "min": entry.temp_min,
+                "max": entry.temp_max
+            },
+            "wind": entry.wind_speed,
+            "humidity": entry.humidity
         }
 
-def _get_seconds_until_next_hour(self) -> int:
-    """Calculate the number of seconds until the next hour."""
-    now = timezone.now()
-    next_hour = (now + timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
-    return int((next_hour - now).total_seconds())
+    def _get_weather_icon(self, weather_main: str) -> str:
+        """Return an appropriate icon for the weather condition."""
+        weather_icons = {
+            "Clear": "01d",
+            "Clouds": "02d",
+            "Rain": "09d",
+            "Drizzle": "10d",
+            "Thunderstorm": "11d",
+            "Snow": "13d",
+            "Mist": "50d",
+        }
+        return weather_icons.get(weather_main, "01d")

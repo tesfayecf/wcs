@@ -12,7 +12,7 @@ const AddTankWidget: React.FunctionComponent<IAddTankWidgetWidgetProps> = (props
         <ContentBox customBoxClass={"groupAddTank"}>
             <div className={"addTankContent"}>
                 <div className={"text"} onClick={() => setShowTankMenu(true)}>
-                    Add new tank
+                    CREATE TANK
                 </div>
             </div>
         </ContentBox >

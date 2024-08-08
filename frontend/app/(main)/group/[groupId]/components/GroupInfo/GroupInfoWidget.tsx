@@ -2,20 +2,22 @@
 import React from 'react';
 import ContentBox from '@/app/components/contentBox/ContentBox';
 import useGroupStore from '@/app/(main)/group/[groupId]/store';
+import { IGroup } from '@/app/(main)/dashboard/types';
 
-interface IGroupWidgetProps { }
+interface IGroupWidgetProps {
+    group: IGroup;
+}
 
 // TOOD: maybe rename to groupStats
 
 const GroupInfoWidget: React.FunctionComponent<IGroupWidgetProps> = (props: IGroupWidgetProps) => {
-    const groupInfo = useGroupStore((state) => state.group)
 
     return (
         <ContentBox customBoxClass={"groupInfo"}>
             <div className={"groupInfoContent"}>
                 <div className={"groupHeader"}>
                     <div className={"name"}>
-                        {groupInfo.name}
+                        {props.group.name}
                     </div>
                 </div>
                 <div className={"level"}>
@@ -29,7 +31,7 @@ const GroupInfoWidget: React.FunctionComponent<IGroupWidgetProps> = (props: IGro
                 <div className={"groupData"}>
                     <div className={"groupProperties"}>
                         <div className={"list"}>
-                            <DataListElement keyName="Location" value={groupInfo.location} />
+                            <DataListElement keyName="Location" value={props.group.location} />
                             <DataListElement keyName="Capacity" value={0} />
                             <DataListElement keyName="Nº tanks" value={0} />
                             <DataListElement keyName="Avg. level" value={0} />

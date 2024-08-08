@@ -3,13 +3,11 @@ import TanksInfo from "./components/TanksInfo/TanksInfo";
 import AddTankWidget from "./components/GroupInfo/AddTankWidget";
 import GroupInfoWidget from "@/app/(main)/group/[groupId]/components/GroupInfo/GroupInfoWidget";
 import GroupDescription from "@/app/(main)/group/[groupId]/components/GroupInfo/GroupDescription";
-
-import { getGroup, getTanks } from "./actions";
 import { StoreInitializer } from "@/app/lib/store/StoreInitializer";
 import InfoWidget from "./components/InfoWidget/InfoWidget";
 import DataWidget from "./components/DataWidget/DataWidget";
 import TankPopUp from "./components/TankPupUp/TankPopUp";
-
+import { getGroup, getTanks } from "./actions";
 
 interface IDashboardProps {
     params: {
@@ -23,7 +21,8 @@ const Group: React.FunctionComponent<IDashboardProps> = async (props: IDashboard
     //////////////////// LOAD GROUP STATE ////////////////////
     //////////////////////////////////////////////////////////
 
-    const groupResponse = await getGroup(parseInt(props.params.groupId)); // TODO: get all group (info, description, ...) here. Then distribite to components with props or state.
+    // TODO: get all group (info, description, ...) here. Then distribite to components with props or state.
+    const groupResponse = await getGroup(parseInt(props.params.groupId));
     // const groupStatsResponse = await getGroupStats(parseInt(props.params.groupId)); // TODO: Get group stats here.
     const tanksResponse = await getTanks(parseInt(props.params.groupId));
 
@@ -31,13 +30,13 @@ const Group: React.FunctionComponent<IDashboardProps> = async (props: IDashboard
         <div className={"group"}>
             <StoreInitializer
                 group={{
-                    groupParam: props.params.groupId,
+                    groupId: parseInt(props.params.groupId),
                     group: groupResponse,
                     tanks: tanksResponse,
                 }}
             />
             <div className={"status"}>
-                <GroupInfoWidget />
+                <GroupInfoWidget group={groupResponse} />
                 <GroupDescription />
                 <AddTankWidget />
             </div>

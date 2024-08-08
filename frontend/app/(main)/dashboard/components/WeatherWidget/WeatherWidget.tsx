@@ -1,21 +1,61 @@
 'use client'
 import React from 'react';
 import ContentBox from '@/app/components/contentBox/ContentBox';
+import { ICurrentWeather, IForecastWeather } from '../../types';
 
-type IWeatherWidgetProps = {}
+type IWeatherWidgetProps = {
+    current: ICurrentWeather;
+    forecast: IForecastWeather[];
+}
 
 const WeatherWidget: React.FunctionComponent<IWeatherWidgetProps> = (props: IWeatherWidgetProps) => {
-
-    const [weatherData, setWeatherData] = React.useState(dummyWeatherData);
     const [page, setPage] = React.useState(0);
+
+    // Format time stamp to this formt: 30/01/2024
+    const formatTimestamp = (timestamp: string) => {
+        const date = new Date(timestamp);
+        return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    }
+
+    function capitalizeFirstLetter(string: string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
 
     const renderGeneralPage = React.useCallback(() => {
         return (
             <div className={"general"}>
                 <div className={"info"}>
-                    <div className={"temperature"}>25ºC</div>
-                    <div className={"location"}>Girona, Spain</div>
-                    <div className={"date"}>30/01/2024</div>
+                    <div className={"temperature"}>{props.current.main.temp}ºC</div>
+                    <div className={"location"}>{capitalizeFirstLetter(props.current.city_name)}</div>
+                    <div className={"date"}>{formatTimestamp(props.current.timestamp)}</div>
+                </div>
+                <div className={"stats"}>
+                    <div className={"stat-section"}>
+                        <div className={"stat-section-title"}>Wind</div>
+                        <div className={"stat-section-content"}>
+                            <div className={"stat"}>
+                                <div className={"stat-title"}>Speed</div>
+                                <div className={"stat-value"}>{props.current.wind.speed} m/s</div>
+                            </div>
+                            <div className={"stat"}>
+                                <div className={"stat-title"}>Degrees</div>
+                                <div className={"stat-value"}>{props.current.wind.deg} º</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={"stat-section"}>
+                        <div className={"stat-section-title"}>Air</div>
+                        <div className={"stat-section-content"}>
+                            <div className={"stat"}>
+                                <div className={"stat-title"}>Humidity</div>
+                                <div className={"stat-value"}>{props.current.main.humidity}%</div>
+                            </div>
+                            <div className={"stat"}>
+                                <div className={"stat-title"}>Pressure</div>
+                                <div className={"stat-value"}>{props.current.main.pressure} hPa</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div className={"icon"}>
                     <WeatherSVG
@@ -30,10 +70,10 @@ const WeatherWidget: React.FunctionComponent<IWeatherWidgetProps> = (props: IWea
     const renderForecastPage = React.useCallback(() => {
         return (
             <div className={"forecast"}>
-                {weatherData.forecast.map((day: any, i: any) => {
+                {props.forecast.map((day: IForecastWeather, i: any) => {
                     return (
                         <div key={day.date} className={"data"}>
-                            <p className={"date"}>{day.date}</p>
+                            <p className={"date"}>{formatTimestamp(day.date)}</p>
                             <div className={"icon"}>
                                 <WeatherSVG
                                     path={day.icon}

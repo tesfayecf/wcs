@@ -1,5 +1,5 @@
 import { ILoginForm, IResetForm, ISignupForm } from "@/app/(auth)/types";
-import { IGroup, IGroupStats, ISummary } from "@/app/(main)/dashboard/types";
+import { ICurrentWeather, IForecastWeather, IGroup, IGroupStats, ISummary } from "@/app/(main)/dashboard/types";
 import { ISensor, ISensorreading as ISensorReading, ITank } from "@/app/(main)/group/[groupId]/types";
 import { IUserInfo } from "@/app/app/types";
 
@@ -170,17 +170,17 @@ export const apiInterface = {
         }
     },
     weather: {
-        getCurrentWeatherInfo: {
-            args: (city_name: string) => { return {} as any },
+        getCurrentWeather: {
+            args: () => { return {} as ICurrentWeather },
             address: "api/weather/current/",
             method: "POST",
-            argsKeys: ["city_name"],
+            argsKeys: [],
         },
-        getForecastWeatherInfo: {
-            args: (city_name: string) => { return {} as any },
+        getForecastWeather: {
+            args: () => { return {} as IForecastWeather[] },
             address: "api/weather/forecast/",
             method: "POST",
-            argsKeys: ["city_name"],
+            argsKeys: [],
         }
     }
 } as const;

@@ -22,9 +22,9 @@ const Popup: React.FunctionComponent<PopupProps> = (props: PopupProps) => {
     }, [props.onClose, props.onEnter]);
 
     useEffect(() => {
-        if (open) document.addEventListener('keydown', handleKeyDown);
+        if (props.open) document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);;
-    }, [open, handleKeyDown]);
+    }, [props.open, handleKeyDown]);
 
     return (
         <Dialog

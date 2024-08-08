@@ -2,7 +2,7 @@
 import { IUserInfo } from "@/app/app/types";
 import useAppStore from "../../app/store";
 import useDashboardStore from "../../(main)/dashboard/store";
-import { IGroup, ISummary } from "@/app/(main)/dashboard/types";
+import { ICurrentWeather, IForecastWeather, IGroup, ISummary } from "@/app/(main)/dashboard/types";
 import useGroupStore from "../../(main)/group/[groupId]/store";
 import { ITank } from "@/app/(main)/group/[groupId]/types";
 
@@ -15,10 +15,12 @@ export interface IStoreInitializer {
     dashboard?: {
         groups?: IGroup[];
         summary?: ISummary;
+        currentWeather?: ICurrentWeather;
+        forecastWeather?: IForecastWeather[];
     }
     /// Group \\\
     group?: {
-        groupParam?: string;
+        groupId?: number;
         group?: IGroup;
         tanks?: ITank[];
     }

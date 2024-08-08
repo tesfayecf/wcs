@@ -29,10 +29,10 @@ const useAppStore = create<IAppStore & IAppStoreActions>((set) => ({
     /// Actions ///
     setState: (state: IAppStore) => set((prev) => ({ prev, ...state })),
     // App
-    setLoadingState: (isLoading: boolean) => set((state) => ({ isLoading })),
+    setLoadingState: (isLoading: boolean) => set(() => ({ isLoading })),
     setAuthenticationState: (isAuthenticated: boolean) => set(() => ({ isAuthenticated })),
     // User
-    setUserInfo: (userInfo) => set((state) => ({ userInfo })),
+    setUserInfo: (userInfo: IUserInfo) => set(() => ({ userInfo })),
 }));
 
 export default useAppStore;

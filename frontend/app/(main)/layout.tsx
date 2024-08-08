@@ -1,9 +1,9 @@
 import React from 'react'
 import { redirect } from 'next/navigation';
 import { StoreInitializer } from '@/app/lib/store/StoreInitializer';
-import { authenticate } from '@/app/lib/auth/actions';
-import { getUserInfo } from '@/app/(main)/actions';
 import Navbar from '@/app/components/navbar/Navbar'
+import { authenticate } from '@/app/lib/auth/actions';
+import { getUserInfo } from '@/app/app/actions';
 
 
 type IAppLayoutProps = {

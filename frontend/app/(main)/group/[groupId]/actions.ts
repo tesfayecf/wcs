@@ -2,7 +2,6 @@
 
 import { serverRequest } from "@/app/lib/api/request";
 import { ISensor, ISensorCreationForm, ITank, ITankCreationForm } from "./types";
-import { revalidateTag } from "next/cache";
 
 // Group
 export const getGroup = async (groupId: number) => {
@@ -19,7 +18,6 @@ export const getTanks = async (groupId: number) => {
         // Make request
         const response = await serverRequest("tank", "getTanks", [groupId]);
         if (response.ok) {
-            revalidateTag("getTanks");
             const tanks = response.data;
             // Get tanks sensor
             await Promise.all(tanks.map(async (tank) => {

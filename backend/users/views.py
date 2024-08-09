@@ -10,7 +10,6 @@ from rest_framework_simplejwt.views import (
 )
 from users.models import UserAccount
 
-
 class CustomProviderAuthView(ProviderAuthView):
     """
     Custom view for handling social authentication and setting cookies for access and refresh tokens.
@@ -59,7 +58,6 @@ class CustomProviderAuthView(ProviderAuthView):
             )
 
         return response
-
 
 class CustomTokenLoginView(TokenObtainPairView):
     """
@@ -220,7 +218,6 @@ class CustomTokenSignupView(TokenObtainPairView):
         )
 
         return Response({'detail': 'User registered successfully.'}, status=status.HTTP_200_OK)
-
 
 class CustomTokenVerifyView(TokenVerifyView):
     """

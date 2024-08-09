@@ -12,6 +12,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from .schemas import *
 from .client import WeatherAPIClient
 from .models import CurrentWeatherData, DailyWeatherData
 from utils.misc import _get_seconds_until_next_hour
@@ -35,20 +36,24 @@ class GetCurrentWeatherView(APIView):
             weather_data = CurrentWeatherData.objects.filter(city_name=city_name).first()
             if weather_data and (timezone.now() - weather_data.timestamp) < timedelta(hours=1):
                 response_data = self._format_current_weather_response(weather_data)
+                # Validate and format response data with Pydantic
+                formatted_response = CurrentWeatherResponseSchema(**response_data).model_dump()
                 cache_timeout = _get_seconds_until_next_hour()
-                cache.set(cache_key, response_data, timeout=cache_timeout)
-                return Response(response_data, status=status.HTTP_200_OK)
+                cache.set(cache_key, formatted_response, timeout=cache_timeout)
+                return Response(formatted_response, status=status.HTTP_200_OK)
 
             # Fetch new data from API
             weather_data_json = api_client.get_current_weather(city_name)
 
             # Update or create weather data in the database
             weather_data = self._update_or_create_current_weather_data(city_name, weather_data_json)
-            
+
             response_data = self._format_current_weather_response(weather_data)
+            # Validate and format response data with Pydantic
+            formatted_response = CurrentWeatherResponseSchema(**response_data).model_dump()
             cache_timeout = _get_seconds_until_next_hour()
-            cache.set(cache_key, response_data, timeout=cache_timeout)
-            return Response(response_data, status=status.HTTP_200_OK)
+            cache.set(cache_key, formatted_response, timeout=cache_timeout)
+            return Response(formatted_response, status=status.HTTP_200_OK)
 
         except ValidationError as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -124,9 +129,11 @@ class GetForecastWeatherView(APIView):
 
             if existing_data.count() == 5:
                 response_data = [self._format_weather_data(entry) for entry in existing_data]
+                # Validate and format response data with Pydantic
+                formatted_response = [ForecastWeatherResponseSchema(**data).model_dump() for data in response_data]
                 cache_timeout = _get_seconds_until_next_hour()
-                cache.set(cache_key, response_data, timeout=cache_timeout)
-                return Response(response_data, status=status.HTTP_200_OK)
+                cache.set(cache_key, formatted_response, timeout=cache_timeout)
+                return Response(formatted_response, status=status.HTTP_200_OK)
 
             forecast_data = api_client.get_forecast(city_name)
             
@@ -137,9 +144,11 @@ class GetForecastWeatherView(APIView):
             else:
                 updated_data = DailyWeatherData.objects.filter(city_name=city_name, date__in=next_five_days)
             response_data = [self._format_weather_data(entry) for entry in updated_data]
+            # Validate and format response data with Pydantic
+            formatted_response = [ForecastWeatherResponseSchema(**data).model_dump() for data in response_data]
             cache_timeout = _get_seconds_until_next_hour()
-            cache.set(cache_key, response_data, timeout=cache_timeout)
-            return Response(response_data, status=status.HTTP_200_OK)
+            cache.set(cache_key, formatted_response, timeout=cache_timeout)
+            return Response(formatted_response, status=status.HTTP_200_OK)
 
         except ValidationError as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

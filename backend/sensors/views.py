@@ -1,18 +1,19 @@
-from .models import SensorReading
-from data.models import Sensor
+from datetime import datetime
+
 from django.db import connection
 from django.db.models import F, Window, Sum, Case, When, Min, Max, Avg, StdDev
 from django.db.models.functions import TruncMinute
 from django.db.models.functions import Lag
-from .schemas import *
+from django.utils import timezone
+from django.utils.timezone import make_aware
 
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from datetime import datetime
-from django.utils import timezone
-from django.utils.timezone import make_aware
+from .schemas import *
+from .models import SensorReading
+from data.models import Sensor
 
 def to_dict(model):
     model_dict = {}
@@ -70,7 +71,7 @@ class GetSensorReadingsView(APIView):
             )
                         
             # Serialize sensor readings
-            readings_json = [SensorReadingSchema(time=int(reading['bucket'].timestamp()), distance=reading['distance']).dict() for reading in readings]
+            readings_json = [SensorReadingSchema(time=int(reading['bucket'].timestamp()), distance=reading['distance']).model_dump() for reading in readings]
             
             return Response(readings_json, status=status.HTTP_200_OK)
         except Exception as e:
@@ -94,7 +95,7 @@ class GetSensorLastReadingView(APIView):
                 return Response({'error': 'No readings for this sensor'}, status=status.HTTP_404_NOT_FOUND)
             
             # Serialize last sensor reading
-            reading_json = SensorReadingSchema(time=int(last_reading.time.timestamp()), distance=last_reading.distance).dict()
+            reading_json = SensorReadingSchema(time=int(last_reading.time.timestamp()), distance=last_reading.distance).model_dump()
             return Response(reading_json, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

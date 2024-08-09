@@ -39,7 +39,6 @@ class EditGroupSchema(BaseSchema):
 class DeleteGroupSchema(BaseSchema):
     id: int
 
-
 ############
 ### TANK ###
 ############
@@ -88,7 +87,6 @@ class EditTankSchema(BaseSchema):
 class DeleteTankSchema(BaseSchema):
     id: int
     group_id: int
-
 
 ##############
 ### SENSOR ###

@@ -40,23 +40,17 @@ def to_timestamp(time_string):
 ### SENOR READINGS ###
 ######################
 
+### GET ###
 class GetSensorReadingsView(APIView):
     def post(self, request):
         try:
             # Deserialize request data
-            # data = GetSensorReadingsSchema(**request.data)
-            data = GetSensorReadingsSchema(
-                sensor_id="b1726b2b1acdaf030ab9db79805edd58",
-                start_time='2024-02-01T00:00:00',
-                end_time='2024-05-02T00:00:00',
-                timeframe='5',
-                period='minutes'
-            )
-            
+            data = GetSensorReadingsSchema(**request.data)
+
             # Check sensor exists
             sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
             if not sensor:
-                return Response({'Bad Request': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
                        
             # Get sensor readings
             readings = SensorReading.timescale.filter(
@@ -67,7 +61,7 @@ class GetSensorReadingsView(APIView):
             # Bucket readings
             readings = readings.time_bucket(
                 'time', 
-                f"{str(data.timeframe)} {data.period}"
+                f"{data.timeframe} {data.period}"
             )
             
             # Get distance values
@@ -76,13 +70,7 @@ class GetSensorReadingsView(APIView):
             )
                         
             # Serialize sensor readings
-            readings_json = []
-            for reading in readings:
-                reading_json = SensorReadingSchema(
-                    time=int(reading['bucket'].timestamp()),
-                    distance=reading['distance'],
-                )
-                readings_json.append(reading_json.model_dump())
+            readings_json = [SensorReadingSchema(time=int(reading['bucket'].timestamp()), distance=reading['distance']).dict() for reading in readings]
             
             return Response(readings_json, status=status.HTTP_200_OK)
         except Exception as e:
@@ -97,19 +85,16 @@ class GetSensorLastReadingView(APIView):
             # Check sensor exists
             sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
             if not sensor:
-                return Response({'Bad Request': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
             
             # Get last sensor reading
             last_reading = SensorReading.objects.filter(sensor=sensor).order_by('-time').first()
             
             if not last_reading:
-                return Response({'Not Found': 'No readings for this sensor'}, status=status.HTTP_404_NOT_FOUND)
+                return Response({'error': 'No readings for this sensor'}, status=status.HTTP_404_NOT_FOUND)
             
             # Serialize last sensor reading
-            reading_json = SensorReadingSchema(
-                time=int(last_reading.time.timestamp()),
-                distance=last_reading.distance,
-            )
+            reading_json = SensorReadingSchema(time=int(last_reading.time.timestamp()), distance=last_reading.distance).dict()
             return Response(reading_json, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -118,14 +103,7 @@ class GetSensorFlowView(APIView):
     def post(self, request):
         try:
             # Deserialize request data
-            # data = GetSensorFlowSchema(**request.data)
-            data = GetSensorFlowSchema(
-                sensor_id="b1726b2b1acdaf030ab9db79805edd58",
-                start_time='2024-02-01T00:00:00',
-                end_time='2024-05-02T00:00:00',
-                timeframe='5',
-                period='minutes'
-            )
+            data = GetSensorFlowSchema(**request.data)
 
             # Check sensor exists
             sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
@@ -133,7 +111,6 @@ class GetSensorFlowView(APIView):
                 return Response({'error': 'Sensor does not exist'}, status=status.HTTP_404_NOT_FOUND)
             
             # Convert string times to timezone-aware datetime objects
-            # This ensures proper handling of timezones in queries
             start_time = make_aware(data.start_time)
             end_time = make_aware(data.end_time)
             
@@ -143,7 +120,7 @@ class GetSensorFlowView(APIView):
                 sensor=sensor,
                 time__range=(start_time, end_time)
             ).annotate(
-                bucket=TruncMinute('time',)  # Use TruncMinute for minute-level buckets
+                bucket=TruncMinute('time')  # Use TruncMinute for minute-level buckets
             ).values('bucket').annotate(
                 distance=Avg('distance')  # Use Avg to get the average distance for the bucket
             ).order_by('bucket')
@@ -188,19 +165,12 @@ class GetSensorFlowView(APIView):
             # If any error occurs, return it with a 500 status code
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-############# RAW #############
+############# RAW SQL #############
 class GetSensorFlowViewRaw(APIView):
     def post(self, request):
         try:
             # Deserialize request data
-            # data = GetSensorFlowSchema(**request.data)
-            data = GetSensorFlowSchema(
-                sensor_id="b1726b2b1acdaf030ab9db79805edd58",
-                start_time='2024-02-01T00:00:00',
-                end_time='2024-05-02T00:00:00',
-                timeframe='5',
-                period='minutes'
-            )
+            data = GetSensorFlowSchema(**request.data)
                         
             # Check sensor exists
             sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
@@ -260,19 +230,12 @@ class GetSensorInputFlowView(APIView):
     def post(self, request):
         try:
             # Deserialize request data
-            # data = GetSensorReadingsSchema(**request.data)
-            data = GetSensorReadingsSchema(
-                sensor_id=1,
-                start_time='2024-02-01T00:00:00',
-                end_time='2024-05-02T00:00:00',
-                timeframe='5',
-                period='minutes'
-            )
+            data = GetSensorReadingsSchema(**request.data)
             
             # Check sensor exists
-            sensor = Sensor.objects.filter(pk=data.id, tank__group__user=request.user).first()
+            sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
             if not sensor:
-                return Response({'Bad Request': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Get readings within timeframe
             readings = SensorReading.timescale.filter(
@@ -324,9 +287,9 @@ class GetSensorStatsView(APIView):
             data = GetSensorReadingsSchema(**request.data)
 
             # Check sensor exists
-            sensor = Sensor.objects.filter(pk=data.id, tank__group__user=request.user).first()
+            sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
             if not sensor:
-                return Response({'Bad Request': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Get readings within timeframe
             readings = SensorReading.timescale.filter(
@@ -359,7 +322,6 @@ class GetSensorStatsView(APIView):
 
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 ###################
 ### SENSOR LOGS ###

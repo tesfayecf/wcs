@@ -21,6 +21,11 @@ class CurrentWeatherData(models.Model):
     wind_deg = models.IntegerField(help_text="Wind direction in degrees.")
     timestamp = models.DateTimeField(auto_now=True, help_text="Timestamp of the weather data update.")
 
+    class Meta:
+        unique_together = ('city_name',)
+        verbose_name = 'Current Weather Data'
+        verbose_name_plural = 'Current Weather Data'
+
     def __str__(self):
         return f"{self.city_name} - {self.weather_main}"
 

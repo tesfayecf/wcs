@@ -62,7 +62,7 @@ class ForecastWeatherSchema(BaseModel):
     wind_deg: int
 
 class ForecastWeatherResponseSchema(BaseSchema):
-    date: datetime.date
+    date: datetime
     description: str
     icon: str
     temperature: Dict[str, float]

@@ -24,7 +24,6 @@
 #include "../utils/types.h"
 #include "../utils/utils.h"
 #include "../misc/logger.h"
-// #include "../misc/queue.h"
 #include "./AppConfig.h"
 
 App::App(const AppConfig &config) :
@@ -36,8 +35,12 @@ void App::setup() {
     digitalWrite(LED_BUILTIN, HIGH);
 
     // Initialize logger
-    Logger::setLogLevel(VERBOSE);
-    Logger::notice("App::setup()", "App initialized");
+    if (VERBOSE_LOGGING) {
+        Logger::setLogLevel(VERBOSE);
+    } else {
+        Logger::setLogLevel(NOTICE);
+    }
+    Logger::notice("App::setup()", "Initializing app");
 
     // Set App info
     this->setBoardInfo();
@@ -61,7 +64,7 @@ void App::setup() {
 
     blink();
     digitalWrite(LED_BUILTIN, LOW);
-    Logger::notice("App::setup()", "App set up finished");
+    Logger::notice("App::setup()", "App initialization finished");
 }
 
 void App::loop() {
@@ -101,10 +104,6 @@ AppConfig::AppInfo& App::getAppInfo() {
     return this->appConfig.appInfo;
 }
 
-// Queue<String> *App::getDataQueue() {
-//     return this->queue;
-// }
-
 /// SETTERS ///
 void App::setBoardInfo() {
     this->appConfig.boardInfo.boardChipId = ESP.getChipId();
@@ -140,10 +139,10 @@ void App::setAppInfo() {
     String flashChipIdStr = String(this->appConfig.boardInfo.boardFlashChipId, DEC);
     // Get board chip id
     String boardChipIdStr = this->appConfig.boardInfo.boardChipId;
+    
     // Generate board id
     this->appConfig.appInfo.sensorId = generateId(boardChipIdStr, flashChipIdStr);
     Logger::verbose("App::setAppInfo()", "Sensor Id: " + this->appConfig.appInfo.sensorId);
-
     // Initialize sensor time
     setTime(this->appConfig.appInfo.startTime);
     Logger::verbose("App::setAppInfo()", "Sensor time initialized");

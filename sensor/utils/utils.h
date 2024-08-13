@@ -1,7 +1,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "../App/AppConfig.h"
+#include "../app/AppConfig.h"
 #include "constants.h"
 #include "types.h"
 

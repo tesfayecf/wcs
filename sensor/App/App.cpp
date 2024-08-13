@@ -24,6 +24,7 @@
 #include "../utils/types.h"
 #include "../utils/utils.h"
 #include "../misc/logger.h"
+// #include "../misc/queue.h"
 #include "./AppConfig.h"
 
 App::App(const AppConfig &config) :
@@ -41,7 +42,7 @@ void App::setup() {
     // Set App info
     this->setBoardInfo();
     // Set Board info
-    this->setAppInfo();
+    this->setAppInfo(); // TODO: read from config file
 
     // Create managers
     wifiManager = new WifiManager();
@@ -66,7 +67,8 @@ void App::setup() {
 void App::loop() {
     static unsigned long lastMillis = 0;
     unsigned long currentMillis = millis();
-    if (currentMillis - lastMillis >= CYCLE_TIME) {
+    // if (currentMillis - lastMillis >= CYCLE_TIME) {
+    if (millis() % CYCLE_TIME == 0) {
         lastMillis = currentMillis;
 
         // Update time
@@ -86,6 +88,24 @@ void App::restart() {
     ESP.restart();
 }
 
+/// GETTERS ///
+AppConfig& App::getAppConfig() {
+    return this->appConfig;
+}
+
+AppConfig::BoardInfo& App::getBoardInfo() {
+    return this->appConfig.boardInfo;
+}
+
+AppConfig::AppInfo& App::getAppInfo() {
+    return this->appConfig.appInfo;
+}
+
+// Queue<String> *App::getDataQueue() {
+//     return this->queue;
+// }
+
+/// SETTERS ///
 void App::setBoardInfo() {
     this->appConfig.boardInfo.boardChipId = ESP.getChipId();
     Logger::verbose("App::setBoardInfo()", "Board Chip Id: " + String(this->appConfig.boardInfo.boardChipId));

@@ -1,6 +1,6 @@
-#include "App/App.cpp"  // BUG ALERT
-#include "App/App.h"
-#include "App/AppConfig.h"
+#include "app/App.cpp"  // BUG ALERT
+#include "app/App.h"
+#include "app/AppConfig.h"
 #include "utils/types.h"
 
 // Create an instance of the AppConfig class to hold configuration data

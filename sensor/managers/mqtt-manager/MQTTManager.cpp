@@ -6,7 +6,7 @@
 #include <TimeLib.h>
 #include <ArduinoJson.h>
 
-#include "../../App/AppConfig.h"
+#include "../../app/AppConfig.h"
 #include "../../misc/logger.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
@@ -19,7 +19,7 @@ void MQTTManager::init() {
 }
 
 void MQTTManager::setup() {
-    Logger::notice("MQTTManager::setup", "MQTTManager Setup");
+    Logger::notice("MQTTManager::setup", "MQTTManager start setup");
 
     // Set MQTT broker info
     // this->setBrokerInfo();
@@ -42,7 +42,7 @@ void MQTTManager::setup() {
     // Register sensor
     this->registerSensor();
 
-    Logger::notice("MQTTManager::setup", "MQTTManager Setup");
+    Logger::notice("MQTTManager::setup", "MQTTManager setup finished");
 }
 
 void MQTTManager::loop() {
@@ -141,7 +141,7 @@ void MQTTManager::subscribe(const String& topic) {
 }
 
 
-// Connection
+// Connection //
 void MQTTManager::connect() {
     Logger::notice("MQTTManager::connect", "Connecting to MQTT broker");
     int r = 0;
@@ -165,7 +165,7 @@ void MQTTManager::reconnect() {
     this->connect();
 }
 
-// Callbacks
+// Callbacks //
 void MQTTManager::callbackFunction(char *topic, byte *payload, unsigned int length) {
     Logger::notice("MQTTManager::callbackFunction", "Received MQTT message");
     Logger::verbose("MQTTManager::callbackFunction", "Topic: " + String(topic));
@@ -176,7 +176,7 @@ void MQTTManager::callbackFunction(char *topic, byte *payload, unsigned int leng
     // MQTTMessage message;
 }
 
-// Actions
+// Actions //
 void MQTTManager::subscribeSensor() {
     // Subscribe to command topic
     this->subscribe(this->commnadTopic);
@@ -194,7 +194,7 @@ void MQTTManager::registerSensor() {
     this->publish(&message);
 }
 
-// Setters
+// Setters //
 void MQTTManager::setTopics() {
     // Publish MQTT topics
     this->registerTopic = String("server") + "/" + MQTT_REGISTER_TOPIC;

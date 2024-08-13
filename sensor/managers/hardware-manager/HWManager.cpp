@@ -2,7 +2,7 @@
 
 #include <ESP8266WiFi.h>
 
-#include "../../App/AppConfig.h"
+#include "../../app/AppConfig.h"
 #include "../../misc/logger.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"

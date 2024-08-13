@@ -9,38 +9,52 @@
 
 #include "../utils/constants.h"
 #include "../utils/types.h"
+// #include "../misc/queue.h"
 #include "./AppConfig.h"
 
 class App {
- public:
-  AppConfig appConfig;
-  
-  WifiManager* wifiManager;
-  MQTTManager* mqttManager;
-  HWManager* hwManager;
+  public:
+    AppConfig appConfig;
 
- public:
-  // Constructor for the App class.
-  App(const AppConfig& config);
+    WifiManager* wifiManager;
+    MQTTManager* mqttManager;
+    HWManager* hwManager;
 
-  // Sets up the application.
-  void setup();
+  private:
+    // Queue<String> dataQueue
 
-  // Main loop for the application.
-  void loop();
+  public:
+    // Constructor for the App class.
+    App(const AppConfig& config);
 
-  // Stops the application.
-  void stop();
+    // Sets up the application.
+    void setup();
 
-  // Restarts the application.
-  void restart();
+    // Main loop for the application.
+    void loop();
 
- private:
-  // Sets the board information in the AppConfig object.
-  void setBoardInfo();
+    // Stops the application.
+    void stop();
 
-  // Sets the sensor information in the AppConfig object.
-  void setAppInfo();
+    // Restarts the application.
+    void restart();
+
+  private:
+    /// GETTERS ///
+    // Gets the AppConfig object.
+    AppConfig& getAppConfig();  
+    // Gets the board information.
+    AppConfig::BoardInfo& getBoardInfo();  
+    // Gets the app information.
+    AppConfig::AppInfo& getAppInfo();
+    // Gets the data queue.
+    // Queue<String> getDataQueue();
+
+    /// SETTERS ///
+    // Sets the board information in the AppConfig object.
+    void setBoardInfo();
+    // Sets the app information in the AppConfig object.
+    void setAppInfo();
 };
 
 #endif  // APP_H

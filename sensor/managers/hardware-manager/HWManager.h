@@ -1,7 +1,7 @@
 #ifndef HW_CONNECTION_MANAGER_H
 #define HW_CONNECTION_MANAGER_H
 
-#include "../../App/AppConfig.h"
+#include "../../app/AppConfig.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
 #include "../BaseManager.h"

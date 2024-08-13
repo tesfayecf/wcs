@@ -3,7 +3,7 @@
 
 #include "Arduino.h"
 
-#include "../../App/AppConfig.h"
+#include "../../app/AppConfig.h"
 
 class App;
 

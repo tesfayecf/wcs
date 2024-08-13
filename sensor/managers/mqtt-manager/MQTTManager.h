@@ -5,7 +5,7 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-#include "../../App/AppConfig.h"
+#include "../../app/AppConfig.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
 #include "../BaseManager.h"
@@ -45,28 +45,28 @@ class MQTTManager : public BaseManager {
     void subscribe(const String& topic);
 
   private:
-    // Connection
+    // Connection //
     // Connect to MQTT broker
     void connect();
 
     // Reconnect to MQTT broker
     void reconnect();
 
-    // Callbacks
+    // Callbacks //
     // MQTT callback function
     static void callbackFunction(char* topic, byte* payload, unsigned int length);
     // void statusCallback(uint8_t* payload, unsigned int length);
     // void configCallback(uint8_t* payload, unsigned int length);
     // void authCallback(uint8_t* payload, unsigned int length);
 
-    // Actions
+    // Actions //
     // Subscribe to sensor command topic
     void subscribeSensor();
 
     // Register sensor with MQTT broker
     void registerSensor();
 
-    // Setters
+    // Setters //
     // Set MQTT topics and connection information
     void setConnectionInfo();
     void setTopics();

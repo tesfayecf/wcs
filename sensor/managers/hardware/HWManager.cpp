@@ -6,7 +6,7 @@
 #include "../../misc/logger.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
-#include "../mqtt-manager/message.h"
+#include "../mqtt/message.h"
 
 #include "Sensor.h"
 

@@ -5,14 +5,14 @@
 #include "../managers/BaseManager.cpp" // BUG ALERT
 #include "../managers/BaseManager.h"
 
-#include "../../managers/hardware-manager/HWManager.cpp"  // BUG ALERT
-#include "../../managers/hardware-manager/HWManager.h"
+#include "../../managers/hardware/HWManager.cpp"  // BUG ALERT
+#include "../../managers/hardware/HWManager.h"
 
-#include "../../managers/mqtt-manager/MQTTManager.cpp"  // BUG ALERT
-#include "../../managers/mqtt-manager/MQTTManager.h"
+#include "../../managers/mqtt/MQTTManager.cpp"  // BUG ALERT
+#include "../../managers/mqtt/MQTTManager.h"
 
-#include "../../managers/wifi-manager/WifiManager.cpp"  // BUG ALERT
-#include "../../managers/wifi-manager/WifiManager.h"
+#include "../../managers/wifi/WifiManager.cpp"  // BUG ALERT
+#include "../../managers/wifi/WifiManager.h"
 
 #include "../utils/constants.h"
 #include "../utils/types.h"

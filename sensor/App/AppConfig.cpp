@@ -58,7 +58,7 @@ AppConfig::MQTTManager::MQTTManager() {
   maxPacketSize = MQTT_MAX_PACKET_SIZE;
   keepAlive = MQTT_KEEP_ALIVE;
   version = MQTT_VERSION;
-  connectionTimeout = MQTT_CONNECTION_TIMEOUT;
+  connectionTimeout = MQTT_SERVER_CONNECTION_TIMEOUT;
 
   registerTopic = MQTT_REGISTER_TOPIC;
   dataTopic = MQTT_DATA_TOPIC;

@@ -6,7 +6,7 @@
 //////////////////
 
 #define DEBUG true
-#define VERBOSE_LOGGING false
+#define VERBOSE_LOGGING true
 
 //////////////////
 /// APP CONFIG ///
@@ -55,7 +55,7 @@
 #define MQTT_VERSION 5  // MQTT Protocol Version (e.g., 3.1, 3.1.1, 5)
 #define MQTT_MAX_PACKET_SIZE 1024
 #define MQTT_KEEP_ALIVE 60  // seconds
-#define MQTT_CONNECTION_TIMEOUT 10000  // milliseconds
+#define MQTT_SERVER_CONNECTION_TIMEOUT 10000  // milliseconds
 
 #define MQTT_QOS_LEVEL 1
 #define MQTT_RETAIN_MESSAGE false
@@ -63,8 +63,6 @@
 #define MQTT_DATA_TOPIC "data"  // MQTT Data Topic
 #define MQTT_COMMAND_TOPIC "command"  // MQTT Command Topic
 #define MQTT_REGISTER_TOPIC "register"  // MQTT Register Topic
-#define MQTT_META_KEY "meta"
-#define MQTT_ACTION_KEY "action"
 
 /// HARDWARE ///
 

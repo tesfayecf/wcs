@@ -39,65 +39,65 @@ void blink() {
   delay(100);
 }
 
-/* 
-  This function returns the string representation of the corresponding message type.
-*/
-const char* TYPE_TO_CHAR(MESSAGE_TYPES key) {
-  switch (key) {
-    case REGISTER:
-      return "0";
-    case DATA:
-      return "1";
-    case COMMAND:
-      return "2";
-    default:
-      return "9999";
-  }
-}
+// /* 
+//   This function returns the string representation of the corresponding message type.
+// */
+// const char* TYPE_TO_CHAR(MESSAGE_TYPES key) {
+//   switch (key) {
+//     case REGISTER:
+//       return "0";
+//     case DATA:
+//       return "1";
+//     case COMMAND:
+//       return "2";
+//     default:
+//       return "9999";
+//   }
+// }
 
-/* 
-  This function returns the string representation of the corresponding message action.
-*/
-const char* ACTION_TO_CHAR(MESSAGE_ACTIONS key) {
-  switch (key) {
-    case REGISTER_SENSOR:
-      return "0";
-    case SENSOR_DATA:
-      return "1";
-    case GET_STATUS:
-      return "2";
-    case GET_SENSOR_ID:
-      return "3";
-    default:
-      return "9999";
-  }
-}
+// /* 
+//   This function returns the string representation of the corresponding message action.
+// */
+// const char* ACTION_TO_CHAR(MESSAGE_ACTIONS key) {
+//   switch (key) {
+//     case REGISTER_SENSOR:
+//       return "0";
+//     case SENSOR_DATA:
+//       return "1";
+//     case GET_STATUS:
+//       return "2";
+//     case GET_SENSOR_ID:
+//       return "3";
+//     default:
+//       return "9999";
+//   }
+// }
 
-/* 
-  This function returns the string representation of the corresponding message parameter.
-*/
-const char* PARAM_TO_CHAR(MESSAGE_PARAMETERS key) {
-  switch (key) {
-    // Metadata
-    case MESSAGE_ID:
-      return "101";
-    case TIMESTAMP:
-      return "102";
-    case SENSOR_TIME:
-      return "103";
-    case VERSION:
-      return "104";
-    case SENSOR_ID:
-      return "105";
+// /* 
+//   This function returns the string representation of the corresponding message parameter.
+// */
+// const char* PARAM_TO_CHAR(MESSAGE_PARAMETERS key) {
+//   switch (key) {
+//     // Metadata
+//     case MESSAGE_ID:
+//       return "101";
+//     case TIMESTAMP:
+//       return "102";
+//     case SENSOR_TIME:
+//       return "103";
+//     case VERSION:
+//       return "104";
+//     case SENSOR_ID:
+//       return "105";
 
-    // Action
-    case MESSAGE_TYPE:
-      return "201";
-    case ACTION_NAME:
-      return "202";
-    default:
-      return "9999";
-  }
-}
+//     // Action
+//     case MESSAGE_TYPE:
+//       return "201";
+//     case ACTION_NAME:
+//       return "202";
+//     default:
+//       return "9999";
+//   }
+// }
 
 #endif  // UTILS_H

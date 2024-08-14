@@ -6,6 +6,8 @@
 #include "../../misc/logger.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
+#include "../mqtt-manager/message.h"
+
 #include "Sensor.h"
 
 HWManager::HWManager() : distanceSensor(TRIGGER_PIN, ECHO_PIN, TIMEOUT) {}
@@ -63,16 +65,22 @@ void HWManager::readDistanceSensor() {
 }
 
 void HWManager::publishData() {
-  // Create data message
-  MQTTMessage message;
-  message.type = MESSAGE_TYPES::DATA;
-  message.action = MESSAGE_ACTIONS::SENSOR_DATA;
-  // message.params[0] = String(this->distance).c_str();
-  String distance = "0";
-  message.params[0] = distance.c_str();
-  message.paramsCount = 1;
+    // Create data message
 
-  // Publish sensor data
-  this->app->mqttManager->publish(&message);
-  Logger::verbose("HWManager::publishData()", "Published sensor data");
+    // Message message();
+    // message.action_type = ActionType::Data;
+    // message.action_name = DataAction::SensorReading;
+    // // message.params[0] = String(this->distance).c_str();
+    // String distance = "0";
+    // message.params[0] = distance.c_str();
+    // message.meta_info = this->app->mqttManager->getMetaInfo();
+
+    const char* payload[5];
+    String distance = "0";
+    payload[0] = distance.c_str();
+    Message message(ActionType::Data, DataAction::SensorReading, payload, 1, this->app->mqttManager->getMetaInfo());
+
+    // Publish sensor data
+    this->app->mqttManager->publish(&message);
+    Logger::verbose("HWManager::publishData()", "Published sensor data");
 }

@@ -12,7 +12,9 @@
 #include "../../utils/types.h"
 #include "../../utils/utils.h"
 
-MQTTManager::MQTTManager() : mqttClient(wifiClient) {}
+#include "./message.h"
+
+MQTTManager::MQTTManager() : mqttClient(wifiClient), state(MQTTConnectionState::DISCONNECTED) {}
 
 void MQTTManager::init() {
     Logger::notice("MQTTManager::init", "MQTTManager Initialized");
@@ -51,73 +53,87 @@ void MQTTManager::loop() {
         Logger::warning("MQTTManager::loop", "MQTT disconnected, reconnecting...");
         reconnect();
     }
-
     // Update mqtt client connection
     this->mqttClient.loop();
 }
 
-void MQTTManager::publish(const MQTTMessage* messagePtr) {
+// void MQTTManager::loop() {
+//     switch (this->state) {
+//         case MQTTState::DISCONNECTED:
+//             Logger::warning("MQTTManager::loop", "MQTT disconnected, attempting to reconnect...");
+//             this->state = MQTTState::CONNECTING;
+//             break;
+//         case MQTTState::CONNECTING:
+//             if (connect()) {
+//                 Logger::notice("MQTTManager::loop", "MQTT connected successfully");
+//                 this->state = MQTTState::CONNECTED;
+//                 subscribeSensor();  // Subscribe to topics after successful connection
+//             } else {
+//                 Logger::error("MQTTManager::loop", "MQTT connection failed, will retry later");
+//                 this->state = MQTTState::DISCONNECTED;
+//             }
+//             break;
+//         case MQTTState::CONNECTED:
+//             if (!this->mqttClient.connected()) {
+//                 Logger::warning("MQTTManager::loop", "MQTT connection lost");
+//                 state = MQTTState::DISCONNECTED;
+//             } else {
+//                 this->mqttClient.loop();  // Process incoming messages and maintain the connection
+//             }
+//             break;
+//         // case MQTTState::SUBSCRIBING:
+//         //     // Handle subscription process if needed
+//         //     // For now, we'll just transition back to CONNECTED state
+//         //     state = MQTTState::CONNECTED;
+//         //     break;
+//         // case MQTTState::PUBLISHING:
+//         //     // Handle publishing process if needed
+//         //     // For now, we'll just transition back to CONNECTED state
+//         //     state = MQTTState::CONNECTED;
+//         //     break;
+//     }
+// }
+
+void MQTTManager::publish(const Message* messagePtr) {
     if (messagePtr == nullptr) {
         Logger::error("MQTTManager::publish", "Null pointer passed as message");
         return;
     }
 
-    const MQTTMessage& message = *messagePtr;
+    const Message& message = *messagePtr;
 
     // Boundary check
-    if (message.paramsCount > 5) {
+    if (message.payload_count > 5) {
         Logger::error("MQTTManager::publish", "paramsCount exceeds array boundary");
         return;
     }
 
     // Ensure params array is not null (optional)
-    for (size_t i = 0; i < message.paramsCount; i++) {
-        if (message.params[i] == nullptr) {
+    for (size_t i = 0; i < message.payload_count; i++) {
+        if (message.payload[i] == nullptr) {
             Logger::error("MQTTManager::publish", "Null pointer found in params array");
             return;
         }
     }
 
-    // Create main json object
-    StaticJsonDocument<MQTT_MAX_PACKET_SIZE> jsonMessage;
-
-    // Add action information
-    JsonObject actionObject = jsonMessage.createNestedObject(MQTT_ACTION_KEY);
-    actionObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::MESSAGE_TYPE)] = TYPE_TO_CHAR(message.type);
-    actionObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::ACTION_NAME)] = ACTION_TO_CHAR(message.action);
-    // Add message body
-    for (size_t i = 0; i < message.paramsCount; i++) {
-        char paramName[5]; // Assuming the maximum length of parameter name is 5
-        snprintf(paramName, sizeof(paramName), "p%zu", i);
-        actionObject[paramName] = message.params[i];
-    }
-
-    // Add sensor metadata
-    JsonObject metaObject = jsonMessage.createNestedObject(MQTT_META_KEY);
-    metaObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::MESSAGE_ID)] = generateRandomString(25);
-    metaObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::TIMESTAMP)] = now();
-    metaObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::SENSOR_TIME)] = millis();
-    metaObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::VERSION)] = APP_VERSION;
-    metaObject[PARAM_TO_CHAR(MESSAGE_PARAMETERS::SENSOR_ID)] = this->appConfig->appInfo.sensorId.c_str();
-
     // Serialize JSON to a string
     String jsonMessageStr;
-    serializeJson(jsonMessage, jsonMessageStr);
+    message.toJson(jsonMessageStr);
 
     // Choose topic based on message type
     const char* topic;
-    switch (message.type) {
-        case MESSAGE_TYPES::REGISTER:
+    switch (message.action_type) {
+        case ActionType::Register:
             topic = this->registerTopic.c_str();
             break;
-        case MESSAGE_TYPES::DATA:
+        case ActionType::Data:
             topic = this->dataTopic.c_str();
             break;
-        case MESSAGE_TYPES::COMMAND:
+        case ActionType::Command:
             topic = this->commnadTopic.c_str();
             break;
         default:
-            topic = "default";
+            topic = "-";
             break;
     }
 
@@ -127,8 +143,8 @@ void MQTTManager::publish(const MQTTMessage* messagePtr) {
         Logger::notice("MQTTManager::publish", "Message Published");
         Logger::verbose("MQTTManager::publish", "Message: " + jsonMessageStr);
         Logger::verbose("MQTTManager::publish", "Topic: " + String(topic));
-        Logger::verbose("MQTTManager::publish", "Message type: " + String(TYPE_TO_CHAR(message.type)));
-        Logger::verbose("MQTTManager::publish", "Action name: " + String(ACTION_TO_CHAR(message.action)));
+        // Logger::verbose("MQTTManager::publish", "Message type: " + String(TYPE_TO_CHAR(message.type)));
+        // Logger::verbose("MQTTManager::publish", "Action name: " + String(ACTION_TO_CHAR(message.action)));
     }
 }
 
@@ -140,29 +156,33 @@ void MQTTManager::subscribe(const String& topic) {
     // TODO: Handle case when client is not connected
 }
 
-
 // Connection //
-void MQTTManager::connect() {
+boolean MQTTManager::connect() {
     Logger::notice("MQTTManager::connect", "Connecting to MQTT broker");
-    int r = 0;
-    while (!mqttClient.connected()) {
-        if (mqttClient.connect(this->appConfig->appInfo.sensorId.c_str())) {
-            Logger::verbose("MQTTManager::connect", "Connected to MQTT broker");
-            return;
-        } else {
-            delay(100);
-            r++;
-            if (r == 150) {
-                Logger::error("MQTTManager::connect", "Failed to connect to MQTT broker");
-                return;
-            }
+    this->connected = false;
+
+    int retryCount = 0;
+    int retryDelay = 100; // ms
+
+    while (retryCount < MAX_RETRY_ATTEMPTS) {
+        if (this->mqttClient.connect(this->appConfig->appInfo.sensorId.c_str())) {
+            this->connected = true;
+            return true;
         }
+
+        Logger::warning("MQTTManager::connect()", "Connection attempt failed. Retrying...");
+        delay(retryDelay);
+        retryCount++;
+        retryDelay *= 2; // Exponential backoff
     }
+
+    Logger::error("WifiManager::connect()", "Failed to connect after maximum attempts");
+    return false;
 }
 
-void MQTTManager::reconnect() {
-    mqttClient.disconnect();
-    this->connect();
+boolean MQTTManager::reconnect() {
+    this->mqttClient.disconnect();
+    return this->connect();
 }
 
 // Callbacks //
@@ -185,11 +205,13 @@ void MQTTManager::subscribeSensor() {
 void MQTTManager::registerSensor() {
     // Construct message
     Logger::verbose("MQTTManager::registerSensor", "Registering sensor");
-    MQTTMessage message;
-    message.type = MESSAGE_TYPES::REGISTER;
-    message.action = MESSAGE_ACTIONS::REGISTER_SENSOR;
-    message.params[0] = this->appConfig->appInfo.sensorId.c_str();
-    message.paramsCount = 1;
+
+    // Fill payload array
+    const char* payload[5];
+    payload[0] = this->appConfig->appInfo.sensorId.c_str();
+
+    // Create message object
+    Message message(ActionType::Register, RegisterAction::Sensor, payload, 1, this->getMetaInfo());
     
     this->publish(&message);
 }
@@ -206,10 +228,26 @@ void MQTTManager::setTopics() {
 }
 
 void MQTTManager::setConnectionInfo() {
-    mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
-    mqttClient.setKeepAlive(MQTT_KEEP_ALIVE);
-    mqttClient.setSocketTimeout(MQTT_CONNECTION_TIMEOUT);
-    mqttClient.setBufferSize(MQTT_MAX_PACKET_SIZE);
+    this->mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
+    this->mqttClient.setKeepAlive(MQTT_KEEP_ALIVE);
+    this->mqttClient.setSocketTimeout(MQTT_SERVER_CONNECTION_TIMEOUT);
+    this->mqttClient.setBufferSize(MQTT_MAX_PACKET_SIZE);
 
     Logger::verbose("MQTTManager::setConnectionInfo", "Connection info set succesfully");
+}
+
+MetaInfo MQTTManager::getMetaInfo() {
+    MetaInfo metaInfo;
+    metaInfo.message_id = generateRandomString(24);
+    // metaInfo.message_id = generateRandomString(24).c_str();
+    metaInfo.timestamp = now();
+    metaInfo.sensor_time = millis();
+    metaInfo.version = String(APP_VERSION);
+    // metaInfo.version = APP_VERSION;
+    metaInfo.sensor_id = this->appConfig->appInfo.sensorId;
+    // metaInfo.sensor_id = this->appConfig->appInfo.sensorId.c_str();
+    
+    // metaInfo.sensorType = this->appConfig->appInfo.sensorType.c_str();
+    // metaInfo.sensorLocation = this->appConfig->appInfo.sensorLocation.c_str();
+    return metaInfo;
 }

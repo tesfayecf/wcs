@@ -1,42 +1,6 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-enum MESSAGE_TYPES {
-  REGISTER = 0,
-  DATA = 1,
-  COMMAND = 2,
-};
-
-enum MESSAGE_ACTIONS {
-  // Register
-  REGISTER_SENSOR = 0,
-  // Data
-  SENSOR_DATA = 1,
-  // Command
-  GET_STATUS = 2,
-  GET_SENSOR_ID = 3,
-};
-
-enum MESSAGE_PARAMETERS {
-  // Metadata
-  MESSAGE_ID = 101,
-  TIMESTAMP = 102,
-  SENSOR_TIME = 103,
-  VERSION = 104,
-  SENSOR_ID = 105,
-
-  // Action
-  MESSAGE_TYPE = 201,
-  ACTION_NAME = 202,
-};
-
-struct MQTTMessage {
-  MESSAGE_TYPES type;
-  MESSAGE_ACTIONS action;
-  const char* params[5];
-  size_t paramsCount;
-};
-
 enum LogLevel {
   VERBOSE = 0,
   NOTICE,
@@ -44,6 +8,41 @@ enum LogLevel {
   ERROR,
   FATAL,
   SILENT
+};
+
+/// @brief Enumeration for WiFi connection states
+/// @details This enumeration defines the different states that a WiFi connection can be in.
+///          It is used to track the state of the WiFi connection and provide appropriate
+///          feedback to the user or system.
+enum class ConnectionStatus {
+    DISCONNECTED,
+    CONNECTING,
+    CONNECTED,
+    FAILED
+};
+
+
+/// @brief Enumeration for WiFi connection states
+/// @details This enumeration defines the different states that a WiFi connection can be in.
+///          It is used to track the state of the WiFi connection and provide appropriate
+///          feedback to the user or system.
+enum class WiFiConnectionState {
+    DISCONNECTED,
+    CONNECTING,
+    CONNECTED,
+    CONFIG_PORTAL
+};
+
+/// @brief Enumeration for MQTT connection states
+/// @details This enumeration defines the different states that an MQTT connection can be in.
+///          It is used to track the state of the MQTT connection and provide appropriate
+///          feedback to the user or system.
+enum class MQTTConnectionState {
+    DISCONNECTED,
+    CONNECTING,
+    CONNECTED,
+    SUBSCRIBING,
+    PUBLISHING
 };
 
 #endif  // TYPES_H

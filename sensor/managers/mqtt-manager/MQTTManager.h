@@ -8,24 +8,28 @@
 #include "../../app/AppConfig.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
+
 #include "../BaseManager.h"
+
+#include "./message.h"
 
 class App;
 
 class MQTTManager : public BaseManager {
-  private:
+private:
     WiFiClient wifiClient;
     PubSubClient mqttClient;
 
+    MQTTConnectionState state;
     boolean connected;
-    boolean connecting;
     String sensorId;
 
     String dataTopic;
     String commnadTopic;
     String registerTopic;
   
-  public:
+public:
+    // Constructor
     MQTTManager();
 
     // Initialize manager
@@ -37,29 +41,29 @@ class MQTTManager : public BaseManager {
     // Loop manager to check MQTT connection status
     void loop() override;
 
-    // Publish message to MQTT topic
-    void publish(const MQTTMessage* messagePtr);
     
-
+    // Publish message to MQTT topic
+    void publish(const Message* messagePtr);
+    
     // Subscribe to MQTT topic
     void subscribe(const String& topic);
 
-  private:
-    // Connection //
+    // Getters //
+    MetaInfo getMetaInfo();
+
+private:
     // Connect to MQTT broker
-    void connect();
+    boolean connect();
 
     // Reconnect to MQTT broker
-    void reconnect();
+    boolean reconnect();
 
     // Callbacks //
-    // MQTT callback function
     static void callbackFunction(char* topic, byte* payload, unsigned int length);
     // void statusCallback(uint8_t* payload, unsigned int length);
     // void configCallback(uint8_t* payload, unsigned int length);
     // void authCallback(uint8_t* payload, unsigned int length);
 
-    // Actions //
     // Subscribe to sensor command topic
     void subscribeSensor();
 
@@ -67,9 +71,10 @@ class MQTTManager : public BaseManager {
     void registerSensor();
 
     // Setters //
-    // Set MQTT topics and connection information
     void setConnectionInfo();
     void setTopics();
+
+
 };
 
 #endif  // MQTT_CONNECTION_MANAGER_H

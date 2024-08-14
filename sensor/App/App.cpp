@@ -14,16 +14,11 @@
 #include "../../managers/wifi-manager/WifiManager.cpp"  // BUG ALERT
 #include "../../managers/wifi-manager/WifiManager.h"
 
-#include "../../managers/hardware-manager/Sensor.cpp"  // BUG ALERT
-#include "../../managers/hardware-manager/Sensor.h"
-
-#include "../../managers/mqtt-manager/JsonBuilder.cpp"  // BUG ALERT
-#include "../../managers/mqtt-manager/JsonBuilder.h"
-
 #include "../utils/constants.h"
 #include "../utils/types.h"
 #include "../utils/utils.h"
 #include "../misc/logger.h"
+
 #include "./AppConfig.h"
 
 App::App(const AppConfig &config) :

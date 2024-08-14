@@ -12,31 +12,13 @@
 
 class App;
 
-enum class WifiState {
-    DISCONNECTED,
-    CONNECTING,
-    CONNECTED,
-    CONFIG_PORTAL
-};
-
-class EEPROMGuard {
-public:
-    EEPROMGuard(size_t size) {
-        EEPROM.begin(size);
-    }
-    ~EEPROMGuard() {
-        EEPROM.end();
-    }
-};
-
 class WifiManager : public BaseManager {
 private:
     ESP8266WebServer server;
     String ssid;
     String password;
-    WifiState state;
+    WiFiConnectionState state;
     bool connected;
-    bool connecting;
 
 public:
     // Constructor

@@ -6,8 +6,7 @@
 #include "../../utils/types.h"
 #include "WebPage.h"
 
-WifiManager::WifiManager(): server(SERVER_PORT), state(WifiState::DISCONNECTED),
-                            connected(false), connecting(false) {
+WifiManager::WifiManager(): server(SERVER_PORT), state(WiFiConnectionState::DISCONNECTED), connected(false) {
   this->ssid = "";
   this->password = "";
 }
@@ -17,57 +16,64 @@ void WifiManager::init() {
 }
 
 void WifiManager::setup() {
-  // Start EEPROM memory
-  Logger::notice("WifiManager::setup()", "WifiManager start setup");
-  EEPROMGuard eepromGuard(EEPROM_SIZE);
+    // Start EEPROM memory
+    Logger::notice("WifiManager::setup()", "WifiManager start setup");
+    EEPROM.begin(EEPROM_SIZE);
+    // Connect to WiFi
+    WiFi.enableInsecureWEP();
+    if (!this->connect()) {
+        Logger::warning("WifiManager::setup()", "WiFi connection failed");
+        return;
+    }
 
-  // Connect to WiFi
-  WiFi.enableInsecureWEP();
-  if (!this->connect()) {
-    Logger::warning("WifiManager::setup()", "WiFi connection failed");
-    return;
-  }
-
-  Logger::notice("WifiManager::setup()", "WiFi finish set up");
+    Logger::notice("WifiManager::setup()", "WiFi finish set up");
 }
 
+// void WifiManager::loop() {
+//     switch (this->state) {
+//         case WifiState::DISCONNECTED:
+//             if (this->connect()) {
+//                 this->state = WifiState::CONNECTED;
+//             } else {
+//                 this->state = WifiState::CONFIG_PORTAL;
+//             }
+//             break;
+//         case WifiState::CONNECTING:
+//             // Check connection progress
+//             break;
+//         case WifiState::CONNECTED:
+//             if (WiFi.status() != WL_CONNECTED) {
+//                 Logger::warning("WifiManager::loop()", "WiFi connection lost");
+//                 this->state = WifiState::DISCONNECTED;
+//             }
+//             break;
+//         case WifiState::CONFIG_PORTAL:
+//             // Handle config portal
+//             this->server.handleClient();
+//             break;
+//     }
+// }
+
 void WifiManager::loop() {
-    switch (this->state) {
-        case WifiState::DISCONNECTED:
-            if (this->connect()) {
-                this->state = WifiState::CONNECTED;
-            } else {
-                this->state = WifiState::CONFIG_PORTAL;
-            }
-            break;
-        case WifiState::CONNECTING:
-            // Check connection progress
-            break;
-        case WifiState::CONNECTED:
-            if (WiFi.status() != WL_CONNECTED) {
-                Logger::warning("WifiManager::loop()", "WiFi connection lost");
-                this->state = WifiState::DISCONNECTED;
-            }
-            break;
-        case WifiState::CONFIG_PORTAL:
-            // Handle config portal
-            this->server.handleClient();
-            break;
-    }
+  // Check if WiFi is connected and continue loop
+  if (WiFi.status() != WL_CONNECTED) {
+    this->connected = false;
+    Logger::warning("WifiManager::loop()", "WiFi connection lost");
+    this->connect();
+    return;
+  }
 }
 
 boolean WifiManager::connect() {
     Logger::notice("WifiManager::connect()", "Connecting to wifi");
-    this->connecting = true;
     this->connected = false;
 
     int retryCount = 0;
-    int retryDelay = 1000; // ms
+    int retryDelay = 100; // ms
 
     while (retryCount < MAX_RETRY_ATTEMPTS) {
         if (this->readCredentials() && this->startConnection()) {
             this->connected = true;
-            this->connecting = false;
             this->setConnectionInfo();
             return true;
         }

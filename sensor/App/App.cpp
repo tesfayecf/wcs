@@ -57,7 +57,7 @@ void App::setup() {
     mqttManager->setup_();
     hwManager->setup_();
 
-    blink();
+    blink(100);
     digitalWrite(LED_BUILTIN, LOW);
     Logger::notice("App::setup()", "App initialization finished");
 }

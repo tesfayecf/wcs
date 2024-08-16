@@ -13,7 +13,7 @@ void BaseManager::init_(App* app_, AppConfig* config_) {
 }
 
 void BaseManager::setup_() {
-    blink();
+    blink(50);
 
     // Call the virtual setup function
     this->setup();
@@ -21,7 +21,7 @@ void BaseManager::setup_() {
 
 void BaseManager::loop_() {
     // TODO: call dogwatcher or something (logger) 
-    blink();
+    blink(25);
 
     // Call the virtual loop function
     this->loop();

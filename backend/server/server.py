@@ -1,14 +1,11 @@
-import os, time, json, random
+import os, time, json, random, base64
 from typing import Dict, Any, Union
 from dataclasses import dataclass
 import paho.mqtt.client as mqtt
 
 from data.models import Sensor
 from sensors.models import SensorReading
-from .types import (
-    Topic,  MetaParam, ActionType,  
-    RegisterAction, DataAction, CommandAction
-)
+from .types import *
 from .message import MQTTMessage
 
 # Listen to signal to start server
@@ -92,7 +89,7 @@ class MqttServer:
     def on_connect(self, client, userdata, flags, reason_code, properties):
         if reason_code == 0:
             print("Successfully connected to MQTT broker")
-            self._subscribe(Topic.REGISTER)
+            self._subscribe(Topic.REGISTER.value)
             self.subscribe_sensors_topics()
         else:
             print(f"Failed to connect to MQTT broker. Reason code: {reason_code}")
@@ -102,8 +99,14 @@ class MqttServer:
             topic_parts = message.topic.split("/")
             sensor_id, topic = topic_parts[0], topic_parts[-1]
 
+            # Decode base64 message (TODO: use private key)
+            message = base64.b64decode(message.payload).decode('utf-8')
+
+            # Serialize message to json
+            message = json.loads(message)
+
             # Parse the payload
-            mqqt_msg = MQTTMessage.from_dict(topic, message.payload)
+            mqqt_msg = MQTTMessage.from_dict(topic, message)
 
             # Check sensor id matches the topic
             if mqqt_msg.meta[MetaParam.SENSOR_ID] != sensor_id:
@@ -127,20 +130,20 @@ class MqttServer:
             sensor_id = msg.meta[MetaParam.SENSOR_ID]
             print(f"Handling register action for sensor: {sensor_id}")
             
-            if msg.action == RegisterAction.NEW_SENSOR:
+            if msg.action_name == RegisterAction.NEW_SENSOR:
                 # Add sensor to database
                 Sensor.objects.create(sensor_id=sensor_id)
                 self.subscribe_to_sensor(sensor_id=sensor_id)
-            elif msg.action == RegisterAction.UPDATE_SENSOR:
-                # self.update_sensor(sensor_id, msg.payload)
+            elif msg.action_name == RegisterAction.UPDATE_SENSOR:
+                # Edit sensor in database
                 pass
-            elif msg.action == RegisterAction.REMOVE_SENSOR:
-                # self.remove_sensor(sensor_id)
+            elif msg.action_name == RegisterAction.REMOVE_SENSOR:
+                # Remove sensor from database
                 Sensor.objects.get(sensor_id=sensor_id).delete()
                 self.unsubscribe_from_sensor(sensor_id=sensor_id)
                 pass
             else:
-                raise ValueError(f"Unknown register action: {msg.action}")
+                raise ValueError(f"Unknown register action: {msg.action_name}")
 
         except Exception as e:
             print(f"Error handling register action: {e}")
@@ -150,19 +153,19 @@ class MqttServer:
         sensor_id = msg.meta[MetaParam.SENSOR_ID]
         print(f"Handling data action for sensor: {sensor_id}")
         
-        if msg.action == DataAction.SENSOR_READING:
+        if msg.action_name == DataAction.SENSOR_READING:
             self.log_sensor_reading(sensor_id, msg.payload)
             pass
-        elif msg.action == DataAction.BATCH_READINGS:
+        elif msg.action_name == DataAction.BATCH_READINGS:
             # self.log_batch_readings(sensor_id, msg.payload)
             pass
-        elif msg.action == DataAction.ERROR_REPORT:
+        elif msg.action_name == DataAction.ERROR_REPORT:
             # self.handle_error_report(sensor_id, msg.payload)
             pass
         else:
-            print(f"Unknown data action: {msg.action}")
+            print(f"Unknown data action: {msg.action_name}")
             
-    def log_sensor_reading(self, sensor_id: str, payload: Dict[str, Any]):
+    def log_sensor_reading(self, sensor_id: str, payload: list[Any]):
         sensor = Sensor.objects.get(sensor_id=sensor_id)
         if sensor is None:
             raise ValueError("Sensor not found")
@@ -179,20 +182,20 @@ class MqttServer:
         sensor_id = msg.meta[MetaParam.SENSOR_ID]
         print(f"Handling command action for sensor: {sensor_id}")
         
-        if msg.action == CommandAction.SET_INTERVAL:
+        if msg.action_name == CommandAction.SET_INTERVAL:
             # self.set_sensor_interval(sensor_id, msg.payload)
             pass
-        elif msg.action == CommandAction.CALIBRATE:
+        elif msg.action_name == CommandAction.CALIBRATE:
             # self.calibrate_sensor(sensor_id, msg.payload)
             pass
-        elif msg.action == CommandAction.UPDATE_FIRMWARE:
+        elif msg.action_name == CommandAction.UPDATE_FIRMWARE:
             # self.update_sensor_firmware(sensor_id, msg.payload)
             pass
-        elif msg.action == CommandAction.RESET:
+        elif msg.action_name == CommandAction.RESET:
             # self.reset_sensor(sensor_id)
             pass
         else:
-            print(f"Unknown command action: {msg.action}")
+            print(f"Unknown command action: {msg.action_name}")
 
     # PUBLISH
     def _publish(self, topic: Topic, action_type: ActionType, action: Union[RegisterAction, DataAction, CommandAction], meta: Dict[MetaParam, Any], payload: Dict[str, Any], qos: int = 0):
@@ -216,8 +219,8 @@ class MqttServer:
             self.subscribe_to_sensor(sensor.sensor_id)
         
     def subscribe_to_sensor(self, sensor_id: str):
-        self._subscribe(f"{sensor_id}/{Topic.DATA}")
-        self._subscribe(f"{sensor_id}/{Topic.COMMAND}")
+        self._subscribe(f"{sensor_id}/{Topic.DATA.value}")
+        self._subscribe(f"{sensor_id}/{Topic.COMMAND.value}")
     
     def unsubscribe_from_sensor(self, sensor_id: str):
         self._unsubscribe(f"{sensor_id}/{Topic.DATA}")

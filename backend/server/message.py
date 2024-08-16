@@ -1,20 +1,17 @@
 from typing import Union, Dict, Any
 
-from .types import (
-    Topic, 
-    MessageParam, 
-    ActionParam, MetaParam,
-    ActionType, 
-    RegisterAction, DataAction, CommandAction
-)
+from .types import *
 
 class MQTTMessage:
-    def __init__(self, topic: Topic, action_type: ActionType, action: Union[RegisterAction, DataAction, CommandAction], meta: Dict[MetaParam, Any], payload: Dict[str, Any]):
+    def __init__(self, topic: Topic, action_type: ActionType, action_name: Union[RegisterAction, DataAction, CommandAction], payload: list[Any], payload_count: int, meta: Dict[MetaParam, Any]):
         self.topic = topic
         self.action_type = action_type
-        self.action = action
-        self.meta = meta
+        self.action_name = action_name
         self.payload = payload
+        if len(payload) != payload_count:
+            raise ValueError("Payload count mismatch")
+        self.payload_count = payload_count
+        self.meta = meta
 
     def to_dict(self) -> Dict[str, Any]:
         # Convert the MQTTMessage object to a dictionary representation
@@ -22,9 +19,9 @@ class MQTTMessage:
             MessageParam.ACTION.value: {
                 # Convert action-related attributes to their corresponding values
                 ActionParam.TYPE.value: self.action_type.value,
-                ActionParam.NAME.value: self.action.value,
-                ActionParam.PARAMS.value: self.payload,
-                ActionParam.PARAMS_COUNT.value: len(self.payload)
+                ActionParam.NAME.value: self.action_name.value,
+                ActionParam.PAYLOAD.value: self.payload,
+                ActionParam.PAYLOAD_COUNT.value: len(self.payload)
             },
             MessageParam.META.value: {
                 # Convert meta information to a dictionary, using enum values as keys
@@ -35,7 +32,11 @@ class MQTTMessage:
     @classmethod
     def from_dict(cls, topic: str, data: Dict[str, Any]) -> 'MQTTMessage':
         # Convert the topic string to its corresponding Topic enum
-        topic_enum = Topic(topic)
+        topic_enum = {
+            Topic.REGISTER.value: Topic.REGISTER,
+            Topic.DATA.value: Topic.DATA,
+            Topic.COMMAND.value: Topic.COMMAND
+        }[topic]
         
         # Extract action and meta data from the input dictionary
         action_data = data[MessageParam.ACTION.value]
@@ -54,11 +55,14 @@ class MQTTMessage:
         # Convert the action name string to its corresponding action enum
         action = action_enum(action_data[ActionParam.NAME.value])
         
-        # Extract the payload (parameters) from the action data
-        payload = action_data[ActionParam.PARAMS.value]
+        # Extract the payload from the action data
+        payload = action_data[ActionParam.PAYLOAD.value]
+
+        # Extract the payload count form the action data
+        payload_count = action_data[ActionParam.PAYLOAD_COUNT.value]
         
         # Convert meta data keys to their corresponding MetaParam enums
         meta = {MetaParam(k): v for k, v in meta_data.items()}
         
         # Create and return a new MQTTMessage instance with the parsed data
-        return cls(topic_enum, action_type, action, meta, payload)
+        return cls(topic_enum, action_type, action, payload, payload_count, meta)

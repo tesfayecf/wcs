@@ -1,6 +1,6 @@
 from enum import Enum
 
-class Topic:
+class Topic(Enum):
     REGISTER = "register"
     DATA = "data"
     COMMAND = "command"
@@ -8,12 +8,12 @@ class Topic:
 class MessageParam(Enum):
     ACTION = 'a'
     META = 'm'
-    
+
 class ActionParam(Enum):
     TYPE = 't'
     NAME = 'n'
-    PARAMS = 'p'
-    PARAMS_COUNT = 'pc'
+    PAYLOAD = 'p'
+    PAYLOAD_COUNT = 'c'
 
 class ActionType(Enum):
     REGISTER = 'r'
@@ -23,7 +23,7 @@ class ActionType(Enum):
 class RegisterAction(Enum):
     NEW_SENSOR = 'n'
     UPDATE_SENSOR = 'u'
-    REMOVE_SENSOR = 'r'
+    REMOVE_SENSOR = 'x'
 
 class DataAction(Enum):
     SENSOR_READING = 's'
@@ -32,13 +32,13 @@ class DataAction(Enum):
 
 class CommandAction(Enum):
     SET_INTERVAL = 'i'
-    CALIBRATE = 'c'
+    CALIBRATE = 'k'
     UPDATE_FIRMWARE = 'f'
     RESET = 'r'
 
 class MetaParam(Enum):
-    MESSAGE_ID = 'mid'
-    TIMESTAMP = 'ts'
-    SENSOR_TIME = 'st'
+    MESSAGE_ID = 'm'
+    TIMESTAMP = 't'
+    SENSOR_TIME = 's'
     VERSION = 'v'
-    SENSOR_ID = 'sid'
+    SENSOR_ID = 'i'

@@ -4,12 +4,12 @@ import SummaryWidget from "@/app/(main)/dashboard/components/SummaryWidget/Summa
 import WeatherWidget from "@/app/(main)/dashboard/components/WeatherWidget/WeatherWidget";
 
 import GroupsInfo from "@/app/(main)/dashboard/components/GroupsInfo/GroupsInfo";
-import InfoWidget from "@/app/(main)/dashboard/components/InfoWidget/InfoWidget";
 
 import GroupPopUp from "@/app/(main)/dashboard/components/GroupPopUp/GroupPopUp";
 
 import { StoreInitializer } from "@/app/lib/store/StoreInitializer";
 import { getCurrentWeather, getForecastWeather, getGroups, getSummary } from "@/app/(main)/dashboard/actions";
+import InfoWidget from "@/app/components/infoWidget/InfoWidget";
 
 interface IDashboardProps { }
 

@@ -4,7 +4,7 @@ import AddTankWidget from "./components/GroupInfo/AddTankWidget";
 import GroupInfoWidget from "@/app/(main)/group/[groupId]/components/GroupInfo/GroupInfoWidget";
 import GroupDescription from "@/app/(main)/group/[groupId]/components/GroupInfo/GroupDescription";
 import { StoreInitializer } from "@/app/lib/store/StoreInitializer";
-import InfoWidget from "./components/InfoWidget/InfoWidget";
+import InfoWidget from "@/app/components/infoWidget/InfoWidget";
 import DataWidget from "./components/DataWidget/DataWidget";
 import TankPopUp from "./components/TankPupUp/TankPopUp";
 import { getGroup, getTanks } from "./actions";
@@ -22,29 +22,29 @@ const Group: React.FunctionComponent<IDashboardProps> = async (props: IDashboard
     //////////////////////////////////////////////////////////
 
     // TODO: get all group (info, description, ...) here. Then distribite to components with props or state.
-    const groupResponse = await getGroup(parseInt(props.params.groupId));
+    const groupRes = await getGroup(parseInt(props.params.groupId));
     // const groupStatsResponse = await getGroupStats(parseInt(props.params.groupId)); // TODO: Get group stats here.
-    const tanksResponse = await getTanks(parseInt(props.params.groupId));
+    const tanksRes = await getTanks(parseInt(props.params.groupId));
 
     return (
         <div className={"group"}>
             <StoreInitializer
                 group={{
                     groupId: parseInt(props.params.groupId),
-                    group: groupResponse,
-                    tanks: tanksResponse,
+                    group: groupRes.data,
+                    tanks: tanksRes.data,
                 }}
             />
             <div className={"status"}>
-                <GroupInfoWidget group={groupResponse} />
+                <GroupInfoWidget group={groupRes.data} />
                 <GroupDescription />
                 <AddTankWidget />
             </div>
             <div className={"general"}>
                 <div className={"info"}>
-                    <InfoWidget title='Inflow' value={241.24} changeValue={23} color='#3de198' />
-                    <InfoWidget title='Outflow' value={872.27} changeValue={-5} color='#e07159' />
-                    <InfoWidget title='Savings' value={35} changeValue={5} color='#f2c986' />
+                    <InfoWidget title='Inflow' data={[5, 25, 87, 74]} color="#3de198" timeframe="h" unit="L" />
+                    <InfoWidget title='Outflow' data={[5, 25, 87, 74]} color='#e07159' timeframe="h" unit="L" />
+                    <InfoWidget title='Savings' data={[5, 25, 87, 74]} color='#f2c986' timeframe="h" unit="L" />
                 </div>
                 <div className={"tanks"}>
                     <TanksInfo />

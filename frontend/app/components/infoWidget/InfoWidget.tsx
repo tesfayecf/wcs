@@ -1,10 +1,17 @@
 'use client'
 import React from "react";
 import ContentBox from "@/app/components/contentBox/ContentBox";
+import {
+    Chart as ChartJS, CategoryScale, LinearScale,
+    PointElement, LineElement, Title, Tooltip, Legend, Filler, ChartData, ChartOptions
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
 
-import { ChartOptions } from "chart.js";
-import InfoChart from "@/app/(main)/dashboard/components/InfoWidget/InfoChart";
 import { HEXToRGBA } from "@/app/lib/utils/styles";
+
+ChartJS.register(CategoryScale, LinearScale, PointElement,
+    LineElement, Title, Legend, Tooltip, Filler
+);
 
 interface IHeaderWidgetProps {
     title: string;
@@ -98,6 +105,20 @@ const InfoWidget: React.FunctionComponent<IHeaderWidgetProps> = (props: IHeaderW
 };
 
 export default InfoWidget;
+
+interface IheaderChartProps {
+    data: ChartData<'line'>;
+    options: ChartOptions<'line'>;
+}
+
+const InfoChart: React.FunctionComponent<IheaderChartProps> = (props: IheaderChartProps) => {
+
+    return (
+        <div className={"line-chart"} >
+            <Line id={"infoChart"} data={props.data} options={props.options} width={"100%"} />
+        </div>
+    )
+}
 
 const labels = [
     "1d", "2d", "3d", "4d", "5d", "6d", "7d", "8d", "9d", "10d",

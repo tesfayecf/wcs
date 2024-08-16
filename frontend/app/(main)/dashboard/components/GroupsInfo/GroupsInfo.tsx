@@ -23,8 +23,8 @@ const GroupsInfo: React.FunctionComponent<IGroupsInfoProps> = (props: IGroupsInf
         ));
 
         widgets.push(
-            <AddGroupWidget
-                key="add-group"
+            <CreateGroupWidget
+                key="create-group"
                 onCreate={() => setGroupMenu({ show: true, id: -1, mode: "create" })}
             />
         );
@@ -44,7 +44,7 @@ interface IAddGroupWidgetProps {
     onCreate: () => void;
 }
 
-const AddGroupWidget: React.FunctionComponent<IAddGroupWidgetProps> = ({ onCreate }) => {
+const CreateGroupWidget: React.FunctionComponent<IAddGroupWidgetProps> = ({ onCreate }) => {
     return (
         <ContentBox customBoxClass={"groupWidget"}>
             <div className={"addGroupContent"} onClick={onCreate}>

@@ -25,7 +25,7 @@ private:
     String sensorId;
 
     String dataTopic;
-    String commnadTopic;
+    String commandTopic;
     String registerTopic;
   
 public:

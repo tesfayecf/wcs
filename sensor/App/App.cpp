@@ -37,9 +37,9 @@ void App::setup() {
     }
     Logger::notice("App::setup()", "Initializing app");
 
-    // Set App info
-    this->setBoardInfo();
     // Set Board info
+    this->setBoardInfo();
+    // Set App info
     this->setAppInfo(); // TODO: read from config file
 
     // Create managers
@@ -99,6 +99,18 @@ AppConfig::AppInfo& App::getAppInfo() {
     return this->appConfig.appInfo;
 }
 
+AppConfig::WifiManagerInfo& App::getWifiManagerInfo() {
+    return this->appConfig.wifiManagerInfo;
+}
+
+AppConfig::MQTTManagerInfo& App::getMqttManagerInfo() {
+    return this->appConfig.mqttManagerInfo;
+}
+
+AppConfig::HWManagerInfo& App::getHWManagerInfo() {
+    return this->appConfig.hwManagerInfo;
+}
+
 /// SETTERS ///
 void App::setBoardInfo() {
     this->appConfig.boardInfo.boardChipId = ESP.getChipId();
@@ -139,6 +151,7 @@ void App::setAppInfo() {
     this->appConfig.appInfo.sensorId = generateId(boardChipIdStr, flashChipIdStr);
     Logger::verbose("App::setAppInfo()", "Sensor Id: " + this->appConfig.appInfo.sensorId);
     // Initialize sensor time
+    this->appConfig.appInfo.startTime = 0;
     setTime(this->appConfig.appInfo.startTime);
     Logger::verbose("App::setAppInfo()", "Sensor time initialized");
 }

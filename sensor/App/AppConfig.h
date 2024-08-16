@@ -9,6 +9,15 @@
 /// Manager Status Interface ///
 ////////////////////////////////
 
+enum ManagerStatusCode {
+  MANAGER_STATUS_INITIALIZED,
+  MANAGER_STATUS_CONNECTED,
+  MANAGER_STATUS_CONNECTING,
+  MANAGER_STATUS_DISCONNECTING,
+  MANAGER_STATUS_ERROR,
+  MANAGER_STATUS_NONE
+};
+
 struct ManagerStatus {
   bool initialized;    // Indicates whether the manager is initialized
   bool connected;      // Indicates whether the manager is connected
@@ -16,7 +25,7 @@ struct ManagerStatus {
   bool disconnecting;  // Indicates whether the manager is currently disconnecting
   bool hasError;       // Indicates whether an error has occurred
   String error;        // Error message
-  int status;          // Status of the manager
+  ManagerStatusCode status;          // Status of the manager
 };
 
 ///////////////////////
@@ -38,7 +47,7 @@ class AppConfig {
     uint32_t boardFlashChipRealSize;  // Real size of the flash chip on the board
     uint8_t boardCpuFreqMHz;          // CPU frequency of the board in MHz
     uint32_t boardFreeHeap;           // Amount of free heap memory on the board
-    uint8_t boardHeapFragmentation;    // Heap fragmentation of the board
+    uint8_t boardHeapFragmentation;   // Heap fragmentation of the board
     uint32_t boardSketchSize;         // Size of the sketch on the board
     uint32_t boardFreeSketchSpace;    // Amount of free sketch space on the board
     String boardSketchMD5;            // MD5 hash of the sketch on the board
@@ -56,7 +65,6 @@ class AppConfig {
     long startTime;            // Start timestamp of the sensor
     long localTime;            // Local timestamp of the sensor
     time_t serverTime;         // Timestamp of the sensor
-
     boolean authenticated;     // Indicates if the sensor is authenticated
     boolean registered;        // Indicates if the sensor is registred
   };
@@ -65,7 +73,7 @@ class AppConfig {
   /// WifiManager Class ///
   /////////////////////////
 
-  class WifiManager {
+  class WifiManagerInfo {
    public:
     // Manager status
     ManagerStatus status;
@@ -86,7 +94,7 @@ class AppConfig {
   /// MQTTManager Class ///
   /////////////////////////
 
-  class MQTTManager {
+  class MQTTManagerInfo {
     public:
     // Manager status
     ManagerStatus status;
@@ -104,11 +112,11 @@ class AppConfig {
     String commandTopic;    // Command topic of the MQTT connection
   };
 
-  /////////////////////////////
-  /// HardwareManager Class ///
-  /////////////////////////////
+  ///////////////////////
+  /// HWManager Class ///
+  ///////////////////////
 
-  class HardwareManager {
+  class HWManagerInfo {
    public:
     // Manager status
     ManagerStatus status;
@@ -126,9 +134,9 @@ class AppConfig {
   AppInfo appInfo;
 
   // MANAGEMENT
-  WifiManager wifiManager;
-  MQTTManager mqttManager;
-  HardwareManager hardwareManager;
+  WifiManagerInfo wifiManagerInfo;
+  MQTTManagerInfo mqttManagerInfo;
+  HWManagerInfo hwManagerInfo;
 };
 
 #endif  // APPCONFIG_H

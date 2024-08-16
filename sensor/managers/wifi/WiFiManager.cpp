@@ -124,21 +124,21 @@ boolean WifiManager::startConnection() {
 }
 
 void WifiManager::setConnectionInfo() {
-    this->appConfig->wifiManager.ssid = WiFi.SSID();
+    this->appConfig->wifiManagerInfo.ssid = WiFi.SSID();
     Logger::verbose("WifiManager::setConnectionInfo()", "SSID: " + WiFi.SSID());
-    this->appConfig->wifiManager.ip = WiFi.localIP();
+    this->appConfig->wifiManagerInfo.ip = WiFi.localIP();
     Logger::verbose("WifiManager::setConnectionInfo()", "IP: " + WiFi.localIP().toString());
-    this->appConfig->wifiManager.hostname = WiFi.hostname();
+    this->appConfig->wifiManagerInfo.hostname = WiFi.hostname();
     Logger::verbose("WifiManager::setConnectionInfo()", "Hostname: " + WiFi.hostname());
-    this->appConfig->wifiManager.gateway = WiFi.gatewayIP();
+    this->appConfig->wifiManagerInfo.gateway = WiFi.gatewayIP();
     Logger::verbose("WifiManager::setConnectionInfo()", "Gateway: " + WiFi.gatewayIP().toString());
-    this->appConfig->wifiManager.subnet = WiFi.subnetMask();
+    this->appConfig->wifiManagerInfo.subnet = WiFi.subnetMask();
     Logger::verbose("WifiManager::setConnectionInfo()", "Subnet: " + WiFi.subnetMask().toString());
-    this->appConfig->wifiManager.mac = WiFi.macAddress();
+    this->appConfig->wifiManagerInfo.mac = WiFi.macAddress();
     Logger::verbose("WifiManager::setConnectionInfo()", "MAC: " + WiFi.macAddress());
-    this->appConfig->wifiManager.rssi = WiFi.RSSI();
+    this->appConfig->wifiManagerInfo.rssi = WiFi.RSSI();
     Logger::verbose("WifiManager::setConnectionInfo()", "RSSI: " + String(WiFi.RSSI()));
-    this->appConfig->wifiManager.channel = WiFi.channel();
+    this->appConfig->wifiManagerInfo.channel = WiFi.channel();
     Logger::verbose("WifiManager::setConnectionInfo()", "Channel: " + String(WiFi.channel()));
 }
 

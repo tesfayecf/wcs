@@ -130,7 +130,7 @@ void MQTTManager::publish(const Message* messagePtr) {
             topic = this->dataTopic.c_str();
             break;
         case ActionType::Command:
-            topic = this->commnadTopic.c_str();
+            topic = this->commandTopic.c_str();
             break;
         default:
             topic = "-";
@@ -199,7 +199,7 @@ void MQTTManager::callbackFunction(char *topic, byte *payload, unsigned int leng
 // Actions //
 void MQTTManager::subscribeSensor() {
     // Subscribe to command topic
-    this->subscribe(this->commnadTopic);
+    this->subscribe(this->commandTopic);
 }
 
 void MQTTManager::registerSensor() {
@@ -222,7 +222,7 @@ void MQTTManager::setTopics() {
     this->registerTopic = String("server") + "/" + MQTT_REGISTER_TOPIC;
     this->dataTopic = this->appConfig->appInfo.sensorId + "/" + MQTT_DATA_TOPIC;
     // Subscribe MQTT topics
-    this->commnadTopic = this->appConfig->appInfo.sensorId + "/" + MQTT_COMMAND_TOPIC;
+    this->commandTopic = this->appConfig->appInfo.sensorId + "/" + MQTT_COMMAND_TOPIC;
 
     Logger::verbose("MQTTManager::setTopics", "Topics set succesfully");
 }

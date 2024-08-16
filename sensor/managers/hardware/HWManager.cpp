@@ -65,22 +65,15 @@ void HWManager::readDistanceSensor() {
 }
 
 void HWManager::publishData() {
-    // Create data message
-
-    // Message message();
-    // message.action_type = ActionType::Data;
-    // message.action_name = DataAction::SensorReading;
-    // // message.params[0] = String(this->distance).c_str();
-    // String distance = "0";
-    // message.params[0] = distance.c_str();
-    // message.meta_info = this->app->mqttManager->getMetaInfo();
-
-    const char* payload[5];
+    // Fill payload array
+    String payload[5];
     String distance = "0";
-    payload[0] = distance.c_str();
-    Message message(ActionType::Data, DataAction::SensorReading, payload, 1, this->app->mqttManager->getMetaInfo());
+    payload[0] = distance;
+    
+    // Create message object
+    Message* message = new Message(ActionType::Data, DataAction::SensorReading, payload, 1, this->app->mqttManager->getMetaInfo());
 
     // Publish sensor data
-    this->app->mqttManager->publish(&message);
+    this->app->mqttManager->publish(message);
     Logger::verbose("HWManager::publishData()", "Published sensor data");
 }

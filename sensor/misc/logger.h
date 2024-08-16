@@ -154,6 +154,7 @@ void Logger::defaultLog(LogLevel level, const char* module, const char* message)
         Serial.print(module);
         Serial.print(F(" "));
     }
+    Serial.print("--> ");
     Serial.println(message);
 }
 

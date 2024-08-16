@@ -21,7 +21,7 @@ void BaseManager::setup_() {
 
 void BaseManager::loop_() {
     // TODO: call dogwatcher or something (logger) 
-    blink(25);
+    // blink(25);
 
     // Call the virtual loop function
     this->loop();

@@ -57,42 +57,6 @@ void MQTTManager::loop() {
     this->mqttClient.loop();
 }
 
-// void MQTTManager::loop() {
-//     switch (this->state) {
-//         case MQTTState::DISCONNECTED:
-//             Logger::warning("MQTTManager::loop", "MQTT disconnected, attempting to reconnect...");
-//             this->state = MQTTState::CONNECTING;
-//             break;
-//         case MQTTState::CONNECTING:
-//             if (connect()) {
-//                 Logger::notice("MQTTManager::loop", "MQTT connected successfully");
-//                 this->state = MQTTState::CONNECTED;
-//                 subscribeSensor();  // Subscribe to topics after successful connection
-//             } else {
-//                 Logger::error("MQTTManager::loop", "MQTT connection failed, will retry later");
-//                 this->state = MQTTState::DISCONNECTED;
-//             }
-//             break;
-//         case MQTTState::CONNECTED:
-//             if (!this->mqttClient.connected()) {
-//                 Logger::warning("MQTTManager::loop", "MQTT connection lost");
-//                 state = MQTTState::DISCONNECTED;
-//             } else {
-//                 this->mqttClient.loop();  // Process incoming messages and maintain the connection
-//             }
-//             break;
-//         // case MQTTState::SUBSCRIBING:
-//         //     // Handle subscription process if needed
-//         //     // For now, we'll just transition back to CONNECTED state
-//         //     state = MQTTState::CONNECTED;
-//         //     break;
-//         // case MQTTState::PUBLISHING:
-//         //     // Handle publishing process if needed
-//         //     // For now, we'll just transition back to CONNECTED state
-//         //     state = MQTTState::CONNECTED;
-//         //     break;
-//     }
-// }
 
 void MQTTManager::publish(const Message* messagePtr) {
     if (messagePtr == nullptr) {
@@ -118,7 +82,10 @@ void MQTTManager::publish(const Message* messagePtr) {
 
     // Serialize JSON to a string
     String jsonMessageStr;
-    message.toJson(jsonMessageStr);
+    message.toJsonManual(jsonMessageStr);
+
+    // Encode message to base64
+    String base64Message = base64Encode(jsonMessageStr);
 
     // Choose topic based on message type
     const char* topic;
@@ -139,13 +106,15 @@ void MQTTManager::publish(const Message* messagePtr) {
 
     // Publish message
     if (this->mqttClient.connected()) {
-        this->mqttClient.publish(topic, jsonMessageStr.c_str());
+        this->mqttClient.publish(topic, base64Message.c_str());
         Logger::notice("MQTTManager::publish", "Message Published");
-        Logger::verbose("MQTTManager::publish", "Message: " + jsonMessageStr);
-        Logger::verbose("MQTTManager::publish", "Topic: " + String(topic));
+        Logger::verbose("MQTTManager::publish", "Message: " + base64Message);
+        // Logger::verbose("MQTTManager::publish", "Topic: " + String(topic));
         // Logger::verbose("MQTTManager::publish", "Message type: " + String(TYPE_TO_CHAR(message.type)));
         // Logger::verbose("MQTTManager::publish", "Action name: " + String(ACTION_TO_CHAR(message.action)));
     }
+
+    delete messagePtr;
 }
 
 void MQTTManager::subscribe(const String& topic) {
@@ -207,13 +176,14 @@ void MQTTManager::registerSensor() {
     Logger::verbose("MQTTManager::registerSensor", "Registering sensor");
 
     // Fill payload array
-    const char* payload[5];
-    payload[0] = this->appConfig->appInfo.sensorId.c_str();
+    String payload[5];
+    payload[0] = this->appConfig->appInfo.sensorId;
 
     // Create message object
-    Message message(ActionType::Register, RegisterAction::Sensor, payload, 1, this->getMetaInfo());
+    Message* message = new Message(ActionType::Register, RegisterAction::Sensor, payload, 1, this->getMetaInfo());
     
-    this->publish(&message);
+    // Publish message
+    // this->publish(message);
 }
 
 // Setters //

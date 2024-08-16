@@ -1,4 +1,4 @@
-const char main_page[] PROGMEM = R"=====(
+const char webpage[] PROGMEM = R"=====(
 <!DOCTYPE html>
 <html lang="en">
 <head>

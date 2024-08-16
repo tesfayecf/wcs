@@ -4,7 +4,7 @@
 #include "../../misc/logger.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
-#include "WebPage.h"
+#include "webpage.h"
 
 WifiManager::WifiManager(): server(SERVER_PORT), state(WiFiConnectionState::DISCONNECTED), connected(false) {
   this->ssid = "";
@@ -29,31 +29,6 @@ void WifiManager::setup() {
     Logger::notice("WifiManager::setup()", "WiFi finish set up");
 }
 
-// void WifiManager::loop() {
-//     switch (this->state) {
-//         case WifiState::DISCONNECTED:
-//             if (this->connect()) {
-//                 this->state = WifiState::CONNECTED;
-//             } else {
-//                 this->state = WifiState::CONFIG_PORTAL;
-//             }
-//             break;
-//         case WifiState::CONNECTING:
-//             // Check connection progress
-//             break;
-//         case WifiState::CONNECTED:
-//             if (WiFi.status() != WL_CONNECTED) {
-//                 Logger::warning("WifiManager::loop()", "WiFi connection lost");
-//                 this->state = WifiState::DISCONNECTED;
-//             }
-//             break;
-//         case WifiState::CONFIG_PORTAL:
-//             // Handle config portal
-//             this->server.handleClient();
-//             break;
-//     }
-// }
-
 void WifiManager::loop() {
   // Check if WiFi is connected and continue loop
   if (WiFi.status() != WL_CONNECTED) {
@@ -63,6 +38,7 @@ void WifiManager::loop() {
     return;
   }
 }
+
 
 boolean WifiManager::connect() {
     Logger::notice("WifiManager::connect()", "Connecting to wifi");
@@ -197,11 +173,11 @@ void WifiManager::renderMainPage() {
         this->server.client().stop();
     }
 
-    String mainPage = main_page;
-    unsigned int fileSize = mainPage.length();
+    String webpageStr = webpage;
+    unsigned int fileSize = webpageStr.length();
     this->server.sendHeader("Access-Control-Allow-Origin", "*");
     this->server.sendHeader("Content-Length", String(fileSize));
-    this->server.send(200, "text/html", mainPage);
+    this->server.send(200, "text/html", webpageStr);
 }
 
 boolean WifiManager::readCredentials() {

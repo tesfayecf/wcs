@@ -47,7 +47,7 @@
 
 /// MQTT ///
 
-#define MQTT_BROKER "192.168.1.8"  // MQTT Broker IP Address
+#define MQTT_BROKER "192.168.1.13"  // MQTT Broker IP Address
 #define MQTT_PORT 1883              // MQTT Broker Port
 #define MQTT_USERNAME "user"
 #define MQTT_PASSWORD "password"

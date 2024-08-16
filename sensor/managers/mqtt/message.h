@@ -12,8 +12,8 @@ constexpr char MESSAGE_META = 'm';
 
 constexpr char ACTION_TYPE = 't';
 constexpr char ACTION_NAME = 'n';
-constexpr char ACTION_PARAMS = 'p';
-constexpr char ACTION_PARAMS_COUNT = 'c';
+constexpr char ACTION_PAYLOAD = 'p';
+constexpr char ACTION_PAYLOAD_COUNT = 'c';
 
 constexpr char ACTION_REGISTER = 'r';
 constexpr char ACTION_REGISTER_SENSOR = 'n';
@@ -79,24 +79,24 @@ public:
         DataAction data_action;
         CommandAction command_action;
     } action_name;
-    const char* payload[5];
+    String payload[5];
     size_t payload_count;
     MetaInfo meta_info;
 
     // // Constructors
-    Message(ActionType at, RegisterAction ra, const char* p[], size_t pc, MetaInfo m)
+    Message(ActionType at, RegisterAction ra, String p[], size_t pc, MetaInfo m)
         : action_type(at), payload_count(pc), meta_info(m) {
         action_name.register_action = ra;
         setActionPayload(p, pc);
     }
 
-    Message(ActionType at, DataAction da, const char* p[], size_t pc, MetaInfo m)
+    Message(ActionType at, DataAction da, String p[], size_t pc, MetaInfo m)
         : action_type(at), payload_count(pc), meta_info(m) {
         action_name.data_action = da;
         setActionPayload(p, pc);
     }
 
-    Message(ActionType at, CommandAction ca, const char* p[], size_t pc, MetaInfo m)
+    Message(ActionType at, CommandAction ca, String p[], size_t pc, MetaInfo m)
         : action_type(at), payload_count(pc), meta_info(m) {
         action_name.command_action = ca;
         setActionPayload(p, pc);
@@ -104,31 +104,52 @@ public:
 
     // Serialize MQTTMessage to JSON string
     void toJson(String& json_str) const {
-        StaticJsonDocument<MQTT_MAX_PACKET_SIZE> jsonMessage;
+        // StaticJsonDocument<MQTT_MAX_PACKET_SIZE> jsonMessage;
+
+        const size_t capacity = JSON_OBJECT_SIZE(2) + // Main object
+                        JSON_OBJECT_SIZE(3) + // Action object
+                        JSON_ARRAY_SIZE(payload_count) + // Payload array
+                        JSON_OBJECT_SIZE(5) + // Meta object
+                        200; // Extra space for strings and misc
+
+        DynamicJsonDocument jsonMessage(capacity);
 
         // Add action information
         JsonObject actionObject = jsonMessage.createNestedObject(MESSAGE_ACTION);
-        actionObject[String(ACTION_TYPE)] = String(static_cast<char>(this->action_type));
+        actionObject[String(ACTION_TYPE)] = this->getActionTypeChar();
         
         // Set the action name based on the action type
         switch (this->action_type) {
             case ActionType::Register:
-                actionObject[String(ACTION_NAME)] = String(static_cast<char>(action_name.register_action));
+                actionObject[String(ACTION_NAME)] = this->getActionNameChar();
                 break;
             case ActionType::Data:
-                actionObject[String(ACTION_NAME)] = String(static_cast<char>(action_name.data_action));
+                actionObject[String(ACTION_NAME)] =  this->getActionNameChar();
                 break;
             case ActionType::Command:
-                actionObject[String(ACTION_NAME)] = String(static_cast<char>(action_name.command_action));
+                actionObject[String(ACTION_NAME)] =  this->getActionNameChar();
                 break;
         }
 
-        // Add message body (payload)
+        // // Add message body (payload)
+        // JsonObject payloadObject = jsonMessage.createNestedObject("payload");
+        // for (size_t i = 0; i < payload_count; i++) {
+        //     // Use snprintf to generate unique keys for the payload array
+        //     char paramName[8];
+        //     snprintf(paramName, sizeof(paramName), "p%zu", i);
+        //     payloadObject[String(paramName)] = payload[i];
+        // }
+
+        // Create a JSON string from the payload array
+        StaticJsonDocument<512> payloadDoc; // Adjust size as needed
+        JsonArray payloadArray = payloadDoc.to<JsonArray>();
         for (size_t i = 0; i < payload_count; i++) {
-            char paramName[5];
-            snprintf(paramName, sizeof(paramName), "p%zu", i);
-            actionObject[String(paramName)] = String(payload[i]);
+            payloadArray.add(payload[i]);
         }
+        String payloadJsonStr;
+        serializeJson(payloadDoc, payloadJsonStr);
+        // Add the payload JSON string to the main message
+        actionObject[String(ACTION_PAYLOAD)] = payloadJsonStr;
 
         // Add meta information
         JsonObject metaObject = jsonMessage.createNestedObject(MESSAGE_META);
@@ -140,6 +161,35 @@ public:
 
         // Serialize JSON to a string
         serializeJson(jsonMessage, json_str);
+    }
+
+    void toJsonManual(String& json_str) const {
+        json_str = "{";
+        // Add action information
+        json_str += "\"" + String(MESSAGE_ACTION) + "\":{";
+        // Set the action type
+        json_str += "\"" + String(ACTION_TYPE) + "\":\"" + this->getActionTypeChar() + "\",";
+        // Set the action name based on the action type
+        json_str += "\"" + String(ACTION_NAME) + "\":\"" + this->getActionNameChar() + "\",";
+        // Set the action payload
+        json_str += "\"" + String(ACTION_PAYLOAD) + "\":[";
+        for (size_t i = 0; i < payload_count; i++) {
+            json_str += "\"" + payload[i] + "\"";
+            if (i < payload_count - 1) {
+                json_str += ",";
+            }
+        }
+        json_str += "],";
+        // Set the action payload count
+        json_str += "\"" + String(ACTION_PAYLOAD_COUNT) + "\":" + String(payload_count) + "},";
+        // Add meta information
+        json_str += "\"" + String(MESSAGE_META) + "\":{";
+        json_str += "\"" + String(META_MESSAGE_ID) + "\":\"" + meta_info.message_id + "\",";
+        json_str += "\"" + String(META_TIMESTAMP) + "\":" + String(meta_info.timestamp) + ",";
+        json_str += "\"" + String(META_SENSOR_TIME) + "\":" + String(meta_info.sensor_time) + ",";
+        json_str += "\"" + String(META_VERSION) + "\":\"" + meta_info.version + "\",";
+        json_str += "\"" + String(META_SENSOR_ID) + "\":\"" + meta_info.sensor_id + "\"";
+        json_str += "}}";
     }
 
     // Deserialize JSON string to MQTTMessage
@@ -160,26 +210,16 @@ public:
         // Parse payload array
         payload_count = 0;
         for (JsonPair kv : actionObject) {
-            payload[payload_count++] = kv.value().as<const char*>();
+            payload[payload_count++] = kv.value().as<String>();
         }
 
         // Parse sensor metadata
         JsonObject metaObject = jsonMessage[String(MESSAGE_META)];
-        
         meta_info.message_id = metaObject[String(META_MESSAGE_ID)].as<String>();
-        // strncpy(meta_info.message_id, metaObject[String(META_MESSAGE_ID)].as<const char*>(), sizeof(meta_info.message_id) - 1);
-        // meta_info.message_id[sizeof(meta_info.message_id) - 1] = '\0';
-        
         meta_info.timestamp = metaObject[String(META_TIMESTAMP)].as<unsigned long>();
         meta_info.sensor_time = metaObject[String(META_SENSOR_TIME)].as<unsigned long>();
-        
         meta_info.version = metaObject[String(META_VERSION)].as<String>();
-        // strncpy(meta_info.version, metaObject[String(META_VERSION)].as<const char*>(), sizeof(meta_info.version) - 1);
-        // meta_info.version[sizeof(meta_info.version) - 1] = '\0';
-        
         meta_info.sensor_id = metaObject[String(META_SENSOR_ID)].as<String>();
-        // strncpy(meta_info.sensor_id, metaObject[String(META_SENSOR_ID)].as<const char*>(), sizeof(meta_info.sensor_id) - 1);
-        // meta_info.sensor_id[sizeof(meta_info.sensor_id) - 1] = '\0';
 
         return true;
     }
@@ -196,6 +236,16 @@ private:
             }
         } else {
             Logger::error("Message::setActionType", "Invalid action type character");
+        }
+    }
+
+    // Get the action type character based on the ActionType enum
+    const char* getActionTypeChar() const {
+        switch (this->action_type) {
+            case ActionType::Register: return "r";
+            case ActionType::Data: return "d";
+            case ActionType::Command: return "c";
+            default: return "-";
         }
     }
 
@@ -235,8 +285,37 @@ private:
         }
     }
 
+    // Get the action name character based on the ActionType and ActionName enums
+    const char* getActionNameChar() const {
+        switch (this->action_type) {
+            case ActionType::Register:
+                switch (this->action_name.register_action) {
+                    case RegisterAction::Sensor: return "n";
+                    case RegisterAction::UpdateSensor: return "u";
+                    case RegisterAction::RemoveSensor: return "x";
+                    default: return "-";
+                }
+            case ActionType::Data:
+                switch (this->action_name.data_action) {
+                    case DataAction::SensorReading: return "s";
+                    case DataAction::BatchReadings: return "b";
+                    case DataAction::ErrorReport: return "e";
+                    default: return "-";
+                }
+            case ActionType::Command:
+                switch (this->action_name.command_action) {
+                    case CommandAction::SetInterval: return "i";
+                    case CommandAction::Calibrate: return "k";
+                    case CommandAction::UpdateFirmware: return "f";
+                    case CommandAction::Reset: return "r";
+                    default: return "-";
+                }
+            default: return "-";
+        }
+    }
+
     // Set the action payload and count
-    void setActionPayload(const char* const p[], size_t pc) {
+    void setActionPayload(String p[], size_t pc) {
         this->payload_count = pc;
         for (size_t i = 0; i < pc && i < 5; i++) {
             this->payload[i] = p[i];

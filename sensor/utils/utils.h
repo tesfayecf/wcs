@@ -34,9 +34,9 @@ String generateRandomString(int length) {
 */
 void blink() {
   digitalWrite(LED_BUILTIN, HIGH);
-  delay(100);
+  delay(25);
   digitalWrite(LED_BUILTIN, LOW);
-  delay(100);
+  delay(25);
 }
 
 // /* 

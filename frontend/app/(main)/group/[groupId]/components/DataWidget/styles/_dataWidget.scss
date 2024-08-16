@@ -1,22 +1,13 @@
 .dataWidget {
+    height: 55vh;
     width: 100%;
-    height: 100%;
 
-    .dataWidgetContent {
+    .chart {
         height: 100%;
         width: 100%;
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
-
-        .chart {
-            height: 100%;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-        }
     }
 }

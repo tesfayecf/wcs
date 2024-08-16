@@ -36,10 +36,8 @@ const DataWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
 
     return (
         <ContentBox customBoxClass={"dataWidget"}>
-            <div className={"dataWidgetContent"}>
-                <div className={"chart"}>
-                    <Chart type='bar' data={data} options={options} width={"100%"} height={"100%"} />
-                </div>
+            <div className={"chart"}>
+                <Chart type='bar' data={data} options={options} />
             </div>
         </ContentBox >
 
@@ -48,8 +46,8 @@ const DataWidget: React.FunctionComponent<ITankWidgetWidgetProps> = (props: ITan
 
 export default DataWidget;
 
+// Chart data
 const labels = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
-
 const data: ChartData<"bar" | "line"> = {
     labels: labels,
     datasets: [
@@ -89,7 +87,7 @@ const data: ChartData<"bar" | "line"> = {
     ],
 }
 
-// Dummy Bar Options
+// Bar Options
 const options: ChartOptions<'bar'> = {
     responsive: true,
     maintainAspectRatio: false,

@@ -35,13 +35,13 @@ const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = async (props
                     <div className={"type"}>
                         {props.tank.type}
                     </div>
+                    <div className={"tankStatus"}>
+                        {getSensorStatus()}
+                    </div>
                 </div>
                 <div className={"tankData"}>
                     <div className={"level"}>
-                        {getSensorReading()}
-                    </div>
-                    <div className={"status"}>
-                        {getSensorStatus()}
+                        {getSensorReading()}%
                     </div>
                 </div>
             </div>

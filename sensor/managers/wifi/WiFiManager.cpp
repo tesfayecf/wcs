@@ -68,13 +68,13 @@ boolean WifiManager::startConnection() {
     WiFi.mode(WIFI_STA);
     Logger::verbose("WifiManager::startConnection()", "Wifi mode set to STA");
 
-    IPAddress IP(192, 168, 1, 101);
-    IPAddress GATEWAY(192, 168, 1, 1);
-    IPAddress SUBNET(255, 255, 0, 0);
-    if (!WiFi.config(IP, GATEWAY, SUBNET)) {
-        Logger::error("WifiManager::startConnection()", "Error configuring wifi");
-        return false;
-    }
+    // IPAddress IP(192, 168, 1, 101);
+    // IPAddress GATEWAY(192, 168, 1, 1);
+    // IPAddress SUBNET(255, 255, 0, 0);
+    // if (!WiFi.config(IP, GATEWAY, SUBNET)) {
+    //     Logger::error("WifiManager::startConnection()", "Error configuring wifi");
+    //     return false;
+    // }
 
     if (!WiFi.begin(this->ssid, this->password)) {
         Logger::error("WifiManager::startConnection()", "Error connecting to wifi");

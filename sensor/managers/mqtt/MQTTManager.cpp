@@ -109,7 +109,7 @@ void MQTTManager::publish(const Message* messagePtr) {
         this->mqttClient.publish(topic, base64Message.c_str());
         Logger::notice("MQTTManager::publish", "Message Published");
         Logger::verbose("MQTTManager::publish", "Message: " + base64Message);
-        // Logger::verbose("MQTTManager::publish", "Topic: " + String(topic));
+        Logger::verbose("MQTTManager::publish", "Topic: " + String(topic));
         // Logger::verbose("MQTTManager::publish", "Message type: " + String(TYPE_TO_CHAR(message.type)));
         // Logger::verbose("MQTTManager::publish", "Action name: " + String(ACTION_TO_CHAR(message.action)));
     }

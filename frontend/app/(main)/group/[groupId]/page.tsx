@@ -1,6 +1,6 @@
 import React from "react";
 import TanksInfo from "./components/TanksInfo/TanksInfo";
-import AddTankWidget from "./components/GroupInfo/AddTankWidget";
+import CreateTankWidget from "./components/GroupInfo/AddTankWidget";
 import GroupInfoWidget from "@/app/(main)/group/[groupId]/components/GroupInfo/GroupInfoWidget";
 import GroupDescription from "@/app/(main)/group/[groupId]/components/GroupInfo/GroupDescription";
 import { StoreInitializer } from "@/app/lib/store/StoreInitializer";
@@ -37,8 +37,8 @@ const Group: React.FunctionComponent<IDashboardProps> = async (props: IDashboard
             />
             <div className={"status"}>
                 <GroupInfoWidget group={groupRes.data} />
-                <GroupDescription />
-                <AddTankWidget />
+                <GroupDescription description={groupRes.data.description} />
+                <CreateTankWidget />
             </div>
             <div className={"general"}>
                 <div className={"info"}>

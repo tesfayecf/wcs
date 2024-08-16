@@ -5,31 +5,21 @@ import { ISensor, ISensorCreationForm, ITank, ITankCreationForm } from "./types"
 
 // Group
 export const getGroup = async (groupId: number) => {
-    // Make request
-    const response = await serverRequest("group", "getGroups", []); // TODO: make request or single group. 
-    if (!response.ok) return undefined
-    // Filter groups by id
-    return response.data.filter(group => group.id === groupId)[0] || undefined;
+    try {
+        // Make request
+        const response = await serverRequest("group", "group", [groupId]); // TODO: make request or single group. 
+        return response;
+    } catch (error) {
+        // Log error
+    }
 }
 
 // TANK
 export const getTanks = async (groupId: number) => {
     try {
         // Make request
-        const response = await serverRequest("tank", "getTanks", [groupId]);
-        if (response.ok) {
-            const tanks = response.data;
-            // Get tanks sensor
-            await Promise.all(tanks.map(async (tank) => {
-                const sensor = await getSensor(tank.id, groupId);
-                if (!sensor.ok) return;
-                tank.sensor = sensor.data;
-            }));
-
-            return tanks
-        } else {
-            return []
-        }
+        const response = await serverRequest("tank", "tanks", [groupId]);
+        return response;
     } catch (error) {
         // Log error
     }
@@ -77,7 +67,7 @@ export const deleteTank = async (tankId: number, groupId: number) => {
 // SENSOR
 export const getSensor = async (tankId: number, groupId: number) => {
     try {
-        const response = await serverRequest("sensor", "getSensor", [tankId, groupId]);
+        const response = await serverRequest("sensor", "sensor", [tankId, groupId]);
         return response;
     } catch (error) {
         // Log error

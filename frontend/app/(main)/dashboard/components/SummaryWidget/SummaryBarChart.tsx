@@ -36,7 +36,7 @@ const SummaryBarChart: React.FunctionComponent<ISummaryBarChartProps> = (props: 
 
     const getData = () => {
         const chartData = { ...defaultChartData };
-        chartData.datasets[0].data = [...summary.savings];
+        chartData.datasets[0].data = summary.savings;
         chartData.datasets[1].data = summary.inflow;
         chartData.datasets[2].data = summary.outflow;
 
@@ -45,18 +45,15 @@ const SummaryBarChart: React.FunctionComponent<ISummaryBarChartProps> = (props: 
 
     return (
         <div className={"bar-chart"}>
-            <Chart type='bar' data={getData()} options={defaultBarOptions} />
+            <Chart type='bar' data={getData()} options={defaultChartOptions} />
         </div>
     )
 }
 
-
 export default SummaryBarChart
 
-
-const labels = ['M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
-// const labels = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
-
+// Chart data
+const labels = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
 const defaultChartData: ChartData<"bar" | "line"> = {
     labels,
     datasets: [
@@ -90,10 +87,8 @@ const defaultChartData: ChartData<"bar" | "line"> = {
     ],
 };
 
-
-
-// Dummy Bar Options
-const defaultBarOptions: ChartOptions<'bar'> = {
+// Chart Options
+const defaultChartOptions: ChartOptions<'bar'> = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -121,13 +116,3 @@ const defaultBarOptions: ChartOptions<'bar'> = {
         },
     },
 };
-
-
-function generateRandomData(min, max, length) {
-    const data = [];
-    for (let i = 0; i < length; i++) {
-        const randomValue = Math.random() * (max - min) + min;
-        data.push(randomValue.toFixed(2)); // Round to 2 decimal places
-    }
-    return data;
-}

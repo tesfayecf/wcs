@@ -66,7 +66,13 @@ export const apiInterface = {
         }
     },
     group: {
-        getGroups: {
+        group: {
+            args: (id: number) => { return {} as IGroup },
+            address: "api/data/group/",
+            method: "POST",
+            argsKeys: ["id"],
+        },
+        groups: {
             args: () => { return {} as IGroup[] },
             address: "api/data/groups/",
             method: "POST",
@@ -90,9 +96,21 @@ export const apiInterface = {
             method: "POST",
             argsKeys: ["id"],
         },
+        groupStats: {
+            args: (id: number) => { return {} as IGroupStats },
+            address: "api/data/group-stats/",
+            method: "POST",
+            argsKeys: ["id"],
+        }
     },
     tank: {
-        getTanks: {
+        tank: {
+            args: (id: number, group_id: number) => { return {} as ITank },
+            address: "api/data/tank/",
+            method: "POST",
+            argsKeys: ["id", "group_id"],
+        },
+        tanks: {
             args: (group_id: number) => { return {} as ITank[] },
             address: "api/data/tanks/",
             method: "POST",
@@ -116,9 +134,15 @@ export const apiInterface = {
             method: "POST",
             argsKeys: ["id", "group_id"],
         },
+        tankStats: {
+            args: (id: number, group_id: number) => { return {} as any },
+            address: "api/data/tank-stats/",
+            method: "POST",
+            argsKeys: ["id", "group_id"],
+        }
     },
     sensor: {
-        getSensor: {
+        sensor: {
             args: (tank_id: number, group_id: number) => { return {} as ISensor },
             address: "api/data/sensor/",
             method: "POST",

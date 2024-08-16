@@ -6,7 +6,7 @@ import { IGroupCreationForm } from "./types"
 export const getGroups = async () => {
     try {
         // Make request
-        const response = await serverRequest("group", "getGroups", []);
+        const response = await serverRequest("group", "groups", []);
         return response;
     } catch (error) {
         // Log error

@@ -1,13 +1,12 @@
-'use client'
 import React from "react";
 import ContentBox from "@/app/components/contentBox/ContentBox";
 import useGroupStore from "@/app/(main)/group/[groupId]/store";
 
-interface IGroupDescriptionProps { }
+interface IGroupDescriptionProps {
+    description: string;
+}
 
 const GroupDescription: React.FunctionComponent<IGroupDescriptionProps> = (props: IGroupDescriptionProps) => {
-    const description = useGroupStore(state => state.group.description)
-
     return (
         <ContentBox customBoxClass={"groupDescription"}>
             <div className={"descriptionContent"}>
@@ -15,7 +14,7 @@ const GroupDescription: React.FunctionComponent<IGroupDescriptionProps> = (props
                     Description
                 </div>
                 <div className={"descriptionText"}>
-                    {description}
+                    {props.description}
                 </div>
             </div>
         </ContentBox>

@@ -5,7 +5,7 @@ import useGroupStore from '@/app/(main)/group/[groupId]/store';
 
 interface IAddTankWidgetWidgetProps { }
 
-const AddTankWidget: React.FunctionComponent<IAddTankWidgetWidgetProps> = (props: IAddTankWidgetWidgetProps) => {
+const CreateTankWidget: React.FunctionComponent<IAddTankWidgetWidgetProps> = (props: IAddTankWidgetWidgetProps) => {
     const setShowTankMenu = useGroupStore((state) => state.setShowTankMenu)
 
     return (
@@ -19,4 +19,4 @@ const AddTankWidget: React.FunctionComponent<IAddTankWidgetWidgetProps> = (props
     )
 }
 
-export default AddTankWidget;
+export default CreateTankWidget;

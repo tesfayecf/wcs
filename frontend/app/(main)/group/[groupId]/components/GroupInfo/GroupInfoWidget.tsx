@@ -1,7 +1,5 @@
-'use client'
 import React from 'react';
 import ContentBox from '@/app/components/contentBox/ContentBox';
-import useGroupStore from '@/app/(main)/group/[groupId]/store';
 import { IGroup } from '@/app/(main)/dashboard/types';
 
 interface IGroupWidgetProps {

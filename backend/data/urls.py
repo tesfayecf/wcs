@@ -11,7 +11,7 @@ urlpatterns = [
     path('create-group/', CreateGroupView.as_view()),
     path('edit-group/', EditGroupView.as_view()),
     path('delete-group/', DeleteGroupView.as_view()),
-    path('group-info/', GetGroupStatsView.as_view()),
+    path('group-stats/', GetGroupStatsView.as_view()),
 
     # TANK
     path('tank/', GetTankView.as_view()),

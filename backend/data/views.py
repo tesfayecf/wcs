@@ -194,7 +194,7 @@ class GetGroupInfoView(APIView):
 
             # Retrieve the group with annotated fields
             group = Group.objects.filter(pk=get_group_data.id, user=request.user).annotate(
-                total_tanks=Coutt('tanks'),
+                total_tanks=Count('tanks'),
                 total_active_tanks=Count('tanks', filter=Q(tanks__is_active=True)),
                 total_capacity=Sum('tanks__capacity'),
                 total_active_capacity=Sum('tanks__capacity', filter=Q(tanks__is_active=True)),

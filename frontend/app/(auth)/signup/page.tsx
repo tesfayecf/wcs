@@ -1,126 +1,132 @@
 'use client'
 import React from "react";
 import Link from "next/link";
-import Form from "@/app/components/form/Form";
-import { ISignupForm } from "@/app/(auth)/types";
-import Popup from "@/app/components/popup/Popup";
-import LogoIcon from "@/public/svg/LogoIcon";
-
-// test signup password: kcswOpy35P
-
+import { Button, Card, Checkbox, Form, Input, Typography } from "antd";
+import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
 
 interface ISignupProps { }
 
 const Signup: React.FunctionComponent<ISignupProps> = (props: ISignupProps) => {
-
-    const onSignup = async (fields: ISignupForm) => { }
-
-    const additionalButtons: React.JSX.Element = (
-        <div style={additionalButtonsContainer}>
-            <Link href={"./login"} style={additionalButtonStyle}>
-                Log in
-            </Link>
-        </div>
-    )
+    const [form] = Form.useForm();
 
     return (
-        <div className={"signup"}>
-            <div className="logo"> <LogoIcon size={2200} /> </div>
-            <div className={"form"}>
-                <Popup
-                    open={true}
-                    hideBackDrop={true}
-                    paperProps={{
-                        elevation: 0,
-                        style: { top: "-15px" }
-                    }}
-                >
-                    <Form<ISignupForm>
-                        title={<h2>SIGN UP. BE THE CHANGE</h2>}
-                        titleStyle={titleStyle}
-                        externalError={false}
-                        externalErrorText={"Invalid credentials"}
-                        onAccept={onSignup}
-                        onCancel={() => { }}
-                        acceptButton="Sign up"
-                        acceptButtonStyle={acceptButtonStyle}
-                        cancelButton=""
-                        showCancelButton={false}
-                        additionalButtons={additionalButtons}
-                        isLoading={false}
-                        fields={[
-                            {
-                                key: "firstName",
-                                name: "Frist Name",
-                                type: "text",
-                                placeholder: "",
-                                textType: "text",
-                            },
-                            {
-                                key: "lastName",
-                                name: "Last Name",
-                                type: "text",
-                                placeholder: "",
-                                textType: "text",
-                            },
-                            {
-                                key: "email",
-                                name: "Email",
-                                type: "text",
-                                placeholder: "",
-                                textType: "email"
-                            },
-                            {
-                                key: "password",
-                                name: "Password",
-                                type: "text",
-                                placeholder: "",
-                                textType: "password",
-                            },
-                            {
-                                key: "confirmPassword",
-                                name: "Confirm Password",
-                                type: "text",
-                                placeholder: "",
-                                textType: "password",
-                            }
-                        ]}
-                    />
-                </Popup>
-            </div>
-        </div>
+        <div id="signup" className="signup">
+            <Card id="content" className="content">
+                <div id="header" className="header">
+                    <div id="title" className="title">
+                        <Typography.Title className="text" level={1}>Welcome to SMATER+</Typography.Title>
+                    </div>
+                    <div id="subtitle" className="subtitle">
+                        <Typography.Text className="text" >Already have an account?</Typography.Text>
+                        <Typography.Link className="text" href="/login">
+                            <Link href="/login">Log in</Link>
+                        </Typography.Link>
+                    </div>
+                </div>
+                <div id="form" className="form">
+                    <Form
+                        name="signup-form"
+                        className="signup-form"
+                        layout="vertical"
+                        form={form}
+                    >
+                        <div id="form-items" className="form-items">
+
+                            <Form.Item
+                                label="Username"
+                                name="username"
+                                className="form-item"
+                                required={true}
+                                hasFeedback
+                                rules={[{ required: true, message: 'Username is required' }]}
+                            >
+                                <Input placeholder="Username" size="middle" width="100%" prefix={<UserOutlined />} />
+                            </Form.Item>
+                            <Form.Item
+                                label="Email"
+                                name="email"
+                                className="form-item"
+                                required={true}
+                                hasFeedback
+                                rules={[{ required: true, message: 'Email is required' }]}
+                            >
+                                <Input placeholder="Email" size="middle" width="100%" prefix={<MailOutlined />} />
+                            </Form.Item>
+                            <Form.Item
+                                label="Password"
+                                name="password"
+                                className="form-item"
+                                hasFeedback
+                                required={true}
+                                rules={[{ required: true, message: 'Password is required' }]}
+                            >
+                                <Input.Password placeholder="Password" size="middle" prefix={<LockOutlined />} />
+                            </Form.Item>
+                            <Form.Item
+                                label="Confirm Password"
+                                name="confirm"
+                                className="form-item"
+                                hasFeedback
+                                required={true}
+                                dependencies={['password']}
+                                rules={[
+                                    { required: true, message: 'Cofnirm password is required' },
+                                    ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            if (!value || getFieldValue('password') === value) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject(new Error('The new password that you entered do not match!'));
+                                        },
+                                    }),
+                                ]}
+                            >
+                                <Input.Password placeholder="Confirm Password" size="middle" prefix={<LockOutlined />} />
+                            </Form.Item>
+                        </div>
+                        <div id="options" className="options">
+                            <Form.Item
+                                name="promotion"
+                                className="option"
+                                valuePropName="checked"
+                            >
+                                <Checkbox defaultChecked>
+                                    I want to receive emails about the product, feature updates and promotions.
+                                </Checkbox>
+                            </Form.Item>
+                            <Form.Item
+                                name="agreement"
+                                className="option"
+                                valuePropName="checked"
+                                rules={[
+                                    {
+                                        validator: (_, value) =>
+                                            value ? Promise.resolve() : Promise.reject(new Error('Should accept agreement')),
+                                    },
+                                ]}
+                            >
+                                <Checkbox>
+                                    I agree to the <Typography.Link>Terms of use</Typography.Link> and <Typography.Link>Privacy Policy</Typography.Link>
+                                </Checkbox>
+                            </Form.Item>
+                        </div>
+                        <div id="buttons" className="buttons">
+                            <Button
+                                type="primary"
+                                size="large"
+                                className="button-item"
+                                htmlType="submit"
+                                onClick={() => form.submit()}
+                            >
+                                Sign up
+                            </Button>
+                        </div>
+                    </Form>
+                </div>
+            </Card>
+        </div >
     )
-    return null
 }
 
 export default Signup;
 
-
-const titleStyle: React.CSSProperties = {
-    fontSize: "16px",
-    fontWeight: "bold",
-}
-
-const acceptButtonStyle: React.CSSProperties = {
-    width: "100%",
-    height: "35px"
-}
-
-const additionalButtonStyle: React.CSSProperties = {
-    backgroundColor: "transparent",
-    border: "none",
-    cursor: "pointer"
-}
-
-additionalButtonStyle[':hover'] = {
-    backgroundColor: "#55dc9e",  // Replace with the color you want on hover
-};
-
-const additionalButtonsContainer: React.CSSProperties = {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    margin: "5px 5px",
-    padding: "0px 45px"
-}

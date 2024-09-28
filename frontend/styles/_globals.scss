@@ -1,22 +1,3 @@
-///////////////////////////////////////////////////////////////////////////////////
-// body {
-//     overflow-x: hidden;
-//     overflow-y: auto;
-//     margin: 0;
-//     padding: 0;
-//     width: 100vw;
-//     height: 100vh;
-//     background: $background-1-light;
-//     font-family: "Inter var", ui-sans-serif, system-ui, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-// }
-
-// *,
-// *:before,
-// *:after {
-//     box-sizing: border-box;
-// }
-///////////////////////////////////////////////////////////////////////////////////
-
 // Reset default styles
 *,
 *::before,
@@ -49,14 +30,6 @@ body {
     line-height: 1.5;
     text-rendering: optimizeSpeed;
 }
-
-// // Set up dark mode
-// @media (prefers-color-scheme: dark) {
-//     body {
-//         background-color: $background-1-dark;
-//         color: $text-1-dark;
-//     }
-// }
 
 // Basic element styles
 a {
@@ -98,21 +71,3 @@ select {
         scroll-behavior: auto !important;
     }
 }
-
-// // Utility classes
-// .visually-hidden {
-//     clip: rect(0 0 0 0);
-//     clip-path: inset(50%);
-//     height: 1px;
-//     overflow: hidden;
-//     position: absolute;
-//     white-space: nowrap;
-//     width: 1px;
-// }
-
-// .container {
-//     width: 100%;
-//     max-width: 1200px;
-//     margin: 0 auto;
-//     padding: 0 $spacing-md;
-// }

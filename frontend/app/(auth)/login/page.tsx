@@ -1,81 +1,81 @@
 'use client'
 import React from "react";
 import Link from "next/link";
-import Form from "@/app/components/form/Form";
-import Popup from "@/app/components/popup/Popup";
-import { ILoginForm } from "@/app/(auth)/types"
-import LogoIcon from "@/public/svg/LogoIcon";
-import { login } from "@/app/(auth)/actions";
 import { useRouter } from 'next/navigation'
+import { Button, Card, Checkbox, Form, Input, Typography } from "antd";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
 
 interface ILoginProps { }
 
 const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
-    const router = useRouter()
-
-    const renderAdditionalButtons: () => JSX.Element | null = () => {
-        return (
-            <div style={additionalButtonsContainer}>
-                <Link href={'/recover'} style={additionalButtonStyle}>
-                    Forgot password?
-                </Link>
-                <Link href={'/signup'} style={additionalButtonStyle}>
-                    Sign up
-                </Link>
-            </div >
-        )
-    }
-
-    const onLogin = (loginForm: ILoginForm) => {
-        const response = login(loginForm);
-        if (response) router.push('/dashboard');
-    }
+    const router = useRouter();
+    const [form] = Form.useForm();
 
     return (
-        <div className={"login"}>
-            <div className="logo"> <LogoIcon size={2200} /> </div>
-            <div className={"form"}>
-                <Popup
-                    open={true}
-                    hideBackdrop={true}
-                    paperProps={{
-                        elevation: 0,
-                        style: { top: "75px" }
-                    }}
-                >
-                    <Form<ILoginForm>
-                        title={<h2>LOG IN. BE THE CHANGE</h2>}
-                        titleStyle={titleStyle}
-                        externalError={false}
-                        externalErrorText={"Invalid credentials"}
-                        onAccept={onLogin}
-                        onCancel={() => { }}
-                        acceptButton="Log in"
-                        acceptButtonStyle={acceptButtonStyle}
-                        cancelButton=""
-                        showCancelButton={false}
-                        additionalButtons={renderAdditionalButtons()}
-                        isLoading={false}
-                        fields={[
-                            {
-                                key: "email",
-                                name: "Email",
-                                type: "text",
-                                placeholder: "",
-                                textType: "email"
-                            },
-                            {
-                                key: "password",
-                                name: "Password",
-                                type: "text",
-                                placeholder: "",
-                                textType: "password",
-                            }
-                        ]}
-                    />
-                </Popup>
-            </div>
-        </div>
+        <div id="login" className={"login"}>
+            <Card id="content" className="content">
+                <div id="header" className="header">
+                    <div id="title" className="title">
+                        <Typography.Title className="text" level={1}>Log in to SMATER+</Typography.Title>
+                    </div>
+                    <div id="subtitle" className="subtitle">
+                        <Typography.Text className="text" >Don't have an account yet?</Typography.Text>
+                        <Typography.Link className="text" href="/login">
+                            <Link href="/signup">Sign up</Link>
+                        </Typography.Link>
+                    </div>
+                </div>
+                <div id="form" className="form">
+                    <Form
+                        name="login-form"
+                        className="login-form"
+                        layout="vertical"
+                        form={form}
+                    >
+                        <div id="form-items" className="form-items">
+                            <Form.Item
+                                label="Email"
+                                name="email"
+                                className="form-item"
+                                rules={[{ required: true, message: 'Please input your email!' }]}
+                            >
+                                <Input placeholder="Email" prefix={<UserOutlined />} />
+                            </Form.Item>
+                            <Form.Item
+                                label="Password"
+                                labelCol={{ span: 24 }}
+                                name="password"
+                                className="form-item"
+                                rules={[{ required: true, message: 'Please input your password!' }]}
+                            >
+                                <Input.Password placeholder="Password" prefix={<LockOutlined />} />
+                            </Form.Item>
+                        </div>
+                        <div id="options" className="options">
+                            <Form.Item
+                                name="remember"
+                                valuePropName="checked"
+                                className="option-item"
+                            >
+                                <Checkbox>Remember me</Checkbox>
+                            </Form.Item>
+                            <Typography.Link>
+                                <Link href="/recover" className="text">Forgot password?</Link>
+                            </Typography.Link>
+                        </div>
+                        <div id="buttons" className="buttons">
+                            <Button
+                                type="primary"
+                                className="button-item"
+                                onClick={() => form.submit()}
+                            >
+                                Login
+                            </Button>
+                        </div>
+                    </Form>
+                </div>
+            </Card >
+        </div >
     )
 }
 

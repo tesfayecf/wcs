@@ -3,12 +3,39 @@
 @import "./globals";
 @import "./methods";
 
-// TEST
-@import "../app/(test)/test/charts/styles/charts";
+/**
+Styles rules
+
+Use hypens to separate words.
+All letter al lowercase.
+
+Classes structure
+
+The first class contains the most descriptive name of the component it belongs to.
+This will define the size of the component.
+This class will be determine the size of the component and the relation with other components (margin, flex-grow, etc.).
+This will also specifu the padding inside the component.
+It will also be used to style the outter elements of the component (background, border, etc.).
+
+.class-name {
+
+    This class will always have the same name and will determine the structure of the elements inside of the component (flex, etc.).
+    It will always have max height and width.
+    The border styls will be inherited from the parent component.
+    .content {
+
+        The elements inside of the component will have the same structure as the parent component recursively.
+        
+    }
+}
+
+*/
 
 // AUTH
+@import "../app/(auth)/layout";
 @import "../app/(auth)/login/styles/login";
 @import '../app/(auth)/signup/styles/signup';
+@import '../app/(auth)/reset/styles/reset';
 @import '../app/(auth)/recover/styles/recover';
 
 // MAIN
@@ -26,14 +53,17 @@
 @import '../app/(main)/group/[groupId]/components/TankWidget/styles/tankWidget';
 @import '../app/(main)/group/[groupId]/components/DataWidget/styles/dataWidget';
 @import '../app/(main)/group/[groupId]/components/TankPupUp/styles/tankPopUp';
+
 // COMPONENTS
 @import '../app/components/button/styles/button';
 @import '../app/components/contentBox/styles/contentBox';
 @import '../app/components/form/styles/form';
-@import '../app/components/form/styles/customForm';
 @import '../app/components/footer/styles/footer';
 @import '../app/components/loadingPage/styles/loadingPage';
 @import '../app/components/navbar/styles/navbar';
 @import '../app/components/popup/styles/popup';
 @import '../app/components/toolsBar/styles/toolsBar';
-@import '../app/components/infoWidget/styles/infoWidget.scss';
+@import '../app/components/infoWidget/styles/infoWidget';
+
+// TEST
+@import "../app/(test)/test/charts/styles/charts";

@@ -60,7 +60,7 @@ import { serverRequest } from '@/app/lib/api/request'
 const api = createApi<"group">()
 
 export const groupApi = {
-    getGroups: api.createQuery('getGroups', () => serverRequest("group", "getGroups", [])),
+    getGroups: api.createQuery('groups', () => serverRequest("group", "groups", [])),
 
     createGroup: api.createQuery('createGroup', (name: string, location: string, description: string) => {
         return serverRequest("group", "createGroup", [name, location, description])

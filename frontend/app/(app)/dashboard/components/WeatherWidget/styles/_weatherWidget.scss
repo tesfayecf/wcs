@@ -1,0 +1,156 @@
+.weather {
+    width: 80%;
+    height: 100%;
+
+    .weatherContent {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+
+        .general {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+
+            .info {
+                width: 30%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: $spacing-md 0 0 0;
+
+                .temperature {
+                    font-size: 50px;
+                    color: $text-1-light;
+                    font-weight: $font-weight-bold;
+                }
+
+                .location {
+                    font-size: $font-size-sm;
+                    color: $text-2-light;
+                    margin: $spacing-xxs;
+                }
+
+                .date {
+                    font-size: $font-size-sm;
+                    color: $text-2-light;
+                    margin: $spacing-xxs;
+                }
+            }
+
+            .stats {
+                height: 100%;
+                display: none;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+
+                .stat-section {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+
+                    .stat-section-title {
+                        font-size: $font-size-sm;
+                        font-weight: $font-weight-bold;
+                        text-align: center;
+                    }
+
+                    .stat-section-content {
+                        display: flex;
+                        flex-direction: row;
+                        gap: $spacing-lg;
+                        justify-content: space-evenly;
+
+                        .stat {
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+
+                            .stat-title {
+                                font-size: $font-size-sm;
+                                font-weight: $font-weight-medium;
+                                text-align: center;
+                            }
+
+                            .stat-value {
+                                font-size: $font-size-base;
+                                font-weight: $font-weight-normal;
+                                text-align: center;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .icon {
+                width: 30%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+
+        .forecast {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+            align-items: center;
+            overflow: hidden;
+            color: $text-1-light;
+
+            .data {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+
+                .date {
+                    font-size: $font-size-sm;
+                    text-align: center;
+                    margin-top: $spacing-md;
+                }
+
+                .icon {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                .temperature {
+                    font-size: $font-size-sm;
+                    text-align: center;
+                    white-space: nowrap;
+                }
+            }
+        }
+
+        .buttons {
+            width: 100%;
+            height: 25px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: $spacing-xs;
+            margin: 0 0 $spacing-md 0;
+
+            .dot {
+                height: $spacing-xs;
+                width: $spacing-xs;
+                border-radius: 50%;
+                display: inline-block;
+            }
+        }
+    }
+}

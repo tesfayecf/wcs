@@ -1,10 +1,10 @@
 'use client'
 import { IUserInfo } from "@/app/app/types";
 import useAppStore from "../../app/store";
-import useDashboardStore from "../../(main)/dashboard/store";
-import { ICurrentWeather, IForecastWeather, IGroup, ISummary } from "@/app/(main)/dashboard/types";
-import useGroupStore from "../../(main)/group/[groupId]/store";
-import { ITank } from "@/app/(main)/group/[groupId]/types";
+import useDashboardStore from "../../(app)/dashboard/store";
+import { ICurrentWeather, IForecastWeather, IGroup, ISummary } from "@/app/(app)/dashboard/types";
+import useGroupStore from "../../(app)/group/[groupId]/store";
+import { ITank } from "@/app/(app)/group/[groupId]/types";
 
 export interface IStoreInitializer {
     /// App \\\

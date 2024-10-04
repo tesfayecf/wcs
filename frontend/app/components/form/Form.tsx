@@ -245,7 +245,7 @@ const Form = <T extends Record<string, any>>(props: IFormProps<T>) => {
     }, [isLoading, props.acceptButton, props.showCancelButton, handleAcceptClick, handleCancelClick])
 
     return (
-        <div className={"content"} style={props.formStyle}>
+        <div className={"form-content"} style={props.formStyle}>
             {renderTitle()}
             {renderFields()}
             {props.additionalButtons ? props.additionalButtons : null}

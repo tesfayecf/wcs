@@ -1,5 +1,5 @@
 import PieChartChartJS from "@/app/components/charts/chartJS/PieChart";
-import PieChartRecharts from "@/app/components/charts/recharts/PieChart";
+// import PieChartRecharts from "@/app/components/charts/recharts/PieChart";
 import React from "react";
 
 interface IApiProps { }

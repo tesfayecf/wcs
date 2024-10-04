@@ -1,14 +1,12 @@
 'use client'
 import React from "react";
-import CustomForm from "@/app/components/form/CustomForm";
-import { ILoginForm } from "@/app/(auth)/types";
 
 interface ITestProps { }
 
 const Test: React.FunctionComponent<ITestProps> = (props: ITestProps) => {
     return (
         <>
-            <CustomForm<ILoginForm>
+            {/* <CustomForm<ILoginForm>
                 open={true}
                 title={"LOG IN. BE THE CHANGE"}
                 onAccept={() => { }}
@@ -29,7 +27,7 @@ const Test: React.FunctionComponent<ITestProps> = (props: ITestProps) => {
                         label: "Password",
                     }
                 ]}
-            />
+            /> */}
         </>
     )
 }

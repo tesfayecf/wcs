@@ -29,11 +29,30 @@ const Signup: React.FunctionComponent<ISignupProps> = (props: ISignupProps) => {
                         className="signup-form"
                         layout="vertical"
                         form={form}
+                        onFinish={(values) => {
+                            console.log("values", values);
+                        }}
                     >
                         <div id="form-items" className="form-items">
-
                             <Form.Item
-                                label="Username"
+                                name="name"
+                                className="form-item"
+                                required={true}
+                                hasFeedback
+                                rules={[{ required: true, message: 'Name is required' }]}
+                            >
+                                <Input placeholder="Username" size="middle" width="100%" prefix={<UserOutlined />} />
+                            </Form.Item>
+                            <Form.Item
+                                name="surnanme"
+                                className="form-item"
+                                required={true}
+                                hasFeedback
+                                rules={[{ required: true, message: 'Surnanme is required' }]}
+                            >
+                                <Input placeholder="Username" size="middle" width="100%" prefix={<UserOutlined />} />
+                            </Form.Item>
+                            <Form.Item
                                 name="username"
                                 className="form-item"
                                 required={true}
@@ -43,7 +62,6 @@ const Signup: React.FunctionComponent<ISignupProps> = (props: ISignupProps) => {
                                 <Input placeholder="Username" size="middle" width="100%" prefix={<UserOutlined />} />
                             </Form.Item>
                             <Form.Item
-                                label="Email"
                                 name="email"
                                 className="form-item"
                                 required={true}
@@ -53,7 +71,6 @@ const Signup: React.FunctionComponent<ISignupProps> = (props: ISignupProps) => {
                                 <Input placeholder="Email" size="middle" width="100%" prefix={<MailOutlined />} />
                             </Form.Item>
                             <Form.Item
-                                label="Password"
                                 name="password"
                                 className="form-item"
                                 hasFeedback
@@ -63,7 +80,6 @@ const Signup: React.FunctionComponent<ISignupProps> = (props: ISignupProps) => {
                                 <Input.Password placeholder="Password" size="middle" prefix={<LockOutlined />} />
                             </Form.Item>
                             <Form.Item
-                                label="Confirm Password"
                                 name="confirm"
                                 className="form-item"
                                 hasFeedback

@@ -1,21 +1,30 @@
 
+// AUTH STORE
+
+export interface IAuthStore { }
+
+// LOGIN
+
 export interface ILoginForm {
     email: string,
     password: string
 }
 
+// SIGNUP
 export interface ISignupForm {
-    firstName: string,
-    lastName: string,
+    username: string,
     email: string,
     password: string,
-    confirmPassword: string
+    confirm: string
 }
+
+// RECOVER
+
+
+// RESET
 
 export interface IResetForm {
     oldPassword: string,
     newPassword: string,
     confirmPassword: string
 }
-
-export interface IAuthStore { }

@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation'
 import { Button, Card, Checkbox, Form, Input, Typography } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { login } from "../actions";
+import { ILoginForm } from "../types";
 
 interface ILoginProps { }
 
@@ -16,7 +18,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
             <Card id="content" className="content">
                 <div id="header" className="header">
                     <div id="title" className="title">
-                        <Typography.Title className="text" level={1}>Log in to SMATER+</Typography.Title>
+                        <Typography.Title className="text" level={1}>Log in. Be the change!</Typography.Title>
                     </div>
                     <div id="subtitle" className="subtitle">
                         <Typography.Text className="text" >Don't have an account yet?</Typography.Text>
@@ -31,10 +33,15 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
                         className="login-form"
                         layout="vertical"
                         form={form}
+                        onFinish={(values: ILoginForm) => {
+                            login({
+                                email: values.email,
+                                password: values.password,
+                            })
+                        }}
                     >
                         <div id="form-items" className="form-items">
                             <Form.Item
-                                label="Email"
                                 name="email"
                                 className="form-item"
                                 rules={[{ required: true, message: 'Please input your email!' }]}
@@ -42,7 +49,6 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
                                 <Input placeholder="Email" prefix={<UserOutlined />} />
                             </Form.Item>
                             <Form.Item
-                                label="Password"
                                 labelCol={{ span: 24 }}
                                 name="password"
                                 className="form-item"
@@ -80,35 +86,3 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
 }
 
 export default Login;
-
-const titleStyle: React.CSSProperties = {
-    fontSize: "16px",
-    fontWeight: "bold",
-    marginTop: "10px",
-    marginBottom: "10px",
-}
-
-const acceptButtonStyle: React.CSSProperties = {
-    width: "100%",
-    height: "35px"
-}
-
-const additionalButtonsContainer: React.CSSProperties = {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: "30px",
-    margin: "5px 5px",
-    padding: "0px 45px"
-}
-
-const additionalButtonStyle: React.CSSProperties = {
-    backgroundColor: "transparent",
-    border: "none",
-    cursor: "pointer",
-    textDecoration: "inherit"
-}
-
-additionalButtonStyle[':hover'] = {
-    backgroundColor: "#55dc9e",
-};

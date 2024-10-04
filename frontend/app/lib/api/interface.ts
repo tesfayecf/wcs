@@ -1,6 +1,6 @@
 import { ILoginForm, IResetForm, ISignupForm } from "@/app/(auth)/types";
-import { ICurrentWeather, IForecastWeather, IGroup, IGroupStats, ISummary } from "@/app/(main)/dashboard/types";
-import { ISensor, ISensorreading as ISensorReading, ITank } from "@/app/(main)/group/[groupId]/types";
+import { ICurrentWeather, IForecastWeather, IGroup, IGroupStats, ISummary } from "@/app/(app)/dashboard/types";
+import { ISensor, ISensorReading as ISensorReading, ITank } from "@/app/(app)/group/[groupId]/types";
 import { IUserInfo } from "@/app/app/types";
 
 export interface APIResponse<T> {
@@ -185,8 +185,14 @@ export const apiInterface = {
             argsKeys: ["sensor_id"],
         }
     },
-    dashboard: {
-        getSummary: {
+    info: {
+        stats: {
+            args: () => { return {} as any },
+            address: "api/data/stats/",
+            method: "POST",
+            argsKeys: [],
+        },
+        summary: {
             args: () => { return {} as ISummary },
             address: "api/data/summary/",
             method: "POST",

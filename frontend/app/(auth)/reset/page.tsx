@@ -22,18 +22,16 @@ const Reset: React.FunctionComponent<IResetProps> = (props: IResetProps) => {
 
                     </div>
                 </div>
-                <div id="form" className="form">
-
+                <div id="reset-form" className="reset-form">
                     <Form
                         form={form}
                         name="reset-form"
-                        className="reset-form"
+                        className="reset-form-items"
                         layout="vertical"
                         autoComplete="off"
                     >
                         <div id="form-items" className="form-items">
                             <Form.Item
-                                label="New Password"
                                 name="password"
                                 className="form-item"
                                 rules={[{ required: true, message: 'Please input your new password!' }]}
@@ -42,7 +40,6 @@ const Reset: React.FunctionComponent<IResetProps> = (props: IResetProps) => {
                             </Form.Item>
 
                             <Form.Item
-                                label="Confirm New Password"
                                 name="confirm"
                                 className="form-item"
                                 dependencies={['newPassword']}

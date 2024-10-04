@@ -27,10 +27,10 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
                         </Typography.Link>
                     </div>
                 </div>
-                <div id="form" className="form">
+                <div id="login-form" className="login-form">
                     <Form
                         name="login-form"
-                        className="login-form"
+                        className="login-form-items"
                         layout="vertical"
                         form={form}
                         onFinish={(values: ILoginForm) => {

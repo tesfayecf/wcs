@@ -39,20 +39,20 @@ It will also be used to style the outter elements of the component (background, 
 @import '../app/(auth)/recover/styles/recover';
 
 // MAIN
-@import "../app/(main)/layout";
+@import "../app/(app)/layout";
 
 // DASHBOARD
-@import '../app/(main)/dashboard/styles/dashboard';
-@import '../app/(main)/dashboard/components/SummaryWidget/styles/summaryWidget';
-@import '../app/(main)/dashboard/components/WeatherWidget/styles/weatherWidget';
-@import '../app/(main)/dashboard/components/GroupWidget/styles/groupWidget';
+@import '../app/(app)/dashboard/styles/dashboard';
+@import '../app/(app)/dashboard/components/SummaryWidget/styles/summaryWidget';
+@import '../app/(app)/dashboard/components/WeatherWidget/styles/weatherWidget';
+@import '../app/(app)/dashboard/components/GroupWidget/styles/groupWidget';
 
 // TANKS
-@import '../app/(main)/group/[groupId]/styles/group';
-@import '../app/(main)/group/[groupId]/components/GroupInfo/styles/groupInfo';
-@import '../app/(main)/group/[groupId]/components/TankWidget/styles/tankWidget';
-@import '../app/(main)/group/[groupId]/components/DataWidget/styles/dataWidget';
-@import '../app/(main)/group/[groupId]/components/TankPupUp/styles/tankPopUp';
+@import '../app/(app)/group/[groupId]/styles/group';
+@import '../app/(app)/group/[groupId]/components/GroupInfo/styles/groupInfo';
+@import '../app/(app)/group/[groupId]/components/TankWidget/styles/tankWidget';
+@import '../app/(app)/group/[groupId]/components/DataWidget/styles/dataWidget';
+@import '../app/(app)/group/[groupId]/components/TankPupUp/styles/tankPopUp';
 
 // COMPONENTS
 @import '../app/components/button/styles/button';

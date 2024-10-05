@@ -2,9 +2,6 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    # SUMMARY
-    path('summary/', GetSummaryView.as_view()),
-
     # GROUP
     path('group/', GetGroupView.as_view()),
     path('groups/', GetGroupsView.as_view()),
@@ -26,4 +23,8 @@ urlpatterns = [
     path('create-sensor/', CreateSensorView.as_view()),
     path('edit-sensor/', EditSensorView.as_view()),
     path('delete-sensor/', DeleteSensorView.as_view()),
+
+    # INFO
+    path('stats/', GetStatsView.as_view()),
+    path('summary/', GetSummaryView.as_view()),
 ]

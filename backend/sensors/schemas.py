@@ -28,7 +28,6 @@ class GetLastSensorReadingSchema(BaseModel):
 class GetSensorFlowSchema(BaseModel):
     sensor_id: str
     timeframe: int
-    period: str
     start_time: datetime
     end_time: datetime
 

@@ -39,6 +39,27 @@ class EditGroupSchema(BaseSchema):
 class DeleteGroupSchema(BaseSchema):
     id: int
 
+### INFO ###
+class GroupStatsSchema(BaseSchema):
+    id: int
+    name: str
+    time: list[int]
+    inflow: list[float]
+    outflow: list[float]
+    savings: list[float]
+
+class GroupStatusSchema(BaseSchema):
+    id: int
+    name: str
+    level: float
+    capacity: float
+
+class GroupLevelSchema(BaseSchema):
+    id: int
+    name: str
+    time: list[int]
+    level: list[float]
+  
 ############
 ### TANK ###
 ############
@@ -88,6 +109,27 @@ class DeleteTankSchema(BaseSchema):
     id: int
     group_id: int
 
+### INFO ###
+class TankStatsSchema(BaseSchema):
+    id: int
+    name: str
+    inflow: list[int]
+    outflow: list[int]
+    savings: list[int]
+
+class TankLevelSchema(BaseSchema):
+    id: int
+    name: str
+    level: list[int]
+
+class TankStatusSchema(BaseSchema):
+    id: int
+    name: str
+    level: int
+    capacity: int
+    is_active: bool
+    has_sensors: bool
+
 ##############
 ### SENSOR ###
 ##############
@@ -123,3 +165,14 @@ class DeleteSensorSchema(BaseSchema):
     sensor_id: int
     tank_id: int
     group_id: int
+
+############
+### INFO ###
+############
+
+class StatsSchema(BaseSchema):
+    stats: list[GroupStatsSchema]
+
+class SummarySchema(BaseSchema):
+    status: list[GroupStatusSchema]
+    level: list[GroupLevelSchema]

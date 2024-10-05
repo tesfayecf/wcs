@@ -1,7 +1,9 @@
 import random
+from datetime import timedelta
 from pydantic import ValidationError
 
 from django.core.cache import cache
+from django.utils import timezone
 from django.db.models import Count, Sum, Q
 
 from rest_framework import status
@@ -10,31 +12,12 @@ from rest_framework.response import Response
 
 from .schemas import *
 from .models import Tank, Group, Sensor
+
+from sensors.models import SensorReading
 from utils.misc import model_to_dict
 
 # Cache timeout in seconds (e.g., 5 minutes)
 CACHE_TIMEOUT = 300
-
-###############
-### SUMMARY ###
-###############
-
-### GET ###
-class GetSummaryView(APIView):
-    def post(self, request):
-        try:
-            groups = Group.objects.filter(user=request.user)
-            
-            summary_json = {
-                "level": [random.randrange(0, 100) for g in groups],
-                "inflow": [random.randrange(0, 100) for g in range(10)],
-                "outflow": [random.randrange(0, 100) for g in range(10)],
-                "savings": [random.randrange(0, 100) for g in range(10)]
-            }
-
-            return Response(summary_json, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 #############
 ### GROUP ###
@@ -716,3 +699,116 @@ def get_sensor(sensor_id: int, tank_id: int, group_id: int, user) -> Sensor:
     except Exception as e:
         # Log the exception for debugging purposes
         print(f"Error retrieving sensor {sensor_id}: {e}")
+
+############
+### INFO ###
+############
+
+'''
+class GetStatsSchema(BaseModel):
+    timeframe: int
+    period: str
+
+    @validator('period')
+    def validate_period(cls, v):
+        valid_periods = ['microseconds', 'milliseconds', 'seconds', 'minutes', 'hours', 'days', 'weeks', 'months', 'years']
+        if v not in valid_periods:
+            raise ValueError(f"Invalid period. Must be one of: {', '.join(valid_periods)}")
+        return v
+'''
+
+class GetSummaryView(APIView):
+    def post(self, request):
+        try:
+            # Deserialize request data
+            # data = GetStatsSchema(**request.data)
+            timeframe = 1
+            period = "minute"
+
+            summary_schema = SummarySchema(
+                level=[],
+                status=[],
+            )
+            
+            # Get all groups
+            groups = Group.objects.filter(user=request.user)
+            
+            for group in groups:
+                ### STATUS ###
+                group_status = GroupStatusSchema(
+                    id=group.pk,
+                    name=group.name,
+                    capacity=0,
+                    level=0,
+                )
+                
+                # Get all active tanks and sensors in the group
+                tanks = Tank.objects.filter(group=group, group__user=request.user, is_active=True)
+                sensors = Sensor.objects.filter(tank__in=tanks, is_active=True)
+                
+                # Calculate total capacity
+                group_status.capacity = tanks.aggregate(total_capacity=Sum('capacity'))['total_capacity'] or 0
+                                
+                summary_schema.status.append(group_status)
+
+                ### LEVEL ###
+                group_level = GroupLevelSchema(
+                    id=group.pk,
+                    name=group.name,
+                    time=[],
+                    level=[]
+                )
+
+                # Get aggregated sensor readings for the last month
+                end_time = timezone.now()
+                start_time = end_time - timedelta(days=5)
+                readings = SensorReading.timescale.filter(
+                    sensor__in=sensors,
+                    time__range=(start_time, end_time)
+                )
+                
+                # Bucket readings and calculate average distance
+                aggregated_readings = readings.time_bucket(
+                    'time',
+                    f"{timeframe} {period}"
+                ).annotate(
+                    avg_distance=Sum('distance') / Count('sensor', distinct=True)
+                ).order_by('-bucket')
+                
+                # Get the most recent bucket
+                latest_reading = aggregated_readings.first()
+                
+                # Add level information to status object
+                if latest_reading:
+                    group_status.level = latest_reading['avg_distance']
+
+                # Get readings from buckets
+                for reading in aggregated_readings:
+                    group_level.time.append(int(reading['bucket'].timestamp()))
+                    group_level.level.append(reading['avg_distance'])
+                
+                # Add group infromation to summary
+                summary_schema.level.append(group_level)
+
+            # Convert summary to json
+            summary_json = summary_schema.model_dump()
+
+            return Response(summary_json, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+### SUMMARY ###
+class GetStatsView(APIView):
+    def post(self, request):
+        try:
+            groups = Group.objects.filter(user=request.user)
+            
+            summary_json = {
+                "inflow": [random.randrange(0, 100) for g in range(10)],
+                "outflow": [random.randrange(0, 100) for g in range(10)],
+                "savings": [random.randrange(0, 100) for g in range(10)]
+            }
+
+            return Response(summary_json, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -2,10 +2,9 @@ import { IMenu } from "@/app/app/types";
 
 /// DASHBOARD STORE ///
 export interface IDashboardStore {
-    summary: ISummary;
     groups: IGroup[];
     groupMenu: IMenu;
-    showGroupMenu: boolean;
+    summary: ISummary;
     currentWeather: ICurrentWeather | null;
     forecastWeather: IForecastWeather[];
 }

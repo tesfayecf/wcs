@@ -12,6 +12,8 @@
     "ts:watch": "npm ts --watch"
   },
   "dependencies": {
+    "@ant-design/charts": "2.2.1",
+    "@ant-design/plots": "2.3.2",
     "@ant-design/icons": "5.5.1",
     "@ant-design/nextjs-registry": "1.0.1",
     "@emotion/react": "11.11.4",

@@ -9,7 +9,7 @@
 
 // Set up root styles
 :root {
-    font-size: $font-size-base;
+    font-size: $font-size-md;
     line-height: 1.5;
     text-size-adjust: 100%;
     -webkit-font-smoothing: antialiased;
@@ -29,6 +29,7 @@ body {
     font-weight: $font-weight-normal;
     line-height: 1.5;
     text-rendering: optimizeSpeed;
+    scrollbar-gutter: stable;
 }
 
 // Basic element styles

@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation'
 import { Button, Card, Checkbox, Form, Input, Typography } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { login } from "../actions";
-import { ILoginForm } from "../types";
+import { login } from "@/app/(auth)/actions";
+import { ILoginForm } from "@/app/(auth)/types";
 
 interface ILoginProps { }
 

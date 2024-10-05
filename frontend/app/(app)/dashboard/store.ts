@@ -4,29 +4,29 @@ import { IDashboardStore, IGroup, ISummary } from '@/app/(app)/dashboard/types';
 
 interface IDashboardStoreActions {
     setState: (state: Partial<IDashboardStore>) => void;
-    // Data
+    // Group
     setGroups: (groups: IGroup[]) => void;
-    setSummary: (summary: ISummary) => void;
     // Group menu
     setGroupMenu: (groupMenu: IMenu) => void;
-    setShowGroupMenu: (showGroupMenu: boolean) => void;
+    // Stats
+    setSummary: (summary: ISummary) => void;
 };
 
 const useDashboardStore = create<IDashboardStore & IDashboardStoreActions>((set) => ({
     /// Store ///
-    // Data
+    // Group
     groups: [],
-    summary: {
-        status: [],
-        level: []
-    },
     // Group menu
     groupMenu: {
         show: false,
         mode: "",
         id: 0
     },
-    showGroupMenu: false,
+    // Stats
+    summary: {
+        status: [],
+        level: []
+    },
     // Weather
     currentWeather: null,
     forecastWeather: [],
@@ -38,7 +38,6 @@ const useDashboardStore = create<IDashboardStore & IDashboardStoreActions>((set)
     setSummary: (summary: ISummary) => set((state) => ({ ...state, summary })),
     // Group menu
     setGroupMenu: (groupMenu: IMenu) => set((state) => ({ ...state, groupMenu })),
-    setShowGroupMenu: (showGroupMenu: boolean) => set((state) => ({ ...state, showGroupMenu: showGroupMenu })),
 }));
 
 export default useDashboardStore;

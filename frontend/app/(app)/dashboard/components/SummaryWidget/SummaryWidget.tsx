@@ -13,8 +13,8 @@ const SummaryWidget: React.FunctionComponent<ISummaryWidgetProps> = (props: ISum
   return (
     <ContentBox customBoxClass={"summary"}>
       <div className={"summaryContent"}>
-        <SummaryStatus summaryStatus={props.summary.status} />
-        <SummaryLevel summaryLevel={props.summary.level} />
+        {/* <SummaryStatus summaryStatus={props.summary.status} />
+        <SummaryLevel summaryLevel={props.summary.level} /> */}
       </div>
     </ContentBox>
 

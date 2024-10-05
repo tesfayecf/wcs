@@ -13,8 +13,8 @@ export default async function AuthLayout({ children }: IAppLayoutProps) {
     ///////////////////////////////////////////////////////////////////////
 
     return (
-        <div id="auth" className={"auth"}>
-            <div id="form" className={"form page-transition"}>
+        <div id="auth-layout" className={"auth-layout"}>
+            <div id="form" className={"form"}>
                 {children}
             </div>
             <div id="banner" className={"banner"}>

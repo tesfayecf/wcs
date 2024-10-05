@@ -1,4 +1,5 @@
 import React from 'react'
+import { AntdRegistry } from '@ant-design/nextjs-registry';
 import "../styles/app.css"
 
 type IAppLayoutProps = {
@@ -14,7 +15,7 @@ export default function RootLayout({ children }: IAppLayoutProps) {
                 <title>WCS</title>
             </head>
             <body>
-                {children}
+                <AntdRegistry>{children}</AntdRegistry>
             </body>
         </html>
     )

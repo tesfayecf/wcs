@@ -12,16 +12,16 @@ All letter al lowercase.
 Classes structure
 
 The first class contains the most descriptive name of the component it belongs to.
-This will define the size of the component.
 This class will be determine the size of the component and the relation with other components (margin, flex-grow, etc.).
-This will also specifu the padding inside the component.
-It will also be used to style the outter elements of the component (background, border, etc.).
+This will also specify the padding inside the component.
+It will also be used to style the more general elements of the component (background, border, etc.).
 
 .class-name {
 
     This class will always have the same name and will determine the structure of the elements inside of the component (flex, etc.).
     It will always have max height and width.
     The border styls will be inherited from the parent component.
+    
     .content {
 
         The elements inside of the component will have the same structure as the parent component recursively.
@@ -43,6 +43,9 @@ It will also be used to style the outter elements of the component (background, 
 
 // DASHBOARD
 @import '../app/(app)/dashboard/styles/dashboard';
+@import '../app/(app)/dashboard/components/GroupsPanel/styles/groupsPanel';
+@import '../app/(app)/dashboard/components/GroupsCharts/styles/groupsCharts';
+
 @import '../app/(app)/dashboard/components/SummaryWidget/styles/summaryWidget';
 @import '../app/(app)/dashboard/components/WeatherWidget/styles/weatherWidget';
 @import '../app/(app)/dashboard/components/GroupWidget/styles/groupWidget';

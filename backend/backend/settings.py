@@ -31,10 +31,10 @@ INSTALLED_APPS = [
     "djoser",
     "user_visit",
 
-    "data",
     "users",
-    "sensors",
+    "data",
     "weather",
+    "timeseries",
 ]
 ################################################
 
@@ -94,7 +94,7 @@ CORS_ALLOW_CREDENTIALS = True
 ################################################
 
 ################ DATABASE ################
-DATABASE_ROUTERS = ['backend.routers.TimeSeriesRouter']
+# DATABASE_ROUTERS = ['backend.routers.TimeSeriesRouter']
 DATABASES = {
     "default": {
         "ENGINE": environ.get('DATA_DB_ENGINE'),
@@ -163,13 +163,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 ################################################
 
 ################ CUSTOM USER MODEL ################
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'auth.User'
 ################################################
 
 ################ REST FRAMEWORK ################
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'users.authentication.CustomJWTAuthentication'
+        'auth.authentication.CustomJWTAuthentication'
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',

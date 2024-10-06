@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import paho.mqtt.client as mqtt
 
 from data.models import Sensor
-from sensors.models import SensorReading
+from timeseries.models import SensorReading
 from .types import *
 from .message import MQTTMessage
 

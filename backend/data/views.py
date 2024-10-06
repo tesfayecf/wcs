@@ -2,9 +2,10 @@ import random
 from datetime import timedelta
 from pydantic import ValidationError
 
-from django.core.cache import cache
 from django.utils import timezone
+from django.core.cache import cache
 from django.db.models import Count, Sum, Q
+from django.forms.models import model_to_dict
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -13,8 +14,7 @@ from rest_framework.response import Response
 from .schemas import *
 from .models import Tank, Group, Sensor
 
-from sensors.models import SensorReading
-from utils.misc import model_to_dict
+from timeseries.models import SensorReading
 
 # Cache timeout in seconds (e.g., 5 minutes)
 CACHE_TIMEOUT = 300
@@ -486,11 +486,11 @@ class GetSensorView(APIView):
 
             # Check the group exists
             if not Group.objects.filter(pk=get_sensor_data.group_id).exists():
-                return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_404_NOT_FOUND)
                 
             # Check if the tank exists
             if not Tank.objects.filter(pk=get_sensor_data.tank_id).exists():
-                return Response({'Bad Request': 'Tank does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'Bad Request': 'Tank does not exist'}, status=status.HTTP_404_NOT_FOUND)
             
             # Get sensors in tank (There must be olny one)
             sensors = Sensor.objects.filter(
@@ -510,9 +510,9 @@ class GetSensorView(APIView):
                 cache.set(cache_key, sensor, timeout=CACHE_TIMEOUT)
                 
             if len(sensors_json) > 1:
-                return Response({'Bad Request': 'More than one sensor in this tank'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'Bad Request': 'Multiple sensors in this tank'}, status=status.HTTP_400_BAD_REQUEST)
             elif len(sensors_json) == 0:
-                return Response({'Bad Request': 'No sensors in this tank'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'Bad Request': 'No sensors in this tank'}, status=status.HTTP_404_NOT_FOUND)
             
             return Response(sensors_json[0], status=status.HTTP_200_OK)
         except Exception as e:

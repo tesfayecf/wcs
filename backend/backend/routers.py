@@ -14,8 +14,14 @@ class TimeSeriesRouter:
         return False
     
     def allow_relation(self, obj1, obj2, **hints):
+        # Allow relations within the sensors app
         if obj1._meta.app_label == self.app and obj2._meta.app_label == self.app:
-            return True
+            return self.database
+        
+        # Allow relations between sensors models and models in other apps
+        if obj1._meta.app_label == self.app or obj2._meta.app_label == self.app:
+            return self.database
+    
         return None
     
     def allow_migrate(self, db, app_label, model_name=None, **hints):

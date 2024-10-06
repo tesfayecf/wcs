@@ -1,4 +1,5 @@
 from django.db import models
+from auth.models import User
 
 class TimeStampedModel(models.Model):
     """
@@ -24,7 +25,7 @@ class Group(TimeStampedModel):
     name = models.CharField(max_length=255, unique=True)
     location = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    user = models.ForeignKey("users.User", on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
     class Meta:
         verbose_name = 'Group'

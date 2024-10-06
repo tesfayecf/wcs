@@ -7,10 +7,8 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
     TokenVerifyView,
-    TokenBlacklistView,
-    token_refresh
 )
-from users.models import User
+from auth.models import User
 
 ######################
 ### AUTHENTICATION ###

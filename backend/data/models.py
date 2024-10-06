@@ -24,7 +24,7 @@ class Group(TimeStampedModel):
     name = models.CharField(max_length=255, unique=True)
     location = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    user = models.ForeignKey("users.UserAccount", on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE, default=None)
 
     class Meta:
         verbose_name = 'Group'

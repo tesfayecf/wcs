@@ -1,78 +1,80 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
+from django.utils import timezone
 
 class UserManager(BaseUserManager):
     """
-    Custom manager for UserAccount model, managing user creation and querying.
+    Custom manager for User model, managing user creation.
     """
     
-    def create_user(self, email, password=None, **extra_fields):
+    def _create_user(self, email, full_name, password=None, **extra_fields):
         """
-        Create and return a regular user with an email and password.
+        Helper method to create a user, either regular or superuser.
         """
         if not email:
             raise ValueError('The Email field must be set')
         
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        user = self.model(
+            email=email,
+            full_name=full_name,
+            **extra_fields
+        )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password=None, **extra_fields):
+    def create_user(self, email, full_name, password=None, **extra_fields):
+        """
+        Create and return a regular user with an email and password.
+        """
+        extra_fields.setdefault('is_active', False)
+        return self._create_user(email, full_name, password, **extra_fields)
+
+    def create_superuser(self, email, full_name, password=None, **extra_fields):
         """
         Create and return a superuser with email and password.
         """
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
 
-        if not extra_fields.get('is_staff') or not extra_fields.get('is_superuser'):
-            raise ValueError('Superuser must have is_staff=True and is_superuser=True.')
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
 
-        return self.create_user(email, password, **extra_fields)
-
-    def get_user_by_email(self, email):
-        """
-        Retrieve a user by email.
-        """
-        try:
-            return self.get(email__iexact=email)
-        except self.model.DoesNotExist:
-            return None
-
-    def search_users(self, search_query):
-        """
-        Search users by email containing the search_query.
-        """
-        return self.filter(email__icontains=search_query)
-
-    def filter_users(self, **kwargs):
-        """
-        Filter users based on provided criteria.
-        """
-        return self.filter(**kwargs)
+        return self._create_user(email, full_name, password, **extra_fields)
 
 
-class UserAccount(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin):
     """
     Custom user model extending AbstractBaseUser and PermissionsMixin.
     """
     
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
     email = models.EmailField(unique=True, max_length=255)
-
-    is_active = models.BooleanField(default=True)
+    full_name = models.CharField(max_length=255)
+    date_joined = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=False)
+    date_activated = models.DateTimeField(null=True, blank=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ['full_name']
 
     def __str__(self):
         """
         Return the string representation of the user.
         """
-        return f"{self.first_name} {self.last_name}"
+        return self.full_name
+
+    def activate(self):
+        """
+        Activate the user account and set the activation date.
+        """
+        self.is_active = True
+        self.date_activated = timezone.now()
+        self.save()

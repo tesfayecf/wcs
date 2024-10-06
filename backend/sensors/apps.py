@@ -8,7 +8,7 @@ class SensorsConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "sensors"
     def ready(self):
-        from server.server import start_mqtt_server
+        from mqtt.server import start_mqtt_server
         
         if not getattr(self, 'server_started', False):
             # Emit the custom signal when the app is ready

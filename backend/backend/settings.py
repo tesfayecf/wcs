@@ -12,22 +12,14 @@ DEVELOPMENT_MODE = environ.get('DEVELOPMENT_MODE')
 # Secret key
 SECRET_KEY = environ.get('SECRET_KEY')
 
-# Debug mode
-DEBUG = environ.get('DEBUG')
-
 # Allowed hosts
 ALLOWED_HOSTS = environ.get('ALLOWED_HOSTS').split(',')
 
 # Secure proxy SSL header
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Weather API key
-OPENWEATHERMAP_API_KEY = environ.get('OPENWEATHERMAP_API_KEY')
-
 ################ APPLICATIONS ################
-# Application definition
 INSTALLED_APPS = [
-    "channels",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -36,21 +28,17 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
+    "djoser",
     "user_visit",
+
     "data",
     "users",
     "sensors",
     "weather",
 ]
+################################################
 
-# Channels definition
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
-    },
-}
-
-# Middleware definition
+#################### MIDDLEWARES ######################
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -64,6 +52,13 @@ MIDDLEWARE = [
 ]
 ################################################
 
+################### CHANNELS ######################
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
+################################################
 
 ################ URLS AND TEMPLATES ################
 # Root URLconf
@@ -90,17 +85,24 @@ TEMPLATES = [
 ASGI_APPLICATION = "backend.routing.application"
 ################################################
 
+################ CORS ################
+CORS_ALLOWED_ORIGINS = environ.get(
+    "CORS_ALLOWED_ORIGINS", 
+    "http://localhost:3000,http://192.168.0.1:3000,http://127.0.0.1:3000",
+).split(",")
+CORS_ALLOW_CREDENTIALS = True
+################################################
 
 ################ DATABASE ################
-# DATABASE_ROUTERS = ['backend.routers.TimeSeriesRouter']
+DATABASE_ROUTERS = ['backend.routers.TimeSeriesRouter']
 DATABASES = {
     "default": {
-        "ENGINE": environ.get('DEFAULT_DB_ENGINE'),
-        "NAME": environ.get('DEFAULT_DB_NAME'),
-        "USER": environ.get('DEFAULT_DB_USER'),
-        "PASSWORD": environ.get('DEFAULT_DB_PASSWORD'),
-        "HOST": environ.get('DEFAULT_DB_HOST'),
-        "PORT": environ.get('DEFAULT_DB_PORT'),
+        "ENGINE": environ.get('DATA_DB_ENGINE'),
+        "NAME": environ.get('DATA_DB_NAME'),
+        "USER": environ.get('DATA_DB_USER'),
+        "PASSWORD": environ.get('DATA_DB_PASSWORD'),
+        "HOST": environ.get('DATA_DB_HOST'),
+        "PORT": environ.get('DATA_DB_PORT'),
     },
     "timeseries": {
         "ENGINE": environ.get('TIMESERIES_DB_ENGINE'),
@@ -140,14 +142,12 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 ################################################
 
-
 ################ INTERNATIONALIZATION ################
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 ################################################
-
 
 ################ STATIC FILES ################
 STATIC_URL = '/static/'
@@ -158,6 +158,13 @@ STATICFILES_DIRS = [
 ]
 ################################################
 
+################ DEFAULT PRIMARY KEY FIELD TYPE ################
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+################################################
+
+################ CUSTOM USER MODEL ################
+AUTH_USER_MODEL = 'users.User'
+################################################
 
 ################ REST FRAMEWORK ################
 REST_FRAMEWORK = {
@@ -170,10 +177,9 @@ REST_FRAMEWORK = {
 }
 ################################################
 
-
 ################ DJOSER ################
 DJOSER ={
-    'PASSWORD_RESET_CONFIRM_URL': 'password-reset/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'reset/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': False,
     'ACTIVATION_URL': 'activation/{uid}/{token}',
     'USER_CREATE_PASSWORD_RETYPE': True,
@@ -183,7 +189,7 @@ DJOSER ={
 
 AUTH_COOKIE = "access"
 AUTH_COOKIE_MAX_AGE = 60*60*24
-AUTH_COOKIE_ACCES_MAX_AGE =  999999 if environ.get('DEBUG') else 60*5 
+AUTH_COOKIE_ACCES_MAX_AGE =  60*60*24
 AUTH_COOKIE_REFRESH_MAX_AGE = 60*60*24
 AUTH_COOKIE_SECURE = 'True'
 AUTH_COOKIE_HTTP_ONLY = True
@@ -192,23 +198,9 @@ AUTH_COOKIE_SAMESITE = 'None'
 ################################################
 
 
-################ CORS ################
-CORS_ALLOWED_ORIGINS = environ.get(
-    "CORS_ALLOWED_ORIGINS", 
-    "http://localhost:3000,http://192.168.0.1:3000,http://127.0.0.1:3000",
-).split(",")
-CORS_ALLOW_CREDENTIALS = True
-################################################
-
-
-################ DEFAULT PRIMARY KEY FIELD TYPE ################
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-################################################
-
-
-################ CUSTOM USER MODEL ################
-AUTH_USER_MODEL = 'users.UserAccount'
-################################################
+##################### Weather API key ###################
+OPENWEATHERMAP_API_KEY = environ.get('OPENWEATHERMAP_API_KEY')
+#########################################################
 
 ######################## TESTING ########################
 TEST_RUNNER = "redgreenunittest.django.runner.RedGreenDiscoverRunner"

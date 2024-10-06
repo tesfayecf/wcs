@@ -85,8 +85,6 @@ __pycache__/
 local_settings.py
 
 /venv
-.env
-.env.prod
-.env.local
+.env*
 db.sqlite3
 static

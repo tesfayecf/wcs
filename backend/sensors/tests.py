@@ -5,12 +5,12 @@ from datetime import timedelta
 
 from .models import SensorReading, SensorLog
 from .views import GetSensorReadingsView, GetSensorLogsView
-from users.models import UserAccount
+from users.models import User
 from data.models import Group, Tank, Sensor
 
 @pytest.fixture
 def user():
-    return UserAccount.objects.create_user(
+    return User.objects.create_user(
         first_name="test_first_name",
         last_name="test_last_name",
         email="test@example.com",

@@ -6,9 +6,15 @@ from djoser.social.views import ProviderAuthView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
-    TokenVerifyView
+    TokenVerifyView,
+    TokenBlacklistView,
+    token_refresh
 )
-from users.models import UserAccount
+from users.models import User
+
+######################
+### AUTHENTICATION ###
+######################
 
 class CustomProviderAuthView(ProviderAuthView):
     """
@@ -205,11 +211,11 @@ class CustomTokenSignupView(TokenObtainPairView):
             return Response({'detail': 'Passwords do not match.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Validation: Check if the email is unique
-        if UserAccount.objects.filter(email=email).exists():
+        if User.objects.filter(email=email).exists():
             return Response({'detail': 'Email address is already in use.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Create a new user
-        UserAccount.objects.create(
+        User.objects.create(
             username=email,
             email=email,
             first_name=name,
@@ -292,6 +298,9 @@ class CustomTokenRefreshView(TokenRefreshView):
 
         return response
 
+############
+### USER ###
+############
 
 class UserView(APIView):
     def post(self, request, *args, **kwargs):

@@ -3,11 +3,11 @@ from django.contrib.auth import get_user_model
 from .models import Group, Tank, Sensor
 from django.db.utils import IntegrityError
 
-UserAccount = get_user_model()
+User = get_user_model()
 
 @pytest.fixture
 def user():
-    return UserAccount.objects.create_user(
+    return User.objects.create_user(
         first_name="test_first_name",
         last_name="test_last_name",
         email="test@example.com",

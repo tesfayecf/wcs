@@ -4,9 +4,9 @@ from django.dispatch import Signal
 # Define a custom signal for app loaded
 sensors_app_loaded = Signal()
 
-class SensorsConfig(AppConfig):
+class TimeseriesConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "sensors"
+    name = "timeseries"
     def ready(self):
         from mqtt.server import start_mqtt_server
         

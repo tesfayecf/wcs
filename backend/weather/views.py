@@ -122,7 +122,7 @@ class GetForecastWeatherView(APIView):
             today = timezone.now().date()
             next_five_days = [today + timedelta(days=i) for i in range(5)]
 
-            if settings.DEBUG:
+            if settings.DEVELOPMENT_MODE:
                 existing_data = DailyWeatherData.objects.filter(city_name=city_name).order_by('date')
             else:
                 existing_data = DailyWeatherData.objects.filter(city_name=city_name, date__in=next_five_days)
@@ -139,7 +139,7 @@ class GetForecastWeatherView(APIView):
             
             self._process_and_store_forecast_data(city_name, forecast_data)
 
-            if settings.DEBUG:
+            if settings.DEVELOPMENT_MODE:
                 updated_data = DailyWeatherData.objects.filter(city_name=city_name).order_by('date')
             else:
                 updated_data = DailyWeatherData.objects.filter(city_name=city_name, date__in=next_five_days)

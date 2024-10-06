@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
-from auth.models import User
+from users.models import User
 
 ######################
 ### AUTHENTICATION ###

@@ -1,5 +1,5 @@
 from django.db import models
-from auth.models import User
+from users.models import User
 
 class TimeStampedModel(models.Model):
     """

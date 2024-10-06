@@ -1,7 +1,7 @@
 When deciding what group roles to assign to your login roles (`admin`, `test`, `dev`, `prod`), it's essential to think about the access each role requires based on their responsibilities. Here's a suggestion for group roles assignment based on common use cases:
 
 ### 1. **Admin Role**
-   - **Use case**: The `admin` role is responsible for managing the database and all its configurations. They may need to create users, manage backups, optimize performance, etc.
+   - **Use case**: The `admin` role is responsible for managing the database and all its configurations. They may need to create users, extensions, manage backups, optimize performance, etc.
    - **Group Roles**:
      - **`pg_read_all_data`**: Admins need to be able to read all data across all databases.
      - **`pg_write_all_data`**: Admins should also be able to modify data in any schema and table.
@@ -10,7 +10,7 @@ When deciding what group roles to assign to your login roles (`admin`, `test`, `
      - **`pg_signal_backend`**: To terminate or cancel problematic sessions.
      - **`pg_read_all_settings`**: To view server configuration and troubleshoot settings.
      - **`pg_read_all_stats`**: To access server performance and statistics.
-     - Optionally: **Superuser privileges**, depending on whether they need full control over the entire instance.
+     - NOTE: **Superuser privileges**, depending on whether they need full control over the entire instance. Needs this to create extensions.
 
    - **Privileges Summary**: Admins typically have full access to the database, both data and performance tuning tools, but it's a good practice to avoid giving superuser privileges unless absolutely necessary.
 

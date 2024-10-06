@@ -17,7 +17,7 @@ class WeatherAPIClient:
 
     def get_current_weather(self, city_name: str) -> Dict[str, Any]:
         """Fetch current weather data for a given city."""
-        if settings.DEBUG:
+        if settings.DEVELOPMENT_MODE:
             with open("C:/Users/tesfa/Documents/Programming/WCS/Code/src/backend/weather/data/current_weather.json", "r") as f:
                 return json.load(f)
 
@@ -27,7 +27,7 @@ class WeatherAPIClient:
 
     def get_forecast(self, city_name: str) -> Dict[str, Any]:
         """Fetch 5-day forecast data for a given city."""
-        if settings.DEBUG:
+        if settings.DEVELOPMENT_MODE:
             with open("C:/Users/tesfa/Documents/Programming/WCS/Code/src/backend/weather/data/forecast_weather.json", "r") as f:
                 return json.load(f)
             

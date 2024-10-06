@@ -5,7 +5,7 @@ from datetime import timedelta
 
 from .models import SensorReading, SensorLog
 from .views import GetSensorReadingsView
-from auth.models import User
+from users.models import User
 from data.models import Group, Tank, Sensor
 
 @pytest.fixture

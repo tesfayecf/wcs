@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "djoser",
     "user_visit",
-
+    
     "users",
     "data",
     "weather",
@@ -163,13 +163,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 ################################################
 
 ################ CUSTOM USER MODEL ################
-AUTH_USER_MODEL = 'auth.User'
+AUTH_USER_MODEL = 'users.User'
 ################################################
 
 ################ REST FRAMEWORK ################
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'auth.authentication.CustomJWTAuthentication'
+        'users.authentication.CustomJWTAuthentication'
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',

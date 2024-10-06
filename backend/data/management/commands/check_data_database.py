@@ -21,9 +21,9 @@ class Command(BaseCommand):
             self.stdout.write(f"Database {db_name} exists.")
 
         # Check and create postgres_fdw extension
-        self.stdout.write("Checking if the 'postgres_fdw' extension exists...")
+        self.stdout.write("Checking if the 'timescaledb' extension exists...")
         with connections['default'].cursor() as cursor:
-            self.check_and_create_postgres_fdw_extension(cursor)
+            self.check_and_create_timescaledb_extension(cursor)
 
     def database_exists(self, db_name):
         """Check if the database exists"""
@@ -67,10 +67,10 @@ class Command(BaseCommand):
         except Exception as e:
             self.stderr.write(self.style.ERROR(f"Error creating database: {e}"))
 
-    def check_and_create_postgres_fdw_extension(self, cursor):
-        """Check if the 'postgres_fdw' extension exists and create it if necessary."""
-        cursor.execute("SELECT 1 FROM pg_extension WHERE extname = 'postgres_fdw';")
+    def check_and_create_timescaledb_extension(self, cursor):
+        """Check if the 'timescaledb' extension exists and create it if necessary."""
+        cursor.execute("SELECT 1 FROM pg_extension WHERE extname = 'timescaledb';")
         extension_exists = cursor.fetchone()
         if not extension_exists:
-            cursor.execute("CREATE EXTENSION IF NOT EXISTS postgres_fdw;")
-            self.stdout.write("Created the 'postgres_fwd' extension.")
+            cursor.execute("CREATE EXTENSION IF NOT EXISTS timescaledb;")
+            self.stdout.write("Created the 'timescaledb' extension.")

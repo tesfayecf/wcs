@@ -1,7 +1,11 @@
 from pathlib import Path
 from os import path, environ
 from dotenv import load_dotenv
+
+# Load environment variables
 load_dotenv()
+
+########################### BASE CONFIGURATION ###########################
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,7 +22,11 @@ ALLOWED_HOSTS = environ.get('ALLOWED_HOSTS').split(',')
 # Secure proxy SSL header
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+# Application definition
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 ################ APPLICATIONS ################
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -36,35 +44,59 @@ INSTALLED_APPS = [
     "weather",
     "timeseries",
 ]
-################################################
 
-#################### MIDDLEWARES ######################
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "user_visit.middleware.UserVisitMiddleware", # user log 
-]
-################################################
+########################### DATABASE CONFIGURATION ###########################
 
-################### CHANNELS ######################
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+DATABASES = {
+    "default": {
+        "ENGINE": environ.get('DATA_DB_ENGINE'),
+        "NAME": environ.get('DATA_DB_NAME'),
+        "USER": environ.get('DATA_DB_USER'),
+        "PASSWORD": environ.get('DATA_DB_PASSWORD'),
+        "HOST": environ.get('DATA_DB_HOST'),
+        "PORT": environ.get('DATA_DB_PORT'),
+    },
+    "test": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": "test_database",
     },
 }
-################################################
 
-################ URLS AND TEMPLATES ################
-# Root URLconf
-ROOT_URLCONF = "backend.urls"
+########################### AUTHENTICATION AND USER MODEL ###########################
 
-# Templates
+AUTH_USER_MODEL = 'users.User'
+
+AUTH_PASSWORD_VALIDATORS = [
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+]
+
+########################### CORS CONFIGURATION ###########################
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+########################### MIDDLEWARE ###########################
+
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",  # Security features such as XSS protection, HSTS, etc.
+    "django.contrib.sessions.middleware.SessionMiddleware",  # Manages session data for each user.
+    "corsheaders.middleware.CorsMiddleware",  # Handles Cross-Origin Resource Sharing (CORS) for allowing cross-origin requests.
+    "django.middleware.common.CommonMiddleware",  # Common utilities like URL slashes, redirects, etc.
+    "django.middleware.csrf.CsrfViewMiddleware",  # Protects against Cross-Site Request Forgery (CSRF).
+    "django.contrib.auth.middleware.AuthenticationMiddleware",  # Associates users with requests based on session data.
+    "django.contrib.messages.middleware.MessageMiddleware",  # Temporary message storage between requests.
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",  # Protects against clickjacking by setting X-Frame-Options headers.
+    "user_visit.middleware.UserVisitMiddleware",  # Custom middleware to log user visits (tracks user interactions with the site).
+]
+
+########################### TEMPLATES ###########################
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -81,92 +113,8 @@ TEMPLATES = [
     },
 ]
 
-# ASGI application
-ASGI_APPLICATION = "backend.routing.application"
-################################################
+########################### REST FRAMEWORK ###########################
 
-################ CORS ################
-CORS_ALLOWED_ORIGINS = environ.get(
-    "CORS_ALLOWED_ORIGINS", 
-    "http://localhost:3000,http://192.168.0.1:3000,http://127.0.0.1:3000",
-).split(",")
-CORS_ALLOW_CREDENTIALS = True
-################################################
-
-################ DATABASE ################
-# DATABASE_ROUTERS = ['backend.routers.TimeSeriesRouter']
-DATABASES = {
-    "default": {
-        "ENGINE": environ.get('DATA_DB_ENGINE'),
-        "NAME": environ.get('DATA_DB_NAME'),
-        "USER": environ.get('DATA_DB_USER'),
-        "PASSWORD": environ.get('DATA_DB_PASSWORD'),
-        "HOST": environ.get('DATA_DB_HOST'),
-        "PORT": environ.get('DATA_DB_PORT'),
-    },
-    "timeseries": {
-        "ENGINE": environ.get('TIMESERIES_DB_ENGINE'),
-        "NAME": environ.get('TIMESERIES_DB_NAME'),
-        "USER": environ.get('TIMESERIES_DB_USER'),
-        "PASSWORD": environ.get('TIMESERIES_DB_PASSWORD'),
-        "HOST": environ.get('TIMESERIES_DB_HOST'),
-        "PORT": environ.get('TIMESERIES_DB_PORT'),
-    },
-    'test': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'test_database',
-    }
-}
-################################################
-
-################ CACHE ################
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',  # Optional unique identifier for the cache instance
-        'TIMEOUT': 3600,  # Default timeout in seconds (300 seconds = 5 minutes)
-        'OPTIONS': {
-            'MAX_ENTRIES': 100,  # Maximum number of cache entries
-            'CULL_FREQUENCY': 15,  # Fraction of entries to be removed when max is reached
-        }
-    }
-}
-################################################
-
-################ PASSWORD VALIDATION ################
-AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",},
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
-]
-################################################
-
-################ INTERNATIONALIZATION ################
-LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
-USE_I18N = True
-USE_TZ = True
-################################################
-
-################ STATIC FILES ################
-STATIC_URL = '/static/'
-STATIC_ROOT = path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = [
-    path.join(STATIC_ROOT, 'rest_framework'),
-    path.join(STATIC_ROOT, 'admin'),
-]
-################################################
-
-################ DEFAULT PRIMARY KEY FIELD TYPE ################
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-################################################
-
-################ CUSTOM USER MODEL ################
-AUTH_USER_MODEL = 'users.User'
-################################################
-
-################ REST FRAMEWORK ################
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'users.authentication.CustomJWTAuthentication'
@@ -175,10 +123,10 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ]
 }
-################################################
 
-################ DJOSER ################
-DJOSER ={
+########################### DJOSER CONFIGURATION ###########################
+
+DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': 'reset/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': False,
     'ACTIVATION_URL': 'activation/{uid}/{token}',
@@ -187,22 +135,59 @@ DJOSER ={
     'TOKEN_MODEL': None,
 }
 
+########################### AUTH COOKIE SETTINGS ###########################
+
 AUTH_COOKIE = "access"
-AUTH_COOKIE_MAX_AGE = 60*60*24
-AUTH_COOKIE_ACCES_MAX_AGE =  60*60*24
-AUTH_COOKIE_REFRESH_MAX_AGE = 60*60*24
-AUTH_COOKIE_SECURE = 'True'
+AUTH_COOKIE_MAX_AGE = 60 * 60 * 24
+AUTH_COOKIE_ACCES_MAX_AGE = 60 * 60 * 24
+AUTH_COOKIE_REFRESH_MAX_AGE = 60 * 60 * 24
+AUTH_COOKIE_SECURE = True
 AUTH_COOKIE_HTTP_ONLY = True
 AUTH_COOKIE_PATH = '/'
 AUTH_COOKIE_SAMESITE = 'None'
-################################################
 
+########################### CACHE CONFIGURATION ###########################
 
-##################### Weather API key ###################
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',  # Unique identifier for the cache instance
+        'TIMEOUT': 3600,  # Cache timeout in seconds (3600 seconds = 1 hour)
+        'OPTIONS': {
+            'MAX_ENTRIES': 100,  # Max number of cache entries
+            'CULL_FREQUENCY': 15,  # Fraction of entries to remove when max is reached
+        }
+    }
+}
+
+########################### CHANNELS ###########################
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
+
+########################### STATIC FILES ###########################
+
+STATIC_URL = '/static/'
+STATIC_ROOT = path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [
+    path.join(STATIC_ROOT, 'rest_framework'),
+    path.join(STATIC_ROOT, 'admin'),
+]
+
+########################### INTERNATIONALIZATION ###########################
+
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
+USE_I18N = True
+USE_TZ = True
+
+########################### WEATHER API KEY ###########################
+
 OPENWEATHERMAP_API_KEY = environ.get('OPENWEATHERMAP_API_KEY')
-#########################################################
 
-######################## TESTING ########################
+########################### TESTING CONFIGURATION ###########################
+
 TEST_RUNNER = "redgreenunittest.django.runner.RedGreenDiscoverRunner"
-#########################################################
-

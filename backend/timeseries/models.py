@@ -4,7 +4,7 @@ from timescale.db.models.fields import TimescaleDateTimeField
 from timescale.db.models.managers import TimescaleManager
 from django.utils.timezone import now
 
-class TimescaleModel(models.Model):
+class TimeseriesModel(TimescaleModel):
     """
     A helper class for using Timescale within Django.
     Includes TimescaleManager and TimescaleDateTimeField.
@@ -21,9 +21,9 @@ class TimescaleModel(models.Model):
 ### READING ###
 ###############
 
-class SensorReading(TimescaleModel):
+class SensorReading(TimeseriesModel):
     distance = models.FloatField(null=True, blank=True)
-    sensor = models.ForeignKey('data.Sensor', on_delete=models.CASCADE, related_name='readings')
+    sensor = models.ForeignKey('data.sensor', on_delete=models.CASCADE, related_name='readings')
     
     class Meta:
         verbose_name = "Sensor Reading"
@@ -42,13 +42,13 @@ class SensorStatus(models.TextChoices):
     WARNING = 'WARNING', 'Warning'
     ERROR = 'ERROR', 'Error'
 
-class SensorLog(TimescaleModel):
+class SensorLog(TimeseriesModel):
     status = models.CharField(max_length=25, choices=SensorStatus.choices, default=SensorStatus.INFO)
     status_message = models.TextField(null=True, blank=True)
     signal_strength = models.IntegerField(null=True, blank=True)
     battery_voltage = models.FloatField(null=True, blank=True)
     battery_percentage = models.IntegerField(null=True, blank=True)
-    sensor = models.ForeignKey('data.Sensor', on_delete=models.CASCADE, related_name='logs')
+    sensor = models.ForeignKey('data.sensor', on_delete=models.CASCADE, related_name='logs')
 
     class Meta:
         verbose_name = "Sensor Log"

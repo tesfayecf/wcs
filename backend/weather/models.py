@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
-class CurrentWeatherData(models.Model):
+class Current(models.Model):
     """
     Model to store the current weather data for a city.
     """
@@ -30,7 +30,7 @@ class CurrentWeatherData(models.Model):
         return f"{self.city_name} - {self.weather_main}"
 
 
-class DailyWeatherData(models.Model):
+class Daily(models.Model):
     """
     Model to store daily weather data for a city.
     """

@@ -7,7 +7,7 @@ class UserManager(BaseUserManager):
     Custom manager for User model, managing user creation.
     """
     
-    def _create_user(self, email, full_name, password=None, **extra_fields):
+    def _create_user(self, email, name, password=None, **extra_fields):
         """
         Helper method to create a user, either regular or superuser.
         """
@@ -17,21 +17,21 @@ class UserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(
             email=email,
-            full_name=full_name,
+            name=name,
             **extra_fields
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_user(self, email, full_name, password=None, **extra_fields):
+    def create_user(self, email, name, password=None, **extra_fields):
         """
         Create and return a regular user with an email and password.
         """
         extra_fields.setdefault('is_active', False)
-        return self._create_user(email, full_name, password, **extra_fields)
+        return self._create_user(email, name, password, **extra_fields)
 
-    def create_superuser(self, email, full_name, password=None, **extra_fields):
+    def create_superuser(self, email, name, password=None, **extra_fields):
         """
         Create and return a superuser with email and password.
         """
@@ -44,7 +44,7 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self._create_user(email, full_name, password, **extra_fields)
+        return self._create_user(email, name, password, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -53,7 +53,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     
     email = models.EmailField(unique=True, max_length=255)
-    full_name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     date_joined = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=False)
     date_activated = models.DateTimeField(null=True, blank=True)
@@ -63,13 +63,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['full_name']
+    REQUIRED_FIELDS = ['name']
 
     def __str__(self):
         """
         Return the string representation of the user.
         """
-        return self.full_name
+        return self.name
 
     def activate(self):
         """

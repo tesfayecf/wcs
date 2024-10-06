@@ -14,7 +14,7 @@ from rest_framework.response import Response
 
 from .schemas import *
 from .client import WeatherAPIClient
-from .models import CurrentWeatherData, DailyWeatherData
+from .models import Current, Daily
 from utils.misc import _get_seconds_until_next_hour
 
 api_client = WeatherAPIClient()
@@ -33,7 +33,7 @@ class GetCurrentWeatherView(APIView):
                 return Response(cached_data, status=status.HTTP_200_OK)
 
             # Check if recent weather data exists in the database
-            weather_data = CurrentWeatherData.objects.filter(city_name=city_name).first()
+            weather_data = Current.objects.filter(city_name=city_name).first()
             if weather_data and (timezone.now() - weather_data.timestamp) < timedelta(hours=1):
                 response_data = self._format_current_weather_response(weather_data)
                 # Validate and format response data with Pydantic
@@ -62,9 +62,9 @@ class GetCurrentWeatherView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def _update_or_create_current_weather_data(self, city_name: str, weather_data_json: Dict[str, Any]) -> CurrentWeatherData:
-        """Update or create CurrentWeatherData instance from API response."""
-        weather_data, _ = CurrentWeatherData.objects.update_or_create(
+    def _update_or_create_current_weather_data(self, city_name: str, weather_data_json: Dict[str, Any]) -> Current:
+        """Update or create Current instance from API response."""
+        weather_data, _ = Current.objects.update_or_create(
             city_name=city_name,
             defaults={
                 "lon": weather_data_json['coord']['lon'],
@@ -84,8 +84,8 @@ class GetCurrentWeatherView(APIView):
         )
         return weather_data
 
-    def _format_current_weather_response(self, weather_data: CurrentWeatherData) -> Dict[str, Any]:
-        """Format CurrentWeatherData instance for API response."""
+    def _format_current_weather_response(self, weather_data: Current) -> Dict[str, Any]:
+        """Format Current instance for API response."""
         return {
             "city_name": weather_data.city_name,
             "coord": {"lon": weather_data.lon, "lat": weather_data.lat},
@@ -123,9 +123,9 @@ class GetForecastWeatherView(APIView):
             next_five_days = [today + timedelta(days=i) for i in range(5)]
 
             if settings.DEVELOPMENT_MODE:
-                existing_data = DailyWeatherData.objects.filter(city_name=city_name).order_by('date')
+                existing_data = Daily.objects.filter(city_name=city_name).order_by('date')
             else:
-                existing_data = DailyWeatherData.objects.filter(city_name=city_name, date__in=next_five_days)
+                existing_data = Daily.objects.filter(city_name=city_name, date__in=next_five_days)
 
             if existing_data.count() == 5:
                 response_data = [self._format_weather_data(entry) for entry in existing_data]
@@ -140,9 +140,9 @@ class GetForecastWeatherView(APIView):
             self._process_and_store_forecast_data(city_name, forecast_data)
 
             if settings.DEVELOPMENT_MODE:
-                updated_data = DailyWeatherData.objects.filter(city_name=city_name).order_by('date')
+                updated_data = Daily.objects.filter(city_name=city_name).order_by('date')
             else:
-                updated_data = DailyWeatherData.objects.filter(city_name=city_name, date__in=next_five_days)
+                updated_data = Daily.objects.filter(city_name=city_name, date__in=next_five_days)
             response_data = [self._format_weather_data(entry) for entry in updated_data]
             # Validate and format response data with Pydantic
             formatted_response = [ForecastWeatherResponseSchema(**data).model_dump() for data in response_data]
@@ -161,7 +161,7 @@ class GetForecastWeatherView(APIView):
         """Process forecast data and store each day separately in the database."""
         daily_data = self._aggregate_forecast_data(forecast_data['list'])
         for date_obj, data in daily_data.items():
-            DailyWeatherData.objects.update_or_create(
+            Daily.objects.update_or_create(
                 city_name=city_name,
                 date=date_obj,
                 defaults={
@@ -209,8 +209,8 @@ class GetForecastWeatherView(APIView):
 
         return daily_data
 
-    def _format_weather_data(self, entry: DailyWeatherData) -> Dict[str, Any]:
-        """Format DailyWeatherData instance for API response."""
+    def _format_weather_data(self, entry: Daily) -> Dict[str, Any]:
+        """Format Daily instance for API response."""
         return {
             "date": entry.date,
             "description": entry.weather_description,

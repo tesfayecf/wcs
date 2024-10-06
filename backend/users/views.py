@@ -10,9 +10,9 @@ from rest_framework_simplejwt.views import (
 )
 from users.models import User
 
-######################
-### AUTHENTICATION ###
-######################
+#####################
+### PROVIDER AUTH ###
+#####################
 
 class CustomProviderAuthView(ProviderAuthView):
     """
@@ -63,6 +63,10 @@ class CustomProviderAuthView(ProviderAuthView):
 
         return response
 
+######################
+### AUTHENTICATION ###
+######################
+
 class CustomTokenLoginView(TokenObtainPairView):
     """
     Custom view for obtaining JWT tokens and setting cookies for access and refresh tokens.
@@ -100,6 +104,7 @@ class CustomTokenLoginView(TokenObtainPairView):
                 httponly=settings.AUTH_COOKIE_HTTP_ONLY,
                 samesite=settings.AUTH_COOKIE_SAMESITE
             )
+
             response.set_cookie(
                 'refresh',
                 refresh_token,
@@ -140,6 +145,36 @@ class CustomTokenLogoutView(APIView):
 
         return response
 
+class CustomTokenRecoverView(APIView):
+    """
+    Custom view for recovering user passwords.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for recovering user passwords.
+    """
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests for recovering user passwords.
+
+        Parameters:
+        - request: The HTTP request object.
+        - args: Additional positional arguments.
+        - kwargs: Additional keyword arguments.
+
+        Returns:
+        - Response: HTTP response for password recovery.
+        """
+        email = request.data.get('email')
+
+        # Implement password recovery logic here
+        # Example: Send email to user with password reset link
+
+        # For demonstration purposes, let's assume the password recovery was successful
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
 class CustomTokenResetView(APIView):
     """
     Custom view for resetting user passwords.
@@ -172,7 +207,7 @@ class CustomTokenResetView(APIView):
         # For demonstration purposes, let's assume the password reset was successful
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-class CustomTokenSignupView(TokenObtainPairView):
+class CustomTokenSignupView(APIView):
     """
     Custom view for signing up new users.
 
@@ -195,13 +230,12 @@ class CustomTokenSignupView(TokenObtainPairView):
         - Response: HTTP response for user registration.
         """
         name = request.data.get('name')
-        last_name = request.data.get('lastName')
         email = request.data.get('email')
         password = request.data.get('password')
         re_password = request.data.get('confirmPassword')
 
         # Validation: Check if required fields are provided
-        if not (name and last_name and email and password and re_password):
+        if not (name and email and password and re_password):
             return Response({'detail': 'All fields are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Validation: Check if passwords match
@@ -214,14 +248,16 @@ class CustomTokenSignupView(TokenObtainPairView):
 
         # Create a new user
         User.objects.create(
-            username=email,
+            name=name,
             email=email,
-            first_name=name,
-            last_name=last_name,
             password=password,
         )
 
         return Response({'detail': 'User registered successfully.'}, status=status.HTTP_200_OK)
+
+#############
+### TOKEN ###
+#############
 
 class CustomTokenVerifyView(TokenVerifyView):
     """
@@ -300,17 +336,34 @@ class CustomTokenRefreshView(TokenRefreshView):
 ### USER ###
 ############
 
-class UserView(APIView):
+class GetUserView(APIView):
+    """
+    View for retrieving the currently authenticated user.
+
+    Methods:
+    - post: Handles POST requests for retrieving the user.
+    """
+
     def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests for retrieving the currently authenticated user.
+
+        Parameters:
+        - request: The HTTP request object.
+        - args: Additional positional arguments.
+        - kwargs: Additional keyword arguments.
+
+        Returns:
+        - Response: HTTP response with user data.
+        """
         user = request.user
         data = {
             'id': user.id,
             'email': user.email,
-            'firstName': user.first_name,
-            'lastName': user.last_name,
+            'name': user.first_name,
         }
-        if (user.is_staff):
+        if user.is_staff:
             data["role"] = "staff"
-        if (user.is_superuser):
+        if user.is_superuser:
             data["role"] = "admin"
         return Response(data)

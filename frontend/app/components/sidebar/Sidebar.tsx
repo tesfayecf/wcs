@@ -12,8 +12,7 @@ interface ISidebarProps { }
 
 const Sidebar: React.FunctionComponent<ISidebarProps> = (props: ISidebarProps) => {
 
-    const rootPath = usePathname();
-    console.log("rootPath:", rootPath);
+    const rootPath = usePathname().split("/")[1];
 
     return (
         <Sider id="sidebar" className="sidebar" breakpoint="lg" collapsedWidth="60" >

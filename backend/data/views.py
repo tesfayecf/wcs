@@ -13,6 +13,7 @@ from rest_framework.response import Response
 
 from .schemas import *
 from .models import Tank, Group, Sensor
+from .serializers import GroupSerializers
 
 from timeseries.models import SensorReading
 
@@ -23,48 +24,37 @@ CACHE_TIMEOUT = 300
 ### GROUP ###
 #############
 
+
 ### GET ###
 class GetGroupView(APIView):
     def post(self, request):
         try:
-            # Deserialize request data
-            get_group_data = GetGroupSchema(**request.data)
+            serializer = GroupSerializers.Get(data=request.data)
+            serializer.is_valid(raise_exception=True)
             
-            # Cache key based on group ID and user ID
-            cache_key = f"group_{get_group_data.id}"
+            cache_key = f"group_{serializer.validated_data['id']}"
             cached_group = cache.get(cache_key)
 
             if cached_group:
                 group = cached_group
             else:
-                # Retrieve the group
-                group = Group.objects.filter(pk=get_group_data.id, user=request.user).first()
+                group = Group.objects.filter(pk=serializer.validated_data['id'], user=request.user).first()
                 if not group:
                     return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
                 
-                # Cache the information for future requests
                 cache.set(cache_key, group, timeout=CACHE_TIMEOUT)
 
-            # Serialize the group
-            group_schema = GroupSchema(**model_to_dict(group))
-            group_json = group_schema.model_dump()
-
-            return Response(group_json, status=status.HTTP_200_OK)
-        except ValidationError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            group_serializer = GroupSerializers.Group(group)
+            return Response(group_serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class GetGroupsView(APIView):
     def post(self, request):
         try:
-            # If not in cache, retrieve from database
             groups = Group.objects.filter(user=request.user)
-            
-            # Serialize groups
-            groups_json = [GroupSchema(**model_to_dict(group)).model_dump() for group in groups]
-
-            return Response(groups_json, status=status.HTTP_200_OK)
+            serializer = GroupSerializers.Group(groups, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -72,33 +62,20 @@ class GetGroupsView(APIView):
 class CreateGroupView(APIView):
     def post(self, request):
         try:
-            # Deserialize request data
-            create_group_data = CreateGroupSchema(**request.data)
+            serializer = GroupSerializers.Create(data=request.data)
+            serializer.is_valid(raise_exception=True)
             
-            # Check if a group with the same name already exists
-            if Group.objects.filter(name=create_group_data.name, user=request.user).exists():
+            if Group.objects.filter(name=serializer.validated_data['name'], user=request.user).exists():
                 return Response({'Bad Request': 'Group with the same name already exists'}, status=status.HTTP_400_BAD_REQUEST)
             
-            # Create and save a new Group object
-            group = Group(
-                name=create_group_data.name,
-                location=create_group_data.location,
-                description=create_group_data.description,
-                user=request.user
-            )
-            group.save()
+            group = Group.objects.create(user=request.user, **serializer.validated_data)
             
-            # Serialize the created group
-            group_schema = GroupSchema(**model_to_dict(group))
-            group_json = group_schema.model_dump()
-
-            # Cache the data for future requests
-            cache_key = f"group_{group_schema.id}"
+            response_serializer = GroupSerializers.Group(group)
+            
+            cache_key = f"group_{group.id}"
             cache.set(cache_key, group, timeout=CACHE_TIMEOUT)
             
-            return Response(group_json, status=status.HTTP_201_CREATED)
-        except ValidationError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -106,58 +83,42 @@ class CreateGroupView(APIView):
 class EditGroupView(APIView):
     def post(self, request):
         try:
-            # Deserialize request data
-            edit_group_data = EditGroupSchema(**request.data)
+            serializer = GroupSerializers.Edit(data=request.data)
+            serializer.is_valid(raise_exception=True)
             
-            # Remove cache for this group
-            remove_group_cache(edit_group_data.id)
+            remove_group_cache(serializer.validated_data['id'])
 
-            # Retrieve the group
-            group = Group.objects.filter(pk=edit_group_data.id, user=request.user).first()
+            group = Group.objects.filter(pk=serializer.validated_data['id'], user=request.user).first()
             if not group:
                 return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
             
-            # Update group fields
-            group.name = edit_group_data.name
-            group.location = edit_group_data.location
-            group.description = edit_group_data.description
+            for attr, value in serializer.validated_data.items():
+                setattr(group, attr, value)
             group.save()
 
-            # Cache the information for future requests
-            cache_key = f"group_data_{group_schema.id}"
+            cache_key = f"group_{group.id}"
             cache.set(cache_key, group, timeout=CACHE_TIMEOUT)
             
-            # Serialize the edited group
-            group_schema = GroupSchema(**model_to_dict(group))
-            group_json = group_schema.model_dump()
-            
-            return Response(group_json, status=status.HTTP_200_OK)
-        except ValidationError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            response_serializer = GroupSerializers.Group(group)
+            return Response(response_serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-   
-### DELETE ###         
+
+### DELETE ###
 class DeleteGroupView(APIView):
     def post(self, request):
         try:
-            # Deserialize request data
-            delete_group_data = DeleteGroupSchema(**request.data)
+            serializer = GroupSerializers.Delete(data=request.data)
+            serializer.is_valid(raise_exception=True)
 
-            # Retrieve and delete the group
-            group = Group.objects.filter(pk=delete_group_data.id, user=request.user).first()
+            group = Group.objects.filter(pk=serializer.validated_data['id'], user=request.user).first()
             if not group:
                 return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
             
-            # Delete the group
             group.delete()
-
-            # Remove cache for this group
-            remove_group_cache(delete_group_data.id)
+            remove_group_cache(serializer.validated_data['id'])
             
             return Response({}, status=status.HTTP_200_OK)
-        except ValidationError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -165,18 +126,16 @@ class DeleteGroupView(APIView):
 class GetGroupInfoView(APIView):
     def post(self, request):
         try:
-            # Deserialize request data
-            get_group_data = GetGroupSchema(**request.data)
+            serializer = GroupSerializers.Get(data=request.data)
+            serializer.is_valid(raise_exception=True)
 
-            # Cache key based on group ID and user ID
-            cache_key = f"group_info_{get_group_data.id}"
+            cache_key = f"group_info_{serializer.validated_data['id']}"
             cached_info = cache.get(cache_key)
 
             if cached_info:
                 return Response(cached_info, status=status.HTTP_200_OK)
 
-            # Retrieve the group with annotated fields
-            group = Group.objects.filter(pk=get_group_data.id, user=request.user).annotate(
+            group = Group.objects.filter(pk=serializer.validated_data['id'], user=request.user).annotate(
                 total_tanks=Count('tanks'),
                 total_active_tanks=Count('tanks', filter=Q(tanks__is_active=True)),
                 total_capacity=Sum('tanks__capacity'),
@@ -188,7 +147,6 @@ class GetGroupInfoView(APIView):
             if not group:
                 return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Prepare the info dictionary using the annotated fields
             info = {
                 'total_tanks': group.total_tanks,
                 'total_active_tanks': group.total_active_tanks,
@@ -198,12 +156,9 @@ class GetGroupInfoView(APIView):
                 'total_active_sensors': group.total_active_sensors,
             }
 
-            # Cache the information for future requests
             cache.set(cache_key, info, timeout=CACHE_TIMEOUT)
 
             return Response(info, status=status.HTTP_200_OK)
-        except ValidationError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -211,31 +166,25 @@ class GetGroupInfoView(APIView):
 class GetGroupStatsView(APIView):
     def post(self, request):
         try:
-            # Deserialize request data
-            get_group_data = GetGroupSchema(**request.data)
+            serializer = GroupSerializers.Get(data=request.data)
+            serializer.is_valid(raise_exception=True)
 
-            # Cache key based on group ID and user ID
-            cache_key = f"group_stats_{get_group_data.id}_{request.user.id}"
+            cache_key = f"group_stats_{serializer.validated_data['id']}_{request.user.id}"
             cached_stats = cache.get(cache_key)
 
             if cached_stats:
                 return Response(cached_stats, status=status.HTTP_200_OK)
 
-            # Retrieve the group
-            group = Group.objects.filter(pk=get_group_data.id, user=request.user).first()
+            group = Group.objects.filter(pk=serializer.validated_data['id'], user=request.user).first()
             if not group:
                 return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Get group statistics
-            # stats = group.get_stats()
-            stats = {}
+            # Implement get_stats() method on Group model or compute stats here
+            stats = {}  # group.get_stats()
 
-            # Cache the statistics for future requests
             cache.set(cache_key, stats, timeout=CACHE_TIMEOUT)
 
             return Response(stats, status=status.HTTP_200_OK)
-        except ValidationError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -256,27 +205,22 @@ def get_group(group_id: int, user) -> Group:
     cache_key = f"group_{group_id}"
 
     try:
-        # Attempt to retrieve the group from the cache
         cached_group = cache.get(cache_key)
 
         if cached_group:
-            # Return Group object form cache
             return cached_group  
 
-        # Attempt to retrieve the group from the database
         group = Group.objects.filter(pk=group_id, user=user).first()
 
         if group:
-            # Store Group object in cache
             cache.set(cache_key, group, timeout=CACHE_TIMEOUT)
 
         return group
 
     except Exception as e:
-        # Log the exception for debugging purposes
         print(f"Error retrieving group {group_id}: {e}")
         return None
-
+    
 ############
 ### TANK ###
 ############

@@ -1,16 +1,16 @@
 import React from "react";
 import Image from 'next/image'
 import { redirect } from "next/navigation";
-import { verify } from "../lib/auth/actions";
+import { authenticate } from "./actions";
 
 type IAppLayoutProps = {
     children: React.ReactNode[] | React.ReactNode | undefined | null;
 }
 
 export default async function AuthLayout({ children }: IAppLayoutProps) {
-    ///////////////////////////////////////////////////////////////////////
-    // if ((await verify())) redirect("/"); // Authenticate user (Server Side)
-    ///////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////
+    if ((await authenticate())) redirect("/"); ///////////
+    //////////////////////////////////////////////////////
 
     return (
         <div id="auth-layout" className={"auth-layout"}>

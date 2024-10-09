@@ -1,16 +1,14 @@
 'use client'
 import React from "react";
 import Link from "next/link";
-import { useRouter } from 'next/navigation'
-import { Button, Card, Checkbox, Form, Input, Typography } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Card, Checkbox, Form, Input, Typography } from "antd";
 import { login } from "@/app/(auth)/actions";
 import { ILoginForm } from "@/app/(auth)/types";
 
 interface ILoginProps { }
 
 const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
-    const router = useRouter();
     const [form] = Form.useForm();
 
     return (

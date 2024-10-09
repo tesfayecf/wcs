@@ -20,39 +20,45 @@ export interface APIResponse<T> {
 export const apiInterface = {
     app: {},
     auth: {
-        signup: {
-            args: (firstName: string, lastName: string, email: string, password: string, confirmPassword: string) => { return {} as string },
-            address: "api/auth/signup/",
-            method: "POST",
-            argsKeys: ["firstName", "lastName", "email", "password", "confirmPassword"],
-        },
         login: {
             args: (email: string, password: string) => { return {} as { access: string, refresh: string } },
-            address: "api/auth/login/",
+            address: "api/users/login/",
             method: "POST",
             argsKeys: ["email", "password"],
         },
         logout: {
             args: () => { return },
-            address: "api/auth/logout/",
+            address: "api/users/logout/",
             method: "POST",
             argsKeys: []
         },
         reset: {
             args: (oldPassword: string, newPassword: string, confirmPassword: string) => { return },
-            address: "api/auth/reset/",
+            address: "api/users/reset/",
             method: "POST",
             argsKeys: ["oldPassword", "newPassword", "confirmPassword"],
         },
-        verify: {
-            args: (token: string) => { return },
-            address: "api/auth/verify/",
+        recover: {
+            args() { return },
+            address: "api/users/recover/",
             method: "POST",
-            argsKeys: ["token"],
+            argsKeys: []
+        },
+        signup: {
+            args: (firstName: string, lastName: string, email: string, password: string, confirmPassword: string) => { return {} as string },
+            address: "api/users/signup/",
+            method: "POST",
+            argsKeys: ["firstName", "lastName", "email", "password", "confirmPassword"],
+        },
+        verify: {
+            args: () => { return },
+            address: "api/users/verify/",
+            method: "POST",
+            argsKeys: [],
         },
         refresh: {
             args: () => { return {} as { access: string } },
-            address: "api/auth/refresh/",
+            address: "api/users/refresh/",
             method: "POST",
             argsKeys: []
         },
@@ -60,7 +66,7 @@ export const apiInterface = {
     user: {
         getUserInfo: {
             args: () => { return {} as IUserInfo },
-            address: "api/auth/user/",
+            address: "api/users/user/",
             method: "POST",
             argsKeys: [],
         }
@@ -168,19 +174,19 @@ export const apiInterface = {
         },
         getSensorReadings: {
             args: (sensor_id: string) => { return {} as ISensorReading[] },
-            address: "api/sensors/readings/",
+            address: "api/timeseries/readings/",
             method: "POST",
             argsKeys: ["sensor_id"],
         },
         getSensorLastReading: {
             args: (sensor_id: string) => { return {} as ISensorReading },
-            address: "api/sensors/last-reading/",
+            address: "api/timeseries/last-reading/",
             method: "POST",
             argsKeys: ["sensor_id"],
         },
         getSensorFlow: {
             args: (sensor_id: string) => { return {} as any },
-            address: "api/sensors/flow/",
+            address: "api/timeseries/flow/",
             method: "POST",
             argsKeys: ["sensor_id"],
         }

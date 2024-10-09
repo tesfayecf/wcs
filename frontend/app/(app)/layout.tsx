@@ -1,23 +1,26 @@
-import React from 'react'
+import React from 'react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+
 import { Button, Menu } from 'antd';
-import Layout, { Header, Content } from 'antd/es/layout/layout';
 import Sider from 'antd/es/layout/Sider';
-import { DashboardOutlined, LineChartOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined } from '@ant-design/icons';
 import { MenuItemType } from 'antd/es/menu/interface';
+import Layout, { Header, Content } from 'antd/es/layout/layout';
+import { DashboardOutlined, LineChartOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined } from '@ant-design/icons';
+
+import { authenticate } from '@/app/(auth)/actions';
 import { getUserInfo } from '@/app/app/actions';
-import { authenticate } from '@/app/lib/auth/actions';
 import { StoreInitializer } from '@/app/lib/store/StoreInitializer';
+
 
 type IAppLayoutProps = {
     children: React.ReactNode[] | React.ReactNode | undefined | null;
 }
 
 export default async function RootLayout({ children }: IAppLayoutProps) {
-    // //////////////////////////////////////////////////////////
-    // if (!await authenticate()) redirect("/login"); /////////// Authenticate user
-    // //////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////
+    if (!await authenticate()) redirect("/login"); ///////////
+    //////////////////////////////////////////////////////////
 
     //////////////////////////////////////////////////////////
     ///////////////////// LOAD APP STATE /////////////////////
@@ -44,7 +47,7 @@ export default async function RootLayout({ children }: IAppLayoutProps) {
             />
             {/* ////////////////////////////////////////////////////////// */}
 
-            <Sider id="sidebar" className="sidebar" breakpoint="lg" collapsedWidth="0">
+            <Sider id="sidebar" className="sidebar" breakpoint="lg" collapsedWidth="60">
                 <div className="demo-logo-vertical" style={{ height: '52px', background: 'rgba(255, 255, 255, 0.2)', margin: '16px' }} />
                 <Menu id="sidebar-menu" className="sidebar-menu" theme="dark" mode="vertical" selectedKeys={['dashboard']} items={items} />
             </Sider>

@@ -1,14 +1,14 @@
 'use server'
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { apiInterface } from "./interface";
-import { refresh, getTokens } from "../auth/actions";
-
+import { parseCookies } from "./cookies";
+import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
 export interface ServerResponse<T> {
-    ok: boolean;
-    status: number;
-    statusText: string;
-    error?: any;
+    statusCode: number;
     data?: T;
+    error?: any;
+    errorText: string;
 }
 
 export async function serverRequest<
@@ -24,59 +24,75 @@ export async function serverRequest<
 ): Promise<ServerResponse<ReturnType<typeof apiInterface[T][S]["args"]>>> {
     const { address, method, argsKeys } = apiInterface[group][endpoint as string];
     const obj = Object.fromEntries(argsKeys.map((key, index) => [key, args[index]]));
+    if (process.env.NODE_ENV === "development") console.log(`[${group}][${endpoint as string}] -> `, address);
 
-    if (process.env.NODE_ENV === "development") {
-        console.log(`[${group}][${endpoint as string}] -> `, address);
-    }
-
-    const headers = new Headers({
+    // Build headers object
+    const requestHeaders = new Headers({
         "Content-Type": "application/json",
     });
 
-    if (authenticate) {
-        const accesToken = cookies().get("access")?.value;
-        const refreshToken = cookies().get("refresh")?.value;
-        headers.append("Cookie", `access=${accesToken}; refresh=${refreshToken};`);
+    // Append cookies as set cookies headers 
+    const sessionid = cookies().get("sessionid")?.value;
+    if (sessionid) requestHeaders.append("Cookie", `sessionid=${sessionid};`);
+
+    let response: Response;
+    try {
+        // Send request to server
+        response = await fetch(`http://127.0.0.1:8000/${address}`, // TODO: use environment variable
+            {
+                method,
+                credentials: 'include',
+                headers: requestHeaders,
+                body: JSON.stringify(obj),
+                next: { tags: [endpoint as string] },
+                referrer: headers().get("referer") || undefined,
+            }
+        );
+    } catch (error) {
+        // Catch request error
+        return {
+            data: null,
+            error: error,
+            statusCode: 500,
+            errorText: "Internal Server Error",
+        };
     }
 
-    try {
-        const response = await fetch(`http://127.0.0.1:8000/${address}`, {
-            method,
-            credentials: authenticate ? 'include' : "omit",
-            headers,
-            body: JSON.stringify(obj),
-            next: { tags: [endpoint as string] },
-        });
+    if (response.status > 199 && response.status < 300) {
+        // Parse cookies
+        const parsedCookies = parseCookies(response.headers.get("Set-Cookie") || "");
 
-        const responseData = await response.json();
-
-        if (response.ok) {
-            return {
-                ok: true,
-                data: responseData,
-                status: response.status,
-                statusText: response.statusText,
-            };
-        } else {
-            if (authenticate && response.status === 401) {
-                // const refreshSuccessful = await refresh();
-                // if (refreshSuccessful) return serverRequest(group, endpoint, args, authenticate);
+        // Store sessionid in cookies if exists (only login endpoint)
+        if (parsedCookies["sessionid"]) {
+            const sessionidAttributes = {
+                expires: parsedCookies["sessionid"].attributes.expires || new Date(Date.now() + 60 * 60 * 1000).toUTCString(),
+                path: parsedCookies["sessionid"].attributes.path || "/",
+                samesite: parsedCookies["sessionid"].attributes.samesite || "strict",
+                httponly: parsedCookies["sessionid"].attributes.httponly || false,
+                secure: process.env.NODE_ENV !== "development",
             }
-
-            return {
-                ok: false,
-                error: responseData,
-                status: response.status,
-                statusText: response.statusText,
-            };
+            await cookies().set({
+                name: "sessionid",
+                value: parsedCookies["sessionid"].value || "",
+                // @ts-ignore
+                cookie: {
+                    ...sessionidAttributes
+                }
+            });
         }
-    } catch (error) {
-        console.error("Network error:", error);
+
         return {
-            ok: false,
-            error: "Network error occurred",
-            status: 0,
-            statusText: "Network Error",
+            data: await response.json(),
+            statusCode: response.status,
+            error: null,
+            errorText: null,
         };
+    } else {
+        return {
+            data: null,
+            error: await response.json(),
+            statusCode: response.status,
+            errorText: response.statusText,
+        }
     }
 }

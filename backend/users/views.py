@@ -38,7 +38,7 @@ class LoginView(APIView):
             )
             if user:
                 login(request, user)
-                return Response(UserSerializer(user).data)
+                return Response(UserInfoSerializer(user).data)
             return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

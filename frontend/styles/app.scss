@@ -28,7 +28,6 @@ It will also be used to style the more general elements of the component (backgr
         
     }
 }
-
 */
 
 // AUTH
@@ -66,7 +65,8 @@ It will also be used to style the more general elements of the component (backgr
 @import '../app/components/navbar/styles/navbar';
 @import '../app/components/popup/styles/popup';
 @import '../app/components/toolsBar/styles/toolsBar';
-@import '../app/components/infoWidget/styles/infoWidget';
+@import '../app/components/sidebar/styles/sidebar';
+@import '../app/components/header/styles/header';
 
 // TEST
 @import "../app/(test)/test/charts/styles/charts";

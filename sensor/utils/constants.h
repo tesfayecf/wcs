@@ -82,7 +82,7 @@
 /// DATA LOGGING ///
 ////////////////////
 
-#define LOG_RATE 10000  // milliseconds
+#define LOG_RATE 60000  // milliseconds
 #define MAX_LOG_ENTRIES 1000
 #define LOG_FILE_PATH "/data_log.csv"
 

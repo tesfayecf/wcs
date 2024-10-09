@@ -5,7 +5,7 @@ import { Button, Col, Form, Input, Modal, Row, Segmented, Switch, Table, Typogra
 import { ColumnsType, TableProps } from "antd/es/table";
 import Card from "antd/es/card/Card";
 import Meta from "antd/es/card/Meta";
-import { AppstoreOutlined, DeleteOutlined, EditOutlined, InfoOutlined, LoadingOutlined, PlusOutlined, TableOutlined } from "@ant-design/icons";
+import { AppstoreOutlined, BarsOutlined, DeleteOutlined, EditOutlined, InfoOutlined, LoadingOutlined, PlusOutlined, TableOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { createGroup, editGroup, deleteGroup } from "../../actions";
 import useDashboardStore from "@/app/(app)/dashboard/store";
@@ -118,14 +118,14 @@ const GroupsPanel: React.FunctionComponent<IGroupsPanelProps> = (props: IGroupsP
                     vertical={false}
                     options={[
                         { value: "grid", icon: <AppstoreOutlined /> },
-                        { value: "table", icon: <TableOutlined /> },
+                        { value: "table", icon: <BarsOutlined /> },
                     ]}
                     value={mode}
                     onChange={(value) => setMode(value as "grid" | "table")}
                 />
             </div>
             {mode === "grid" ? renderGridView() : renderTableView()}
-            <GroupMenu /> {/*  TODO: move to dashboard */}
+            <GroupMenu /> {/*  TODO: make file andmove to dashboard */}
         </div>
     )
 }

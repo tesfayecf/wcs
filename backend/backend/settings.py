@@ -25,24 +25,44 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Application definition
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Root URL configuration
+ROOT_URLCONF = "backend.urls"
+
 ################ APPLICATIONS ################
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "corsheaders",
-    "rest_framework",
-    "djoser",
-    "user_visit",
+    "django.contrib.admin", # Admin dashboard
+    "django.contrib.auth", # Authentication
+    "django.contrib.contenttypes", # Content types
+    "django.contrib.sessions", # Sessions
+    "django.contrib.messages", # Messages
+    "django.contrib.staticfiles", # Static files
+
+    # Third-party apps
+    "corsheaders", # Allows cross-origin requests
+    "rest_framework", # Django REST framework
+    "rest_framework.authtoken", # Token authentication
+    "user_visit", # User visit tracking
     
-    "users",
-    "data",
-    "weather",
-    "timeseries",
+    # Local apps
+    "users", # User management
+    "data", # Data management
+    "weather", # Weather management
+    "timeseries", # Timeseries management
+]
+
+########################### MIDDLEWARE ###########################
+
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",  # Security features such as XSS protection, HSTS, etc.
+    "django.contrib.sessions.middleware.SessionMiddleware",  # Manages session data for each user.
+    "corsheaders.middleware.CorsMiddleware",  # Handles Cross-Origin Resource Sharing (CORS) for allowing cross-origin requests.
+    "django.middleware.common.CommonMiddleware",  # Common utilities like URL slashes, redirects, etc.
+    "django.middleware.csrf.CsrfViewMiddleware",  # Protects against Cross-Site Request Forgery (CSRF).
+    "django.contrib.auth.middleware.AuthenticationMiddleware",  # Associates users with requests based on session data.
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",  # Protects against clickjacking by setting X-Frame-Options headers.
+    "django.contrib.messages.middleware.MessageMiddleware",  # Manages messages for users.
+    "user_visit.middleware.UserVisitMiddleware",  # Custom middleware to log user visits (tracks user interactions with the site).
 ]
 
 ########################### DATABASE CONFIGURATION ###########################
@@ -62,18 +82,23 @@ DATABASES = {
     },
 }
 
-########################### AUTHENTICATION AND USER MODEL ###########################
+########################### AUTH (middleware) AND USER MODEL CONFIGURATION ###########################
 
 AUTH_USER_MODEL = 'users.User'
-
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
+SESSION_COOKIE_AGE = 604800  # 1 weeks, in seconds
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Optional: expire session when browser closes
+SESSION_COOKIE_SECURE = False  # Optional: set to true if using HTTPS
+CSRF_COOKIE_SECURE = False  # Optional: set to true if using HTTPS
+SESSION_COOKIE_SAMESITE = 'Lax'  # or 'Strict'
+CSRF_COOKIE_SAMESITE = 'Lax'  # or 'Strict'
 
-########################### CORS CONFIGURATION ###########################
+########################### CORS (middleware) CONFIGURATION ###########################
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
@@ -81,19 +106,15 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
 ]
 
-########################### MIDDLEWARE ###########################
 
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",  # Security features such as XSS protection, HSTS, etc.
-    "django.contrib.sessions.middleware.SessionMiddleware",  # Manages session data for each user.
-    "corsheaders.middleware.CorsMiddleware",  # Handles Cross-Origin Resource Sharing (CORS) for allowing cross-origin requests.
-    "django.middleware.common.CommonMiddleware",  # Common utilities like URL slashes, redirects, etc.
-    "django.middleware.csrf.CsrfViewMiddleware",  # Protects against Cross-Site Request Forgery (CSRF).
-    "django.contrib.auth.middleware.AuthenticationMiddleware",  # Associates users with requests based on session data.
-    "django.contrib.messages.middleware.MessageMiddleware",  # Temporary message storage between requests.
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",  # Protects against clickjacking by setting X-Frame-Options headers.
-    "user_visit.middleware.UserVisitMiddleware",  # Custom middleware to log user visits (tracks user interactions with the site).
-]
+########################### REST FRAMEWORK ###########################
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 
 ########################### TEMPLATES ###########################
 
@@ -113,38 +134,6 @@ TEMPLATES = [
     },
 ]
 
-########################### REST FRAMEWORK ###########################
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'users.authentication.CustomJWTAuthentication'
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ]
-}
-
-########################### DJOSER CONFIGURATION ###########################
-
-DJOSER = {
-    'PASSWORD_RESET_CONFIRM_URL': 'reset/{uid}/{token}',
-    'SEND_ACTIVATION_EMAIL': False,
-    'ACTIVATION_URL': 'activation/{uid}/{token}',
-    'USER_CREATE_PASSWORD_RETYPE': True,
-    'PASSWORD_RESET_CONFIRM_RETYPE': True,
-    'TOKEN_MODEL': None,
-}
-
-########################### AUTH COOKIE SETTINGS ###########################
-
-AUTH_COOKIE = "access"
-AUTH_COOKIE_MAX_AGE = 60 * 60 * 24
-AUTH_COOKIE_ACCES_MAX_AGE = 60 * 60 * 24
-AUTH_COOKIE_REFRESH_MAX_AGE = 60 * 60 * 24
-AUTH_COOKIE_SECURE = True
-AUTH_COOKIE_HTTP_ONLY = True
-AUTH_COOKIE_PATH = '/'
-AUTH_COOKIE_SAMESITE = 'None'
 
 ########################### CACHE CONFIGURATION ###########################
 

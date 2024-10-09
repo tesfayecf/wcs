@@ -7,7 +7,7 @@ class UserManager(BaseUserManager):
     Custom manager for User model, managing user creation.
     """
     
-    def _create_user(self, email, name, password=None, **extra_fields):
+    def _create_user(self, email, first_name, last_name, password=None, **extra_fields):
         """
         Helper method to create a user, either regular or superuser.
         """
@@ -17,21 +17,21 @@ class UserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(
             email=email,
-            name=name,
+            first_name=first_name,
+            last_name=last_name,
             **extra_fields
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_user(self, email, name, password=None, **extra_fields):
+    def create_user(self, email, first_name, last_name, password=None, **extra_fields):
         """
         Create and return a regular user with an email and password.
         """
-        extra_fields.setdefault('is_active', False)
-        return self._create_user(email, name, password, **extra_fields)
+        return self._create_user(email, first_name, last_name, password, **extra_fields)
 
-    def create_superuser(self, email, name, password=None, **extra_fields):
+    def create_superuser(self, email, first_name, last_name, password=None, **extra_fields):
         """
         Create and return a superuser with email and password.
         """
@@ -44,37 +44,30 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self._create_user(email, name, password, **extra_fields)
+        return self._create_user(email, first_name, last_name, password, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     """
     Custom user model extending AbstractBaseUser and PermissionsMixin.
     """
-    
+
     email = models.EmailField(unique=True, max_length=255)
-    name = models.CharField(max_length=255)
-    date_joined = models.DateTimeField(auto_now_add=True)
-    is_active = models.BooleanField(default=False)
-    date_activated = models.DateTimeField(null=True, blank=True)
+    first_name = models.CharField(max_length=255, blank=True)
+    last_name = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name']
+    REQUIRED_FIELDS = ['first_name', 'last_name']
 
     def __str__(self):
-        """
-        Return the string representation of the user.
-        """
-        return self.name
+        return f"{self.first_name} {self.last_name}"
 
-    def activate(self):
-        """
-        Activate the user account and set the activation date.
-        """
-        self.is_active = True
-        self.date_activated = timezone.now()
-        self.save()
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"

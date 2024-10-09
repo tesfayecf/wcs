@@ -2,14 +2,21 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('login/', CustomTokenLoginView.as_view()),
-    path('logout/', CustomTokenLogoutView.as_view()),
-    path('recover/', CustomTokenRecoverView.as_view()),
-    path('reset/', CustomTokenResetView.as_view()),
-    path('signup/', CustomTokenSignupView.as_view()),
+    # AUTHENTICATION
+    path('login/', LoginView.as_view()),
+    path('logout/', LogoutView.as_view()),
+    path('recover/', RecoverView.as_view()),
+    path('reset/', ResetView.as_view()),
+    path('signup/', SignupView.as_view()),
     
-    path('refresh/', CustomTokenRefreshView.as_view()),
-    path('verify/', CustomTokenVerifyView.as_view()),
+    # SESSION
+    path('refresh/', RefreshSessionView.as_view()),
+    path('verify/', VerifySessionView.as_view()),
     
-    path('user/', GetUserView.as_view()),
+    # USER
+    path('user/', GetUserInfoView.as_view()),
+    path('update-user/', UpdateUserInfoView.as_view()),
+    path('users/', GetUsersView.as_view()),
+    path('create-user/', CreateUserView.as_view()),
+    path('delete-user/', DeleteUserView.as_view()),
 ]

@@ -1,151 +1,71 @@
-from django.conf import settings
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-from djoser.social.views import ProviderAuthView
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView,
-)
+
 from users.models import User
-
-#####################
-### PROVIDER AUTH ###
-#####################
-
-class CustomProviderAuthView(ProviderAuthView):
-    """
-    Custom view for handling social authentication and setting cookies for access and refresh tokens.
-
-    Inherits from: djoser.social.views.ProviderAuthView
-
-    Methods:
-    - post: Override the post method to set cookies for access and refresh tokens.
-    """
-
-    def post(self, request, *args, **kwargs):
-        """
-        Handles POST requests for social authentication.
-
-        Parameters:
-        - request: The HTTP request object.
-        - args: Additional positional arguments.
-        - kwargs: Additional keyword arguments.
-
-        Returns:
-        - Response: HTTP response with cookies set for access and refresh tokens.
-        """
-        response = super().post(request, *args, **kwargs)
-
-        if response.status_code == 201:
-            access_token = response.data.get('access')
-            refresh_token = response.data.get('refresh')
-
-            response.set_cookie(
-                'access',
-                access_token,
-                max_age=settings.AUTH_COOKIE_MAX_AGE,
-                path=settings.AUTH_COOKIE_PATH,
-                secure=settings.AUTH_COOKIE_SECURE,
-                httponly=settings.AUTH_COOKIE_HTTP_ONLY,
-                samesite=settings.AUTH_COOKIE_SAMESITE
-            )
-            response.set_cookie(
-                'refresh',
-                refresh_token,
-                max_age=settings.AUTH_COOKIE_MAX_AGE,
-                path=settings.AUTH_COOKIE_PATH,
-                secure=settings.AUTH_COOKIE_SECURE,
-                httponly=settings.AUTH_COOKIE_HTTP_ONLY,
-                samesite=settings.AUTH_COOKIE_SAMESITE
-            )
-
-        return response
+from users.serializers import *
 
 ######################
 ### AUTHENTICATION ###
 ######################
 
-class CustomTokenLoginView(TokenObtainPairView):
+class LoginView(APIView):
     """
-    Custom view for obtaining JWT tokens and setting cookies for access and refresh tokens.
-
-    Inherits from: rest_framework_simplejwt.views.TokenObtainPairView
-
-    Methods:
-    - post: Override the post method to set cookies for access and refresh tokens.
-    """
-
-    def post(self, request, *args, **kwargs):
-        """
-        Handles POST requests for obtaining JWT tokens.
-
-        Parameters:
-        - request: The HTTP request object.
-        - args: Additional positional arguments.
-        - kwargs: Additional keyword arguments.
-
-        Returns:
-        - Response: HTTP response with cookies set for access and refresh tokens.
-        """
-        response = super().post(request, *args, **kwargs)
-
-        if response.status_code == 200:
-            access_token = response.data.get('access')
-            refresh_token = response.data.get('refresh')
-
-            response.set_cookie(
-                'access',
-                access_token,
-                max_age=settings.AUTH_COOKIE_MAX_AGE,
-                path=settings.AUTH_COOKIE_PATH,
-                secure=settings.AUTH_COOKIE_SECURE,
-                httponly=settings.AUTH_COOKIE_HTTP_ONLY,
-                samesite=settings.AUTH_COOKIE_SAMESITE
-            )
-
-            response.set_cookie(
-                'refresh',
-                refresh_token,
-                max_age=settings.AUTH_COOKIE_MAX_AGE,
-                path=settings.AUTH_COOKIE_PATH,
-                secure=settings.AUTH_COOKIE_SECURE,
-                httponly=settings.AUTH_COOKIE_HTTP_ONLY,
-                samesite=settings.AUTH_COOKIE_SAMESITE
-            )
-
-        return response
-
-class CustomTokenLogoutView(APIView):
-    """
-    Custom view for logging out and clearing cookies for access and refresh tokens.
+    View for handling user login.
 
     Inherits from: rest_framework.views.APIView
 
     Methods:
-    - post: Handles POST requests for logging out and clearing cookies.
+    - post: Handles POST requests for logging in.
     """
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         """
-        Handles POST requests for logging out and clearing cookies.
+        Handles POST requests for logging in.
 
         Parameters:
         - request: The HTTP request object.
-        - args: Additional positional arguments.
-        - kwargs: Additional keyword arguments.
 
         Returns:
-        - Response: HTTP response with cookies cleared.
+        - Response: HTTP response with user data if login is successful.
         """
-        response = Response(status=status.HTTP_204_NO_CONTENT)
-        response.delete_cookie('access')
-        response.delete_cookie('refresh')
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user = authenticate(
+                email=serializer.validated_data['email'],
+                password=serializer.validated_data['password']
+            )
+            if user:
+                login(request, user)
+                return Response(UserSerializer(user).data)
+            return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        return response
+class LogoutView(APIView):
+    """
+    View for handling user logout.
 
-class CustomTokenRecoverView(APIView):
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for logging out.
+    """
+
+    def post(self, request):
+        """
+        Handles POST requests for logging out.
+
+        Parameters:
+        - request: The HTTP request object.
+
+        Returns:
+        - Response: HTTP response if logout is successful.
+        """
+        logout(request)
+        return Response({"detail": "Logged out"}, status=status.HTTP_200_OK)
+
+class RecoverView(APIView):
     """
     Custom view for recovering user passwords.
 
@@ -167,15 +87,22 @@ class CustomTokenRecoverView(APIView):
         Returns:
         - Response: HTTP response for password recovery.
         """
-        email = request.data.get('email')
+        serializer = RecoverSerializer(data=request.data)
 
-        # Implement password recovery logic here
-        # Example: Send email to user with password reset link
+        if serializer.is_valid():
+            user = User.objects.filter(
+                email=serializer.validated_data['email']
+            ).first()
+            if user:
+                # TODO:
+                # Store recovery token in database
+                # Send token with recovery email
+                # user.send_password_recovery_email() // TODO
+                return Response({"detail": "Password recovery email has been sent."}, status=status.HTTP_200_OK)
+            return Response({"detail": "User with the provided email does not exist."}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"detail": "Email is required for password recovery."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # For demonstration purposes, let's assume the password recovery was successful
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-class CustomTokenResetView(APIView):
+class ResetView(APIView):
     """
     Custom view for resetting user passwords.
 
@@ -197,17 +124,23 @@ class CustomTokenResetView(APIView):
         Returns:
         - Response: HTTP response for password reset.
         """
-        old_password = request.data.get('oldPassword')
-        new_password = request.data.get('password')
-        re_password = request.data.get('rePassword')
+        serializer = ResetSerializer(data=request.data)
 
-        # Implement password reset logic here
-        # Example: Validate old password, update password, and respond accordingly
+        if serializer.is_valid():
+            user = User.objects.filter(
+                id=serializer.validated_data['uid']
+            ).first()
+            if user:
+                if serializer.validated_data['new_password'] == serializer.validated_data['confirm_password']:
+                    user.set_password(serializer.validated_data['new_password'])
+                    user.save()
+                    update_session_auth_hash(request, user)
+                    return Response({"detail": "Password has been reset successfully."}, status=status.HTTP_200_OK)
+                return Response({"detail": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "User with the provided id does not exist."}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"detail": "All fields are required for password reset."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # For demonstration purposes, let's assume the password reset was successful
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-class CustomTokenSignupView(APIView):
+class SignupView(APIView):
     """
     Custom view for signing up new users.
 
@@ -229,49 +162,39 @@ class CustomTokenSignupView(APIView):
         Returns:
         - Response: HTTP response for user registration.
         """
-        name = request.data.get('name')
-        email = request.data.get('email')
-        password = request.data.get('password')
-        re_password = request.data.get('confirmPassword')
+        serializer = SignupSerializer(data=request.data)
 
-        # Validation: Check if required fields are provided
-        if not (name and email and password and re_password):
-            return Response({'detail': 'All fields are required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if serializer.is_valid():
+            if serializer.validated_data['password'] == serializer.validated_data['confirm_password']:
+                if User.objects.filter(
+                    email=serializer.validated_data['email']
+                ).exists():
+                    return Response({"detail": "Email address is already in use."}, status=status.HTTP_400_BAD_REQUEST)
+                user = User.objects.create(
+                    email=serializer.validated_data['email'],
+                    first_name=serializer.validated_data['first_name'],
+                    last_name=serializer.validated_data['last_name'],
+                    password=serializer.validated_data['password'],
+                )
+                return Response({"detail": "User registered successfully."}, status=status.HTTP_200_OK)
+            return Response({"detail": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "All fields are required for user registration."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Validation: Check if passwords match
-        if password != re_password:
-            return Response({'detail': 'Passwords do not match.'}, status=status.HTTP_400_BAD_REQUEST)
+###############
+### SESSION ###
+###############
 
-        # Validation: Check if the email is unique
-        if User.objects.filter(email=email).exists():
-            return Response({'detail': 'Email address is already in use.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Create a new user
-        User.objects.create(
-            name=name,
-            email=email,
-            password=password,
-        )
-
-        return Response({'detail': 'User registered successfully.'}, status=status.HTTP_200_OK)
-
-#############
-### TOKEN ###
-#############
-
-class CustomTokenVerifyView(TokenVerifyView):
+class RefreshSessionView(APIView):
     """
-    Custom view for verifying JWT tokens using cookies.
-
-    Inherits from: rest_framework_simplejwt.views.TokenVerifyView
+    View for refreshing the user session.
 
     Methods:
-    - post: Override the post method to use the access token from cookies for verification.
+    - post: Handles POST requests for refreshing the session.
     """
 
     def post(self, request, *args, **kwargs):
         """
-        Handles POST requests for verifying JWT tokens.
+        Handles POST requests for refreshing the session.
 
         Parameters:
         - request: The HTTP request object.
@@ -279,28 +202,26 @@ class CustomTokenVerifyView(TokenVerifyView):
         - kwargs: Additional keyword arguments.
 
         Returns:
-        - Response: HTTP response from token verification.
+        - Response: HTTP response for session refresh.
         """
-        access_token = request.COOKIES.get('access')
+        if request.user.is_authenticated:
+            # Update the user session
+            update_session_auth_hash(request, request.user)
+        return Response({"detail": "User is authenticated."}, status=status.HTTP_200_OK)
 
-        if access_token:
-            request.data['token'] = access_token
-
-        return super().post(request, *args, **kwargs)
-
-class CustomTokenRefreshView(TokenRefreshView):
+class VerifySessionView(APIView):
     """
-    Custom view for refreshing JWT tokens and updating the access token in cookies.
+    View for verifying that the user session is valid.
 
-    Inherits from: rest_framework_simplejwt.views.TokenRefreshView
+    If the session is not valid, logs out the user.
 
     Methods:
-    - post: Override the post method to update the access token in cookies after refresh.
+    - post: Handles POST requests for verifying the session.
     """
 
     def post(self, request, *args, **kwargs):
         """
-        Handles POST requests for refreshing JWT tokens.
+        Handles POST requests for verifying the session.
 
         Parameters:
         - request: The HTTP request object.
@@ -308,35 +229,18 @@ class CustomTokenRefreshView(TokenRefreshView):
         - kwargs: Additional keyword arguments.
 
         Returns:
-        - Response: HTTP response with updated access token in cookies.
+        - Response: HTTP response for session verification.
         """
-        refresh_token = request.COOKIES.get('refresh')
-
-        if refresh_token:
-            request.data['refresh'] = refresh_token
-
-        response = super().post(request, *args, **kwargs)
-
-        if response.status_code == 200:
-            access_token = response.data.get('access')
-
-            response.set_cookie(
-                'access',
-                access_token,
-                max_age=settings.AUTH_COOKIE_MAX_AGE,
-                path=settings.AUTH_COOKIE_PATH,
-                secure=settings.AUTH_COOKIE_SECURE,
-                httponly=settings.AUTH_COOKIE_HTTP_ONLY,
-                samesite=settings.AUTH_COOKIE_SAMESITE
-            )
-
-        return response
+        if not request.user.is_authenticated:
+            logout(request)
+            return Response({"detail": "User is not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({"detail": "User is authenticated."}, status=status.HTTP_200_OK)
 
 ############
 ### USER ###
 ############
 
-class GetUserView(APIView):
+class GetUserInfoView(APIView):
     """
     View for retrieving the currently authenticated user.
 
@@ -356,14 +260,110 @@ class GetUserView(APIView):
         Returns:
         - Response: HTTP response with user data.
         """
-        user = request.user
-        data = {
-            'id': user.id,
-            'email': user.email,
-            'name': user.first_name,
-        }
-        if user.is_staff:
-            data["role"] = "staff"
-        if user.is_superuser:
-            data["role"] = "admin"
-        return Response(data)
+        serializer = UserInfoSerializer(request.user)
+        return Response(serializer.data)
+
+class UpdateUserInfoView(APIView):
+    """
+    View for updating the currently authenticated user.
+
+    Methods:
+    - post: Handles POST requests for updating the user.
+    """
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests for updating the currently authenticated user.
+
+        Parameters:
+        - request: The HTTP request object.
+        - args: Additional positional arguments.
+        - kwargs: Additional keyword arguments.
+
+        Returns:
+        - Response: HTTP response with user data.
+        """
+        serializer = UpdateUserSerializer(request.user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+class GetUsersView(APIView):
+    """
+    View for retrieving all users.
+
+    Methods:
+    - get: Handles GET requests for retrieving all users.
+    """
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handles GET requests for retrieving all users.
+
+        Parameters:
+        - request: The HTTP request object.
+        - args: Additional positional arguments.
+        - kwargs: Additional keyword arguments.
+
+        Returns:
+        - Response: HTTP response with user data.
+        """
+        if not request.user.is_superuser:
+            return Response({"detail": "Only superusers can access this resource."}, status=status.HTTP_403_FORBIDDEN)
+        users = User.objects.all()
+        serializer = UserInfoSerializer(users, many=True)
+        return Response(serializer.data)
+    
+class CreateUserView(APIView):
+    """
+    View for creating a new user.
+
+    Methods:
+    - post: Handles POST requests for creating a new user.
+    """
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests for creating a new user.
+
+        Parameters:
+        - request: The HTTP request object.
+        - args: Additional positional arguments.
+        - kwargs: Additional keyword arguments.
+
+        Returns:
+        - Response: HTTP response with user data.
+        """
+        if not request.user.is_superuser:
+            return Response({"detail": "Only superusers can access this resource."}, status=status.HTTP_403_FORBIDDEN)
+        serializer = UserInfoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class DeleteUserView(APIView):
+    """
+    View for deleting a user.
+
+    Methods:
+    - delete: Handles DELETE requests for deleting a user.
+    """
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Handles DELETE requests for deleting a user.
+
+        Parameters:
+        - request: The HTTP request object.
+        - args: Additional positional arguments.
+        - kwargs: Additional keyword arguments.
+
+        Returns:
+        - Response: HTTP response with user data.
+        """
+        if not request.user.is_superuser:
+            return Response({"detail": "Only superusers can access this resource."}, status=status.HTTP_403_FORBIDDEN)
+        user = User.objects.get(pk=kwargs['pk'])
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

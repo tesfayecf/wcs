@@ -2,17 +2,17 @@ import random
 import requests
 from datetime import timedelta, datetime
 from typing import Dict, Any, List
-from pydantic import ValidationError
 
+from django.conf import settings
 from django.utils import timezone
 from django.core.cache import cache
-from django.conf import settings
 
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 
-from .schemas import *
+from .serializers import *
 from .client import WeatherAPIClient
 from .models import Current, Daily
 from utils.misc import _get_seconds_until_next_hour
@@ -23,8 +23,14 @@ class GetCurrentWeatherView(APIView):
     def post(self, request):
         try:
             # Get city from user info
-            user = request.user
-            city_name = random.choice(["girona", "barcelona", "madrid", "valencia"])
+            serializer = GetCurrentWeatherSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response({"error": "Invalid city name"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if settings.DEVELOPMENT_MODE:
+                city_name = random.choice(["girona", "barcelona", "madrid", "valencia"])
+            else:
+                city_name = serializer.validated_data['city_name']
 
             # Try to get data from cache first
             cache_key = f"current_weather_{city_name}"
@@ -36,8 +42,11 @@ class GetCurrentWeatherView(APIView):
             weather_data = Current.objects.filter(city_name=city_name).first()
             if weather_data and (timezone.now() - weather_data.timestamp) < timedelta(hours=1):
                 response_data = self._format_current_weather_response(weather_data)
-                # Validate and format response data with Pydantic
-                formatted_response = CurrentWeatherResponseSchema(**response_data).model_dump()
+                # Validate and format response
+                serializer = CurrentWeatherSerializer(data=response_data)
+                serializer.is_valid(raise_exception=True)
+                formatted_response = serializer.data
+                # Store response data in cache
                 cache_timeout = _get_seconds_until_next_hour()
                 cache.set(cache_key, formatted_response, timeout=cache_timeout)
                 return Response(formatted_response, status=status.HTTP_200_OK)
@@ -46,11 +55,14 @@ class GetCurrentWeatherView(APIView):
             weather_data_json = api_client.get_current_weather(city_name)
 
             # Update or create weather data in the database
-            weather_data = self._update_or_create_current_weather_data(city_name, weather_data_json)
+            weather_data = self._update_weather_data(city_name, weather_data_json)
 
             response_data = self._format_current_weather_response(weather_data)
-            # Validate and format response data with Pydantic
-            formatted_response = CurrentWeatherResponseSchema(**response_data).model_dump()
+            # Validate and format response
+            serializer = CurrentWeatherSerializer(data=response_data)
+            serializer.is_valid(raise_exception=True)
+            formatted_response = serializer.data
+            # Store response data in cache
             cache_timeout = _get_seconds_until_next_hour()
             cache.set(cache_key, formatted_response, timeout=cache_timeout)
             return Response(formatted_response, status=status.HTTP_200_OK)
@@ -62,7 +74,7 @@ class GetCurrentWeatherView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def _update_or_create_current_weather_data(self, city_name: str, weather_data_json: Dict[str, Any]) -> Current:
+    def _update_weather_data(self, city_name: str, weather_data_json: Dict[str, Any]) -> Current:
         """Update or create Current instance from API response."""
         weather_data, _ = Current.objects.update_or_create(
             city_name=city_name,
@@ -111,8 +123,14 @@ class GetCurrentWeatherView(APIView):
 class GetForecastWeatherView(APIView):
     def post(self, request):
         try:
-            user = request.user
-            city_name = random.choice(["girona", "barcelona", "madrid", "valencia"])
+            serializer = GetForecastWeatherSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response({"error": "Invalid city name"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if settings.DEVELOPMENT_MODE:
+                city_name = random.choice(["girona", "barcelona", "madrid", "valencia"])
+            else:
+                city_name = serializer.validated_data['city_name']
 
             cache_key = f"forecast_weather_{city_name}"
             cached_data = cache.get(cache_key)
@@ -129,23 +147,27 @@ class GetForecastWeatherView(APIView):
 
             if existing_data.count() == 5:
                 response_data = [self._format_weather_data(entry) for entry in existing_data]
-                # Validate and format response data with Pydantic
-                formatted_response = [ForecastWeatherResponseSchema(**data).model_dump() for data in response_data]
+                # Validate and format response
+                formatted_response = [ForecastWeatherSerializer(data).data for data in response_data]
+                # Store response data in cache
                 cache_timeout = _get_seconds_until_next_hour()
                 cache.set(cache_key, formatted_response, timeout=cache_timeout)
                 return Response(formatted_response, status=status.HTTP_200_OK)
 
+            # Fetch new data from API
             forecast_data = api_client.get_forecast(city_name)
             
-            self._process_and_store_forecast_data(city_name, forecast_data)
+            # Update or create weather data in the database
+            self._update_forecast_data(city_name, forecast_data)
 
             if settings.DEVELOPMENT_MODE:
                 updated_data = Daily.objects.filter(city_name=city_name).order_by('date')
             else:
                 updated_data = Daily.objects.filter(city_name=city_name, date__in=next_five_days)
             response_data = [self._format_weather_data(entry) for entry in updated_data]
-            # Validate and format response data with Pydantic
-            formatted_response = [ForecastWeatherResponseSchema(**data).model_dump() for data in response_data]
+            # Validate and format response
+            formatted_response = [ForecastWeatherSerializer(data).data for data in response_data]
+            # Store response data in cache
             cache_timeout = _get_seconds_until_next_hour()
             cache.set(cache_key, formatted_response, timeout=cache_timeout)
             return Response(formatted_response, status=status.HTTP_200_OK)
@@ -157,7 +179,7 @@ class GetForecastWeatherView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def _process_and_store_forecast_data(self, city_name: str, forecast_data: Dict[str, Any]):
+    def _update_forecast_data(self, city_name: str, forecast_data: Dict[str, Any]):
         """Process forecast data and store each day separately in the database."""
         daily_data = self._aggregate_forecast_data(forecast_data['list'])
         for date_obj, data in daily_data.items():

@@ -7,13 +7,13 @@ from django.conf import settings
 
 
 class Command(BaseCommand):
-    help = "Check if the 'data_database' exists, create it if necessary"
+    help = "Check if the database exists, create it if necessary"
 
     def handle(self, *args, **kwargs):
         db_name = settings.DATABASES['default']['NAME']
 
-        # Check and create data_database
-        self.stdout.write("Checking if the 'data_database' exists...")
+        # Check and create database
+        self.stdout.write("Checking if the database exists...")
         if not self.database_exists(db_name):
             self.stdout.write(f"Database {db_name} does not exist. Creating it...")
             self.create_database(db_name)

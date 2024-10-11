@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     "rest_framework", # Django REST framework
     "rest_framework.authtoken", # Token authentication
     "user_visit", # User visit tracking
-    
+    "django_typomatic", # Django Typomatic
+
     # Local apps
     "users", # User management
     "data", # Data management

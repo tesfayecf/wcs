@@ -8,7 +8,7 @@ from datetime import datetime
 class GetCurrentWeatherSerializer(serializers.Serializer):
     city_name = serializers.CharField()
 
-class MainWeatherSerializer(serializers.Serializer):
+class WeatherDescriptionSerializer(serializers.Serializer):
     main = serializers.CharField()
     description = serializers.CharField()
 
@@ -31,7 +31,7 @@ class WeatherCoordSerializer(serializers.Serializer):
 class CurrentWeatherSerializer(serializers.Serializer):
     city_name = serializers.CharField()
     coord = WeatherCoordSerializer()
-    weather = MainWeatherSerializer(many=True)
+    weather = WeatherDescriptionSerializer(many=True)
     main = WeatherDetailsSerializer()
     wind = WeatherWindSerializer()
     timestamp = serializers.DateTimeField()
@@ -62,3 +62,12 @@ class ForecastWeatherSerializer(serializers.Serializer):
     temperature = serializers.DictField(child=serializers.FloatField())
     wind = serializers.FloatField()
     humidity = serializers.IntegerField()
+
+
+###################
+### COORDINATES ###
+###################
+
+class GetWeatherByCoordinatesSerializer(serializers.Serializer):
+    lat = serializers.FloatField(required=True, help_text="Latitude of the location.")
+    lon = serializers.FloatField(required=True, help_text="Longitude of the location.")

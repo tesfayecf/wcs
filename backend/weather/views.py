@@ -257,3 +257,26 @@ class GetForecastWeatherView(APIView):
             "Mist": "50d",
         }
         return weather_icons.get(weather_main, "01d")
+
+class GetWeatherByCoordinatesView(APIView):
+    def post(self, request):
+        try:
+            # Use the new serializer to validate the input
+            serializer = GetWeatherByCoordinatesSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            lat = serializer.validated_data['lat']
+            lon = serializer.validated_data['lon']
+
+            # Fetch current weather data using the coordinates
+            weather_data_json = api_client.get_current_weather_by_coordinates(lat, lon)
+
+            # Update or create weather data in the database
+            weather_data = self._update_weather_data(weather_data_json)
+
+            response_data = self._format_current_weather_response(weather_data)
+            return Response(response_data, status=status.HTTP_200_OK)
+
+        except requests.RequestException as e:
+            return Response({"error": f"API request failed: {str(e)}"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

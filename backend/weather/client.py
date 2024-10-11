@@ -7,7 +7,7 @@ from django.conf import settings
 class WeatherAPIClient:
     """A client for interacting with the OpenWeatherMap API."""
 
-    BASE_URL = "http://api.openweathermap.org/data/2.5"
+    BASE_URL = "http://api.openweathermap.org/data/2.5" # TODO: set as environment variable
     
     def __init__(self):
         self.api_key = settings.OPENWEATHERMAP_API_KEY
@@ -50,3 +50,16 @@ class WeatherAPIClient:
         response = requests.get(url, params=params)
         response.raise_for_status()  # Raises an HTTPError for bad responses
         return response.json()
+
+    def get_current_weather_by_coordinates(self, lat: str, lon: str) -> Dict[str, Any]:
+        """Fetch current weather data for given latitude and longitude."""
+        url = f"{self.BASE_URL}/weather"
+        params = {
+            "lat": lat,
+            "lon": lon,
+            "appid": self.api_key,
+            "units": self.units,
+            "lang": self.lang,
+            "mode": self.mode
+        }
+        return self._make_request(url, params)

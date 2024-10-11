@@ -41,15 +41,15 @@ INSTALLED_APPS = [
     # Third-party apps
     "corsheaders", # Allows cross-origin requests
     "rest_framework", # Django REST framework
-    "rest_framework.authtoken", # Token authentication
+    "rest_framework.authtoken", # Token authentication (TODO: Check if remove, now using sessions)
     "user_visit", # User visit tracking
     "django_typomatic", # Django Typomatic
 
     # Local apps
-    "users", # User management
-    "data", # Data management
-    "weather", # Weather management
-    "timeseries", # Timeseries management
+    "users", # Users management
+    "data", # Groups, tanks, sensors managment
+    "weather", # Weather data management
+    "timeseries", # Timeseries data management
 ]
 
 ########################### MIDDLEWARE ###########################
@@ -76,10 +76,9 @@ DATABASES = {
         "PASSWORD": environ.get('DATA_DB_PASSWORD'),
         "HOST": environ.get('DATA_DB_HOST'),
         "PORT": environ.get('DATA_DB_PORT'),
-    },
-    "test": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "test_database",
+        "TEST": {
+            "NAME": "test_database",  # Specify a custom test database name
+        },
     },
 }
 
@@ -103,17 +102,16 @@ CSRF_COOKIE_SAMESITE = 'Lax'  # or 'Strict'
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    "http://localhost:3000", # Allow request from NextJS Server
+    "http://127.0.0.1:3000", # Allow request from NextJS Server
 ]
-
 
 ########################### REST FRAMEWORK ###########################
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        'backend.csrf.CsrfExemptSessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication', # Base authentication class
+        'backend.csrf.CsrfExemptSessionAuthentication', # Custom session authentication (don't check csrf token)
     ]
 }
 
@@ -135,7 +133,6 @@ TEMPLATES = [
     },
 ]
 
-
 ########################### CACHE CONFIGURATION ###########################
 
 CACHES = {
@@ -148,14 +145,6 @@ CACHES = {
             'CULL_FREQUENCY': 15,  # Fraction of entries to remove when max is reached
         }
     }
-}
-
-########################### CHANNELS ###########################
-
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
-    },
 }
 
 ########################### STATIC FILES ###########################
@@ -176,8 +165,8 @@ USE_TZ = True
 
 ########################### WEATHER API KEY ###########################
 
-OPENWEATHERMAP_API_KEY = environ.get('OPENWEATHERMAP_API_KEY')
+OPENWEATHERMAP_API_KEY = environ.get('OPENWEATHERMAP_API_KEY') # OpenWeatherMap API key
 
-########################### TESTING CONFIGURATION ###########################
+########################### PYTEST CONFIGURATION ###########################
 
-TEST_RUNNER = "redgreenunittest.django.runner.RedGreenDiscoverRunner"
+TEST_RUNNER = "redgreenunittest.django.runner.RedGreenDiscoverRunner" # PyTest configuration

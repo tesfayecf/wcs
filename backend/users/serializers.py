@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from .models import User
+
 ######################
 ### AUTHENTICATION ###
 ######################
@@ -32,7 +34,7 @@ class SignupSerializer(serializers.Serializer):
 ### USERS ###
 ##############
 
-class UserSerializer(serializers.Serializer):
+class UserSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     email = serializers.EmailField()
     first_name = serializers.CharField()
@@ -42,6 +44,18 @@ class UserSerializer(serializers.Serializer):
     is_active = serializers.BooleanField()
     is_staff = serializers.BooleanField()
     is_superuser = serializers.BaseSerializer()
+
+    def to_representation(self, instance):
+        return {
+            'id': instance.id,
+            'email': instance.email,
+            'first_name': instance.first_name,
+            'last_name': instance.last_name,
+            'edited_at': instance.edited_at,
+            'created_at': instance.created_at,
+            'is_active': instance.is_active,
+            'is_staff': instance.is_staff,
+        }
 
 class CreateUserSerializer(serializers.Serializer):
     email = serializers.EmailField()

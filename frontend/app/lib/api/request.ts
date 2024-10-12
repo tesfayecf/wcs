@@ -2,11 +2,9 @@
 import { cookies, headers } from "next/headers";
 import { apiInterface } from "./interface";
 import { parseCookies } from "./cookies";
-import { redirect } from "next/navigation";
-import { NextResponse } from "next/server";
 export interface ServerResponse<T> {
-    statusCode: number;
     data?: T;
+    status: number;
     error?: any;
     errorText: string;
 }
@@ -18,42 +16,45 @@ export async function serverRequest<
     group: T,
     endpoint: S,
     // @ts-ignore
-    args: Parameters<typeof apiInterface[T][S]["args"]>,
+    args: typeof apiInterface[T][S]["args"],
     authenticate: boolean = true,
     // @ts-ignore
-): Promise<ServerResponse<ReturnType<typeof apiInterface[T][S]["args"]>>> {
-    const { address, method, argsKeys } = apiInterface[group][endpoint as string];
-    const obj = Object.fromEntries(argsKeys.map((key, index) => [key, args[index]]));
-    if (process.env.NODE_ENV === "development") console.log(`[${group}][${endpoint as string}] -> `, address);
+    customHeaders?: Record<string, string> = {},
+    // @ts-ignore
+): Promise<ServerResponse<typeof apiInterface[T][S]["data"]>> {
+    const { endpoint: endpoint_, method: method_ } = apiInterface[group][endpoint as string];
+    if (process.env.NODE_ENV === "development") console.log(`[${group}][${endpoint as string}] -> `, endpoint_);
 
     // Build headers object
     const requestHeaders = new Headers({
         "Content-Type": "application/json",
+        ...customHeaders, // Merge custom headers
     });
 
-    // Append cookies as set cookies headers 
+    // Append cookies as Cookie headers 
     const sessionid = cookies().get("sessionid")?.value;
     if (sessionid) requestHeaders.append("Cookie", `sessionid=${sessionid};`);
 
     let response: Response;
     try {
         // Send request to server
-        response = await fetch(`http://127.0.0.1:8000/${address}`, // TODO: use environment variable
+        response = await fetch(`http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/${endpoint_}`,
             {
-                method,
+                method: method_,
                 credentials: 'include',
                 headers: requestHeaders,
-                body: JSON.stringify(obj),
+                body: JSON.stringify(args),
                 next: { tags: [endpoint as string] },
                 referrer: headers().get("referer") || undefined,
             }
         );
     } catch (error) {
         // Catch request error
+        console.error("Request failed:", error); // Log the error for debugging
         return {
             data: null,
+            status: 500,
             error: error,
-            statusCode: 500,
             errorText: "Internal Server Error",
         };
     }
@@ -83,15 +84,15 @@ export async function serverRequest<
 
         return {
             data: await response.json(),
-            statusCode: response.status,
+            status: response.status,
             error: null,
             errorText: null,
         };
     } else {
         return {
             data: null,
+            status: response.status,
             error: await response.json(),
-            statusCode: response.status,
             errorText: response.statusText,
         }
     }

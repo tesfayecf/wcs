@@ -1,7 +1,4 @@
-import { ILoginForm, IResetForm, ISignupForm } from "@/app/(auth)/types";
-import { ICurrentWeather, IForecastWeather, IGroup, IGroupStats, ISummary } from "@/app/(app)/dashboard/types";
-import { ISensor, ISensorReading as ISensorReading, ITank } from "@/app/(app)/group/[groupId]/types";
-import { IUserInfo } from "@/app/app/types";
+import { Api } from "./types";
 
 export interface APIResponse<T> {
     data?: T;
@@ -21,202 +18,215 @@ export const apiInterface = {
     app: {},
     auth: {
         login: {
-            args: (email: string, password: string) => { return {} as { access: string, refresh: string } },
-            address: "api/users/login/",
+            endpoint: "api/users/login/",
             method: "POST",
-            argsKeys: ["email", "password"],
+            args: {} as Api.User.Login,
+            data: {} as Api.User.User,
         },
         logout: {
-            args: () => { return },
-            address: "api/users/logout/",
+            endpoint: "api/users/logout/",
             method: "POST",
-            argsKeys: []
-        },
-        reset: {
-            args: (oldPassword: string, newPassword: string, confirmPassword: string) => { return },
-            address: "api/users/reset/",
-            method: "POST",
-            argsKeys: ["oldPassword", "newPassword", "confirmPassword"],
+            args: {},
+            data: {},
         },
         recover: {
-            args() { return },
-            address: "api/users/recover/",
+            endpoint: "api/users/recover/",
             method: "POST",
-            argsKeys: []
+            args: {} as Api.User.Recover,
+            data: {},
+        },
+        reset: {
+            endpoint: "api/users/reset/",
+            method: "POST",
+            args: {}  as Api.User.Reset,
+            data: {},
         },
         signup: {
-            args: (firstName: string, lastName: string, email: string, password: string, confirmPassword: string) => { return {} as string },
-            address: "api/users/signup/",
+            endpoint: "api/users/signup/",
             method: "POST",
-            argsKeys: ["firstName", "lastName", "email", "password", "confirmPassword"],
+            args: {} as Api.User.Signup,
+            data: {},
         },
         verify: {
-            args: () => { return },
-            address: "api/users/verify/",
+            endpoint: "api/users/verify/",
             method: "POST",
-            argsKeys: [],
+            args: {},
+            data: {},
         },
         refresh: {
-            args: () => { return {} as { access: string } },
-            address: "api/users/refresh/",
+            endpoint: "api/users/refresh/",
             method: "POST",
-            argsKeys: []
+            args: {},
+            data: {},
         },
     },
     user: {
+        createUser : {},
+        getUser: {},
         getUserInfo: {
-            args: () => { return {} as IUserInfo },
-            address: "api/users/user/",
+            endpoint: "api/users/get-user/",
             method: "POST",
-            argsKeys: [],
-        }
+            args: {},
+            data: {} as Api.User.User,
+        },
+        getUsersInfo: {},
+        updateUser: {},
+        deleteUser: {},
     },
     group: {
-        group: {
-            args: (id: number) => { return {} as IGroup },
-            address: "api/data/group/",
-            method: "POST",
-            argsKeys: ["id"],
-        },
-        groups: {
-            args: () => { return {} as IGroup[] },
-            address: "api/data/groups/",
-            method: "POST",
-            argsKeys: [],
-        },
         createGroup: {
-            args: (name: string, location: string, description: string) => { return {} as IGroup[] },
-            address: "api/data/create-group/",
+            endpoint: "api/data/create-group/",
             method: "POST",
-            argsKeys: ["name", "location", "description"],
+            args: {} as Api.Data.CreateGroup,
+            data: {} as Api.Data.Group,
         },
-        editGroup: {
-            args: (id: number, name: string, location: string, description: string) => { return },
-            address: "api/data/edit-group/",
+        getGroup: {
+            endpoint: "api/data/get-group/",
             method: "POST",
-            argsKeys: ["id", "name", "location", "description"],
+            args: {} as Api.Data.GetGroup,
+            data: {} as Api.Data.Group,
+        },
+        getData: {
+            endpoint: "api/data/get-Data/",
+            method: "POST",
+            args: {},
+            data: {} as Api.Data.Group[]
+        },
+        updateGroup: {
+            endpoint: "api/data/update-group/",
+            method: "POST",
+            args: {} as Api.Data.UpdateGroup,
+            data: {} as Api.Data.Group,
         },
         deleteGroup: {
-            args: (id: number) => { return },
-            address: "api/data/delete-group/",
+            endpoint: "api/data/delete-group/",
             method: "POST",
-            argsKeys: ["id"],
+            args: {} as Api.Data.DeleteGroup,
+            data: {} as Api.Data.Group,
         },
-        groupStats: {
-            args: (id: number) => { return {} as IGroupStats },
-            address: "api/data/group-stats/",
+        groupInfo: {
+            endpoint: "api/data/group-info/",
             method: "POST",
-            argsKeys: ["id"],
-        }
+            args: {} as Api.Data.GetGroupInfo,
+            data: {} as Api.Data.GroupInfo,
+        },
+        // groupMetrics: {
+        //     endpoint: "api/data/group-metrics/",
+        //     method: "POST",
+        //     args: {} as Api.Data.GetGroupMetrics,
+        //     data: {} as Api.Data.GroupMetrics,
+        // }
     },
     tank: {
-        tank: {
-            args: (id: number, group_id: number) => { return {} as ITank },
-            address: "api/data/tank/",
-            method: "POST",
-            argsKeys: ["id", "group_id"],
-        },
-        tanks: {
-            args: (group_id: number) => { return {} as ITank[] },
-            address: "api/data/tanks/",
-            method: "POST",
-            argsKeys: ["group_id"],
-        },
         createTank: {
-            args: (name: string, type: string, capacity: number, group_id: number) => { return },
-            address: "api/data/create-tank/",
+            endpoint: "api/data/create-tank/",
             method: "POST",
-            argsKeys: ["name", "type", "capacity", "group_id"],
+            args: {} as Api.Data.CreateTank,
+            data: {} as Api.Data.Tank,
         },
-        editTank: {
-            args: (id: number, name: string, type: string, capacity: number, is_active: boolean, group_id: number) => { return },
-            address: "api/data/edit-tank/",
+        getTank: {
+            endpoint: "api/data/get-tank/",
             method: "POST",
-            argsKeys: ["id", "name", "type", "capacity", "is_active", "group_id"],
+            args: {} as Api.Data.GetTank,
+            data: {} as Api.Data.Tank,
+        },
+        getTanks: {
+            endpoint: "api/data/get-tanks/",
+            method: "POST",
+            args: {} as Api.Data.GetTanks,
+            data: {} as Api.Data.Tank[],
+        },
+        updateTank: {
+            endpoint: "api/data/update-tank/",
+            method: "POST",
+            args: {} as Api.Data.UpdateTank,
+            data: {} as Api.Data.Tank,
         },
         deleteTank: {
-            args: (id: number, group_id: number) => { return },
-            address: "api/data/delete-tank/",
+            endpoint: "api/data/delete-tank/",
             method: "POST",
-            argsKeys: ["id", "group_id"],
+            args: {} as Api.Data.DeleteTank,
+            data: {} as Api.Data.TankInfo,
         },
-        tankStats: {
-            args: (id: number, group_id: number) => { return {} as any },
-            address: "api/data/tank-stats/",
-            method: "POST",
-            argsKeys: ["id", "group_id"],
-        }
     },
     sensor: {
-        sensor: {
-            args: (tank_id: number, group_id: number) => { return {} as ISensor },
-            address: "api/data/sensor/",
-            method: "POST",
-            argsKeys: ["tank_id", "group_id"],
-        },
         createSensor: {
-            args: (sensor_id: string, tank_id: number, group_id: number) => { return },
-            address: "api/data/create-sensor/",
+            endpoint: "api/data/create-sensor/",
             method: "POST",
-            argsKeys: ["sensor_id", "tank_id", "group_id",],
+            args: {} as Api.Data.CreateSensor,
+            data: {} as Api.Data.Sensor,
         },
-        editSensor: {
-            args: (id: number, sensor_id: string, is_active: boolean, tank_id: number, group_id: number,) => { return },
-            address: "api/data/edit-sensor/",
+        getSensor: {
+            endpoint: "api/data/get-sensor/",
             method: "POST",
-            argsKeys: ["id", "sensor_id", "is_active", "tank_id", "group_id"],
+            args: {} as Api.Data.GetSensor,
+            data: {} as Api.Data.Sensor,
+        },
+        getSensors: {
+            endpoint: "api/data/get-sensors/",
+            method: "POST",
+            args: {} as Api.Data.GetSensors,
+            data: {} as Api.Data.Sensor[],
+        },
+        updateSensor: {
+            endpoint: "api/data/update-sensor/",
+            method: "POST",
+            args: {} as Api.Data.UpdateSensor,
+            data: {} as Api.Data.Sensor,
         },
         deleteSensor: {
-            args: (sensor_id: number, tank_id: number, group_id: number) => { return },
-            address: "api/data/delete-sensor/",
+            endpoint: "api/data/delete-sensor/",
             method: "POST",
-            argsKeys: ["sensor_id", "tank_id", "group_id"],
+            args: {} as Api.Data.DeleteSensor,
+            data: {},
         },
-        getSensorReadings: {
-            args: (sensor_id: string) => { return {} as ISensorReading[] },
-            address: "api/timeseries/readings/",
-            method: "POST",
-            argsKeys: ["sensor_id"],
-        },
-        getSensorLastReading: {
-            args: (sensor_id: string) => { return {} as ISensorReading },
-            address: "api/timeseries/last-reading/",
-            method: "POST",
-            argsKeys: ["sensor_id"],
-        },
-        getSensorFlow: {
-            args: (sensor_id: string) => { return {} as any },
-            address: "api/timeseries/flow/",
-            method: "POST",
-            argsKeys: ["sensor_id"],
-        }
+    },
+    timeseries: {
+        // getSensorReadings: {
+        //     endpoint: "api/timeseries/readings/",
+        //     method: "POST",
+        //     args: {} as Api.Timeseries.GetSensorReadings,
+        //     data: {} as Api.Timeseries.SensorReading[],
+        // },
+        // getSensorLastReading: {
+        //     args: (sensor_id: string) => { return {} as ISensorReading },
+        //     endpoint: "api/timeseries/last-reading/",
+        //     method: "POST",
+        //     argsKeys: ["sensor_id"],
+        // },
+        // getSensorFlow: {
+        //     args: (sensor_id: string) => { return {} as any },
+        //     endpoint: "api/timeseries/flow/",
+        //     method: "POST",
+        //     argsKeys: ["sensor_id"],
+        // }
     },
     info: {
-        stats: {
-            args: () => { return {} as any },
-            address: "api/data/stats/",
-            method: "POST",
-            argsKeys: [],
-        },
-        summary: {
-            args: () => { return {} as ISummary },
-            address: "api/data/summary/",
-            method: "POST",
-            argsKeys: [],
-        }
+        // stats: {
+        //     args: () => { return {} as any },
+        //     endpoint: "api/data/stats/",
+        //     method: "POST",
+        //     argsKeys: [],
+        // },
+        // summary: {
+        //     args: () => { return {} as ISummary },
+        //     endpoint: "api/data/summary/",
+        //     method: "POST",
+        //     argsKeys: [],
+        // }
     },
     weather: {
         getCurrentWeather: {
-            args: () => { return {} as ICurrentWeather },
-            address: "api/weather/current/",
+            endpoint: "api/weather/current/",
             method: "POST",
-            argsKeys: [],
+            args: {} as Api.Weather.GetCurrentWeather,
+            data: {} as Api.Weather.CurrentWeather,
         },
         getForecastWeather: {
-            args: () => { return {} as IForecastWeather[] },
-            address: "api/weather/forecast/",
+            endpoint: "api/weather/forecast/",
             method: "POST",
-            argsKeys: [],
+            args: {} as Api.Weather.GetForecastWeather,
+            data: {} as Api.Weather.ForecastWeather,
         }
     }
 } as const;

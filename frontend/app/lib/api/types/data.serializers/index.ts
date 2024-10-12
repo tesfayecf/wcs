@@ -40,15 +40,15 @@ export interface DeleteTank {
 }
 
 export interface GetGroupInfo {
-    id?: number;
+    id: number;
+}
+
+export interface GetGroupMetrics {
+    id: number;
 }
 
 export interface GetGroup {
-    id?: number;
-}
-
-export interface GetGroupStats {
-    id?: number;
+    id: number;
 }
 
 export interface GetSensor {
@@ -76,6 +76,8 @@ export interface GroupInfo {
     name: string;
     location: string;
     description?: string;
+    editedAt?: string;
+    createdAt?: string;
     totalTanks?: number;
     totalActiveTanks?: number;
     totalSensors?: number;
@@ -83,8 +85,6 @@ export interface GroupInfo {
     maxCapacity?: number;
     currentCapacity?: number;
     averageCapacity: number;
-    editedAt?: string;
-    createdAt?: string;
 }
 
 export interface Group {
@@ -111,6 +111,19 @@ export interface Sensor {
     editedAt?: string;
     createdAt?: string;
     tank: number;
+}
+
+export interface TankInfo {
+    id?: number;
+    name: string;
+    description?: string;
+    type?: "Storage" | "Well" | "Reservoir" | "Tank" | "Other";
+    capacity?: number;
+    isActive?: boolean;
+    editedAt?: string;
+    createdAt?: string;
+    totalSensors?: number;
+    totalActiveSensors?: number;
 }
 
 export interface Tank {

@@ -1,10 +1,23 @@
+from django.core.cache import cache
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.hashers import make_password
+
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from users.models import User
 from users.serializers import *
+
+CACHE_TIMEOUT = 300 
+
+"""
+TODO
+- Wrap methods in try/catch
+- Add more user related views
+- Add unit tests
+- Add documentation
+"""
 
 ######################
 ### AUTHENTICATION ###
@@ -30,17 +43,20 @@ class LoginView(APIView):
         Returns:
         - Response: HTTP response with user data if login is successful.
         """
-        serializer = LoginSerializer(data=request.data)
-        if serializer.is_valid():
-            user = authenticate(
-                email=serializer.validated_data['email'],
-                password=serializer.validated_data['password']
-            )
-            if user:
-                login(request, user)
-                return Response(UserInfoSerializer(user).data)
-            return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer = LoginSerializer(data=request.data)
+            if serializer.is_valid():
+                user = authenticate(
+                    email=serializer.validated_data['email'],
+                    password=serializer.validated_data['password']
+                )
+                if user:
+                    login(request, user)
+                    return Response(UserSerializer(user).data)
+                return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class LogoutView(APIView):
     """
@@ -62,8 +78,11 @@ class LogoutView(APIView):
         Returns:
         - Response: HTTP response if logout is successful.
         """
-        logout(request)
-        return Response({"detail": "Logged out"}, status=status.HTTP_200_OK)
+        try:
+            logout(request)
+            return Response({"detail": "Logged out"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class RecoverView(APIView):
     """
@@ -87,20 +106,23 @@ class RecoverView(APIView):
         Returns:
         - Response: HTTP response for password recovery.
         """
-        serializer = RecoverSerializer(data=request.data)
+        try:
+            serializer = RecoverSerializer(data=request.data)
 
-        if serializer.is_valid():
-            user = User.objects.filter(
-                email=serializer.validated_data['email']
-            ).first()
-            if user:
-                # TODO:
-                # Store recovery token in database
-                # Send token with recovery email
-                # user.send_password_recovery_email() // TODO
-                return Response({"detail": "Password recovery email has been sent."}, status=status.HTTP_200_OK)
-            return Response({"detail": "User with the provided email does not exist."}, status=status.HTTP_404_NOT_FOUND)
-        return Response({"detail": "Email is required for password recovery."}, status=status.HTTP_400_BAD_REQUEST)
+            if serializer.is_valid():
+                user = User.objects.filter(
+                    email=serializer.validated_data['email']
+                ).first()
+                if user:
+                    # TODO:
+                    # Store recovery token in database
+                    # Send token with recovery email
+                    # user.send_password_recovery_email() // TODO
+                    return Response({"detail": "Password recovery email has been sent."}, status=status.HTTP_200_OK)
+                return Response({"detail": "User with the provided email does not exist."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Email is required for password recovery."}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ResetView(APIView):
     """
@@ -124,21 +146,24 @@ class ResetView(APIView):
         Returns:
         - Response: HTTP response for password reset.
         """
-        serializer = ResetSerializer(data=request.data)
+        try:
+            serializer = ResetSerializer(data=request.data)
 
-        if serializer.is_valid():
-            user = User.objects.filter(
-                id=serializer.validated_data['uid']
-            ).first()
-            if user:
-                if serializer.validated_data['new_password'] == serializer.validated_data['confirm_password']:
-                    user.set_password(serializer.validated_data['new_password'])
-                    user.save()
-                    update_session_auth_hash(request, user)
-                    return Response({"detail": "Password has been reset successfully."}, status=status.HTTP_200_OK)
-                return Response({"detail": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
-            return Response({"detail": "User with the provided id does not exist."}, status=status.HTTP_404_NOT_FOUND)
-        return Response({"detail": "All fields are required for password reset."}, status=status.HTTP_400_BAD_REQUEST)
+            if serializer.is_valid():
+                user = User.objects.filter(
+                    id=serializer.validated_data['uid']
+                ).first()
+                if user:
+                    if serializer.validated_data['new_password'] == serializer.validated_data['confirm_password']:
+                        user.set_password(serializer.validated_data['new_password'])
+                        user.save()
+                        update_session_auth_hash(request, user)
+                        return Response({"detail": "Password has been reset successfully."}, status=status.HTTP_200_OK)
+                    return Response({"detail": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"detail": "User with the provided id does not exist."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "All fields are required for password reset."}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class SignupView(APIView):
     """
@@ -162,23 +187,26 @@ class SignupView(APIView):
         Returns:
         - Response: HTTP response for user registration.
         """
-        serializer = SignupSerializer(data=request.data)
+        try:
+            serializer = SignupSerializer(data=request.data)
 
-        if serializer.is_valid():
-            if serializer.validated_data['password'] == serializer.validated_data['confirm_password']:
-                if User.objects.filter(
-                    email=serializer.validated_data['email']
-                ).exists():
-                    return Response({"detail": "Email address is already in use."}, status=status.HTTP_400_BAD_REQUEST)
-                user = User.objects.create(
-                    email=serializer.validated_data['email'],
-                    first_name=serializer.validated_data['first_name'],
-                    last_name=serializer.validated_data['last_name'],
-                    password=serializer.validated_data['password'],
-                )
-                return Response({"detail": "User registered successfully."}, status=status.HTTP_200_OK)
-            return Response({"detail": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({"detail": "All fields are required for user registration."}, status=status.HTTP_400_BAD_REQUEST)
+            if serializer.is_valid():
+                if serializer.validated_data['password'] == serializer.validated_data['confirm_password']:
+                    if User.objects.filter(
+                        email=serializer.validated_data['email']
+                    ).exists():
+                        return Response({"detail": "Email address is already in use."}, status=status.HTTP_400_BAD_REQUEST)
+                    User.objects.create(
+                        email=serializer.validated_data['email'],
+                        first_name=serializer.validated_data['first_name'],
+                        last_name=serializer.validated_data['last_name'],
+                        password=make_password(serializer.validated_data['password']),
+                    )
+                    return Response({"detail": "User registered successfully."}, status=status.HTTP_200_OK)
+                return Response({"detail": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "All fields are required for user registration."}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 ###############
 ### SESSION ###
@@ -204,10 +232,13 @@ class RefreshSessionView(APIView):
         Returns:
         - Response: HTTP response for session refresh.
         """
-        if request.user.is_authenticated:
-            # Update the user session
-            update_session_auth_hash(request, request.user)
-        return Response({"detail": "User is authenticated."}, status=status.HTTP_200_OK)
+        try:
+            if request.user.is_authenticated:
+                # Update the user session
+                update_session_auth_hash(request, request.user)
+            return Response({"detail": "User is authenticated."}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class VerifySessionView(APIView):
     """
@@ -231,14 +262,59 @@ class VerifySessionView(APIView):
         Returns:
         - Response: HTTP response for session verification.
         """
-        if not request.user.is_authenticated:
-            logout(request)
-            return Response({"detail": "User is not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
-        return Response({"detail": "User is authenticated."}, status=status.HTTP_200_OK)
+        try:
+            if not request.user.is_authenticated:
+                logout(request)
+                return Response({"detail": "User is not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"detail": "User is authenticated."}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 ############
 ### USER ###
 ############
+
+class CreateUserView(APIView):
+    """
+    View for creating a new user.
+
+    Methods:
+    - post: Handles POST requests for creating a new user.
+    """
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests for creating a new user.
+
+        Parameters:
+        - request: The HTTP request object.
+        - args: Additional positional arguments.
+        - kwargs: Additional keyword arguments.
+
+        Returns:
+        - Response: HTTP response with user data.
+        """
+        try:
+            if not request.user.is_superuser:
+                return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+            
+            serializer = CreateUserSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            user = User.objects.create(
+                email=serializer.validated_data['email'],
+                first_name=serializer.validated_data['first_name'],
+                last_name=serializer.validated_data['last_name'],
+                password=make_password(serializer.validated_data['password']),
+                is_staff=serializer.validated_data['is_staff'],
+                is_superuser=serializer.validated_data['is_superuser'],
+            )
+
+            serializer = UserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class GetUserInfoView(APIView):
     """
@@ -260,8 +336,44 @@ class GetUserInfoView(APIView):
         Returns:
         - Response: HTTP response with user data.
         """
-        serializer = UserInfoSerializer(request.user)
-        return Response(serializer.data)
+        try:
+            user = get_user(request.user.id)
+            if user is None:
+                return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+            serializer = UserSerializer(user)
+            return Response(serializer.data)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class GetUsersInfoView(APIView):
+    """
+    View for retrieving all users.
+
+    Methods:
+    - get: Handles GET requests for retrieving all users.
+    """
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handles GET requests for retrieving all users.
+
+        Parameters:
+        - request: The HTTP request object.
+        - args: Additional positional arguments.
+        - kwargs: Additional keyword arguments.
+
+        Returns:
+        - Response: HTTP response with user data.
+        """
+        try:
+            if not request.user.is_superuser:
+                return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+            
+            users = User.objects.all()
+            serializer = UserSerializer(users, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class UpdateUserInfoView(APIView):
     """
@@ -283,65 +395,31 @@ class UpdateUserInfoView(APIView):
         Returns:
         - Response: HTTP response with user data.
         """
-        serializer = UpdateUserSerializer(request.user, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+        try:
+            if not request.user.is_superuser:
+                return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+            
+            serializer = UpdateUserSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            user = get_user(serializer.validated_data['id'])
+            if user is None:
+                return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+            clear_user_cache(serializer.validated_data['id'])
+
+            for attr, value in serializer.validated_data.items():
+                setattr(user, attr, value)
+            user.save()
+            
+            cache_key = f"group_{user.id}"
+            cache.set(cache_key, user, timeout=CACHE_TIMEOUT)
+
+            serializer = UserSerializer(user)
             return Response(serializer.data)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class GetUsersView(APIView):
-    """
-    View for retrieving all users.
-
-    Methods:
-    - get: Handles GET requests for retrieving all users.
-    """
-
-    def get(self, request, *args, **kwargs):
-        """
-        Handles GET requests for retrieving all users.
-
-        Parameters:
-        - request: The HTTP request object.
-        - args: Additional positional arguments.
-        - kwargs: Additional keyword arguments.
-
-        Returns:
-        - Response: HTTP response with user data.
-        """
-        if not request.user.is_superuser:
-            return Response({"detail": "Only superusers can access this resource."}, status=status.HTTP_403_FORBIDDEN)
-        users = User.objects.all()
-        serializer = UserInfoSerializer(users, many=True)
-        return Response(serializer.data)
-    
-class CreateUserView(APIView):
-    """
-    View for creating a new user.
-
-    Methods:
-    - post: Handles POST requests for creating a new user.
-    """
-
-    def post(self, request, *args, **kwargs):
-        """
-        Handles POST requests for creating a new user.
-
-        Parameters:
-        - request: The HTTP request object.
-        - args: Additional positional arguments.
-        - kwargs: Additional keyword arguments.
-
-        Returns:
-        - Response: HTTP response with user data.
-        """
-        if not request.user.is_superuser:
-            return Response({"detail": "Only superusers can access this resource."}, status=status.HTTP_403_FORBIDDEN)
-        serializer = UserInfoSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 class DeleteUserView(APIView):
     """
     View for deleting a user.
@@ -362,8 +440,45 @@ class DeleteUserView(APIView):
         Returns:
         - Response: HTTP response with user data.
         """
-        if not request.user.is_superuser:
-            return Response({"detail": "Only superusers can access this resource."}, status=status.HTTP_403_FORBIDDEN)
-        user = User.objects.get(pk=kwargs['pk'])
-        user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        try:
+            if not request.user.is_superuser:
+                return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+            
+            serializer = DeleteUserSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            user = get_user(serializer.validated_data['id'])
+            if user is None:
+                return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+            clear_user_cache(serializer.validated_data['id'])
+            
+            user.delete()
+
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+### CACHE ###
+def get_user(user_id: int):
+    """Check if the user exists in the cache and the database."""
+    cache_key = f"user_{user_id}"
+
+    try:
+        cached_user = cache.get(cache_key)
+        if cached_user:
+            return cached_user  
+
+        user = User.objects.filter(pk=user_id).prefetch_related().first()
+        if user:
+            cache.set(cache_key, user, timeout=CACHE_TIMEOUT)
+    
+        return user
+    
+    except Exception as e:
+        raise Exception(f"Failed to retrieve user with ID {user_id}") from e
+
+def clear_user_cache(user_id: int):
+    """Remove all cached information for a specific user."""
+    cache_key = f"user_{user_id}"
+    cache.delete(cache_key)

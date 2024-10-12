@@ -14,9 +14,9 @@ urlpatterns = [
     path('verify/', VerifySessionView.as_view()),
     
     # USER
-    path('user/', GetUserInfoView.as_view()),
-    path('update-user/', UpdateUserInfoView.as_view()),
-    path('users/', GetUsersView.as_view()),
     path('create-user/', CreateUserView.as_view()),
+    path('get-user/', GetUserInfoView.as_view()),
+    path('get-users/', GetUsersInfoView.as_view()),
+    path('update-user/', UpdateUserInfoView.as_view()),
     path('delete-user/', DeleteUserView.as_view()),
 ]

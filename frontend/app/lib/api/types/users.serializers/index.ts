@@ -1,3 +1,16 @@
+export interface CreateUser {
+    email: string;
+    firstName: string;
+    lastName: string;
+    password: string;
+    isStaff?: boolean;
+    isSuperuser?: boolean;
+}
+
+export interface DeleteUser {
+    id: number;
+}
+
 export interface Login {
     email: string;
     password: string;
@@ -23,17 +36,23 @@ export interface Signup {
 }
 
 export interface UpdateUser {
+    id: number;
     firstName?: string;
     lastName?: string;
-}
-
-export interface UserInfo {
-    email: string;
-    firstName?: string;
-    lastName?: string;
-    createdAt?: string;
     isActive?: boolean;
     isStaff?: boolean;
-    isSuperuser?: boolean;
+    isSupseruser?: boolean;
+}
+
+export interface User {
+    id: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+    editedAt: string;
+    createdAt: string;
+    isActive: boolean;
+    isStaff: boolean;
+    isSuperuser: any;
 }
 

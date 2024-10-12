@@ -1,7 +1,4 @@
-from django.contrib.auth import get_user_model
 from rest_framework import serializers
-
-User = get_user_model()
 
 ######################
 ### AUTHENTICATION ###
@@ -35,12 +32,32 @@ class SignupSerializer(serializers.Serializer):
 ### USERS ###
 ##############
 
-class UserInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['email', 'first_name', 'last_name', 'created_at', 'is_active', 'is_staff', 'is_superuser']
+class UserSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    email = serializers.EmailField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    edited_at = serializers.DateTimeField()
+    created_at = serializers.DateTimeField()
+    is_active = serializers.BooleanField()
+    is_staff = serializers.BooleanField()
+    is_superuser = serializers.BaseSerializer()
 
-class UpdateUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['first_name', 'last_name']
+class CreateUserSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    password = serializers.CharField()
+    is_staff = serializers.BooleanField(default=False)
+    is_superuser = serializers.BooleanField(default=False)
+
+class UpdateUserSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    first_name = serializers.CharField(required=False)
+    last_name = serializers.CharField(required=False)
+    is_active = serializers.BooleanField(required=False)
+    is_staff = serializers.BooleanField(required=False)
+    is_supseruser = serializers.BooleanField(required=False)
+
+class DeleteUserSerializer(serializers.Serializer):
+    id = serializers.IntegerField()

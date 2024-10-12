@@ -70,12 +70,12 @@ MIDDLEWARE = [
 
 DATABASES = {
     "default": {
-        "ENGINE": environ.get('DATA_DB_ENGINE'),
-        "NAME": environ.get('DATA_DB_NAME'),
-        "USER": environ.get('DATA_DB_USER'),
-        "PASSWORD": environ.get('DATA_DB_PASSWORD'),
-        "HOST": environ.get('DATA_DB_HOST'),
-        "PORT": environ.get('DATA_DB_PORT'),
+        "ENGINE": environ.get('DB_ENGINE'),
+        "NAME": environ.get('DB_NAME'),
+        "USER": environ.get('DB_USER'),
+        "PASSWORD": environ.get('DB_PASSWORD'),
+        "HOST": environ.get('DB_HOST'),
+        "PORT": environ.get('DB_PORT'),
         "TEST": {
             "NAME": "test_database",  # Specify a custom test database name
         },

@@ -1,185 +1,165 @@
-from enum import Enum
-from django.utils import timezone
-from rest_framework.serializers import Serializer, CharField, DateTimeField, IntegerField, ChoiceField, ListField, FloatField, BooleanField
+from rest_framework import serializers
 
-# Base serializer class for common functionality
-class BaseSerializer(Serializer):
-    def create(self, validated_data):
-        return validated_data
+from users.models import User
+from .models import Group, Tank, TankType, SensorStatus, SensorType
 
-    def update(self, instance, validated_data):
-        return validated_data
+###############
+### GROUP ### 
+###############
 
-# Serializers for Group-related operations
-class GroupSerializers:
-    # Serializer for Group model representation
-    class Group(BaseSerializer):
-        id = IntegerField(read_only=True)
-        name = CharField()
-        location = CharField()
-        description = CharField()
-        date_created = DateTimeField(default=timezone.now, read_only=True)
-        date_modified = DateTimeField(default=timezone.now, read_only=True)
+class GroupSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=255)
+    location = serializers.CharField(max_length=255)
+    description = serializers.CharField(allow_blank=True)
+    edited_at = serializers.DateTimeField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False)
 
-    # Serializer for retrieving a single group
-    class Get(BaseSerializer):
-        id = IntegerField()
+class GroupInfoSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=255)
+    location = serializers.CharField(max_length=255)
+    description = serializers.CharField(allow_blank=True, read_only=True)
+    edited_at = serializers.DateTimeField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    total_tanks = serializers.IntegerField(read_only=True)
+    total_active_tanks = serializers.IntegerField(read_only=True)
+    total_sensors = serializers.IntegerField(read_only=True)
+    total_active_sensors = serializers.IntegerField(read_only=True)
+    max_capacity = serializers.IntegerField(read_only=True)
+    current_capacity = serializers.IntegerField(read_only=True)
+    average_capacity = serializers.FloatField()
 
-    # Serializer for creating a new group
-    class Create(BaseSerializer):
-        name = CharField()
-        location = CharField()
-        description = CharField()
+class CreateGroupSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=255)
+    location = serializers.CharField(max_length=255)
+    description = serializers.CharField(allow_blank=True)
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
-    # Serializer for editing an existing group
-    class Edit(BaseSerializer):
-        id = IntegerField()
-        name = CharField()
-        location = CharField()
-        description = CharField()
+class GetGroupSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True, required=True)
 
-    # Serializer for deleting a group
-    class Delete(BaseSerializer):
-        id = IntegerField()
+class GetGroupInfoSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True, required=True)
 
-    # Serializer for group statistics
-    class Stats(BaseSerializer):
-        id = IntegerField()
-        name = CharField()
-        time = ListField(child=IntegerField())
-        inflow = ListField(child=FloatField())
-        outflow = ListField(child=FloatField())
-        savings = ListField(child=FloatField())
+class GetGroupStatsSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True, required=True)
 
-    # Serializer for group status
-    class Status(BaseSerializer):
-        id = IntegerField()
-        name = CharField()
-        level = FloatField()
-        capacity = FloatField()
+class UpdateGroupSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField(max_length=255, required=False)
+    location = serializers.CharField(max_length=255, required=False)
+    description = serializers.CharField(allow_blank=True, required=False)
 
-    # Serializer for group water level
-    class Level(BaseSerializer):
-        id = IntegerField()
-        name = CharField()
-        time = ListField(child=IntegerField())
-        level = ListField(child=FloatField())
+class DeleteGroupSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
 
-# Enum for Tank types
-class TankType(str, Enum):
-    STORAGE = 'Storage'
-    WELL = 'Well'
-    RESERVOIR = 'Reservoir'
-    TANK = 'Tank'
-    OTHER = 'Other'
+###############
+### TANK ### 
+###############
 
-# Serializers for Tank-related operations
-class TankSerializers:
-    # Serializer for Tank model representation
-    class Tank(BaseSerializer):
-        id = IntegerField(read_only=True)
-        name = CharField()
-        type = ChoiceField(choices=[(t.name, t.value) for t in TankType])
-        capacity = IntegerField()
-        is_active = BooleanField()
-        date_created = DateTimeField(default=timezone.now, read_only=True)
-        date_modified = DateTimeField(default=timezone.now, read_only=True)
+class TankSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=255)
+    description = serializers.CharField(allow_blank=True)
+    type = serializers.ChoiceField(choices=TankType.choices)
+    capacity = serializers.IntegerField(min_value=0)
+    is_active = serializers.BooleanField(default=True)
+    edited_at = serializers.DateTimeField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    group = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all())
 
-    # Serializer for retrieving a single tank
-    class Get(BaseSerializer):
-        id = IntegerField()
-        group_id = IntegerField()
+class TankInfoSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=255)
+    description = serializers.CharField(allow_blank=True, read_only=True)
+    type = serializers.ChoiceField(choices=TankType.choices, read_only=True)
+    capacity = serializers.IntegerField(min_value=0, read_only=True)
+    is_active = serializers.BooleanField(default=True, read_only=True)
+    edited_at = serializers.DateTimeField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    total_sensors = serializers.IntegerField(read_only=True)
+    total_active_sensors = serializers.IntegerField(read_only=True)
 
-    # Serializer for retrieving all tanks in a group
-    class GetAll(BaseSerializer):
-        group_id = IntegerField()
+class CreateTankSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=255)
+    description = serializers.CharField(allow_blank=True)
+    type = serializers.ChoiceField(choices=TankType.choices)
+    capacity = serializers.IntegerField(min_value=0)
+    is_active = serializers.BooleanField(default=True)
+    group = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all())
 
-    # Serializer for creating a new tank
-    class Create(BaseSerializer):
-        name = CharField()
-        type = ChoiceField(choices=[(t.name, t.value) for t in TankType])
-        capacity = IntegerField()
-        group_id = IntegerField()
+class GetTankSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
 
-    # Serializer for editing an existing tank
-    class Edit(BaseSerializer):
-        id = IntegerField()
-        name = CharField()
-        type = ChoiceField(choices=[(t.name, t.value) for t in TankType])
-        capacity = IntegerField()
-        is_active = BooleanField()
-        group_id = IntegerField()
+class GetTanksSerializer(serializers.Serializer):
+    group = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all())
 
-    # Serializer for deleting a tank
-    class Delete(BaseSerializer):
-        id = IntegerField()
-        group_id = IntegerField()
+class GetTankInfoSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
 
-    # Serializer for tank statistics
-    class Stats(BaseSerializer):
-        id = IntegerField()
-        name = CharField()
-        inflow = ListField(child=IntegerField())
-        outflow = ListField(child=IntegerField())
-        savings = ListField(child=IntegerField())
+class UpdateTankSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField(max_length=255, required=False)
+    description = serializers.CharField(allow_blank=True, required=False)
+    type = serializers.ChoiceField(choices=TankType.choices, required=False)
+    capacity = serializers.IntegerField(min_value=0, required=False)
+    is_active = serializers.BooleanField(required=False)
+    group = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all())
 
-    # Serializer for tank water level
-    class Level(BaseSerializer):
-        id = IntegerField()
-        name = CharField()
-        level = ListField(child=IntegerField())
+class DeleteTankSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
 
-    # Serializer for tank status
-    class Status(BaseSerializer):
-        id = IntegerField()
-        name = CharField()
-        level = IntegerField()
-        capacity = IntegerField()
-        is_active = BooleanField()
-        has_sensors = BooleanField()
+###############
+### SENSOR ### 
+###############
 
-# Serializers for Sensor-related operations
-class SensorSerializers:
-    # Serializer for Sensor model representation
-    class Sensor(BaseSerializer):
-        id = IntegerField(read_only=True)
-        sensor_id = CharField()
-        is_active = BooleanField()
-        date_created = DateTimeField(default=timezone.now, read_only=True)
-        date_modified = DateTimeField(default=timezone.now, read_only=True)
+class SensorSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=255)
+    description = serializers.CharField(allow_blank=True)
+    notes = serializers.CharField(allow_blank=True)
+    device_id = serializers.CharField(max_length=100)
+    type = serializers.ChoiceField(choices=SensorType.choices)
+    status = serializers.ChoiceField(choices=SensorStatus.choices)
+    installation_date = serializers.DateField(required=False, allow_null=True)
+    maintenance_date = serializers.DateField(required=False, allow_null=True)
+    is_active = serializers.BooleanField(default=True)
+    edited_at = serializers.DateTimeField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    tank = serializers.PrimaryKeyRelatedField(queryset=Tank.objects.all())
 
-    # Serializer for retrieving a single sensor
-    class Get(BaseSerializer):
-        tank_id = IntegerField()
-        group_id = IntegerField()
+class CreateSensorSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=255)
+    description = serializers.CharField(allow_blank=True)
+    notes = serializers.CharField(allow_blank=True)
+    device_id = serializers.CharField(max_length=100)
+    type = serializers.ChoiceField(choices=SensorType.choices)
+    status = serializers.ChoiceField(choices=SensorStatus.choices)
+    installation_date = serializers.DateField(required=False, allow_null=True)
+    maintenance_date = serializers.DateField(required=False, allow_null=True)
+    is_active = serializers.BooleanField(default=True)
+    tank = serializers.PrimaryKeyRelatedField(queryset=Tank.objects.all())
 
-    # Serializer for creating a new sensor
-    class Create(BaseSerializer):
-        sensor_id = CharField()
-        tank_id = IntegerField()
-        group_id = IntegerField()
+class GetSensorSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
 
-    # Serializer for editing an existing sensor
-    class Edit(BaseSerializer):
-        id = IntegerField()
-        sensor_id = CharField()
-        is_active = BooleanField()
-        tank_id = IntegerField()
-        group_id = IntegerField()
+class GetSensorsSerializer(serializers.Serializer):
+    tank = serializers.PrimaryKeyRelatedField(queryset=Tank.objects.all())
 
-    # Serializer for deleting a sensor
-    class Delete(BaseSerializer):
-        sensor_id = IntegerField()
-        tank_id = IntegerField()
-        group_id = IntegerField()
+class UpdateSensorSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField(max_length=255, required=False)
+    description = serializers.CharField(allow_blank=True, required=False)
+    notes = serializers.CharField(allow_blank=True, required=False)
+    device_id = serializers.CharField(max_length=100, required=False)
+    type = serializers.ChoiceField(choices=SensorType.choices, required=False)
+    status = serializers.ChoiceField(choices=SensorStatus.choices, required=False)
+    installation_date = serializers.DateField(required=False)
+    maintenance_date = serializers.DateField(required=False)
+    is_active = serializers.BooleanField(required=False)
+    tank = serializers.PrimaryKeyRelatedField(queryset=Tank.objects.all())
 
-# Serializers for general information and summaries
-class InfoSerializers:
-    # Serializer for statistics summary
-    class Stats(BaseSerializer):
-        stats = GroupSerializers.Stats(many=True)
-
-    # Serializer for overall summary
-    class Summary(BaseSerializer):
-        status = GroupSerializers.Stats(many=True)
-        level = GroupSerializers.Stats(many=True)
+class DeleteSensorSerializer(serializers.Serializer):
+    id = serializers.IntegerField()

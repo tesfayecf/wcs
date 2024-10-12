@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from backend.utils.db_utils import truncate_tables
+from utils.db_utils import truncate_tables
 
 class Command(BaseCommand):
     help = "Clean all dummy data by truncating relevant tables."

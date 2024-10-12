@@ -4,94 +4,182 @@ from pydantic import ValidationError
 
 from django.utils import timezone
 from django.core.cache import cache
-from django.db.models import Count, Sum, Q
+from django.db.models import Count, Sum, Q, Avg
 from django.forms.models import model_to_dict
 
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .schemas import *
 from .models import Tank, Group, Sensor
-from .serializers import GroupSerializers
-
-from timeseries.models import SensorReading
+from .serializers import *
 
 # Cache timeout in seconds (e.g., 5 minutes)
-CACHE_TIMEOUT = 300
+CACHE_TIMEOUT = 300 
+
+"""
+TODO
+- Add tank views
+- Add sensor views
+- Define error handlers / return codes
+- Add unit tests
+- Add documentation
+"""
 
 #############
 ### GROUP ###
 #############
 
-
-### GET ###
-class GetGroupView(APIView):
-    def post(self, request):
-        try:
-            serializer = GroupSerializers.Get(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            
-            cache_key = f"group_{serializer.validated_data['id']}"
-            cached_group = cache.get(cache_key)
-
-            if cached_group:
-                group = cached_group
-            else:
-                group = Group.objects.filter(pk=serializer.validated_data['id'], user=request.user).first()
-                if not group:
-                    return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-                
-                cache.set(cache_key, group, timeout=CACHE_TIMEOUT)
-
-            group_serializer = GroupSerializers.Group(group)
-            return Response(group_serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-class GetGroupsView(APIView):
-    def post(self, request):
-        try:
-            groups = Group.objects.filter(user=request.user)
-            serializer = GroupSerializers.Group(groups, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-### CREATE ###
 class CreateGroupView(APIView):
+    """
+    View for creating a new group.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for creating a new group.
+    """
+
     def post(self, request):
+        """
+        Handles POST requests for creating a new group.
+
+        Parameters:
+        - request: The HTTP request object containing group data.
+
+        Returns:
+        - Response: HTTP response with the created group data if successful,
+                    or an error message if the group already exists or an exception occurs.
+        """
         try:
-            serializer = GroupSerializers.Create(data=request.data)
-            serializer.is_valid(raise_exception=True)
+            serializer = CreateGroupSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
-            if Group.objects.filter(name=serializer.validated_data['name'], user=request.user).exists():
+            group_queryset = Group.objects.filter(name=serializer.validated_data['name'], user=request.user)
+            if group_queryset:
                 return Response({'Bad Request': 'Group with the same name already exists'}, status=status.HTTP_400_BAD_REQUEST)
             
-            group = Group.objects.create(user=request.user, **serializer.validated_data)
-            
-            response_serializer = GroupSerializers.Group(group)
+            group = Group.objects.create(
+                name=serializer.validated_data['name'],
+                location=serializer.validated_data['location'], 
+                description=serializer.validated_data['description'],
+                user=request.user
+            )
             
             cache_key = f"group_{group.id}"
             cache.set(cache_key, group, timeout=CACHE_TIMEOUT)
             
-            return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+            serializer = GroupSerializer(data=group)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-### EDIT ###
-class EditGroupView(APIView):
-    def post(self, request):
-        try:
-            serializer = GroupSerializers.Edit(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            
-            remove_group_cache(serializer.validated_data['id'])
+class GetGroupView(APIView):
+    """
+    View for retrieving a specific group.
 
-            group = Group.objects.filter(pk=serializer.validated_data['id'], user=request.user).first()
-            if not group:
-                return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for retrieving a group by its ID.
+    """
+
+    def post(self, request):
+        """
+        Handles POST requests for retrieving a group.
+
+        Parameters:
+        - request: The HTTP request object containing the group ID.
+
+        Returns:
+        - Response: HTTP response with the group data if found,
+                    or an error message if the group does not exist or an exception occurs.
+        """
+        try:
+            serializer = GetGroupSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
+            group = get_group(serializer.validated_data['id'], request.user)
+            if not group:
+                return Response({'Bad Request': 'Group not found'}, status=status.HTTP_400_BAD_REQUEST)
+
+            serializer = GroupSerializer(group)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class GetGroupsView(APIView):
+    """
+    View for retrieving all groups associated with the authenticated user.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for retrieving all groups.
+    """
+
+    def post(self, request):
+        """
+        Handles POST requests for retrieving all groups.
+
+        Parameters:
+        - request: The HTTP request object.
+
+        Returns:
+        - Response: HTTP response with a list of groups associated with the user,
+                    or an error message if an exception occurs.
+        """
+        try:
+            # TODO: check for groups in cache
+            groups = Group.objects.filter(user=request.user)
+            for group in groups:
+                cache_key = f"group_{group.id}"
+                cache.set(cache_key, group, timeout=CACHE_TIMEOUT)
+
+            serializer = GroupSerializer(groups, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class UpdateGroupView(APIView):
+    """
+    View for updating an existing group.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for updating a group.
+    """
+
+    def post(self, request):
+        """
+        Handles POST requests for updating a group.
+
+        Parameters:
+        - request: The HTTP request object containing the group data to be updated.
+
+        Returns:
+        - Response: HTTP response with the updated group data if successful,
+                    or an error message if the group does not exist or an exception occurs.
+        """
+        try:
+            serializer = UpdateGroupSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            group = get_group(serializer.validated_data['id'], request.user)
+            if not group:
+                return Response({'Bad Request': 'Group not found'}, status=status.HTTP_400_BAD_REQUEST)
+            clear_group_cache(serializer.validated_data['id'])
+            
+            if Group.objects.filter(
+                name=serializer.validated_data['name'], 
+                user=request.user
+            ).exclude(pk=serializer.validated_data['id']).exists():
+                return Response({'Bad Request': 'Group with the same name already exists'}, status=status.HTTP_400_BAD_REQUEST)
+
             for attr, value in serializer.validated_data.items():
                 setattr(group, attr, value)
             group.save()
@@ -99,89 +187,152 @@ class EditGroupView(APIView):
             cache_key = f"group_{group.id}"
             cache.set(cache_key, group, timeout=CACHE_TIMEOUT)
             
-            response_serializer = GroupSerializers.Group(group)
-            return Response(response_serializer.data, status=status.HTTP_200_OK)
+            serializer = GroupSerializer(group)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-### DELETE ###
 class DeleteGroupView(APIView):
-    def post(self, request):
-        try:
-            serializer = GroupSerializers.Delete(data=request.data)
-            serializer.is_valid(raise_exception=True)
+    """
+    View for deleting a group.
 
-            group = Group.objects.filter(pk=serializer.validated_data['id'], user=request.user).first()
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for deleting a group.
+    """
+
+    def post(self, request):
+        """
+        Handles POST requests for deleting a group.
+
+        Parameters:
+        - request: The HTTP request object containing the group ID to be deleted.
+
+        Returns:
+        - Response: HTTP response indicating the result of the deletion.
+        """
+        try:
+            serializer = DeleteGroupSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            group = get_group(serializer.validated_data['id'], request.user)
             if not group:
                 return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+            clear_group_cache(serializer.validated_data['id'])
             
             group.delete()
-            remove_group_cache(serializer.validated_data['id'])
             
-            return Response({}, status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 ### INFO ###
 class GetGroupInfoView(APIView):
+    """
+    View for retrieving information about a specific group.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for retrieving group information.
+    """
+
     def post(self, request):
+        """
+        Handles POST requests for retrieving group information.
+
+        Parameters:
+        - request: The HTTP request object containing the group ID.
+
+        Returns:
+        - Response: HTTP response with the group information if successful,
+                    or an error message if the group does not exist or an exception occurs.
+        """
         try:
-            serializer = GroupSerializers.Get(data=request.data)
-            serializer.is_valid(raise_exception=True)
+            serializer = GetGroupInfoSerializer.Get(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            cache_key = f"group_info_{serializer.validated_data['id']}"
-            cached_info = cache.get(cache_key)
-
-            if cached_info:
-                return Response(cached_info, status=status.HTTP_200_OK)
+            group_info = get_group_info(serializer.validated_data['id'], request.user)
+            if group_info:
+                return Response(group_info, status=status.HTTP_200_OK)
 
             group = Group.objects.filter(pk=serializer.validated_data['id'], user=request.user).annotate(
                 total_tanks=Count('tanks'),
                 total_active_tanks=Count('tanks', filter=Q(tanks__is_active=True)),
-                total_capacity=Sum('tanks__capacity'),
-                total_active_capacity=Sum('tanks__capacity', filter=Q(tanks__is_active=True)),
+                max_capacity=Sum('tanks__capacity'),
+                current_capacity=Sum('tanks__capacity', filter=Q(tanks__is_active=True)),
                 total_sensors=Count('tanks__sensor'),
-                total_active_sensors=Count('tanks__sensor', filter=Q(tanks__sensor__is_active=True))
+                total_active_sensors=Count('tanks__sensor', filter=Q(tanks__sensor__is_active=True)),
+                total_inactive_sensors=Count('tanks__sensor', filter=Q(tanks__sensor__is_active=False)),
+                average_capacity=Avg('tanks__capacity'),
             ).first()
 
             if not group:
-                return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'Bad Request': 'Group not found'}, status=status.HTTP_400_BAD_REQUEST)
 
             info = {
                 'total_tanks': group.total_tanks,
                 'total_active_tanks': group.total_active_tanks,
-                'total_capacity': group.total_capacity or 0,
-                'total_active_capacity': group.total_active_capacity or 0,
                 'total_sensors': group.total_sensors,
                 'total_active_sensors': group.total_active_sensors,
+                'total_inactive_sensors': group.total_inactive_sensors,
+                'max_capacity': group.max_capacity or 0,
+                'current_capacity': group.current_capacity or 0,
+                'average_capacity': group.average_capacity or 0,
             }
 
+            cache_key = f"group_info_{group.id}"
             cache.set(cache_key, info, timeout=CACHE_TIMEOUT)
 
             return Response(info, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-### STATS ###
-class GetGroupStatsView(APIView):
+### METRICS ###
+class GetGroupMetricsView(APIView):
+    """
+    View for retrieving statistics about a specific group.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for retrieving group statistics.
+    """
+
     def post(self, request):
+        """
+        Handles POST requests for retrieving group statistics.
+
+        Parameters:
+        - request: The HTTP request object containing the group ID.
+
+        Returns:
+        - Response: HTTP response with the group statistics if successful,
+                    or an error message if the group does not exist or an exception occurs.
+        """
         try:
-            serializer = GroupSerializers.Get(data=request.data)
-            serializer.is_valid(raise_exception=True)
+            serializer = GetGroupStatsSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            cache_key = f"group_stats_{serializer.validated_data['id']}_{request.user.id}"
-            cached_stats = cache.get(cache_key)
+            group_stats = get_group_stats(serializer.validated_data['id'], request.user)
+            if group_stats:
+                return Response(group_stats, status=status.HTTP_200_OK)
 
-            if cached_stats:
-                return Response(cached_stats, status=status.HTTP_200_OK)
-
-            group = Group.objects.filter(pk=serializer.validated_data['id'], user=request.user).first()
+            group = Group.objects.filter(pk=serializer.validated_data['id'], user=request.user).annotate(
+                # TODO: Add more stats here
+            ).first()
+            
             if not group:
                 return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Implement get_stats() method on Group model or compute stats here
-            stats = {}  # group.get_stats()
+            stats = {}
 
+            cache_key = f"group_stats_{serializer.validated_data['id']}"
             cache.set(cache_key, stats, timeout=CACHE_TIMEOUT)
 
             return Response(stats, status=status.HTTP_200_OK)
@@ -189,7 +340,46 @@ class GetGroupStatsView(APIView):
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 ### CACHE ###
-def remove_group_cache(group_id: int):
+# TODO: add user info to cache to know if user has access to group
+def get_group(group_id: int, user) -> Group:
+    """Check if the group exists in the cache and the database."""
+    cache_key = f"group_{group_id}"
+
+    try:
+        group = cache.get(cache_key)
+        if group:
+            return group  
+
+        group = Group.objects.filter(pk=group_id, user=user).prefetch_related('tanks', 'sensors').first()
+        if group:
+            cache.set(cache_key, group, timeout=CACHE_TIMEOUT)
+    
+        return group
+    
+    except Exception as e:
+        raise Exception(f"Failed to retrieve group with ID {group_id}") from e
+    
+def get_group_info(group_id: int, user):
+    """Retrieve group information from the cache if it exists, otherwise return None."""
+    cache_key = f"group_info_{group_id}"
+
+    cached_group = cache.get(cache_key)
+    if cached_group:
+        return cached_group
+
+    return None
+
+def get_group_stats(group_id: int, user):
+    """Retrieve group stats from the cache if it exists, otherwise return None."""
+    cache_key = f"group_stats_{group_id}"
+
+    cached_group = cache.get(cache_key)
+    if cached_group:
+        return cached_group
+
+    return None
+
+def clear_group_cache(group_id: int):
     """Remove all cached information for a specific group."""
     cache_key_patterns = [
         f"group_{group_id}",
@@ -200,559 +390,541 @@ def remove_group_cache(group_id: int):
     for key in cache_key_patterns:
         cache.delete(key)
 
-def get_group(group_id: int, user) -> Group:
-    """Check if the group exists in the cache and the database."""
-    cache_key = f"group_{group_id}"
-
-    try:
-        cached_group = cache.get(cache_key)
-
-        if cached_group:
-            return cached_group  
-
-        group = Group.objects.filter(pk=group_id, user=user).first()
-
-        if group:
-            cache.set(cache_key, group, timeout=CACHE_TIMEOUT)
-
-        return group
-
-    except Exception as e:
-        print(f"Error retrieving group {group_id}: {e}")
-        return None
-    
 ############
 ### TANK ###
 ############
 
-### GET ###
-class GetTankView(APIView):
-    def post(self, request):
-        try:
-            # Deserialize request data
-            get_tank_data = GetTankSchema(**request.data)
-
-            # Check if the group exists
-            group = get_group(get_tank_data.group_id, request.user)
-            if not group:
-                return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-            # Retrieve the tank
-            tank = Tank.objects.filter(pk=get_tank_data.id, group__id=get_tank_data.group_id, group__user=request.user).first()
-            if not tank:
-                return Response({'Bad Request': 'Tank does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-            # Serialize the tank
-            tank_schema = TankSchema(**model_to_dict(tank))
-            tank_json = tank_schema.model_dump()
-
-            return Response(tank_json, status=status.HTTP_200_OK)
-        except ValidationError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-class GetTanksView(APIView):
-    def post(self, request):
-        try:
-            # Deserialize request data
-            get_tanks_data = GetTanksSchema(**request.data)
-
-            # Check if the group exists
-            group = get_group(get_tanks_data.group_id, request.user)
-            if not group:
-                return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-            # Get the tanks in the group
-            tanks = Tank.objects.filter(group__id=get_tanks_data.group_id, group__user=request.user)
-
-            # Serialize tanks
-            tanks_json = [TankSchema(**model_to_dict(tank)).model_dump() for tank in tanks]
-
-            return Response(tanks_json, status=status.HTTP_200_OK)
-        except ValidationError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-### CREATE ###
 class CreateTankView(APIView):
+    """
+    View for creating a new tank.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for creating a new tank.
+    """
+
     def post(self, request):
+        """
+        Handles POST requests for creating a new tank.
+
+        Parameters:
+        - request: The HTTP request object containing tank data.
+
+        Returns:
+        - Response: HTTP response with the created tank data if successful,
+                    or an error message if the tank already exists or an exception occurs.
+        """
         try:
-            # Deserialize request data
-            create_tank_data = CreateTankSchema(**request.data)
+            serializer = CreateTankSerializer(request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            # Check if the group exists
-            group = get_group(create_tank_data.group_id, request.user)
+            group = get_group(serializer.validated_data['group'], request.user)
             if not group:
-                return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'Bad Request': 'Group not found'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Check if a tank with the same name already exists
-
-            if Tank.objects.filter(name=create_tank_data.name, group__id=create_tank_data.group_id, group__user=request.user).exists():
+            if Tank.objects.filter(
+                name=serializer.validated_data['name'], 
+                group__id=serializer.validated_data['group'], 
+                group__user=request.user
+            ).exists():
                 return Response({'Bad Request': 'Tank with the same name already exists'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Create and save a new Tank object
             tank = Tank(
-                name=create_tank_data.name,
-                type=create_tank_data.type,
-                capacity=create_tank_data.capacity,
+                name=serializer.validated_data['name'],
+                description=serializer.validated_data['description'],
+                type=serializer.validated_data['type'],
+                capacity=serializer.validated_data['capacity'],
                 is_active=True,
                 group=group,
             )
             tank.save()
 
-            # Serialize the created tank
-            tank_schema = TankSchema(**model_to_dict(tank))
-            tank_json = tank_schema.model_dump()
-
-            # Cache the data for future requests
-            cache_key = f"tank_{tank_schema.id}"
+            cache_key = f"tank_{tank.id}"
             cache.set(cache_key, tank, timeout=CACHE_TIMEOUT)
 
-            return Response(tank_json, status=status.HTTP_201_CREATED)
-        except ValidationError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            serializer = TankSerializer(tank)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-### EDIT ###
-class EditTankView(APIView):
+class GetTankView(APIView):
+    """
+    View for retrieving a specific tank.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for retrieving a tank by its ID.
+    """
+
     def post(self, request):
+        """
+        Handles POST requests for retrieving a tank.
+
+        Parameters:
+        - request: The HTTP request object containing the tank ID and group ID.
+
+        Returns:
+        - Response: HTTP response with the tank data if found,
+                    or an error message if the tank does not exist or an exception occurs.
+        """
         try:
-            # Deserialize request data
-            edit_tank_data = EditTankSchema(**request.data)
+            serializer = GetTankSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            # Remove cache for this group's tanks
-            remove_tanks_cache(edit_tank_data.group_id)
+            tank = Tank.objects.filter(pk=serializer.validated_data['id']).first()
+            if not tank:
+                return Response({'Bad Request': 'Tank not foundt'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Check if the group exists
-            group = get_group(edit_tank_data.group_id, request.user)
+            cache_key = f"tank_{tank.id}"
+            cache.set(cache_key, tank, timeout=CACHE_TIMEOUT)
+
+            tank_serializer = TankSerializer(tank)
+            return Response(tank_serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class GetTanksView(APIView):
+    """
+    View for retrieving all tanks associated with a specific group.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - get: Handles GET requests for retrieving all tanks in a group.
+    """
+
+    def post(self, request):
+        """
+        Handles GET requests for retrieving all tanks.
+
+        Parameters:
+        - request: The HTTP request object containing the group ID.
+
+        Returns:
+        - Response: HTTP response with the list of tanks if found,
+                    or an error message if the group does not exist or an exception occurs.
+        """
+        try:
+            serializer = GetTanksSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            group = get_group(serializer.validated_data['group'], request.user)
             if not group:
-                return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'Bad Request': 'Group not found'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Check if a tank with the same name already exists in the same group
-            if Tank.objects.filter(name=edit_tank_data.name, group__id=edit_tank_data.group_id, group__user=request.user).exclude(pk=edit_tank_data.id).exists():
+            tanks = Tank.objects.filter(group=group)
+            for tank in tanks:
+                cache_key = f"tank_{tank.id}"
+                cache.set(cache_key, tank, timeout=CACHE_TIMEOUT)
+
+            serializer = TankSerializer(tanks, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class UpdateTankView(APIView):
+    """
+    View for updating an existing tank.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for updating a tank by its ID.
+    """
+
+    def post(self, request):
+        """
+        Handles POST requests for updating a tank.
+
+        Parameters:
+        - request: The HTTP request object containing the tank data.
+
+        Returns:
+        - Response: HTTP response with the updated tank data if successful,
+                    or an error message if the tank does not exist or an exception occurs.
+        """
+        try:
+            serializer = UpdateTankSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            tank = get_tank(serializer.validated_data['id'], request.user)
+            if not tank:
+                return Response({'Bad Request': 'Tank not found'}, status=status.HTTP_400_BAD_REQUEST)
+            clear_tanks_cache(tank.id)
+
+            if Tank.objects.filter(
+                name=serializer.validated_data['name'], 
+                group__id=serializer.validated_data['group'], 
+                group__user=request.user
+            ).exclude(pk=serializer.validated_data['id']).exists():
                 return Response({'Bad Request': 'Tank with the same name already exists'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Retrieve and update the tank
-            tank = Tank.objects.filter(pk=edit_tank_data.id, group__id=edit_tank_data.group_id, group__user=request.user).first()
-            if not tank:
-                return Response({'Bad Request': 'Tank does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-            # Update tank fields
-            tank.name = edit_tank_data.name
-            tank.type = edit_tank_data.type
-            tank.capacity = edit_tank_data.capacity
+            for attr, value in serializer.validated_data.items():
+                setattr(tank, attr, value)
             tank.save()
 
-            # Serialize the edited tank
-            tank_schema = TankSchema(**model_to_dict(tank))
-            tank_json = tank_schema.model_dump()
-
-            # Cache the data for future requests
-            cache_key = f"tank_{tank_schema.id}"
+            cache_key = f"tank_{tank.id}"
             cache.set(cache_key, tank, timeout=CACHE_TIMEOUT)
 
-            return Response(tank_json, status=status.HTTP_200_OK)
-        except ValidationError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            serializer = TankSerializer(tank).data
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-### DELETE ###
 class DeleteTankView(APIView):
+    """
+    View for deleting an existing tank.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for deleting a tank by its ID.
+    """
+
     def post(self, request):
+        """
+        Handles POST requests for deleting a tank.
+
+        Parameters:
+        - request: The HTTP request object containing the tank ID.
+
+        Returns:
+        - Response: HTTP response with an empty body if successful,
+                    or an error message if the tank does not exist or an exception occurs.
+        """
         try:
-            # Deserialize request data
-            delete_tank_data = DeleteTankSchema(**request.data)
+            serializer = DeleteTankSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            # Check if the group exists
-            if not Group.objects.filter(pk=delete_tank_data.group_id, user=request.user).exists():
-                return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-            # Retrieve and delete the tank
-            tank = Tank.objects.filter(pk=delete_tank_data.id, group__id=delete_tank_data.group_id, group__user=request.user).first()
+            tank = get_tank(serializer.validated_data['id'], request.user)
             if not tank:
-                return Response({'Bad Request': 'Tank does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'Bad Request': 'Tank not found'}, status=status.HTTP_400_BAD_REQUEST)
+            clear_tanks_cache(tank.id)
 
             tank.delete()
 
-            # Remove cache for this group's tanks
-            remove_tanks_cache(delete_tank_data.group_id)
-
             return Response({}, status=status.HTTP_200_OK)
-        except ValidationError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+### INFO ###
+class GetTankInfoView(APIView):
+    """
+    View for retrieving tank information.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for retrieving tank information.
+    """
+
+    def post(self, request):
+        """
+        Handles POST requests for retrieving tank information.
+
+        Parameters:
+        - request: The HTTP request object containing the tank ID.
+
+        Returns:
+        - Response: HTTP response with the tank information if successful,
+        """
+        try:
+            # serializer = GetTankInfoSerializer(data=request.data)
+            # if not serializer.is_valid():
+            #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            # tank = get_tank(serializer.validated_data['id'], request.user)
+            # if not tank:
+            #     return Response({'Bad Request': 'Tank not found'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # serializer = TankInfoSerializer(tank).data
+            # return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response({}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 ### CACHE ###
-def remove_tanks_cache(group_id: int):
-    """Remove all cached information for tanks in a specific group."""
-    cache_key = f"tank_{group_id}"
-    cache.delete(cache_key)
-
-def get_tank(tank_id: int, group_id: int, user) -> Tank:
+def get_tank(tank_id: int, int, user) -> Tank:
     """Check if the tank exists in the cache and the database."""
     cache_key = f"tank_{tank_id}"
 
     try:
-        # Attempt to retrieve the tank from the cache
         cached_tank = cache.get(cache_key)
 
         if cached_tank:
-            # Return Tank object form cache
             return cached_tank
 
-        # Attempt to retrieve the tank from the database
-        tank = Tank.objects.filter(pk=tank_id, group__id=group_id, group__user=user).first()
+        tank = Tank.objects.filter(pk=tank_id, group__user=user).first()
 
         if tank:
-            # Store Tank object in cache
             cache.set(cache_key, tank, timeout=CACHE_TIMEOUT)
 
         return tank
 
     except Exception as e:
-        # Log the exception for debugging purposes
-        print(f"Error retrieving tank {tank_id}: {e}")
-        return None
-    
+        raise Exception(f"Failed to retrieve tank with ID {tank_id}") from e
+
+def clear_tanks_cache(tank_id: int):
+    """Remove all cached information for tanks in a specific group."""
+    cache_key = f"tank_{tank_id}"
+    cache.delete(cache_key)
+
 ##############
 ### SENSOR ###
 ##############
 
-### GET ###
-class GetSensorView(APIView):
-    def post(self, request):
-        try:
-            # Deserialize request data
-            get_sensor_data = GetSensorSchema(**request.data)
-
-            # Check the group exists
-            if not Group.objects.filter(pk=get_sensor_data.group_id).exists():
-                return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_404_NOT_FOUND)
-                
-            # Check if the tank exists
-            if not Tank.objects.filter(pk=get_sensor_data.tank_id).exists():
-                return Response({'Bad Request': 'Tank does not exist'}, status=status.HTTP_404_NOT_FOUND)
-            
-            # Get sensors in tank (There must be olny one)
-            sensors = Sensor.objects.filter(
-                tank__id=get_sensor_data.tank_id,
-                tank__group__id=get_sensor_data.group_id
-            )
-            
-            # Get sensor 
-            sensors_json = [] 
-            for sensor in sensors:
-                # Serialize the sensor
-                sensor_schema = SensorSchema(**model_to_dict(sensor))
-                sensors_json.append(sensor_schema.model_dump())
-
-                # Cache the data for future requests
-                cache_key = f"sensor_{sensor_schema.id}"
-                cache.set(cache_key, sensor, timeout=CACHE_TIMEOUT)
-                
-            if len(sensors_json) > 1:
-                return Response({'Bad Request': 'Multiple sensors in this tank'}, status=status.HTTP_400_BAD_REQUEST)
-            elif len(sensors_json) == 0:
-                return Response({'Bad Request': 'No sensors in this tank'}, status=status.HTTP_404_NOT_FOUND)
-            
-            return Response(sensors_json[0], status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-class GetSensorsView(APIView):
-    def post(self, request):
-        try:
-            # Get sensors of user
-            sensors = Sensor.objects.filter(tank__group__user=request.user)
-
-            # Get sensor 
-            sensors_json = [] 
-            for sensor in sensors:
-                # Serialize the sensor
-                sensor_schema = SensorSchema(**model_to_dict(sensor))
-                sensors_json.append(sensor_schema.model_dump())
-
-                # Cache the data for future requests
-                cache_key = f"sensor_{sensor_schema.id}"
-                cache.set(cache_key, sensor, timeout=CACHE_TIMEOUT)
-
-            return Response(sensors_json, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-### CREATE ###
 class CreateSensorView(APIView):
+    """
+    View for creating a new sensor.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for creating a new sensor.
+    """
+
     def post(self, request):
+        """
+        Handles POST requests for creating a new sensor.
+
+        Parameters:
+        - request: The HTTP request object containing sensor data.
+
+        Returns:
+        - Response: HTTP response with the created sensor data if successful,
+                    or an error message if validation fails or an exception occurs.
+        """
         try:
-            # Deserialize request data
-            create_sensor_data = CreateSensorSchema(**request.data)
+            serializer = CreateSensorSerializer(request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
-            # Check the group exists
-            if not Group.objects.filter(pk=create_sensor_data.group_id, user=request.user).exists():
-                return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-                
-            # Check if the tank exists
-            if not Tank.objects.filter(pk=create_sensor_data.tank_id, user=request.user).exists():
-                return Response({'Bad Request': 'Tank does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+            tank = get_tank(serializer.validated_data['tank'], request.user)
+            if not tank:
+                return Response({'Bad Request': 'Tank not found'}, status=status.HTTP_400_BAD_REQUEST)
         
-            # Get tank
-            tank = Tank.objects.get(
-                pk=create_sensor_data.tank_id,
-                group__id=create_sensor_data.group_id,
-                group__user=request.user
-            )
-            
-            # Check the tank does not have a sensor already
-            if Sensor.objects.filter(tank__id=create_sensor_data.tank_id, user=request.user).exists():
-                return Response({'Bad Request': 'Tank already has a sensor'}, status=status.HTTP_400_BAD_REQUEST)
-            
+            if Sensor.objects.filter(name=serializer.validated_data['name'], tank=tank).exists():
+                return Response({'Bad Request': 'Sensor with the same name already exists'}, status=status.HTTP_400_BAD_REQUEST)
+
             # Create a new Sensor object
             sensor = Sensor(
-                sensor_id=create_sensor_data.sensor_id,
-                is_active=True,
+                name=serializer.validated_data['name'],
+                description=serializer.validated_data['description'],
+                notes=serializer.validated_data['notes'],
+                device_id=serializer.validated_data['device_id'],
+                type=serializer.validated_data['type'],
+                status=serializer.validated_data['status'],
+                installation_date=serializer.validated_data['installation_date'],
+                maintenance_date=serializer.validated_data['maintenance_date'],
+                is_active=serializer.validated_data['is_active'],
                 tank=tank
             )
             sensor.save()
 
-            # Serialize the created sensor
-            sensor_schema = SensorSchema(**model_to_dict(sensor))
-            sensor_json = sensor_schema.model_dump()
-
             # Cache the data for future requests
-            cache_key = f"sensor_{sensor_schema.id}"
+            cache_key = f"sensor_{sensor.id}"
             cache.set(cache_key, sensor, timeout=CACHE_TIMEOUT)
             
-            return Response(sensor_json, status=status.HTTP_200_OK)
+            serializer = SensorSerializer(sensor)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)  # Updated status code
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-### EDIT ###   
-class EditSensorView(APIView):
+class GetSensorView(APIView):
+    """
+    View for retrieving a specific sensor.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for retrieving a sensor by its ID.
+    """
+
     def post(self, request):
+        """
+        Handles POST requests for retrieving a sensor.
+
+        Parameters:
+        - request: The HTTP request object containing the sensor ID.
+
+        Returns:
+        - Response: HTTP response with the sensor data if successful,
+                    or an error message if the sensor does not exist or an exception occurs.
+        """
         try:
-            # Deserialize request data
-            edit_sensor_data = EditSensorSchema(**request.data)
+            serializer = GetSensorSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            # Remove cache for this senosr
-            remove_sensors_cache(edit_sensor_data.sensor_id)
-            
-            # Check the group exists
-            if not Group.objects.filter(pk=edit_sensor_data.group_id).exists():
-                return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-                
-            # Check if the tank exists
-            if not Tank.objects.filter(pk=edit_sensor_data.tank_id).exists():
-                return Response({'Bad Request': 'Tank does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+            sensor = get_sensor(serializer.validated_data['id'], request.user)
+            if not sensor:
+                return Response({'Bad Request': 'Sensor not found'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Check if the sensor exists
-            if not Sensor.objects.filter(pk=edit_sensor_data.id).exists():
-                return Response({'Bad Request': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-            
-            # Get the sensor to edit
-            sensor = Sensor.objects.get(
-                pk=sensor.pk,
-                tank_id=edit_sensor_data.tank_id,
-                tank__group__id=edit_sensor_data.group_id
-            )
-            
-            # Update sensor fields
-            sensor.sensor_id = edit_sensor_data.sensor_id
-            sensor.is_active = edit_sensor_data.is_active
-            sensor.save()
-            
-            # Serialize the edited sensor
-            sensor_schema = SensorSchema(**model_to_dict(sensor))
-            sensor_json = sensor_schema.model_dump()
-            
             # Cache the data for future requests
-            cache_key = f"sensor_{sensor_schema.id}"
+            cache_key = f"sensor_{sensor.id}"
             cache.set(cache_key, sensor, timeout=CACHE_TIMEOUT)
 
-            return Response(sensor_json, status=status.HTTP_200_OK)
+            serializer = SensorSerializer(sensor)            
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class GetSensorsView(APIView):
+    """
+    View for retrieving all sensors associated with a specific tank.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for retrieving sensors by tank ID.
+    """
+
+    def post(self, request):
+        """
+        Handles POST requests for retrieving sensors.
+
+        Parameters:
+        - request: The HTTP request object containing the tank ID.
+
+        Returns:
+        - Response: HTTP response with a list of sensors if successful,
+                    or an error message if the tank does not exist or an exception occurs.
+        """
+        try:
+            serializer = GetSensorsSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            tank = get_tank(serializer.validated_data['tank'], request.user)
+            if not tank:
+                return Response({'Bad Request': 'Tank not found'}, status=status.HTTP_400_BAD_REQUEST)
+
+            sensors = Sensor.objects.filter(tank=tank)
+            for sensor in sensors:
+                cache_key = f"sensor_{sensor.id}"
+                cache.set(cache_key, sensor, timeout=CACHE_TIMEOUT)
+
+            serializer = SensorSerializer(sensors, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class UpdateSensorView(APIView):
+    """
+    View for updating an existing sensor.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for updating a sensor by its ID.
+    """
+
+    def post(self, request):
+        """
+        Handles POST requests for updating a sensor.
+
+        Parameters:
+        - request: The HTTP request object containing the sensor data.
+
+        Returns:
+        - Response: HTTP response with the updated sensor data if successful,
+                    or an error message if the sensor does not exist or an exception occurs.
+        """
+        try:
+            serializer = UpdateSensorSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            sensor = get_sensor(serializer.validated_data['id'], request.user)
+            if not sensor:
+                return Response({'Bad Request': 'Sensor not found'}, status=status.HTTP_400_BAD_REQUEST)
+            clear_sensors_cache(sensor.id)
+
+            if Sensor.objects.filter(
+                name=serializer.validated_data['name'],
+                sensor__id=serializer.validated_data['id']
+            ).exclude(pk=serializer.validated_data['id']).exists():
+                return Response({'Bad Request': 'Sensor with the same name already exists'}, status=status.HTTP_400_BAD_REQUEST)
+
+            for attr, value in serializer.validated_data.items():
+                setattr(sensor, attr, value)
+            sensor.save()
+            
+            cache_key = f"sensor_{sensor.id}"
+            cache.set(cache_key, sensor, timeout=CACHE_TIMEOUT)
+
+            serializer = SensorSerializer(sensor)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except Sensor.DoesNotExist:
             return Response({"error": "Sensor not found."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-### DELETE ### 
 class DeleteSensorView(APIView):
+    """
+    View for deleting an existing sensor.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for deleting a sensor by its ID.
+    """
+
     def post(self, request):
+        """
+        Handles POST requests for deleting a sensor.
+
+        Parameters:
+        - request: The HTTP request object containing the sensor ID.
+
+        Returns:
+        - Response: HTTP response with an empty body if successful,
+                    or an error message if the sensor does not exist or an exception occurs.
+        """
         try:
-            # Deserialize request data
-            delete_sensor_data = DeleteSensorSchema(**request.data)
+            serializer = DeleteSensorSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
-            # Remove cache for this senosr
-            remove_sensors_cache(delete_sensor_data.sensor_id)
+            sensor = get_sensor(serializer.validated_data['id'], request.user)
+            if not sensor:
+                return Response({'Bad Request': 'Sensor not found'}, status=status.HTTP_400_BAD_REQUEST)
+            clear_sensors_cache(sensor.id)
 
-            # Check the group exists
-            if not Group.objects.filter(pk=delete_sensor_data.group_id).exists():
-                return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-                
-            # Check if the tank exists
-            if not Tank.objects.filter(pk=delete_sensor_data.tank_id).exists():
-                return Response({'Bad Request': 'Tank does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-            # Check if the sensor exists
-            if not Sensor.objects.filter(pk=delete_sensor_data.id).exists():
-                return Response({'Bad Request': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-                        
-            # Get the sensor to delete
-            sensor = Sensor.objects.get(
-                pk=delete_sensor_data.sensor_id,
-                tank__id=delete_sensor_data.tank_id,
-                tank__group__user=request.user
-            )
-            
-            # Delete sensor
             sensor.delete()
             
-            return Response({}, status=status.HTTP_200_OK)
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 ### CACHE ### 
-def remove_sensors_cache(group_id: int):
-    """Remove all cached information for sensors in a specific group."""
-    cache_key = f"sensor_{group_id}"
-    cache.delete(cache_key)
-
-def get_sensor(sensor_id: int, tank_id: int, group_id: int, user) -> Sensor:
+def get_sensor(sensor_id: int, user):
     """Check if the sensor exists in the cache and the database."""
     cache_key = f"sensor_{sensor_id}"
 
     try:
-        # Attempt to retrieve the sensor from the cache
-        cached_sensor = cache.get(cache_key)
-
-        if cached_sensor:
-            # Return Sensor object form cache
-            return cached_sensor
-
-        # Attempt to retrieve the sensor from the database
-        sensor = Sensor.objects.filter(pk=sensor_id, tank__id=tank_id, tank__group__id=group_id, tank__group__user=user).first()
-
+        sensor = cache.get(cache_key)
         if sensor:
-            # Store Sensor object in cache
+            return sensor
+
+        sensor = Sensor.objects.filter(pk=sensor_id, tank__group__user=user).first()
+        if sensor:
             cache.set(cache_key, sensor, timeout=CACHE_TIMEOUT)
 
         return sensor
-
+    
     except Exception as e:
-        # Log the exception for debugging purposes
-        print(f"Error retrieving sensor {sensor_id}: {e}")
+        raise Exception(f"Failed to retrieve sensor with ID {sensor_id}") from e
 
-############
-### INFO ###
-############
-
-'''
-class GetStatsSchema(BaseModel):
-    timeframe: int
-    period: str
-
-    @validator('period')
-    def validate_period(cls, v):
-        valid_periods = ['microseconds', 'milliseconds', 'seconds', 'minutes', 'hours', 'days', 'weeks', 'months', 'years']
-        if v not in valid_periods:
-            raise ValueError(f"Invalid period. Must be one of: {', '.join(valid_periods)}")
-        return v
-'''
-
-class GetSummaryView(APIView):
-    def post(self, request):
-        try:
-            # Deserialize request data
-            # data = GetStatsSchema(**request.data)
-            timeframe = 1
-            period = "minute"
-
-            summary_schema = SummarySchema(
-                level=[],
-                status=[],
-            )
-            
-            # Get all groups
-            groups = Group.objects.filter(user=request.user)
-            
-            for group in groups:
-                ### STATUS ###
-                group_status = GroupStatusSchema(
-                    id=group.pk,
-                    name=group.name,
-                    capacity=0,
-                    level=0,
-                )
-                
-                # Get all active tanks and sensors in the group
-                tanks = Tank.objects.filter(group=group, group__user=request.user, is_active=True)
-                sensors = Sensor.objects.filter(tank__in=tanks, is_active=True)
-                
-                # Calculate total capacity
-                group_status.capacity = tanks.aggregate(total_capacity=Sum('capacity'))['total_capacity'] or 0
-                                
-                summary_schema.status.append(group_status)
-
-                ### LEVEL ###
-                group_level = GroupLevelSchema(
-                    id=group.pk,
-                    name=group.name,
-                    time=[],
-                    level=[]
-                )
-
-                # Get aggregated sensor readings for the last month
-                end_time = timezone.now()
-                start_time = end_time - timedelta(days=5)
-                readings = SensorReading.timescale.filter(
-                    sensor__in=sensors,
-                    time__range=(start_time, end_time)
-                )
-                
-                # Bucket readings and calculate average distance
-                aggregated_readings = readings.time_bucket(
-                    'time',
-                    f"{timeframe} {period}"
-                ).annotate(
-                    avg_distance=Sum('distance') / Count('sensor', distinct=True)
-                ).order_by('-bucket')
-                
-                # Get the most recent bucket
-                latest_reading = aggregated_readings.first()
-                
-                # Add level information to status object
-                if latest_reading:
-                    group_status.level = latest_reading['avg_distance']
-
-                # Get readings from buckets
-                for reading in aggregated_readings:
-                    group_level.time.append(int(reading['bucket'].timestamp()))
-                    group_level.level.append(reading['avg_distance'])
-                
-                # Add group infromation to summary
-                summary_schema.level.append(group_level)
-
-            # Convert summary to json
-            summary_json = summary_schema.model_dump()
-
-            return Response(summary_json, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-### SUMMARY ###
-class GetStatsView(APIView):
-    def post(self, request):
-        try:
-            groups = Group.objects.filter(user=request.user)
-            
-            summary_json = {
-                "inflow": [random.randrange(0, 100) for g in range(10)],
-                "outflow": [random.randrange(0, 100) for g in range(10)],
-                "savings": [random.randrange(0, 100) for g in range(10)]
-            }
-
-            return Response(summary_json, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+def clear_sensors_cache(sensor_id: int):
+    """Remove all cached information for a specific sensor."""
+    cache_key = f"sensor_{sensor_id}"
+    cache.delete(cache_key)

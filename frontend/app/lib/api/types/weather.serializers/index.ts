@@ -24,6 +24,11 @@ export interface GetForecastWeather {
     cityName: string;
 }
 
+export interface GetWeatherByCoordinates {
+    lat: number;
+    lon: number;
+}
+
 export interface WeatherCoord {
     lon: number;
     lat: number;

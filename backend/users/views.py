@@ -45,16 +45,19 @@ class LoginView(APIView):
         """
         try:
             serializer = LoginSerializer(data=request.data)
-            if serializer.is_valid():
-                user = authenticate(
-                    email=serializer.validated_data['email'],
-                    password=serializer.validated_data['password']
-                )
-                if user:
-                    login(request, user)
-                    return Response(UserSerializer(user).data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            user = authenticate(
+                email=serializer.validated_data['email'],
+                password=serializer.validated_data['password']
+            )
+            
+            if not user:
                 return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            login(request, user)
+
+            return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -108,19 +111,21 @@ class RecoverView(APIView):
         """
         try:
             serializer = RecoverSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            if serializer.is_valid():
-                user = User.objects.filter(
-                    email=serializer.validated_data['email']
-                ).first()
-                if user:
-                    # TODO:
-                    # Store recovery token in database
-                    # Send token with recovery email
-                    # user.send_password_recovery_email() // TODO
-                    return Response({"detail": "Password recovery email has been sent."}, status=status.HTTP_200_OK)
-                return Response({"detail": "User with the provided email does not exist."}, status=status.HTTP_404_NOT_FOUND)
-            return Response({"detail": "Email is required for password recovery."}, status=status.HTTP_400_BAD_REQUEST)
+            user = User.objects.filter(
+                email=serializer.validated_data['email']
+            ).first()
+
+            if not user:
+                return Response({"detail": "Email is required for password recovery."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # TODO:
+            # Store recovery token in database
+            # Send token with recovery email
+            # user.send_password_recovery_email()
+            return Response({"detail": "Password recovery email has been sent."}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -148,20 +153,23 @@ class ResetView(APIView):
         """
         try:
             serializer = ResetSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            if serializer.is_valid():
-                user = User.objects.filter(
-                    id=serializer.validated_data['uid']
-                ).first()
-                if user:
-                    if serializer.validated_data['new_password'] == serializer.validated_data['confirm_password']:
-                        user.set_password(serializer.validated_data['new_password'])
-                        user.save()
-                        update_session_auth_hash(request, user)
-                        return Response({"detail": "Password has been reset successfully."}, status=status.HTTP_200_OK)
-                    return Response({"detail": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
+            user = User.objects.filter(
+                id=serializer.validated_data['uid']
+            ).first()
+            if not user:
                 return Response({"detail": "User with the provided id does not exist."}, status=status.HTTP_404_NOT_FOUND)
-            return Response({"detail": "All fields are required for password reset."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if serializer.validated_data['new_password'] != serializer.validated_data['confirm_password']:
+                return Response({"detail": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            user.set_password(serializer.validated_data['new_password'])
+            user.save()
+            update_session_auth_hash(request, user)
+            
+            return Response({"detail": "Password has been reset successfully."}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -189,22 +197,24 @@ class SignupView(APIView):
         """
         try:
             serializer = SignupSerializer(data=request.data)
-
-            if serializer.is_valid():
-                if serializer.validated_data['password'] == serializer.validated_data['confirm_password']:
-                    if User.objects.filter(
-                        email=serializer.validated_data['email']
-                    ).exists():
-                        return Response({"detail": "Email address is already in use."}, status=status.HTTP_400_BAD_REQUEST)
-                    User.objects.create(
-                        email=serializer.validated_data['email'],
-                        first_name=serializer.validated_data['first_name'],
-                        last_name=serializer.validated_data['last_name'],
-                        password=make_password(serializer.validated_data['password']),
-                    )
-                    return Response({"detail": "User registered successfully."}, status=status.HTTP_200_OK)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            if serializer.validated_data['password'] != serializer.validated_data['confirm_password']:
                 return Response({"detail": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
-            return Response({"detail": "All fields are required for user registration."}, status=status.HTTP_400_BAD_REQUEST)
+                
+            if User.objects.filter(
+                email=serializer.validated_data['email']
+            ).exists():
+                return Response({"detail": "Email address is already in use."}, status=status.HTTP_400_BAD_REQUEST)
+
+            User.objects.create(
+                email=serializer.validated_data['email'],
+                first_name=serializer.validated_data['first_name'],
+                last_name=serializer.validated_data['last_name'],
+                password=make_password(serializer.validated_data['password']),
+            )
+
+            return Response({"detail": "User registered successfully."}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

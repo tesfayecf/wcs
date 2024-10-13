@@ -1,6 +1,10 @@
 from django.core.cache import cache
 from django.forms.models import model_to_dict
 from django.core.exceptions import ValidationError
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
+from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -178,3 +182,73 @@ class DeleteObjectView(GenericModelView):
         except Exception as e:
             print(f"Error deleting object: {e}")
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class BaseModelAPIView(APIView):
+    model = None
+    serializer_class = None
+    queryset = None
+    cache_timeout = 60 * 15  # 15 minutes default
+
+    @classmethod
+    def get_extra_actions(cls):
+        return []
+
+    @method_decorator(cache_page(cache_timeout))
+    @method_decorator(vary_on_cookie)
+    def get(self, request, pk=None):
+        if pk:
+            return self.get_single_item(pk)
+        return self.get_item_list()
+
+    def get_single_item(self, pk):
+        try:
+            item = self.get_queryset().get(pk=pk)
+            serializer = self.serializer_class(item)
+            return Response(serializer.data)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def get_item_list(self):
+        queryset = self.get_queryset()
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            cache.clear()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk):
+        try:
+            item = self.get_queryset().get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.serializer_class(item, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            cache.clear()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        try:
+            item = self.get_queryset().get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        item.delete()
+        cache.clear()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def get_queryset(self):
+        if self.queryset is None:
+            if self.model:
+                return self.model.objects.all()
+            else:
+                raise ValueError("Queryset or Model must be defined")
+        return self.queryset

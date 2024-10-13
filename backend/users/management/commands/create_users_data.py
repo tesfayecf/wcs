@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # Create a superuser
-        superuser_email = "admin@gmail.com"
+        superuser_email = "adminuser@gmail.com"
         superuser_password = "superuserpassword"  # Change this to a secure password
         superuser, created = User.objects.get_or_create(
             email=superuser_email,

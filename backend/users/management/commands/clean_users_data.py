@@ -7,11 +7,9 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # List of user-related tables to truncate
         tables_to_truncate = [
-            'auth_user',  # Django's user table
-            'auth_group',  # Django's group table
-            'auth_user_groups',  # Table linking users to groups
-            'auth_permission',  # Django's permission table
-            # Add any other user-related tables if necessary
+            'users_user',                   # Django's user table
+            'users_user_groups',            # Table linking users to groups
+            'users_user_userpermission',    # Django's permission table
         ]
 
         # Clean the user data

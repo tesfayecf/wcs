@@ -7,8 +7,10 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # List of timeseries tables to truncate
         tables_to_truncate = [
-            'timeseries_sensorreading',  # Adjust the table name as per your database
-            'timeseries_sensorlog',      # Adjust the table name as per your database
+            'timeseries_measure',   # Table for measures
+            'timeseries_channel',   # Table for channels
+            'timeseries_chunk',     # Table for chunks
+            'timeseries_record',    # Table for records
         ]
 
         # Clean the timeseries data

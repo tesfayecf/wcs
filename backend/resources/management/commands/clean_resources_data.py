@@ -7,10 +7,9 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # List of tables to truncate for dummy data
         tables_to_truncate = [
-            'data_group',  # Table for groups
-            'data_tank',   # Table for tanks
-            'data_sensor',  # Table for sensors
-            # Add any other tables related to dummy data if necessary
+            'resources_group',  # Table for groups
+            'resources_tank',   # Table for tanks
+            'resources_sensor', # Table for sensors
         ]
 
         # Clean the dummy data

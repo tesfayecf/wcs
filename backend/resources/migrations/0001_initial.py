@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
                 ('type', models.CharField(choices=[('Storage', 'Storage'), ('Well', 'Well'), ('Reservoir', 'Reservoir'), ('Tank', 'Tank'), ('Other', 'Other')], default='Storage', max_length=255)),
                 ('capacity', models.PositiveIntegerField()),
                 ('is_active', models.BooleanField(default=True)),
-                ('group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tanks', to='data.group')),
+                ('group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tanks', to='resources.group')),
             ],
             options={
                 'verbose_name': 'Tank',
@@ -58,7 +58,7 @@ class Migration(migrations.Migration):
                 ('date_modified', models.DateTimeField(auto_now=True, verbose_name='date modified')),
                 ('sensor_id', models.CharField(max_length=100, unique=True)),
                 ('is_active', models.BooleanField(default=True)),
-                ('tank', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='sensor', to='data.tank')),
+                ('tank', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='sensor', to='resources.tank')),
             ],
             options={
                 'verbose_name': 'Sensor',

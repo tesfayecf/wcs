@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('users', '0002_user_edited_at'),
-        ('data', '0001_initial'),
+        ('resources', '0001_initial'),
     ]
 
     operations = [
@@ -111,7 +111,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='sensor',
             name='tank',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sensor', to='data.tank'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sensor', to='resources.tank'),
         ),
         migrations.AlterUniqueTogether(
             name='sensor',

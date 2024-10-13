@@ -4,56 +4,108 @@ from timescale.db.models.fields import TimescaleDateTimeField
 from timescale.db.models.managers import TimescaleManager
 from django.utils.timezone import now
 
-class TimeseriesModel(TimescaleModel):
-    """
-    A helper class for using Timescale within Django.
-    Includes TimescaleManager and TimescaleDateTimeField.
-    This is an abstract class and should be inherited by other classes for use.
-    """
-    time = TimescaleDateTimeField(interval="1 day", default=now)  # Setting interval to "1 day" for time-series data
-    objects = models.Manager()  # Default manager
-    timescale = TimescaleManager()  # TimescaleDB-specific manager
-
-    class Meta:
-        abstract = True
+from resources.models import Sensor
 
 ###############
-### READING ###
+### MEASURE ###
 ###############
 
-class SensorReading(TimeseriesModel):
-    distance = models.FloatField(null=True, blank=True)
-    sensor = models.ForeignKey('data.sensor', on_delete=models.CASCADE, related_name='readings')
-    
-    class Meta:
-        verbose_name = "Sensor Reading"
-        verbose_name_plural = "Sensor Readings"
-        ordering = ['-time']  # Ordering by time in descending order for recent readings first
+class MeasureType(models.TextChoices):
+    TEMPERATURE = 'Temperature', 'Temperature'
+    PRESSURE = 'Pressure', 'Pressure'
+    LEVEL = 'Level', 'Level'
+    COUNTER = 'Counter', 'Counter'
+    VIBRATION = 'Vibration', 'Vibration'
+    SPEED = 'Speed', 'Speed'
+    OTHER = 'Other', 'Other'
 
-    def __str__(self):
-        return f"SensorReading(id={self.id}, distance={self.distance}, time={self.time})"
-
-###########
-### LOG ###
-###########
-
-class SensorStatus(models.TextChoices):
-    INFO = 'INFO', 'Info'
-    WARNING = 'WARNING', 'Warning'
-    ERROR = 'ERROR', 'Error'
-
-class SensorLog(TimeseriesModel):
-    status = models.CharField(max_length=25, choices=SensorStatus.choices, default=SensorStatus.INFO)
-    status_message = models.TextField(null=True, blank=True)
-    signal_strength = models.IntegerField(null=True, blank=True)
-    battery_voltage = models.FloatField(null=True, blank=True)
-    battery_percentage = models.IntegerField(null=True, blank=True)
-    sensor = models.ForeignKey('data.sensor', on_delete=models.CASCADE, related_name='logs')
+class Measure(models.Model):
+    label = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    type = models.CharField(max_length=100, choices=MeasureType.choices, default=MeasureType.LEVEL)
+    sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE, related_name='measures', db_index=True)
 
     class Meta:
-        verbose_name = "Sensor Log"
-        verbose_name_plural = "Sensor Logs"
-        ordering = ['-time']  # Ordering by time in descending order for recent logs first
+        unique_together = ['label', 'sensor']
+        verbose_name = 'Measure'
+        verbose_name_plural = 'Measures'
 
     def __str__(self):
-        return f"SensorLog(id={self.id}, sensor={self.sensor}, status={self.status}, time={self.time})"
+        return f"{self.name} ({self.label})"
+
+###############
+### CHANNEL ###
+###############
+
+class Channel(models.Model):
+    label = models.CharField(max_length=50)
+    version = models.CharField(max_length=20)
+    unit = models.CharField(max_length=20)
+    rate = models.FloatField()
+    measure = models.ForeignKey(Measure, on_delete=models.CASCADE, related_name='channels', db_index=True)
+
+    class Meta:
+        verbose_name = 'Channel'
+        verbose_name_plural = 'Channels'
+
+    def __str__(self):
+        return f"{self.label} ({self.unit})"
+
+
+#############
+### CHUNK ###
+#############
+
+class Chunk(models.Model):
+    measure = models.ForeignKey(Measure, on_delete=models.CASCADE, related_name='chunks')
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+
+    class Meta:
+        verbose_name = 'Chunk'
+        verbose_name_plural = 'Chunks'
+
+    def __str__(self):
+        return f"{self.measure.label}: {self.start_time} - {self.end_time}"
+
+##############
+### RECORD ###
+##############
+
+class Record(TimescaleModel):
+    value = models.FloatField()
+    channel = models.ForeignKey(Channel, on_delete=models.CASCADE, related_name='records', db_index=True)
+    chunk = models.ForeignKey(Chunk, on_delete=models.CASCADE, related_name='records', db_index=True)
+
+    class Meta:
+        verbose_name = 'Record'
+        verbose_name_plural = 'Records'
+
+    def __str__(self):
+        return f"Record(id={self.id}, value={self.value})"
+
+"""
+
+Sensor: 
+This model represents a source of measurements. Each sensor has a unique ID (primary key), name, device_id, status, 
+description (optional), and a timestamp indicating when it was created. A sensor can have multiple measures.
+
+Measure: 
+The Measure model represents a specific type of measurement made by a sensor. Each measure has a label (slug field), name, 
+description (optional), type (choices include Temperature, Pressure, Level, Counter, Vibration, Speed, and Other), and a reference to 
+its sensor. The combination of label and sensor must be unique. A sensor can have multiple measures.
+
+Channel: 
+This model represents a specific data channel of a measure. Each channel has a label (slug field), version, unit of measurement, 
+sampling rate, and a reference to its measure. The combination of label and measure must be unique. A measure can have multiple channels.
+
+Chunk: 
+The Chunk model represents a specific time period of data for a measure. Each chunk has a reference to its measure, a start time, 
+and an end time. A measure can have multiple chunks, allowing for efficient data segmentation and retrieval.
+
+Record: 
+This model represents individual data points in the time series. Each record has a timestamp, a value (float), and references to 
+its associated channel and chunk. The combination of timestamp, channel, and chunk must be unique. It inherits from TimescaleModel for time-series optimizations, designed for high-performance time-series data storage and retrieval.
+
+"""

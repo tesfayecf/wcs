@@ -1,6 +1,6 @@
 import random
 from django.core.management.base import BaseCommand
-from data.models import Group, Tank, Sensor
+from resources.models import Group, Tank, Sensor
 from django.contrib.auth import get_user_model
 
 User = get_user_model()

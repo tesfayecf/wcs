@@ -3,7 +3,7 @@ from typing import Dict, Any, Union
 from dataclasses import dataclass
 import paho.mqtt.client as mqtt
 
-from data.models import Sensor
+from resources.models import Sensor
 from timeseries.models import SensorReading
 from .types import *
 from .message import MQTTMessage

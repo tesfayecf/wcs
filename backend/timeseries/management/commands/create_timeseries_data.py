@@ -2,7 +2,7 @@ import random
 from datetime import timedelta
 from django.core.management.base import BaseCommand
 from django.utils import timezone  # Import timezone
-from data.models import Sensor
+from resources.models import Sensor
 from timeseries.models import SensorReading, SensorLog  # Ensure these models exist in your timeseries app
 
 class Command(BaseCommand):

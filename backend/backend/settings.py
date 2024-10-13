@@ -47,9 +47,9 @@ INSTALLED_APPS = [
 
     # Local apps
     "users", # Users management
-    "data", # Groups, tanks, sensors managment
-    "weather", # Weather data management
+    "resources", # Groups, tanks, sensors managment
     "timeseries", # Timeseries data management
+    "weather", # Weather data management
 ]
 
 ########################### MIDDLEWARE ###########################

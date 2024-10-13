@@ -71,15 +71,6 @@ class Tank(TimeStampedModel):
 ### SENSOR ###
 ##############
 
-class SensorType(models.TextChoices):
-    TEMPERATURE = 'Temperature', 'Temperature'
-    PRESSURE = 'Pressure', 'Pressure'
-    LEVEL = 'Level', 'Level'
-    COUNTER = 'Counter', 'Counter'
-    VIBRATION = 'Vibration', 'Vibration'
-    SPEED = 'Speed', 'Speed'
-    OTHER = 'Other', 'Other'
-
 class SensorStatus(models.TextChoices):
     IDLE = 'Idle', 'Idle'
     CONNECTING = 'Connecting', 'Connecting'
@@ -96,7 +87,6 @@ class Sensor(TimeStampedModel):
     description = models.TextField(blank=True)
     notes = models.TextField(blank=True)
     device_id = models.CharField(max_length=100, unique=True)
-    type = models.CharField(max_length=100, choices=SensorType.choices, default=SensorType.LEVEL)
     status = models.CharField(max_length=50, choices=SensorStatus.choices, default=SensorStatus.IDLE)
     installation_date = models.DateField(null=True, blank=True)
     maintenance_date = models.DateField(null=True, blank=True)

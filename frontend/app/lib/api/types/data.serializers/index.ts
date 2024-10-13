@@ -10,7 +10,6 @@ export interface CreateSensor {
     description: string;
     notes: string;
     deviceId: string;
-    type: "Temperature" | "Pressure" | "Level" | "Counter" | "Vibration" | "Speed" | "Other";
     status: "Idle" | "Connecting" | "Connected" | "Disconnecting" | "Disconnected" | "Error";
     installationDate?: string | null;
     maintenanceDate?: string | null;
@@ -103,7 +102,6 @@ export interface Sensor {
     description: string;
     notes: string;
     deviceId: string;
-    type: "Temperature" | "Pressure" | "Level" | "Counter" | "Vibration" | "Speed" | "Other";
     status: "Idle" | "Connecting" | "Connected" | "Disconnecting" | "Disconnected" | "Error";
     installationDate?: string | null;
     maintenanceDate?: string | null;
@@ -151,7 +149,6 @@ export interface UpdateSensor {
     description?: string;
     notes?: string;
     deviceId?: string;
-    type?: "Temperature" | "Pressure" | "Level" | "Counter" | "Vibration" | "Speed" | "Other";
     status?: "Idle" | "Connecting" | "Connected" | "Disconnecting" | "Disconnected" | "Error";
     installationDate?: string;
     maintenanceDate?: string;

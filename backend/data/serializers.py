@@ -1,13 +1,13 @@
 from rest_framework import serializers
 
 from users.models import User
-from .models import Group, Tank, TankType, SensorStatus, SensorType
+from .models import Group, Tank, TankType, SensorStatus
 
 ###############
 ### GROUP ### 
 ###############
 
-class GroupSerializer(serializers.Serializer):
+class GroupSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(max_length=255)
     location = serializers.CharField(max_length=255)
@@ -16,7 +16,18 @@ class GroupSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField(read_only=True)
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False)
 
-class GroupInfoSerializer(serializers.Serializer):
+    def to_representation(self, instance):
+        return {
+            'id': instance.id,
+            'name': instance.name,
+            'location': instance.location,
+            'description': instance.description,
+            'edited_at': instance.edited_at,
+            'created_at': instance.created_at,
+            'user': instance.user
+        }
+
+class GroupInfoSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(max_length=255)
     location = serializers.CharField(max_length=255)
@@ -31,6 +42,23 @@ class GroupInfoSerializer(serializers.Serializer):
     current_capacity = serializers.IntegerField(read_only=True)
     average_capacity = serializers.FloatField()
 
+    def to_representation(self, instance):
+        return {
+            'id': instance.id,
+            'name': instance.name,
+            'location': instance.location,
+            'description': instance.description,
+            'edited_at': instance.edited_at,
+            'created_at': instance.created_at,
+            'total_tanks': instance.tanks.count(),
+            'total_active_tanks': instance.tanks.filter(is_active=True).count(),
+            'total_sensors': instance.sensors.count(),
+            'total_active_sensors': instance.sensors.filter(status=SensorStatus.OPERATIONAL).count(),
+            'max_capacity': instance.max_capacity,
+            'current_capacity': instance.current_capacity,
+            'average_capacity': instance.average_capacity
+        }
+
 class CreateGroupSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
     location = serializers.CharField(max_length=255)
@@ -38,13 +66,13 @@ class CreateGroupSerializer(serializers.Serializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
 class GetGroupSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True, required=True)
+    id = serializers.IntegerField(required=True)
 
 class GetGroupInfoSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True, required=True)
+    id = serializers.IntegerField(required=True)
 
-class GetGroupStatsSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True, required=True)
+class GetGroupMetricsSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=True)
 
 class UpdateGroupSerializer(serializers.Serializer):
     id = serializers.IntegerField()
@@ -59,7 +87,7 @@ class DeleteGroupSerializer(serializers.Serializer):
 ### TANK ### 
 ###############
 
-class TankSerializer(serializers.Serializer):
+class TankSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(max_length=255)
     description = serializers.CharField(allow_blank=True)
@@ -70,7 +98,20 @@ class TankSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField(read_only=True)
     group = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all())
 
-class TankInfoSerializer(serializers.Serializer):
+    def to_representation(self, instance):
+        return {
+            'id': instance.id,
+            'name': instance.name,
+            'description': instance.description,
+            'type': instance.type,
+            'capacity': instance.capacity,
+            'is_active': instance.is_active,
+            'edited_at': instance.edited_at,
+            'created_at': instance.created_at,
+            'group': instance.group
+        }
+
+class TankInfoSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(max_length=255)
     description = serializers.CharField(allow_blank=True, read_only=True)
@@ -81,6 +122,20 @@ class TankInfoSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField(read_only=True)
     total_sensors = serializers.IntegerField(read_only=True)
     total_active_sensors = serializers.IntegerField(read_only=True)
+
+    def to_representation(self, instance):
+        return {
+            'id': instance.id,
+            'name': instance.name,
+            'description': instance.description,
+            'type': instance.type,
+            'capacity': instance.capacity,
+            'is_active': instance.is_active,
+            'edited_at': instance.edited_at,
+            'created_at': instance.created_at,
+            'total_sensors': instance.sensors.count(),
+            'total_active_sensors': instance.sensors.filter(status=SensorStatus.OPERATIONAL).count()
+        }
 
 class CreateTankSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
@@ -115,13 +170,12 @@ class DeleteTankSerializer(serializers.Serializer):
 ### SENSOR ### 
 ###############
 
-class SensorSerializer(serializers.Serializer):
+class SensorSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(max_length=255)
     description = serializers.CharField(allow_blank=True)
     notes = serializers.CharField(allow_blank=True)
     device_id = serializers.CharField(max_length=100)
-    type = serializers.ChoiceField(choices=SensorType.choices)
     status = serializers.ChoiceField(choices=SensorStatus.choices)
     installation_date = serializers.DateField(required=False, allow_null=True)
     maintenance_date = serializers.DateField(required=False, allow_null=True)
@@ -130,12 +184,27 @@ class SensorSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField(read_only=True)
     tank = serializers.PrimaryKeyRelatedField(queryset=Tank.objects.all())
 
+    def to_representation(self, instance):
+        return {
+            'id': instance.id,
+            'name': instance.name,
+            'description': instance.description,
+            'notes': instance.notes,
+            'device_id': instance.device_id,
+            'status': instance.status,
+            'installation_date': instance.installation_date,
+            'maintenance_date': instance.maintenance_date,
+            'is_active': instance.is_active,
+            'edited_at': instance.edited_at,
+            'created_at': instance.created_at,
+            'tank': instance.tank
+        }
+
 class CreateSensorSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
     description = serializers.CharField(allow_blank=True)
     notes = serializers.CharField(allow_blank=True)
     device_id = serializers.CharField(max_length=100)
-    type = serializers.ChoiceField(choices=SensorType.choices)
     status = serializers.ChoiceField(choices=SensorStatus.choices)
     installation_date = serializers.DateField(required=False, allow_null=True)
     maintenance_date = serializers.DateField(required=False, allow_null=True)
@@ -154,7 +223,6 @@ class UpdateSensorSerializer(serializers.Serializer):
     description = serializers.CharField(allow_blank=True, required=False)
     notes = serializers.CharField(allow_blank=True, required=False)
     device_id = serializers.CharField(max_length=100, required=False)
-    type = serializers.ChoiceField(choices=SensorType.choices, required=False)
     status = serializers.ChoiceField(choices=SensorStatus.choices, required=False)
     installation_date = serializers.DateField(required=False)
     maintenance_date = serializers.DateField(required=False)

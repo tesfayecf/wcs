@@ -48,32 +48,32 @@ class Command(BaseCommand):
                     start_time = now() - timedelta(days=30)  # Start from 30 days ago
                     end_time = now()
 
-                    for interval_name, interval_duration in time_intervals.items():
-                        chunk_start_time = start_time
-                        chunk_end_time = chunk_start_time + interval_duration * random.randint(10, 100)
+                    interval = random.choice(list(time_intervals.items()))
+                    chunk_start_time = start_time
+                    chunk_end_time = chunk_start_time + interval[1] * 30
 
-                        while chunk_end_time <= end_time:
-                            # Create a time chunk
-                            chunk = Chunk.objects.create(
-                                measure=measure,
-                                start_time=chunk_start_time,
-                                end_time=chunk_end_time
+                    while chunk_end_time <= end_time:
+                        # Create a time chunk
+                        chunk = Chunk.objects.create(
+                            measure=measure,
+                            start_time=chunk_start_time,
+                            end_time=chunk_end_time
+                        )
+                        self.stdout.write(self.style.SUCCESS(f"Created {chunk}"))
+
+                        # Generate records for the chunk at the specified time rate
+                        record_time = chunk_start_time
+                        while record_time <= chunk_end_time:
+                            record_value = random.uniform(0, 100)  # Random float values for records
+                            Record.objects.create(
+                                time=record_time,
+                                value=record_value,
+                                channel=channel,
+                                chunk=chunk
                             )
-                            self.stdout.write(self.style.SUCCESS(f"Created {chunk}"))
+                            record_time += interval[1]  # Move to next timestamp based on interval
 
-                            # Generate records for the chunk at the specified time rate
-                            record_time = chunk_start_time
-                            while record_time <= chunk_end_time:
-                                record_value = random.uniform(0, 100)  # Random float values for records
-                                Record.objects.create(
-                                    time=record_time,
-                                    value=record_value,
-                                    channel=channel,
-                                    chunk=chunk
-                                )
-                                record_time += interval_duration  # Move to next timestamp based on interval
-
-                            chunk_start_time = chunk_end_time
-                            chunk_end_time = chunk_start_time + interval_duration * random.randint(10, 100)
+                        chunk_start_time = chunk_end_time
+                        chunk_end_time = chunk_start_time + interval[1] * random.randint(10, 100)
 
         self.stdout.write(self.style.SUCCESS("Dummy time-series data generation completed."))

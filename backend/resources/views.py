@@ -1,11 +1,5 @@
-import random
-from datetime import timedelta
-from pydantic import ValidationError
-
-from django.utils import timezone
 from django.core.cache import cache
 from django.db.models import Count, Sum, Q, Avg
-from django.forms.models import model_to_dict
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -19,8 +13,6 @@ CACHE_TIMEOUT = 300
 
 """
 TODO
-- Add tank views
-- Add sensor views
 - Define error handlers / return codes
 - Add unit tests
 - Add documentation
@@ -52,14 +44,18 @@ class CreateGroupView(APIView):
                     or an error message if the group already exists or an exception occurs.
         """
         try:
+            # 1. Validate input data
             serializer = CreateGroupSerializer(data=request.data)
             if not serializer.is_valid():
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
+            # 2. Retrieve necessary objects
             group_queryset = Group.objects.filter(name=serializer.validated_data['name'], user=request.user)
             if group_queryset:
                 return Response({'Bad Request': 'Group with the same name already exists'}, status=status.HTTP_400_BAD_REQUEST)
             
+            # 3. Check for conflicts
+            # 4. Perform main operation
             group = Group.objects.create(
                 name=serializer.validated_data['name'],
                 location=serializer.validated_data['location'], 
@@ -67,11 +63,14 @@ class CreateGroupView(APIView):
                 user=request.user
             )
             
+            # 5. Store respnse data in cache
             cache_key = f"group_{group.id}"
             cache.set(cache_key, group, timeout=CACHE_TIMEOUT)
             
+            # 6. Prepare and return response
             serializer = GroupSerializer(data=group)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -97,16 +96,23 @@ class GetGroupView(APIView):
                     or an error message if the group does not exist or an exception occurs.
         """
         try:
+            # 1. Validate input data
             serializer = GetGroupSerializer(data=request.data)
             if not serializer.is_valid():
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
+            # 2. Retrieve necessary objects
             group = get_group(serializer.validated_data['id'], request.user)
             if not group:
                 return Response({'Bad Request': 'Group not found'}, status=status.HTTP_400_BAD_REQUEST)
-
+            
+            # 3. Check for conflicts
+            # 4. Perform main operation
+            # 5. Store respnse data in cache
+            # 6. Prepare and return response
             serializer = GroupSerializer(group)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -133,13 +139,20 @@ class GetGroupsView(APIView):
         """
         try:
             # TODO: check for groups in cache
+            # 1. Validate input data
+            # 2. Retrieve necessary objects
             groups = Group.objects.filter(user=request.user)
             for group in groups:
                 cache_key = f"group_{group.id}"
                 cache.set(cache_key, group, timeout=CACHE_TIMEOUT)
 
+            # 3. Check for conflicts
+            # 4. Perform main operation
+            # 5. Store respnse data in cache
+            # 6. Prepare and return response
             serializer = GroupSerializer(groups, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -165,30 +178,37 @@ class UpdateGroupView(APIView):
                     or an error message if the group does not exist or an exception occurs.
         """
         try:
+            # 1. Validate input data
             serializer = UpdateGroupSerializer(data=request.data)
             if not serializer.is_valid():
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
+            # 2. Retrieve necessary objects
             group = get_group(serializer.validated_data['id'], request.user)
             if not group:
-                return Response({'Bad Request': 'Group not found'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'Bad Request': 'Group not found'}, status=status.HTTP_404_NOT_FOUND)
             clear_group_cache(serializer.validated_data['id'])
             
+            # 3. Check for conflicts
             if Group.objects.filter(
                 name=serializer.validated_data['name'], 
                 user=request.user
             ).exclude(pk=serializer.validated_data['id']).exists():
                 return Response({'Bad Request': 'Group with the same name already exists'}, status=status.HTTP_400_BAD_REQUEST)
 
+            # 4. Perform main operation
             for attr, value in serializer.validated_data.items():
                 setattr(group, attr, value)
             group.save()
 
+            # 5. Store respnse data in cache
             cache_key = f"group_{group.id}"
             cache.set(cache_key, group, timeout=CACHE_TIMEOUT)
             
+            # 6. Prepare and return response
             serializer = GroupSerializer(group)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -213,18 +233,25 @@ class DeleteGroupView(APIView):
         - Response: HTTP response indicating the result of the deletion.
         """
         try:
+            # 1. Validate input data
             serializer = DeleteGroupSerializer(data=request.data)
             if not serializer.is_valid():
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+            
+            # 2. Retrieve necessary objects
             group = get_group(serializer.validated_data['id'], request.user)
             if not group:
-                return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'Bad Request': 'Group not found'}, status=status.HTTP_404_NOT_FOUND)
             clear_group_cache(serializer.validated_data['id'])
             
+            # 3. Check for conflicts
+            # 4. Perform main operation
             group.delete()
-            
+
+            # 5. Store respnse data in cache
+            # 6. Prepare and return response
             return Response(status=status.HTTP_204_NO_CONTENT)
+        
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -251,14 +278,18 @@ class GetGroupInfoView(APIView):
                     or an error message if the group does not exist or an exception occurs.
         """
         try:
+            # 1. Validate input data
             serializer = GetGroupInfoSerializer.Get(data=request.data)
             if not serializer.is_valid():
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+            # 2. Retrieve necessary objects
             group_info = get_group_info(serializer.validated_data['id'], request.user)
             if group_info:
                 return Response(group_info, status=status.HTTP_200_OK)
 
+            # 3. Check for conflicts
+            # 4. Perform main operation
             group = Group.objects.filter(pk=serializer.validated_data['id'], user=request.user).annotate(
                 total_tanks=Count('tanks'),
                 total_active_tanks=Count('tanks', filter=Q(tanks__is_active=True)),
@@ -271,7 +302,7 @@ class GetGroupInfoView(APIView):
             ).first()
 
             if not group:
-                return Response({'Bad Request': 'Group not found'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'Bad Request': 'Group not found'}, status=status.HTTP_404_NOT_FOUND)
 
             info = {
                 'total_tanks': group.total_tanks,
@@ -284,10 +315,13 @@ class GetGroupInfoView(APIView):
                 'average_capacity': group.average_capacity or 0,
             }
 
+            # 5. Store respnse data in cache
             cache_key = f"group_info_{group.id}"
             cache.set(cache_key, info, timeout=CACHE_TIMEOUT)
 
-            return Response(info, status=status.HTTP_200_OK)
+            # 6. Prepare and return response
+            serializer = GroupInfoSerializer(info)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -314,10 +348,12 @@ class GetGroupMetricsView(APIView):
                     or an error message if the group does not exist or an exception occurs.
         """
         try:
-            serializer = GetGroupStatsSerializer(data=request.data)
+            # 1. Validate input data
+            serializer = GetGroupMetricsSerializer(data=request.data)
             if not serializer.is_valid():
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+            # 2. Retrieve necessary objects
             group_stats = get_group_stats(serializer.validated_data['id'], request.user)
             if group_stats:
                 return Response(group_stats, status=status.HTTP_200_OK)
@@ -325,10 +361,11 @@ class GetGroupMetricsView(APIView):
             group = Group.objects.filter(pk=serializer.validated_data['id'], user=request.user).annotate(
                 # TODO: Add more stats here
             ).first()
-            
             if not group:
-                return Response({'Bad Request': 'Group does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'Bad Request': 'Group not found'}, status=status.HTTP_404_NOT_FOUND)
 
+            # 3. Check for conflicts
+            # 4. Perform main operation
             # Implement get_stats() method on Group model or compute stats here
             stats = {}
 
@@ -372,6 +409,16 @@ def get_group_info(group_id: int, user):
 def get_group_stats(group_id: int, user):
     """Retrieve group stats from the cache if it exists, otherwise return None."""
     cache_key = f"group_stats_{group_id}"
+
+    cached_group = cache.get(cache_key)
+    if cached_group:
+        return cached_group
+
+    return None
+
+def get_group_metrics(group_id: int, user):
+    """Retrieve group metrics from the cache if it exists, otherwise return None."""
+    cache_key = f"group_metrics_{group_id}"
 
     cached_group = cache.get(cache_key)
     if cached_group:

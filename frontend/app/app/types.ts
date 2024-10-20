@@ -1,23 +1,34 @@
+import { Api } from "@/app/lib/api/types";
 
-type Role = 'admin' | 'staff' | 'user';
-type Status = 'active' | 'inactive';
+export namespace App {
+    /// APP STORE ///
+    export interface IAppStore {
+        status: {
+            isLoading: boolean;
+            isWaiting: boolean;
+            isError: boolean;
+            isIdle: boolean;
+        },
+        connection: {
+            isConnected: boolean;
+            isReconnecting: boolean;
+            isIdle: boolean;
+            isError: boolean;
+        },
+        isAuthenticated: boolean;
+        userInfo: Api.Users.User;
+        permissions: any; // Api.Users.Permission[];
+    }
 
-export interface IUserInfo {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    role: Role;
-}
+    /// USER ///
+    export type IUser = Api.Users.User;
 
-export interface IMenu {
-    show: boolean;
-    mode: "create" | "edit" | "delete" | "";
-    id: number;
-}
+    export interface IUserMenu {
+        show: boolean;
+        mode: "create" | "edit" | "delete" | "";
+        id: number;
+    }
 
-export interface IAppStore {
-    isAuthenticated: boolean;
-    isLoading: boolean;
-    userInfo: IUserInfo;
+    /// PERMISSIONS ///
+    export type IPermissions = any;// Api.Users.Permission[];
 }

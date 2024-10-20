@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import Layout, { Content } from 'antd/es/layout/layout';
 
 import { authenticate } from '@/app/(auth)/actions';
-import { getUserInfo } from '@/app/app/actions';
+import { getUserInfo, getUserPermissions } from '@/app/app/actions';
 import { StoreInitializer } from '@/app/lib/store/StoreInitializer';
 
 import Sidebar from '@/app/components/sidebar/Sidebar';
@@ -24,13 +24,13 @@ export default async function RootLayout({ children }: IAppLayoutProps) {
     //////////////////////////////////////////////////////////
 
     /// App data \\\
-    // const appDataResponse = await getAppData();
+    // const appDataResponse = await getAppData(); // Config, host, etc.
 
     /// User info \\\
     const userInfoResponse = await getUserInfo();
 
     /// User permissions \\\
-    // const userPermissionsResponse = await getUserPermissions();
+    const userPermissionsResponse = await getUserPermissions();
 
     //////////////////////////////////////////////////////////
 
@@ -40,6 +40,7 @@ export default async function RootLayout({ children }: IAppLayoutProps) {
             <StoreInitializer
                 app={{
                     userInfo: userInfoResponse.data,
+                    permissions: {}, // userPermissionsResponse.data
                 }}
             />
             {/* ////////////////////////////////////////////////////////// */}

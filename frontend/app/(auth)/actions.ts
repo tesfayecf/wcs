@@ -1,37 +1,39 @@
 "use server";
-import { ILoginForm } from '@/app/(auth)/types';
-import { serverRequest } from '@/app/lib/api/request';
 import { redirect } from 'next/navigation';
+import { serverRequest } from '@/app/lib/api/request';
+import { ILoginForm } from '@/app/(auth)/types';
 
-export const authenticate = async (): Promise<boolean> => {
+export const authenticate = async () => {
     try {
-        const verifyResponse = await serverRequest("auth", "verify", []);
-        return verifyResponse.status === 200;
+        // Make request
+        const response = await serverRequest("auth", "verify", {});
+        return response.status === 200;
     } catch (error) {
-        return false;
+        // Log error
     }
 };
 
 export const login = async (loginForm: ILoginForm) => {
     try {
+        // Make request
         const response = await serverRequest("auth", "login", {
             email: loginForm.email,
             password: loginForm.password
         })
 
         if (response.status === 200) redirect("/");
-        else return response.data;
+        else return false;
     } catch (error) {
-        return false
+        // Log error
     }
 };
 
 export const logout = async () => {
     try {
+        // Make request
         const response = await serverRequest("auth", "logout", {});
-        if (response) return true;
-        else return false;
+        return response.status === 200;
     } catch (error) {
-        return false
+        // Log error
     }
 };

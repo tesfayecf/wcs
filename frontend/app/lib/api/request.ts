@@ -19,8 +19,6 @@ export async function serverRequest<
     args: typeof apiInterface[T][S]["args"],
     authenticate: boolean = true,
     // @ts-ignore
-    customHeaders?: Record<string, string> = {},
-    // @ts-ignore
 ): Promise<ServerResponse<typeof apiInterface[T][S]["data"]>> {
     const { endpoint: endpoint_, method: method_ } = apiInterface[group][endpoint as string];
     if (process.env.NODE_ENV === "development") console.log(`[${group}][${endpoint as string}] -> `, endpoint_);
@@ -28,12 +26,11 @@ export async function serverRequest<
     // Build headers object
     const requestHeaders = new Headers({
         "Content-Type": "application/json",
-        ...customHeaders, // Merge custom headers
     });
 
     // Append cookies as Cookie headers 
     const sessionid = cookies().get("sessionid")?.value;
-    if (sessionid) requestHeaders.append("Cookie", `sessionid=${sessionid};`);
+    if (sessionid && authenticate) requestHeaders.append("Cookie", `sessionid=${sessionid};`);
 
     let response: Response;
     try {

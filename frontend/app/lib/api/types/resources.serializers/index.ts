@@ -2,7 +2,6 @@ export interface CreateGroup {
     name: string;
     location: string;
     description: string;
-    user: number;
 }
 
 export interface CreateSensor {

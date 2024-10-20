@@ -1,27 +1,13 @@
 import { Api } from "./types";
 
-export interface APIResponse<T> {
-    data?: T;
-    error?: any;
-    request?: any;
-    status?: number;
-    statusText?: string;
-    headers?: any;
-    config?: any;
-    isSuccess?: boolean,
-    isRedirect?: boolean,
-    isClientError?: boolean,
-    isServerError?: boolean,
-}
-
 export const apiInterface = {
     app: {},
     auth: {
         login: {
             endpoint: "api/users/login/",
             method: "POST",
-            args: {} as Api.User.Login,
-            data: {} as Api.User.User,
+            args: {} as Api.Users.Login,
+            data: {} as Api.Users.User,
         },
         logout: {
             endpoint: "api/users/logout/",
@@ -32,19 +18,19 @@ export const apiInterface = {
         recover: {
             endpoint: "api/users/recover/",
             method: "POST",
-            args: {} as Api.User.Recover,
+            args: {} as Api.Users.Recover,
             data: {},
         },
         reset: {
             endpoint: "api/users/reset/",
             method: "POST",
-            args: {} as Api.User.Reset,
+            args: {} as Api.Users.Reset,
             data: {},
         },
         signup: {
             endpoint: "api/users/signup/",
             method: "POST",
-            args: {} as Api.User.Signup,
+            args: {} as Api.Users.Signup,
             data: {},
         },
         verify: {
@@ -63,11 +49,12 @@ export const apiInterface = {
     user: {
         createUser: {},
         getUser: {},
+        getUsers: {},
         getUserInfo: {
             endpoint: "api/users/get-user/",
             method: "POST",
             args: {},
-            data: {} as Api.User.User,
+            data: {} as Api.Users.User,
         },
         getUsersInfo: {},
         updateUser: {},
@@ -86,11 +73,11 @@ export const apiInterface = {
             args: {} as Api.Resources.GetGroup,
             data: {} as Api.Resources.Group,
         },
-        getData: {
-            endpoint: "api/resources/get-Data/",
+        getGroups: {
+            endpoint: "api/resources/get-groups/",
             method: "POST",
             args: {},
-            data: {} as Api.Resources.Group[]
+            data: {} as Api.Resources.Group[],
         },
         updateGroup: {
             endpoint: "api/resources/update-group/",

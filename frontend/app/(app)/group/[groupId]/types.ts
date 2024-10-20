@@ -1,54 +1,56 @@
-import { IGroup, IGroupStats } from "../../dashboard/types";
+import { Api } from "@/app/lib/api/types";
+import { Tank } from "@/app/(app)/group/[groupId]/tank/[tankId]/types";
 
-/// GROUP PARAMS ///
-export interface IGroupParams {
-    groupId: string;
-}
+export namespace Group {
+    /// GROUP PARAMS ///
+    export interface IGroupParams {
+        groupId: string;
+    }
 
-/// GROUP STORE ///
-export interface IGroupStore {
-    groupId: number;
-    group: IGroup;
-    groupStats: IGroupStats;
-    tankId: number;
-    tanks: ITank[];
-    showTankMenu: boolean;
-}
+    /// GROUP STORE ///
+    export interface IGroupStore {
+        groupId: number;
+        group: IGroup;
+        groupStats: IGroupStats;
+        tankId: number;
+        tanks: Tank.ITank[];
+        showTankMenu: boolean;
+    }
 
-/// TANK ///
-export interface ITank {
-    id: number;
-    name: string;
-    capacity: number;
-    type: string;
-    date_created: Date;
-    date_modified: Date;
-    is_active: boolean;
-    sensor?: ISensor
-}
+    /// GROUP ///
+    export type IGroup = Api.Resources.Group;
 
-export interface ITankCreationForm {
-    name: string;
-    type: string;
-    capacity: number;
-    is_active: boolean;
-}
+    export interface IGroupMenu {
+        id: number;
+        mode: "info" | "create" | "edit" | "delete" | "";
+        show: boolean;
+    }
 
-export type ITankStatus = "Connected" | "Disconnected" | "Undefined"
+    export interface IGroupForm {
+        name: string;
+        location: string;
+        description: string;
+    }
 
-/// SENSOR ///
-export interface ISensor {
-    id: string;
-    sensor_id: string;
-    is_active: boolean;
-    tank_id: number;
-}
+    export interface IGroupStatus {
+        id: number;
+        name: string;
+        level: number;
+        capacity: number;
+    }
 
-export interface ISensorCreationForm {
-    sensorId: string;
-}
+    export interface IGroupLevel {
+        id: number;
+        name: string;
+        time: number[];
+        level: number[];
+    }
 
-export interface ISensorReading {
-    time: Date;
-    distance: number;
+    export interface IGroupStats {
+        totalTanks: number,
+        averageWaterLevel: number,
+        minWaterLevel: number,
+        maxWaterLevel: number,
+        totalCapacity: number,
+    }
 }

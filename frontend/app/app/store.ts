@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
 
 import { Api } from "@/app/lib/api/types";
 import { App } from '@/app/app/types';
@@ -52,7 +53,7 @@ interface IAppStoreActions {
     resetPermissions: () => void;
 }
 
-const useAppStore = create<App.IAppStore & IAppStoreActions>((set) => ({
+const useAppStore = create(immer<App.IAppStore & IAppStoreActions>((set) => ({
     /// Store ///
     // Status
     status: defaultStore.status,
@@ -68,24 +69,24 @@ const useAppStore = create<App.IAppStore & IAppStoreActions>((set) => ({
     /// Actions ///
     setState: (state: Partial<App.IAppStore>) => set((prev) => ({ ...prev, ...state })),
     // Status
-    setLoadingState: (isLoading: boolean) => set((prev) => ({ status: { ...prev.status, isLoading, isWaiting: false, isError: false, isIdle: false } })),
-    setWaitingState: (isWaiting: boolean) => set((prev) => ({ status: { ...prev.status, isLoading: false, isWaiting, isError: false, isIdle: false } })),
-    setErrorState: (isError: boolean) => set((prev) => ({ status: { ...prev.status, isLoading: false, isWaiting: false, isError, isIdle: false } })),
-    setIdleState: (isIdle: boolean) => set((prev) => ({ status: { ...prev.status, isLoading: false, isWaiting: false, isError: false, isIdle } })),
+    setLoadingState: (isLoading: boolean) => set((prev) => { prev.status.isLoading = isLoading; prev.status.isWaiting = false; prev.status.isError = false; prev.status.isIdle = false; }),
+    setWaitingState: (isWaiting: boolean) => set((prev) => { prev.status.isLoading = false; prev.status.isWaiting = isWaiting; prev.status.isError = false; prev.status.isIdle = false; }),
+    setErrorState: (isError: boolean) => set((prev) => { prev.status.isLoading = false; prev.status.isWaiting = false; prev.status.isError = isError; prev.status.isIdle = false; }),
+    setIdleState: (isIdle: boolean) => set((prev) => { prev.status.isLoading = false; prev.status.isWaiting = false; prev.status.isError = false; prev.status.isIdle = isIdle; }),
     // Connection
-    setConnectionState: (isConnected: boolean) => set((prev) => ({ connection: { isConnected, isReconnecting: false, isIdle: false, isError: false } })),
-    setReconnectingState: (isReconnecting: boolean) => set((prev) => ({ connection: { isConnected: false, isReconnecting, isIdle: false, isError: false } })),
-    setConnectionErrorState: (isError: boolean) => set((prev) => ({ connection: { isConnected: false, isReconnecting: false, isIdle: false, isError } })),
-    setConnectionIdleState: (isIdle: boolean) => set((prev) => ({ connection: { isConnected: false, isReconnecting: false, isIdle, isError: false } })),
+    setConnectionState: (isConnected: boolean) => set((prev) => { prev.connection.isConnected = isConnected; prev.connection.isReconnecting = false; prev.connection.isIdle = false; prev.connection.isError = false; }),
+    setReconnectingState: (isReconnecting: boolean) => set((prev) => { prev.connection.isConnected = false; prev.connection.isReconnecting = isReconnecting; prev.connection.isIdle = false; prev.connection.isError = false; }),
+    setConnectionErrorState: (isError: boolean) => set((prev) => { prev.connection.isConnected = false; prev.connection.isReconnecting = false; prev.connection.isIdle = false; prev.connection.isError = isError; }),
+    setConnectionIdleState: (isIdle: boolean) => set((prev) => { prev.connection.isConnected = false; prev.connection.isReconnecting = false; prev.connection.isIdle = isIdle; prev.connection.isError = false; }),
     // Authentication
     setAuthenticationState: (isAuthenticated: boolean) => set(() => ({ isAuthenticated })),
     // User
-    setUserInfo: (userInfo: Api.Users.User) => set((prev) => ({ userInfo })),
+    setUserInfo: (userInfo: Api.Users.User) => set((prev) => { prev.userInfo = userInfo; }),
     resetUserInfo: () => set(() => ({ userInfo: defaultStore.userInfo })),
     // Permissions
-    setPermissions: (permissions: any) => set((prev) => ({ permissions })),
+    setPermissions: (permissions: any) => set((prev) => { prev.permissions = permissions; }),
     resetPermissions: () => set(() => ({ permissions: [] })),
-}));
+})));
 
 export default useAppStore;
 

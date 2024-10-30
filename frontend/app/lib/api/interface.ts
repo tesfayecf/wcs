@@ -51,9 +51,9 @@ export const apiInterface = {
         getUser: {},
         getUsers: {},
         getUserInfo: {
-            endpoint: "api/users/get-user/",
+            endpoint: "api/users/get-user-info/",
             method: "POST",
-            args: {},
+            args: {} as null,
             data: {} as Api.Users.User,
         },
         getUsersInfo: {},
@@ -95,14 +95,8 @@ export const apiInterface = {
             endpoint: "api/resources/group-info/",
             method: "POST",
             args: {} as Api.Resources.GetGroupInfo,
-            data: {} as Api.Resources.GroupInfo,
+            data: {} as boolean,
         },
-        // groupMetrics: {
-        //     endpoint: "api/resources/group-metrics/",
-        //     method: "POST",
-        //     args: {} as Api.Resources.GetGroupMetrics,
-        //     data: {} as Api.Resources.GroupMetrics,
-        // }
     },
     tank: {
         createTank: {
@@ -133,7 +127,7 @@ export const apiInterface = {
             endpoint: "api/resources/delete-tank/",
             method: "POST",
             args: {} as Api.Resources.DeleteTank,
-            data: {} as Api.Resources.TankInfo,
+            data: {} as boolean,
         },
     },
     sensor: {
@@ -165,42 +159,28 @@ export const apiInterface = {
             endpoint: "api/resources/delete-sensor/",
             method: "POST",
             args: {} as Api.Resources.DeleteSensor,
-            data: {},
+            data: {} as boolean,
         },
     },
     timeseries: {
-        // getSensorReadings: {
-        //     endpoint: "api/timeseries/readings/",
-        //     method: "POST",
-        //     args: {} as Api.Timeseries.GetSensorReadings,
-        //     data: {} as Api.Timeseries.SensorReading[],
-        // },
-        // getSensorLastReading: {
-        //     args: (sensor_id: string) => { return {} as ISensorReading },
-        //     endpoint: "api/timeseries/last-reading/",
-        //     method: "POST",
-        //     argsKeys: ["sensor_id"],
-        // },
-        // getSensorFlow: {
-        //     args: (sensor_id: string) => { return {} as any },
-        //     endpoint: "api/timeseries/flow/",
-        //     method: "POST",
-        //     argsKeys: ["sensor_id"],
-        // }
-    },
-    info: {
-        // stats: {
-        //     args: () => { return {} as any },
-        //     endpoint: "api/resources/stats/",
-        //     method: "POST",
-        //     argsKeys: [],
-        // },
-        // summary: {
-        //     args: () => { return {} as ISummary },
-        //     endpoint: "api/resources/summary/",
-        //     method: "POST",
-        //     argsKeys: [],
-        // }
+        getRecords: {
+            endpoint: "api/timeseries/get-records/",
+            method: "POST",
+            args: {} as Api.Timeseries.GetRecords,
+            data: {} as Api.Timeseries.RecordInfo[],
+        },
+        getRecordsFlow: {
+            endpoint: "api/timeseries/get-records-flow/",
+            method: "POST",
+            args: {} as Api.Timeseries.GetRecordsFlow,
+            data: {} as Api.Timeseries.RecordFlow[],
+        },
+        getRecordsTrendForecast: {
+            endpoint: "api/timeseries/get-records-trend-forecast/",
+            method: "POST",
+            args: {} as Api.Timeseries.GetRecordsTrendForecast,
+            data: {} as Api.Timeseries.RecordTrendForecast[],
+        }
     },
     weather: {
         getCurrentWeather: {
@@ -213,7 +193,7 @@ export const apiInterface = {
             endpoint: "api/weather/forecast/",
             method: "POST",
             args: {} as Api.Weather.GetForecastWeather,
-            data: {} as Api.Weather.ForecastWeather,
+            data: {} as Api.Weather.ForecastWeather[],
         }
     }
 } as const;

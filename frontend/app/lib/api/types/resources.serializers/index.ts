@@ -1,3 +1,21 @@
+export enum StatusChoiceEnum {
+    IDLE = 'Idle',
+    CONNECTING = 'Connecting',
+    CONNECTED = 'Connected',
+    DISCONNECTING = 'Disconnecting',
+    DISCONNECTED = 'Disconnected',
+    ERROR = 'Error',
+}
+
+export enum TypeChoiceEnum {
+    STORAGE = 'Storage',
+    WELL = 'Well',
+    RESERVOIR = 'Reservoir',
+    TANK = 'Tank',
+    OTHER = 'Other',
+}
+
+
 export interface CreateGroup {
     name: string;
     location: string;
@@ -8,20 +26,20 @@ export interface CreateSensor {
     name: string;
     description: string;
     notes: string;
-    deviceId: string;
-    status: "Idle" | "Connecting" | "Connected" | "Disconnecting" | "Disconnected" | "Error";
-    installationDate?: string | null;
-    maintenanceDate?: string | null;
-    isActive?: boolean;
+    device_id: string;
+    status: StatusChoiceEnum;
+    installation_date?: string | null;
+    maintenance_date?: string | null;
+    is_active?: boolean;
     tank: number;
 }
 
 export interface CreateTank {
     name: string;
     description: string;
-    type: "Storage" | "Well" | "Reservoir" | "Tank" | "Other";
+    type: TypeChoiceEnum;
     capacity: number;
-    isActive?: boolean;
+    is_active?: boolean;
     group: number;
 }
 
@@ -74,15 +92,16 @@ export interface GroupInfo {
     name: string;
     location: string;
     description?: string;
-    editedAt?: string;
-    createdAt?: string;
-    totalTanks?: number;
-    totalActiveTanks?: number;
-    totalSensors?: number;
-    totalActiveSensors?: number;
-    maxCapacity?: number;
-    currentCapacity?: number;
-    averageCapacity: number;
+    edited_at?: string;
+    created_at?: string;
+    total_tanks?: number;
+    total_active_tanks?: number;
+    total_sensors?: number;
+    total_active_sensors?: number;
+    max_capacity?: number;
+    current_capacity?: number;
+    average_capacity: number;
+    user?: number;
 }
 
 export interface Group {
@@ -90,9 +109,28 @@ export interface Group {
     name: string;
     location: string;
     description: string;
-    editedAt?: string;
-    createdAt?: string;
+    edited_at?: string;
+    created_at?: string;
     user?: number;
+}
+
+export interface SensorInfo {
+    id?: number;
+    name: string;
+    description?: string;
+    notes?: string;
+    device_id?: string;
+    status?: StatusChoiceEnum;
+    installation_date?: string;
+    maintenance_date?: string;
+    is_active?: boolean;
+    edited_at?: string;
+    created_at?: string;
+    tank: number;
+    num_measures?: number;
+    num_channels?: number;
+    num_records?: number;
+    last_record?: string;
 }
 
 export interface Sensor {
@@ -100,13 +138,13 @@ export interface Sensor {
     name: string;
     description: string;
     notes: string;
-    deviceId: string;
-    status: "Idle" | "Connecting" | "Connected" | "Disconnecting" | "Disconnected" | "Error";
-    installationDate?: string | null;
-    maintenanceDate?: string | null;
-    isActive?: boolean;
-    editedAt?: string;
-    createdAt?: string;
+    device_id: string;
+    status: StatusChoiceEnum;
+    installation_date?: string | null;
+    maintenance_date?: string | null;
+    is_active?: boolean;
+    edited_at?: string;
+    created_at?: string;
     tank: number;
 }
 
@@ -114,24 +152,25 @@ export interface TankInfo {
     id?: number;
     name: string;
     description?: string;
-    type?: "Storage" | "Well" | "Reservoir" | "Tank" | "Other";
+    type?: TypeChoiceEnum;
     capacity?: number;
-    isActive?: boolean;
-    editedAt?: string;
-    createdAt?: string;
-    totalSensors?: number;
-    totalActiveSensors?: number;
+    is_active?: boolean;
+    edited_at?: string;
+    created_at?: string;
+    total_sensors?: number;
+    total_active_sensors?: number;
+    group: number;
 }
 
 export interface Tank {
     id?: number;
     name: string;
     description: string;
-    type: "Storage" | "Well" | "Reservoir" | "Tank" | "Other";
+    type: TypeChoiceEnum;
     capacity: number;
-    isActive?: boolean;
-    editedAt?: string;
-    createdAt?: string;
+    is_active?: boolean;
+    edited_at?: string;
+    created_at?: string;
     group: number;
 }
 
@@ -147,11 +186,11 @@ export interface UpdateSensor {
     name?: string;
     description?: string;
     notes?: string;
-    deviceId?: string;
-    status?: "Idle" | "Connecting" | "Connected" | "Disconnecting" | "Disconnected" | "Error";
-    installationDate?: string;
-    maintenanceDate?: string;
-    isActive?: boolean;
+    device_id?: string;
+    status?: StatusChoiceEnum;
+    installation_date?: string;
+    maintenance_date?: string;
+    is_active?: boolean;
     tank: number;
 }
 
@@ -159,9 +198,9 @@ export interface UpdateTank {
     id: number;
     name?: string;
     description?: string;
-    type?: "Storage" | "Well" | "Reservoir" | "Tank" | "Other";
+    type?: TypeChoiceEnum;
     capacity?: number;
-    isActive?: boolean;
+    is_active?: boolean;
     group: number;
 }
 

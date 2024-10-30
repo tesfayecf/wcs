@@ -1,3 +1,23 @@
+export enum TimeframeChoiceEnum {
+    MINUTE = 'minute',
+    HOUR = 'hour',
+    DAY = 'day',
+    WEEK = 'week',
+    MONTH = 'month',
+    YEAR = 'year',
+}
+
+export enum TypeChoiceEnum {
+    TEMPERATURE = 'Temperature',
+    PRESSURE = 'Pressure',
+    LEVEL = 'Level',
+    COUNTER = 'Counter',
+    VIBRATION = 'Vibration',
+    SPEED = 'Speed',
+    OTHER = 'Other',
+}
+
+
 export interface Channel {
     id?: number;
     label: string;
@@ -10,8 +30,8 @@ export interface Channel {
 export interface Chunk {
     id?: number;
     measure: number;
-    startTime: string;
-    endTime: string;
+    start_time: string;
+    end_time: string;
 }
 
 export interface GetChannel {
@@ -23,9 +43,10 @@ export interface GetChannels {
 }
 
 export interface GetLastRecord {
-    sensorId: number;
-    groupId: number;
-    tankId: number;
+    measuer_id: number;
+    sensor_id: number;
+    group_id: number;
+    tank_id: number;
 }
 
 export interface GetMeasuer {
@@ -37,40 +58,31 @@ export interface GetMeasures {
 }
 
 export interface GetRecordsFlow {
-    measureId: number;
-    sensorId: number;
-    groupId: number;
-    tankId: number;
-    startTime: string;
-    endTime: string;
-    timeframe: "minute" | "hour" | "day" | "week" | "month" | "year";
+    measure_id?: number;
+    sensor_id?: number;
+    tank_id: number;
+    group_id: number;
+    start_time: string;
+    end_time: string;
+    timeframe: TimeframeChoiceEnum;
 }
 
 export interface GetRecords {
-    sensorId: number;
-    groupId: number;
-    tankId: number;
-    startTime: string;
-    endTime: string;
-    timeframe: "minute" | "hour" | "day" | "week" | "month" | "year";
+    tank_id?: number;
+    group_id: number;
+    start_time: string;
+    end_time: string;
+    timeframe: TimeframeChoiceEnum;
 }
 
 export interface GetRecordsTrendForecast {
-    measureId: number;
-    sensorId: number;
-    groupId: number;
-    tankId: number;
-    startTime: string;
-    endTime: string;
-    timeframe: "minute" | "hour" | "day" | "week" | "month" | "year";
-}
-
-export interface MeasureInfo {
-    id?: number;
-    label: string;
-    name: string;
-    description: string;
-    type?: "Temperature" | "Pressure" | "Level" | "Counter" | "Vibration" | "Speed" | "Other";
+    measure_id?: number;
+    sensor_id?: number;
+    tank_id: number;
+    group_id: number;
+    start_time: string;
+    end_time: string;
+    timeframe: TimeframeChoiceEnum;
 }
 
 export interface Measure {
@@ -78,23 +90,27 @@ export interface Measure {
     label: string;
     name: string;
     description: string;
-    type: "Temperature" | "Pressure" | "Level" | "Counter" | "Vibration" | "Speed" | "Other";
+    type: TypeChoiceEnum;
     sensor: number;
 }
 
-export interface RecordForecast {
+export interface RecordFlow {
     time: string;
-    value: number;
+    input_flow: number;
+    output_flow: number;
+    net_change: number;
 }
 
 export interface RecordInfo {
-    time: number;
+    id?: number;
+    time: string;
     min: number;
     max: number;
     value: number;
-    channel: number;
-    measure: number;
+    channel?: number;
+    measure?: number;
     sensor: number;
+    chunk: number;
 }
 
 export interface Record {
@@ -102,13 +118,12 @@ export interface Record {
     value: number;
     channel: number;
     chunk: number;
+    measure?: number;
     time: string;
 }
 
-export interface RecordsFlow {
+export interface RecordTrendForecast {
     time: string;
-    inputFlow: number;
-    outputFlow: number;
-    netChange: number;
+    value: number;
 }
 

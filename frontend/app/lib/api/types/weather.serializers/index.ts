@@ -1,5 +1,5 @@
 export interface CurrentWeather {
-    cityName: string;
+    city_name: string;
     coord: WeatherCoord;
     weather: WeatherDescription[];
     main: WeatherDetails;
@@ -17,11 +17,11 @@ export interface ForecastWeather {
 }
 
 export interface GetCurrentWeather {
-    cityName: string;
+    city_name: string;
 }
 
 export interface GetForecastWeather {
-    cityName: string;
+    city_name: string;
 }
 
 export interface GetWeatherByCoordinates {
@@ -41,9 +41,9 @@ export interface WeatherDescription {
 
 export interface WeatherDetails {
     temp: number;
-    feelsLike: number;
-    tempMin: number;
-    tempMax: number;
+    feels_like: number;
+    temp_min: number;
+    temp_max: number;
     pressure: number;
     humidity: number;
 }

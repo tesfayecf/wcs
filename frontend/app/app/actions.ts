@@ -4,7 +4,7 @@ import { serverRequest } from "../lib/api/request";
 export const getUserInfo = async () => {
     try {
         // Make request
-        const response = await serverRequest("user", "getUserInfo", {});
+        const response = await serverRequest("user", "getUserInfo", null);
         return response;
     } catch (error) {
         // Log error

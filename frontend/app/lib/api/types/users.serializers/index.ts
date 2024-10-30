@@ -1,10 +1,10 @@
 export interface CreateUser {
     email: string;
-    firstName: string;
-    lastName: string;
+    first_name: string;
+    last_name: string;
     password: string;
-    isStaff?: boolean;
-    isSuperuser?: boolean;
+    is_staff?: boolean;
+    is_superuser?: boolean;
 }
 
 export interface DeleteUser {
@@ -24,35 +24,39 @@ export interface Reset {
     uid: string;
     token: string;
     password: string;
-    rePassword: string;
+    re_password: string;
 }
 
 export interface Signup {
     email: string;
-    firstName: string;
-    lastName: string;
+    first_name: string;
+    last_name: string;
     password: string;
-    rePassword: string;
+    re_password: string;
 }
 
 export interface UpdateUser {
     id: number;
-    firstName?: string;
-    lastName?: string;
-    isActive?: boolean;
-    isStaff?: boolean;
-    isSupseruser?: boolean;
+    first_name?: string;
+    last_name?: string;
+    is_active?: boolean;
+    is_staff?: boolean;
+    is_supseruser?: boolean;
 }
 
 export interface User {
     id: number;
     email: string;
-    firstName: string;
-    lastName: string;
-    editedAt: string;
-    createdAt: string;
-    isActive: boolean;
-    isStaff: boolean;
-    isSuperuser: any;
+    first_name: string;
+    last_name: string;
+    edited_at: string;
+    created_at: string;
+    is_active: boolean;
+    is_staff: boolean;
+    is_superuser: any;
+    password: string;
+    last_login?: string | null;
+    groups?: number[];
+    user_permissions?: number[];
 }
 

@@ -16,7 +16,7 @@ export namespace Tank {
 
     export interface ITankCreationForm {
         name: string;
-        type: string;
+        type: Api.Resources.Tank["type"];
         capacity: number;
         is_active: boolean;
     }

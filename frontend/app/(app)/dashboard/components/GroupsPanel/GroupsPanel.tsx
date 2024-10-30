@@ -1,22 +1,24 @@
 "use client"
 import React from "react";
-import { IGroup, IGroupCreationForm } from "../../types";
-import { Button, Col, Form, Input, Modal, Row, Segmented, Switch, Table, Typography } from "antd";
-import { ColumnsType, TableProps } from "antd/es/table";
+import { Button, Col, Divider, Form, Input, Modal, Row, Segmented, Table, Typography } from "antd";
+import { ColumnsType } from "antd/es/table";
 import Card from "antd/es/card/Card";
 import Meta from "antd/es/card/Meta";
-import { AppstoreOutlined, BarsOutlined, DeleteOutlined, EditOutlined, InfoOutlined, LoadingOutlined, PlusOutlined, TableOutlined } from "@ant-design/icons";
+import { AppstoreOutlined, BarsOutlined, DeleteOutlined, EditOutlined, InfoOutlined, PlusOutlined } from "@ant-design/icons";
 import Link from "next/link";
+
 import { createGroup, editGroup, deleteGroup } from "../../actions";
 import useDashboardStore from "@/app/(app)/dashboard/store";
+import { Api } from "@/app/lib/api/types";
+import { Group } from "@/app/(app)/group/[groupId]/types";
 
 interface IGroupsPanelProps {
-    groups?: IGroup[];
+    groups?: Api.Resources.Group[];
 }
 
 const GroupsPanel: React.FunctionComponent<IGroupsPanelProps> = (props: IGroupsPanelProps) => {
     const [mode, setMode] = React.useState<"grid" | "table">("grid");
-    const [groups, setGroups] = React.useState<IGroup[]>(props.groups || []);
+    const [groups, setGroups] = React.useState<Api.Resources.Group[]>(props.groups || []);
     const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
     const setGroupMenu = useDashboardStore((state) => state.setGroupMenu);
 
@@ -31,7 +33,7 @@ const GroupsPanel: React.FunctionComponent<IGroupsPanelProps> = (props: IGroupsP
                 <div onClick={(e: React.MouseEvent) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log(e)
+                    // setGroupMenu({ show: true, id: group.id, mode: "info" });
                 }}>
                     <InfoOutlined key="info" />
                 </div>
@@ -49,13 +51,14 @@ const GroupsPanel: React.FunctionComponent<IGroupsPanelProps> = (props: IGroupsP
                 <div onClick={(e: React.MouseEvent) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log("delete")
+                    // setGroupMenu({ show: true, id: , mode: "delete" });
                 }}>
                     <DeleteOutlined key="delete" />
                 </div>
             )
         ];
 
+        // Maybe create component
         return (
             <div id="panel-grid" className="panel-grid">
                 <Row gutter={[24, 24]}>
@@ -81,8 +84,7 @@ const GroupsPanel: React.FunctionComponent<IGroupsPanelProps> = (props: IGroupsP
 
 
 
-    const onSelectChange = (newSelectedRowKeys: React.Key[], selectedRows: IGroup[]) => {
-        console.log("selectedRowKeys changed: ", selectedRows);
+    const onSelectChange = (newSelectedRowKeys: React.Key[], selectedRows: Api.Resources.Group[]) => {
         setSelectedRowKeys(newSelectedRowKeys);
     };
 
@@ -91,9 +93,8 @@ const GroupsPanel: React.FunctionComponent<IGroupsPanelProps> = (props: IGroupsP
         // Add row
         // Custom empty status 
 
-
         return (
-            <Table<IGroup>
+            <Table<Api.Resources.Group>
                 className="panel-table"
                 dataSource={props.groups}
                 columns={columns}
@@ -125,14 +126,14 @@ const GroupsPanel: React.FunctionComponent<IGroupsPanelProps> = (props: IGroupsP
                 />
             </div>
             {mode === "grid" ? renderGridView() : renderTableView()}
-            <GroupMenu /> {/*  TODO: make file andmove to dashboard */}
+            <GroupMenu /> {/*  TODO: make file and move to dashboard */}
         </div>
     )
 }
 
 export default GroupsPanel;
 
-const columns: ColumnsType<IGroup> = [
+const columns: ColumnsType<Api.Resources.Group> = [
     {
         title: "Name",
         dataIndex: "name",
@@ -154,32 +155,30 @@ const columns: ColumnsType<IGroup> = [
         title: "Action",
         key: "action",
         render: (_, record) => (
-            <>
-                <a onClick={() => console.log(`edit ${record.name}`)}>Edit</a>
-                <a style={{ marginLeft: 8 }} onClick={() => console.log(`delete ${record.name}`)}>Delete</a>
-            </>
+            <div style={{ width: "100%", display: "flex", justifyContent: "space-around", textDecoration: "none" }}>
+                <a style={{ textDecoration: "none" }} onClick={() => console.log(`edit ${record.name}`)} ><InfoOutlined key="info" /></a>
+                <Divider type="vertical" />
+                <a style={{ marginLeft: 8, textDecoration: "none" }} onClick={() => console.log(`edit ${record.name}`)}><EditOutlined key="edit" color="black" /></a>
+                <Divider type="vertical" />
+                <a style={{ marginLeft: 8, textDecoration: "none" }} onClick={() => console.log(`delete ${record.name}`)}><DeleteOutlined key="delete" color="black" /></a>
+            </div>
         ),
     },
 ]
 
-interface IGroupForm { }
+interface IGroupMenu { }
 
-const GroupMenu: React.FunctionComponent<IGroupForm> = (props: IGroupForm) => {
-    const [form] = Form.useForm<IGroupCreationForm>();
+const GroupMenu: React.FunctionComponent<IGroupMenu> = (props: IGroupMenu) => {
+    const [form] = Form.useForm<Group.IGroupForm>();
     const [isLoading, setIsLoading] = React.useState(false);
     const groups = useDashboardStore((state) => state.groups);
     const groupMenu = useDashboardStore((state) => state.groupMenu);
     const setGroupMenu = useDashboardStore((state) => state.setGroupMenu);
 
-    const onFinish = (values: IGroupCreationForm) => {
+    const onFinish = (values: Group.IGroupForm) => {
         setIsLoading(true);
         // Timeout
-        // setTimeout(() => {
-        //     setIsLoading(false);
-        //     setGroupMenu({ id: -1, mode: "", show: false });
-        //     form.resetFields();
-        //     // TODO: show alert
-        // }, 2000);
+        // setTimeout(() => { }, 2000);
         if (groupMenu.mode == "create") createGroup(values);
         else if (groupMenu.mode == "edit") editGroup(groupMenu.id, values);
         else if (groupMenu.mode == "delete") deleteGroup(groupMenu.id);
@@ -268,4 +267,4 @@ const GroupMenu: React.FunctionComponent<IGroupForm> = (props: IGroupForm) => {
             </div>
         </Modal >
     )
-}
+} 

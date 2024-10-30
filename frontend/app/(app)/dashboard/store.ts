@@ -1,43 +1,40 @@
 import { create } from 'zustand';
-import { IMenu } from '@/app/app/types';
-import { IDashboardStore, IGroup, ISummary } from '@/app/(app)/dashboard/types';
+import { immer } from 'zustand/middleware/immer';
+
+import { App } from '@/app/app/types';
+import { Group } from '@/app/(app)/group/[groupId]/types';
+import { Dashboard } from '@/app/(app)/dashboard/types';
 
 interface IDashboardStoreActions {
-    setState: (state: Partial<IDashboardStore>) => void;
+    setState: (state: Partial<Dashboard.IDashboardStore>) => void;
     // Group
-    setGroups: (groups: IGroup[]) => void;
-    // Group menu
-    setGroupMenu: (groupMenu: IMenu) => void;
-    // Stats
-    setSummary: (summary: ISummary) => void;
+    setGroups: (groups: Group.IGroup[]) => void;
+    setGroupMenu: (groupMenu: App.IUserMenu) => void;
+    // Weather
+    setCurrentWeather: (currentWeather: Dashboard.ICurrentWeather) => void;
+    setForecastWeather: (forecastWeather: Dashboard.IForecastWeather[]) => void;
 };
 
-const useDashboardStore = create<IDashboardStore & IDashboardStoreActions>((set) => ({
-    /// Store ///
+const useDashboardStore = create(immer<Dashboard.IDashboardStore & IDashboardStoreActions>((set) => ({
     // Group
     groups: [],
-    // Group menu
     groupMenu: {
-        show: false,
+        id: 0,
         mode: "",
-        id: 0
-    },
-    // Stats
-    summary: {
-        status: [],
-        level: []
+        show: false,
     },
     // Weather
     currentWeather: null,
     forecastWeather: [],
 
     /// Actions ///
-    setState: (state: Partial<IDashboardStore>) => set((prev) => ({ ...prev, ...state })),
-    // Data
-    setGroups: (groups: IGroup[]) => set((state) => ({ ...state, groups })),
-    setSummary: (summary: ISummary) => set((state) => ({ ...state, summary })),
-    // Group menu
-    setGroupMenu: (groupMenu: IMenu) => set((state) => ({ ...state, groupMenu })),
-}));
+    setState: (partialState: Partial<Dashboard.IDashboardStore>) => set((state) => Object.assign(state, partialState)),
+    // Group
+    setGroups: (groups: Group.IGroup[]) => set((state) => state.groups = groups),
+    setGroupMenu: (groupMenu: App.IUserMenu) => set((state) => state.groupMenu = groupMenu),
+    // Weather
+    setCurrentWeather: (currentWeather: Dashboard.ICurrentWeather) => set((state) => state.currentWeather = currentWeather),
+    setForecastWeather: (forecastWeather: Dashboard.IForecastWeather[]) => set((state) => state.forecastWeather = forecastWeather),
+})));
 
 export default useDashboardStore;

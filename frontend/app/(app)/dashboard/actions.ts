@@ -1,40 +1,61 @@
 'use server'
 import { serverRequest } from "@/app/lib/api/request"
-import { IGroupCreationForm } from "./types"
+import { Group } from "../group/[groupId]/types";
+import { Api } from "@/app/lib/api/types";
 
+export const createGroup = async (fields: Group.IGroupForm) => {
+    try {
+        // Get fields
+        const name = fields.name;
+        const location = fields.location;
+        const description = fields.description;
+        // Make request
+        const response = await serverRequest("group", "createGroup", {
+            name: name,
+            location: location,
+            description: description,
+        });
+        return response;
+    } catch (error) {
+        // Log error
+    }
+}
+
+export const getGroup = async (groupId: number) => {
+    try {
+        // Make request
+        const response = await serverRequest("group", "getGroup", {
+            id: groupId
+        });
+        return response;
+    } catch (error) {
+        // Log error
+    }
+}
 
 export const getGroups = async () => {
     try {
         // Make request
-        const response = await serverRequest("group", "groups", []);
+        const response = await serverRequest("group", "getGroups", {});
         return response;
     } catch (error) {
         // Log error
     }
 }
 
-export const createGroup = async (fields: IGroupCreationForm) => {
+export const editGroup = async (groupId: number, fields: Group.IGroupForm) => {
     try {
         // Get fields
         const name = fields.name;
         const location = fields.location;
         const description = fields.description;
         // Make request
-        const response = await serverRequest("group", "createGroup", [name, location, description]);
-        return response;
-    } catch (error) {
-        // Log error
-    }
-}
-
-export const editGroup = async (groupId: number, fields: IGroupCreationForm) => {
-    try {
-        // Get fields
-        const name = fields.name;
-        const location = fields.location;
-        const description = fields.description;
-        // Make request
-        const response = await serverRequest("group", "editGroup", [groupId, name, location, description]);
+        const response = await serverRequest("group", "updateGroup", {
+            id: groupId,
+            name: name,
+            location: location,
+            description: description
+        });
         return response;
     }
     catch (error) {
@@ -45,27 +66,41 @@ export const editGroup = async (groupId: number, fields: IGroupCreationForm) => 
 export const deleteGroup = async (groupId: number) => {
     try {
         // Make request
-        const response = await serverRequest("group", "deleteGroup", [groupId]);
+        const response = await serverRequest("group", "deleteGroup", {
+            id: groupId
+        });
         return response;
     } catch (error) {
         // Log error
     }
 }
 
-export const getStats = async () => {
+export const getGroupRecords = async (groupId: number, startTime: string, endTime: string, timeframe: Api.Timeseries.TimeframeChoiceEnum) => {
     try {
         // Make request
-        const response = await serverRequest("info", "stats", []);
+        const response = await serverRequest("timeseries", "getRecords", {
+            tank_id: undefined,
+            group_id: groupId,
+            start_time: startTime,
+            end_time: endTime,
+            timeframe: timeframe,
+        });
         return response;
     } catch (error) {
         // Log error
     }
 }
 
-export const getSummary = async () => {
+export const getGroupRecordsFlow = async (groupId: number, startTime: string, endTime: string, timeframe: Api.Timeseries.TimeframeChoiceEnum) => {
     try {
         // Make request
-        const response = await serverRequest("info", "summary", []);
+        const response = await serverRequest("timeseries", "getRecordsFlow", {
+            tank_id: undefined,
+            group_id: groupId,
+            start_time: startTime,
+            end_time: endTime,
+            timeframe: timeframe
+        });
         return response;
     } catch (error) {
         // Log error
@@ -75,7 +110,9 @@ export const getSummary = async () => {
 export const getCurrentWeather = async () => {
     try {
         // Make request
-        const response = await serverRequest("weather", "getCurrentWeather", []);
+        const response = await serverRequest("weather", "getCurrentWeather", {
+            city_name: "Girona"
+        });
         return response;
     } catch (error) {
         // Log error
@@ -85,7 +122,9 @@ export const getCurrentWeather = async () => {
 export const getForecastWeather = async () => {
     try {
         // Make request
-        const response = await serverRequest("weather", "getForecastWeather", []);
+        const response = await serverRequest("weather", "getForecastWeather", {
+            city_name: "Girona"
+        });
         return response;
     } catch (error) {
         // Log error

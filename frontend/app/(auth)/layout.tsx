@@ -21,7 +21,7 @@ export default async function AuthLayout({ children }: IAppLayoutProps) {
                 <div id="image" className={"image"}>
                     <Image
                         id="auth-banner-image"
-                        src="/banners/auth/auth-banner-1-small.png"
+                        src="/banners/auth/auth-banner-small.png"
                         alt="Abstract picture of water flow and droplets"
                         style={{ width: "auto", height: "100%", position: "relative" }}
                         width={700}

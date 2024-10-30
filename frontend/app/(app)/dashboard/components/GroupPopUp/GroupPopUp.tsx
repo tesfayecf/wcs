@@ -1,8 +1,8 @@
 'use client'
 import React from 'react';
+import { Group } from "@/app/(app)/group/[groupId]/types";
 import Form from '@/app/components/form/Form';
 import Popup from '@/app/components/popup/Popup';
-import { IGroupCreationForm } from '@/app/(app)/dashboard/types';
 import useDashboardStore from '@/app/(app)/dashboard/store';
 import { createGroup, deleteGroup, editGroup, getGroups } from '../../actions';
 
@@ -23,7 +23,7 @@ const GroupPopUp: React.FunctionComponent<IFroupPopUpProps> = (props: IFroupPopU
         }
     }
 
-    const onAccept = async (fields: IGroupCreationForm) => {
+    const onAccept = async (fields: Group.IGroupForm) => {
         let response = undefined;
         if (groupMenu.mode == "create") response = await createGroup(fields);
         else if (groupMenu.mode == "edit") response = await editGroup(groupMenu.id, fields);
@@ -47,7 +47,7 @@ const GroupPopUp: React.FunctionComponent<IFroupPopUpProps> = (props: IFroupPopU
             {groupMenu.mode == "delete" ?
                 null
                 :
-                <Form<IGroupCreationForm>
+                <Form<Group.IGroupForm>
                     title="Create Group"
                     externalError={false}
                     externalErrorText={"Invalid data"}

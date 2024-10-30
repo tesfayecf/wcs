@@ -1,0 +1,23 @@
+{
+    "info": {
+        "name": "Weather",
+        "description": "Collection of API endpoints for retrieving current and forecast weather data in the Django application.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Get Current Weather",
+            "request": {
+                "method": "GET",
+                "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/current/"
+            }
+        },
+        {
+            "name": "Get Forecast Weather",
+            "request": {
+                "method": "GET",
+                "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/forecast/"
+            }
+        }
+    ]
+}

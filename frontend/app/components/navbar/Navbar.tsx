@@ -1,53 +1,45 @@
 import React from 'react'
-import Link from 'next/link'
-import styles from './styles/Navbar.module.scss'
-import { IRootState, store } from '@/app/utils/store/store'
-import { usePathname } from 'next/navigation'
-import { connect } from 'react-redux'
+import DashboardIcon from '@/public/svg/DashboardIcon'
+import AnalyticsIcon from '@/public/svg/AnalyticsIcon'
+import SettingsIcon from '@/public/svg/SettingsIcon'
+import NavKey from '@/app/components/navbar/Navkey'
 
-interface INavbarProps extends ReturnType<typeof mapStateToProps> { }
+interface INavbarProps { }
 
 const Navbar: React.FunctionComponent<INavbarProps> = (props: INavbarProps) => {
 
+    const renderKeys = React.useCallback(() => {
+        return navigation.map((key, index) => {
+            return <NavKey key={index} text={key.text} index={key.index} icon={key.icon} />
+        })
+    }, [])
+
     return (
-        <div id='navbar' className={styles.navbar}>
-            <div id='navigation-buttons-container' className={styles.buttons}>
-                <NavbarButton text='Dashboard' index="/dashboard" />
-                <NavbarButton text='Analytics' index="/analytics" />
-                <NavbarButton text='Profile' index="/analytics" />
+        <div id='navbar' className={"navbar"}>
+            <div id='navkeys' className={"navkeys"}>
+                {renderKeys()}
             </div>
-            <div className={styles.userInfo}>
-                {props.userInfo.first_name}
-            </div>
-        </div>
+        </div >
     )
 }
 
-const mapStateToProps = (state: IRootState) => ({
-    userInfo: state.app.userInfo
-})
-
-export default connect(mapStateToProps, {})(Navbar)
+export default Navbar
 
 
-type INavbarButtonProps = {
-    text: string;
-    index: string;
-}
-
-const NavbarButton: React.FunctionComponent<INavbarButtonProps> = (props: INavbarButtonProps) => {
-    const pathname = usePathname();
-    const selected = pathname.includes(props.index);
-    const buttonStyle = selected ? styles.button_selected : styles.button;
-    return (
-        <Link href={props.index} style={{ textDecoration: 'none' }}>
-            <div id='navbarButton' className={buttonStyle}>
-                <span id='navbarButtonText' className={styles.navigation_button_text}>
-                    {props.text}
-                </span>
-            </div>
-        </Link >
-    )
-}
-
-
+const navigation = [
+    {
+        text: 'Dashboard',
+        index: '/dashboard',
+        icon: <DashboardIcon size={25} strokeWidth={1.2} fill={'black'} />
+    },
+    {
+        text: 'Analytics',
+        index: '/analytics',
+        icon: <AnalyticsIcon size={25} strokeWidth={1.2} fill={'black'} />
+    },
+    {
+        text: 'Settings',
+        index: '/settings',
+        icon: <SettingsIcon size={25} strokeWidth={1.2} fill={'black'} />
+    }
+]

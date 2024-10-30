@@ -1,0 +1,74 @@
+// Reset default styles
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+// Set up root styles
+:root {
+    font-size: $font-size-md;
+    line-height: 1.5;
+    text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+// Body styles
+body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 100%;
+    min-height: 100vh;
+    background-color: $background-1-light;
+    color: $text-1-light;
+    font-family: $font-family-primary;
+    font-size: 1rem;
+    font-weight: $font-weight-normal;
+    line-height: 1.5;
+    text-rendering: optimizeSpeed;
+    scrollbar-gutter: stable;
+}
+
+// Basic element styles
+a {
+    color: $app-color;
+    text-decoration: none;
+    transition: color $transition-speed $transition-easing;
+
+    &:hover,
+    &:focus {
+        color: darken-color($app-color, 10%);
+    }
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+// Remove animations for users who've turned them off
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

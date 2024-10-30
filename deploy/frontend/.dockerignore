@@ -1,0 +1,9 @@
+**/node_modules/
+**/.next/
+**/*.txt
+**/*.tsbuildinfo
+**/.editorconfig
+**/.eslintrc
+**/.prettierrc
+**/.cache/
+**/.npm/

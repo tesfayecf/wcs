@@ -1,94 +1,86 @@
 'use client'
 import React from "react";
-import styles from "./styles/Login.module.scss"
-import PopUpFormTemplate from "@/app/components/popUp/PopUpFormTemplate";
-import AuthHandler from "../AuthHandler";
-import AppHandler from "@/app/app/AppHandler";
-import { IRootState } from "@/app/utils/store/store";
-import { connect } from "react-redux";
-import { useRouter } from 'next/navigation';
-import CheckAuth from "@/app/utils/auth/checkAuth";
+import Link from "next/link";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Card, Checkbox, Form, Input, Typography } from "antd";
+import { login } from "@/app/(auth)/actions";
+import { ILoginForm } from "@/app/(auth)/types";
 
-const authHandler = AuthHandler.getInstance()
-const appHandler = AppHandler.getInstance()
-
-interface ILoginProps extends ReturnType<typeof mapStateToProps> { }
+interface ILoginProps { }
 
 const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
-    const router = useRouter();
-
-    React.useEffect(() => {
-        authHandler.load();
-        return () => {
-            authHandler.unload();
-        }
-    }, [])
-
-    const onEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        authHandler.setLoginFormEmail(event.target.value);
-    }
-
-    const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        authHandler.setLoginFormPassword(event.target.value);
-    }
-
-    const onLogin = async () => {
-        const response = await authHandler.login();
-        if (response.status === 200) {
-            router.push('./dashboard');
-            appHandler.setAuth();
-        } else {
-            console.log("Error") // Error handler
-        }
-    }
+    const [form] = Form.useForm();
 
     return (
-        <>
-            <CheckAuth>
-                <div className={styles.login}>
-                    <div className={styles.form}>
-                        <PopUpFormTemplate
-                            title="Login"
-                            open={true}
-                            onSubmit={onLogin}
-                            submitButtonText="Login"
-                            hideCancelButton={true}
-                            hideBackDrop={true}
-                            fields={[
-                                {
-                                    name: "Email",
-                                    type: "textInput",
-                                    placeholder: "Email",
-                                    value: props.loginForm.email,
-                                    onChange: onEmailChange,
-                                    error: props.loginForm.emailError,
-                                    errorMessage: "Invalid email",
-
-                                },
-                                {
-                                    name: "Password",
-                                    type: "textInput",
-                                    placeholder: "Password",
-                                    value: props.loginForm.password,
-                                    onChange: onPasswordChange,
-                                    error: props.loginForm.passwordError,
-                                    errorMessage: "Invalid password",
-                                    password: true
-                                }
-                            ]}
-                        />
+        <div id="login" className={"login"}>
+            <Card id="content" className="content">
+                <div id="header" className="header">
+                    <div id="title" className="title">
+                        <Typography.Title className="text" level={1}>Log in. Be the change!</Typography.Title>
+                    </div>
+                    <div id="subtitle" className="subtitle">
+                        <Typography.Text className="text" >Don't have an account yet?</Typography.Text>
+                        <Typography.Link className="text" href="/login">
+                            <Link href="/signup">Sign up</Link>
+                        </Typography.Link>
                     </div>
                 </div>
-            </CheckAuth>
-        </>
+                <div id="login-form" className="login-form">
+                    <Form
+                        name="login-form"
+                        className="login-form-items"
+                        layout="vertical"
+                        form={form}
+                        onFinish={(values: ILoginForm) => {
+                            login({
+                                email: values.email,
+                                password: values.password,
+                            })
+                        }}
+                    >
+                        <div id="form-items" className="form-items">
+                            <Form.Item
+                                name="email"
+                                className="form-item"
+                                rules={[{ required: true, message: 'Please input your email!' }]}
+                            >
+                                <Input placeholder="Email" prefix={<UserOutlined />} />
+                            </Form.Item>
+                            <Form.Item
+                                labelCol={{ span: 24 }}
+                                name="password"
+                                className="form-item"
+                                rules={[{ required: true, message: 'Please input your password!' }]}
+                            >
+                                <Input.Password placeholder="Password" prefix={<LockOutlined />} />
+                            </Form.Item>
+                        </div>
+                        <div id="options" className="options">
+                            <Form.Item
+                                name="remember"
+                                valuePropName="checked"
+                                className="option-item"
+                            >
+                                <Checkbox>Remember me</Checkbox>
+                            </Form.Item>
+                            <Typography.Link>
+                                <Link href="/recover" className="text">Forgot password?</Link>
+                            </Typography.Link>
+                        </div>
+                        <div id="buttons" className="buttons">
+                            <Button
+                                type="primary"
+                                className="button-item"
+                                onClick={() => form.submit()}
+                            >
+                                Login
+                            </Button>
+                        </div>
+                    </Form>
+                </div>
+            </Card >
+        </div >
     )
 }
 
-
-const mapStateToProps = (state: IRootState) => {
-    return {
-        loginForm: state.auth.loginForm,
-    }
-}
-
-export default connect(mapStateToProps, {})(Login);
+export default Login;

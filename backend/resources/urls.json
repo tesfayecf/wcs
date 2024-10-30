@@ -1,0 +1,162 @@
+{
+    "info": {
+        "name": "Resources",
+        "description": "Collection of API endpoints for managing groups, tanks, and sensors in the Django resources app, with functionalities for creating, retrieving, updating, and deleting data.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Group",
+            "item": [
+                {
+                    "name": "Create Group",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/create-group/"
+                    }
+                },
+                {
+                    "name": "Get Group",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-group/"
+                    }
+                },
+                {
+                    "name": "Get Groups",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-groups/"
+                    }
+                },
+                {
+                    "name": "Update Group",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/update-group/"
+                    }
+                },
+                {
+                    "name": "Delete Group",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/delete-group/"
+                    }
+                },
+                {
+                    "name": "Group Info",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/group-info/"
+                    }
+                },
+                {
+                    "name": "Group Metrics",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/group-metrics/"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Tank",
+            "item": [
+                {
+                    "name": "Create Tank",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/create-tank/"
+                    }
+                },
+                {
+                    "name": "Get Tank",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-tank/"
+                    }
+                },
+                {
+                    "name": "Get Tanks",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-tanks/"
+                    }
+                },
+                {
+                    "name": "Update Tank",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/update-tank/"
+                    }
+                },
+                {
+                    "name": "Delete Tank",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/delete-tank/"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Sensor",
+            "item": [
+                {
+                    "name": "Create Sensor",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/create-sensor/"
+                    }
+                },
+                {
+                    "name": "Get Sensor",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-sensor/"
+                    }
+                },
+                {
+                    "name": "Get Sensors",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-sensors/"
+                    }
+                },
+                {
+                    "name": "Update Sensor",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/update-sensor/"
+                    }
+                },
+                {
+                    "name": "Delete Sensor",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/delete-sensor/"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Info",
+            "item": [
+                {
+                    "name": "Stats",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/stats/"
+                    }
+                },
+                {
+                    "name": "Summary",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/summary/"
+                    }
+                }
+            ]
+        }
+    ]
+}

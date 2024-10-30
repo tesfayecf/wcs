@@ -2,38 +2,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Django - Daphne",
-      "type": "python",
-      "request": "launch",
-      "module": "daphne",
-      "cwd": "${workspaceFolder}/backend",
-      "args": ["backend.asgi:application"],
-      "django": true,
-      "justMyCode": false
-    },
-    {
-      "name": "NextJS - turbo",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/frontend",
-      "runtimeExecutable": "npm",
-      "restart": true,
-      "env": {
-        "NODE_ENV": "development"
-      },
-      "runtimeArgs": ["run-script", "dev - turbo", "--inspect"],
-      "console": "integratedTerminal"
-    },
-    {
-      "name": "Django dev",
-      "type": "python",
-      "request": "launch",
-      "program": "${workspaceFolder}/backend/manage.py",
-      "args": ["runserver"],
-      "django": true,
-      "console": "integratedTerminal"
-    },
-    {
       "name": "NextJS dev",
       "type": "node",
       "request": "launch",
@@ -47,16 +15,7 @@
       "console": "integratedTerminal"
     },
     {
-      "name": "Django prod",
-      "type": "python",
-      "request": "launch",
-      "program": "${workspaceFolder}/backend/manage.py",
-      "args": ["runserver"],
-      "django": true,
-      "console": "integratedTerminal"
-    },
-    {
-      "name": "NextJS prod",
+      "name": "NextJS dev turbo",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/frontend",
@@ -65,7 +24,44 @@
       "env": {
         "NODE_ENV": "development"
       },
+      "runtimeArgs": ["run", "dev::turbo", "--inspect"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Django WSGI",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/manage.py",
+      "args": ["runserver", "--noreload"],
+      "django": true,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Django ASGI Daphne",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "daphne",
+      "cwd": "${workspaceFolder}/backend",
+      "args": ["backend.asgi:application"],
+      "django": true
+    },
+    {
+      "name": "NextJS prod",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/frontend",
+      "runtimeExecutable": "npm",
+      "restart": true,
       "runtimeArgs": ["run-script", "start"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Django prod",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/manage.py",
+      "args": ["runserver", "--noreload"],
+      "django": true,
       "console": "integratedTerminal"
     },
     {
@@ -81,7 +77,11 @@
   "compounds": [
     {
       "name": "APP dev",
-      "configurations": ["Django - Daphne", "NextJS - turbo", "web-renderer"]
+      "configurations": ["Django WSGI", "NextJS dev"]
+    },
+    {
+      "name": "APP dev - web",
+      "configurations": ["Django WSGI", "NextJS dev", "web-renderer"]
     },
     {
       "name": "APP prod",

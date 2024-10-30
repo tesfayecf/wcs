@@ -1,0 +1,114 @@
+// App colors
+$app-color: #55dc9e;
+$app-color-light: lighten($app-color, 15%);
+$app-color-dark: darken($app-color, 15%);
+
+// Background colors light
+$background-1-light: #ffffff;
+$background-2-light: #fafafa;
+$background-3-light: #f5f5f5;
+$background-4-light: #eff1f3;
+
+// Background colors dark
+$background-1-dark: #000000;
+$background-2-dark: #161717;
+$background-3-dark: #1e1c1e;
+$background-4-dark: #252527;
+
+// Text colors light
+$text-1-light: #323333;
+$text-2-light: #7e7f80;
+$text-3-light: #d1d1d1;
+
+// Text colors dark
+$text-1-dark: #e4e9ea;
+$text-2-dark: #b7b7b6;
+$text-3-dark: #67605f;
+
+// Graph colors
+$graph-color-1: #47e29a;
+$graph-color-2: #f4c987;
+$graph-color-3: #f9a638;
+$graph-color-4: #f89a69;
+$graph-color-5: #e74c3c;
+
+// Chart colors
+$chart-color-1: #77c4a9;
+$chart-color-2: #fae499;
+$chart-color-3: #789abd;
+$chart-color-4: #d17a72;
+$chart-color-5: #9b59b6;
+
+// Fonts
+$font-family-primary: "Roboto";
+$font-family-secondary: "Inter";
+
+// Font sizes
+$font-size-xs: 12px;
+$font-size-sm: 14px;
+$font-size-md: 16px;
+$font-size-lg: 18px;
+$font-size-xl: 32px;
+$font-size-xxl: 48px;
+
+// Font weights
+$font-weight-thin: 100;
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-medium: 550;
+$font-weight-bold: 700;
+$font-weight-black: 900;
+
+// Spacing
+$spacing-xxs: 2px;
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+
+// Border radius
+$border-radius-xs: 2px;
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 16px;
+$border-radius-xl: 32px;
+
+// Transitions
+$transition-speed: 0.3s;
+$transition-easing: ease-in-out;
+
+// Z-index
+$z-index-popup: 1000;
+$z-index-modal: 2000;
+$z-index-tooltip: 3000;
+$z-index-overlay: 4000;
+$z-index-toast: 5000;
+
+// Content box
+$content-box-backgroun-color: #ffffff;
+$content-box-margin: 10px;
+$content-box-border-radius: 5px;
+$content-box-shadow: rgba(221, 224, 226, 255) -2.4px 2.4px 3.2px;
+$content-box-shadow-hover: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+// Navbar
+$navbar-text-light: #323333;
+$navbar-text-dark: #e4e9ea;
+$navbar-background-light: #1c1d20;
+$navbar-background-dark: #161717cc;
+$navbar-hover-text-light: #323333;
+$navbar-hover-text-dark: #e4e9ea;
+$navbar-hover-background-light: #e6e6e680;
+$navbar-hover-background-dark: #2c2d2d;
+$navbar-selected-background-light: #ffffff;
+$navbar-selected-background-dark: #3a3b3b;
+$navbar-width-1: 200px;
+$navbar-width-2: 75px;
+
+// Form
+$form-background-color: #ffffff;
+
+// Group widget
+$group-widget-height: 150px;
+$group-widget-disabled-opacity: 0.3;

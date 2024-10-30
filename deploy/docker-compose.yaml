@@ -1,0 +1,125 @@
+version: '3.9'
+
+services:
+  backend_wsgi:
+    restart: unless-stopped
+    container_name: backend_wsgi
+    build:
+      context: .
+      dockerfile: backend/backend_wsgi/Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/backend_wsgi/.env
+    depends_on:
+      - emqx
+      - database
+    networks:
+      - local_network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 500M
+
+  backend_asgi:
+    restart: unless-stopped
+    container_name: backend_asgi
+    build:
+      context: .
+      dockerfile: backend/backend_asgi/Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./backend/backend_asgi/.env
+    networks:
+      - local_network
+    depends_on:
+      - emqx
+      - database
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 500M
+
+  database:
+    restart: unless-stopped
+    container_name: database
+    build:
+      context: .
+      dockerfile: database/Dockerfile
+    env_file:
+      - ./database/.env
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - local_network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1G
+
+  nginx:
+    restart: unless-stopped
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    ports:
+      - 80:80
+    depends_on:
+      - frontend
+      - backend_wsgi
+      - backend_asgi
+    networks:
+      - local_network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 300M
+
+  frontend:
+    restart: unless-stopped
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - local_network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 300M
+
+  emqx:
+    restart: unless-stopped
+    container_name: emqx
+    image: emqx/emqx:5.1.3
+    ports:
+      - 1883:1883
+      - 8083:8083
+      - 8883:8883
+      - 8084:8084
+      - 18083:18083
+    networks:
+      - local_network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 500M
+
+networks:
+  local_network:
+
+
+volumes:
+  db_data:

@@ -1,0 +1,26 @@
+.chart-test {
+    display: flex;
+
+    .pie-chart {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+
+        .charts {
+            width: 100%;
+            height: 100%;
+
+            .chartjs {
+                height: 100%;
+                width: 100%;
+            }
+
+            .recharts {
+                height: 100%;
+                width: 100%;
+            }
+        }
+    }
+}

@@ -1,0 +1,95 @@
+.tankWidget {
+    height: 150px;
+    width: 250px;
+
+    .disabled {
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        background-color: gray;
+        opacity: 0.3;
+    }
+
+    .tankContent {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 10px 15px;
+
+        .tankHeader {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+
+            .name {
+                font-size: 25px;
+                color: $text-1-light;
+                font-weight: bold;
+            }
+
+            .type {
+                font-size: 17px;
+                color: $text-2-light;
+                font-weight: 700;
+            }
+
+            .tankStatus {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+                font-size: 14px;
+                height: 100%;
+            }
+        }
+
+        .tankData {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+
+            .level {
+                font-size: 60px;
+                font-family: Microsoft YaHei, Microsoft YaHei-Bold;
+                font-weight: bold;
+                text-align: LEFT;
+                color: $text-2-light;
+            }
+        }
+
+        .waterAanimation {
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border: 1px solid lightgray;
+            border-radius: 3px;
+            box-shadow: 0 0 10px -5px #999;
+            animation: waterRipple 2s linear infinite;
+            /* Apply the animation */
+            background: linear-gradient(90deg, #b30000 25%, #018091 50%, #61661b 75%);
+            /* Gradient for the animation */
+            background-size: 200% 100%;
+            /* Initial background size for animation */
+        }
+    }
+}
+
+/* Add this animation definition */
+@keyframes waterRipple {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    100% {
+        background-position: 100% 0%;
+    }
+}

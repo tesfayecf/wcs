@@ -1,0 +1,9 @@
+install python
+install django and dependancies (requirements.txt)
+install postgres (maybe different instance)
+install timescaleDB
+run manager.py check_data_database
+run manager.py makemigrations
+run manager.py migrate
+check if create superuser(s)
+run manager.py runserver

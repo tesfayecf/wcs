@@ -35,7 +35,7 @@ const WatertankSVG: React.FunctionComponent<WatertankSVGProps> = (props: Waterta
         // </svg>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" style={{ height: props.height, width: props.width, position: 'relative' }}>
             <defs>
-                <pattern id="waterTankPattern" width="10" height="10" patternUnits="userSpaceOnUse">
+                <pattern width="10" height="10" patternUnits="userSpaceOnUse">
                     <rect width="10" height="10" fill="#C4C4C4" />
                     <path d="M5 0 L5 10 M0 5 L10 5" stroke="#8C8C8C" />
                 </pattern>

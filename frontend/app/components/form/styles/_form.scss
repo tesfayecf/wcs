@@ -1,0 +1,105 @@
+.form-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: $spacing-md;
+    padding: $spacing-md;
+    min-width: 500px;
+    width: 100%;
+    background-color: $form-background-color;
+    border-radius: $content-box-border-radius;
+    box-shadow: $content-box-shadow;
+
+    .title {
+        text-align: center;
+        font-size: $font-size-md;
+        font-weight: $font-weight-bold;
+        color: $text-1-light;
+        margin: $spacing-md 0;
+        padding: $spacing-sm;
+    }
+
+    .fields {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: $spacing-md;
+        margin: 0 $spacing-md;
+
+        .field {
+            margin: $spacing-xs 0;
+            width: 100%;
+        }
+    }
+
+    .buttons {
+        margin: $spacing-lg $spacing-md;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: $spacing-md;
+
+        .button {
+            min-width: 120px;
+            font-size: $font-size-md;
+            font-weight: $font-weight-bold;
+            text-align: center;
+            padding: $spacing-sm $spacing-md;
+            background-color: $form-background-color;
+            color: $text-1-light;
+            border: 1.5px solid $text-1-light;
+            border-radius: $content-box-border-radius;
+            cursor: pointer;
+            outline: none;
+            transition: all $transition-speed $transition-easing;
+            user-select: none;
+
+            &:hover,
+            &:focus {
+                transform: translateY(-2px);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            &:active {
+                transform: translateY(0);
+                box-shadow: none;
+            }
+        }
+
+        .accept {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: $spacing-sm;
+
+            &:hover {
+                border-color: $app-color;
+                color: $app-color;
+            }
+
+            .loadingSpinner {
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                border: 2px solid $text-2-light;
+                border-radius: 50%;
+                border-top-color: $app-color;
+                animation: spin 1s ease-in-out infinite;
+                margin-left: $spacing-xs;
+            }
+
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        }
+
+        .cancel {
+            &:hover {
+                border-color: #e07159;
+                color: #e07159;
+            }
+        }
+    }
+}

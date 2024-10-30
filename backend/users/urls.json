@@ -1,0 +1,197 @@
+{
+    "info": {
+        "name": "Users",
+        "description": "Collection of API endpoints for user authentication, session management, user data handling, and permission management in the Django application.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Authentication",
+            "item": [
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/login/"
+                    }
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/logout/"
+                    }
+                },
+                {
+                    "name": "Recover",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/recover/"
+                    }
+                },
+                {
+                    "name": "Reset",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/reset/"
+                    }
+                },
+                {
+                    "name": "Signup",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/signup/"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Session",
+            "item": [
+                {
+                    "name": "Refresh Session",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/refresh/"
+                    }
+                },
+                {
+                    "name": "Verify Session",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/verify/"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "User",
+            "item": [
+                {
+                    "name": "Create User",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/create-user/"
+                    }
+                },
+                {
+                    "name": "Get User",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-user/"
+                    }
+                },
+                {
+                    "name": "Get Users",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-users/"
+                    }
+                },
+                {
+                    "name": "Update User",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/update-user/"
+                    }
+                },
+                {
+                    "name": "Delete User",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/delete-user/"
+                    }
+                },
+                {
+                    "name": "Get User Info",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-user-info/"
+                    }
+                },
+                {
+                    "name": "Get User Metrics",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-user-metrics/"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Permission",
+            "item": [
+                {
+                    "name": "Create Permission",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/create-permission/"
+                    }
+                },
+                {
+                    "name": "Get Permission",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-permission/"
+                    }
+                },
+                {
+                    "name": "Get Permissions",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-permissions/"
+                    }
+                },
+                {
+                    "name": "Update Permission",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/update-permission/"
+                    }
+                },
+                {
+                    "name": "Delete Permission",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/delete-permission/"
+                    }
+                },
+                {
+                    "name": "Create User Permission",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/create-user-permission/"
+                    }
+                },
+                {
+                    "name": "Get User Permission",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-user-permission/"
+                    }
+                },
+                {
+                    "name": "Get User Permissions",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-user-permissions/"
+                    }
+                },
+                {
+                    "name": "Update User Permission",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/update-user-permission/"
+                    }
+                },
+                {
+                    "name": "Delete User Permission",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/delete-user-permission/"
+                    }
+                }
+            ]
+        }
+    ]
+}

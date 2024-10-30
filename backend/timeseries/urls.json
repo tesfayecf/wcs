@@ -1,0 +1,183 @@
+{
+    "info": {
+        "name": "Timeseries",
+        "description": "Collection of API endpoints for managing measures, channels, chunks, and records in the Django timeseries app, including data retrieval, creation, update, and deletion functionalities.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Measures",
+            "item": [
+                {
+                    "name": "Create Measure",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/create-measure/"
+                    }
+                },
+                {
+                    "name": "Get Measure",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-measure/"
+                    }
+                },
+                {
+                    "name": "Get Measures",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-measures/"
+                    }
+                },
+                {
+                    "name": "Update Measure",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/update-measure/"
+                    }
+                },
+                {
+                    "name": "Delete Measure",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/delete-measure/"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Channels",
+            "item": [
+                {
+                    "name": "Create Channel",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/create-channel/"
+                    }
+                },
+                {
+                    "name": "Get Channel",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-channel/"
+                    }
+                },
+                {
+                    "name": "Get Channels",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-channels/"
+                    }
+                },
+                {
+                    "name": "Update Channel",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/update-channel/"
+                    }
+                },
+                {
+                    "name": "Delete Channel",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/delete-channel/"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Chunks",
+            "item": [
+                {
+                    "name": "Create Chunk",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/create-chunk/"
+                    }
+                },
+                {
+                    "name": "Get Chunk",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-chunk/"
+                    }
+                },
+                {
+                    "name": "Get Chunks",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-chunks/"
+                    }
+                },
+                {
+                    "name": "Update Chunk",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/update-chunk/"
+                    }
+                },
+                {
+                    "name": "Delete Chunk",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/delete-chunk/"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Records",
+            "item": [
+                {
+                    "name": "Create Record",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/create-record/"
+                    }
+                },
+                {
+                    "name": "Get Record",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-record/"
+                    }
+                },
+                {
+                    "name": "Get Records",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-records/"
+                    }
+                },
+                {
+                    "name": "Get Records Flow",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-records-flow/"
+                    }
+                },
+                {
+                    "name": "Get Records Trend Forecast",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/get-records-trend-forecast/"
+                    }
+                },
+                {
+                    "name": "Update Record",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/update-record/"
+                    }
+                },
+                {
+                    "name": "Delete Record",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{BASE_URL}}/{{BASE_ENDPOINT}}/delete-record/"
+                    }
+                }
+            ]
+        }
+    ]
+}

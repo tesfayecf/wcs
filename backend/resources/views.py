@@ -962,7 +962,7 @@ def get_sensor(sensor_id: int, user):
         if sensor:
             return sensor
 
-        sensor = Sensor.objects.filter(pk=sensor_id, tank__group__user=user).first()
+        sensor = Sensor.objects.filter(pk=sensor_id, tank__group__user=user).prefetch_related('tanks').first()
         if sensor:
             cache.set(cache_key, sensor, timeout=CACHE_TIMEOUT)
 

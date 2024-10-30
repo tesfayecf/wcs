@@ -19,7 +19,7 @@ class Command(BaseCommand):
             measure_types = [MeasureType.TEMPERATURE, MeasureType.PRESSURE, MeasureType.LEVEL]
             for measure_type in measure_types:
                 measure = Measure.objects.create(
-                    label=f"{measure_type.lower()}-{sensor.id}",
+                    label=f"{random.randint(1000, 9999)}-{sensor.id}",
                     name=f"{measure_type} Measure",
                     type=measure_type,
                     sensor=sensor,

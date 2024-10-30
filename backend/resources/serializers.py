@@ -1,11 +1,12 @@
 from rest_framework import serializers
 
+from .models import Group, Tank, TankType, Sensor, SensorStatus
 from users.models import User
-from .models import Group, Tank, TankType, SensorStatus
+from timeseries.models import Measure, Channel, Record
 
-###############
+#############
 ### GROUP ### 
-###############
+#############
 
 class GroupSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
@@ -24,8 +25,12 @@ class GroupSerializer(serializers.ModelSerializer):
             'description': instance.description,
             'edited_at': instance.edited_at,
             'created_at': instance.created_at,
-            'user': instance.user
+            'user': instance.user.id
         }
+
+    class Meta:
+        model = Group
+        fields = '__all__'
 
 class GroupInfoSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
@@ -59,11 +64,14 @@ class GroupInfoSerializer(serializers.ModelSerializer):
             'average_capacity': instance.average_capacity
         }
 
+    class Meta:
+        model = Group
+        fields = '__all__'
+
 class CreateGroupSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
     location = serializers.CharField(max_length=255)
     description = serializers.CharField(allow_blank=True)
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
 class GetGroupSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=True)
@@ -83,9 +91,9 @@ class UpdateGroupSerializer(serializers.Serializer):
 class DeleteGroupSerializer(serializers.Serializer):
     id = serializers.IntegerField()
 
-###############
+############
 ### TANK ### 
-###############
+############
 
 class TankSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
@@ -110,6 +118,10 @@ class TankSerializer(serializers.ModelSerializer):
             'created_at': instance.created_at,
             'group': instance.group
         }
+
+    class Meta:
+        model = Tank
+        fields = '__all__'
 
 class TankInfoSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
@@ -136,6 +148,10 @@ class TankInfoSerializer(serializers.ModelSerializer):
             'total_sensors': instance.sensors.count(),
             'total_active_sensors': instance.sensors.filter(status=SensorStatus.OPERATIONAL).count()
         }
+
+    class Meta:
+        model = Tank
+        fields = '__all__'
 
 class CreateTankSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
@@ -166,9 +182,9 @@ class UpdateTankSerializer(serializers.Serializer):
 class DeleteTankSerializer(serializers.Serializer):
     id = serializers.IntegerField()
 
-###############
+##############
 ### SENSOR ### 
-###############
+##############
 
 class SensorSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
@@ -199,6 +215,53 @@ class SensorSerializer(serializers.ModelSerializer):
             'created_at': instance.created_at,
             'tank': instance.tank
         }
+
+    class Meta:
+        model = Sensor
+        fields = '__all__'
+
+
+class SensorInfoSerializer(serializers.ModelSerializer): 
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=255)
+    description = serializers.CharField(allow_blank=True, read_only=True)
+    notes = serializers.CharField(allow_blank=True, read_only=True)
+    device_id = serializers.CharField(max_length=100, read_only=True)
+    status = serializers.ChoiceField(choices=SensorStatus.choices, read_only=True)
+    installation_date = serializers.DateField(read_only=True)
+    maintenance_date = serializers.DateField(read_only=True)
+    is_active = serializers.BooleanField(default=True, read_only=True)
+    edited_at = serializers.DateTimeField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    tank = serializers.PrimaryKeyRelatedField(queryset=Tank.objects.all())
+    num_measures = serializers.IntegerField(read_only=True)
+    num_channels = serializers.IntegerField(read_only=True)
+    num_records = serializers.IntegerField(read_only=True)
+    last_record = serializers.DateTimeField(read_only=True)
+
+    def to_representation(self, instance):
+        return {
+            'id': instance.id,
+            'name': instance.name,
+            'description': instance.description,
+            'notes': instance.notes,
+            'device_id': instance.device_id,
+            'status': instance.status,
+            'installation_date': instance.installation_date,
+            'maintenance_date': instance.maintenance_date,
+            'is_active': instance.is_active,
+            'edited_at': instance.edited_at,
+            'created_at': instance.created_at,
+            'tank': instance.tank,
+            'num_measures': Measure.objects.filter(sensor=instance).count(),
+            'num_channels': Channel.objects.filter(measure__sensor=instance).count(),
+            'num_records': Record.objects.filter(measure__channel__sensor=instance).count(),
+            'last_record': Record.objects.filter(sensor=instance).order_by('-created_at').first().created_at
+        }
+    
+    class Meta:
+        model = Sensor
+        fields = '__all__'
 
 class CreateSensorSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)

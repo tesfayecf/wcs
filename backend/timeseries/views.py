@@ -1,723 +1,325 @@
-# import numpy as np
-# import pandas as pd
-from datetime import datetime
-# from statsmodels.tsa.seasonal import STL
-# from scipy.stats import linregress, zscore
-from timescale.db.models.expressions import TimeBucket
+import pandas as pd
+from datetime import datetime, timedelta
+from statsmodels.tsa.arima.model import ARIMA
 
-from django.db import connection
-from django.db.models import F, Window, Sum, Case, When, Min, Max, Avg, StdDev, RowRange
-from django.db.models.functions import TruncMinute, TruncHour, TruncDay, TruncMonth, TruncYear, TruncDate
-from django.db.models.functions import Lag
-from django.utils import timezone
-from django.utils.timezone import make_aware
-# from django.db.models.window import Window
+from django.db.models import F, Min, Max, Avg
 
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .schemas import *
-from .models import SensorReading
-from data.models import Sensor
+from .models import Measure, Channel, Chunk, Record
+from .serializers import *
 
-# TODO: Create materialized views
-
-def to_dict(model):
-    model_dict = {}
-    for field in model._meta.fields:
-        model_dict[field.name] = getattr(model, field.name)
-    return model_dict
-
-def distance_to_height(distance, tank_height):
-    """
-    Converts sensor reading distance to water height in the tank.
-    """
-    if distance is None:
-        return None  # Handle missing distance values
-    return tank_height - distance
-
-def to_timestamp(time_string):
-    """
-    Converts a time string to a timestamp.
-    """
-    naive_datetime = datetime.strptime(time_string, "%Y-%m-%dT%H:%M:%SZ")
-    aware_datetime = timezone.make_aware(naive_datetime, timezone=timezone.utc)
-    return aware_datetime.timestamp()
+# # TODO: Create materialized views
 
 ######################
-### SENOR READINGS ###
+### SENSOR RECORDS ###
 ######################
 
-### GET ###
-class GetSensorReadingsView(APIView):
-    def post(self, request):
-        try:
-            # Deserialize request data
-            data = GetSensorReadingsSchema(**request.data)
+class GetLastRecordView(APIView):
+    """
+    View for retrieving the last record for a sensor.
 
-            # Check sensor exists
-            sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for retrieving the last record for a sensor.
+    """
+
+    def post(self, request):
+        """
+        Handles POST requests for retrieving the last record for a sensor.
+
+        Parameters:
+        - request: The HTTP request object containing the sensor ID.
+
+        Returns:
+        - Response: HTTP response with the last record if found,
+                    or an error message if the sensor does not exist or an exception occurs.
+        """
+        try:
+            # 1. Validate input data
+            serializer = GetLastRecordSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            # 2. Retrieve necessary objects
+            sensor = Sensor.objects.filter(
+                pk=serializer.validated_data['sensor_id'],
+                tank__id=serializer.validated_data['tank_id'],
+                tank__group__id=serializer.validated_data['group_id'],
+                tank__group__user=request.user
+            ).first()
             if not sensor:
-                return Response({'error': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-                       
-            # Get sensor readings
-            readings = SensorReading.timescale.filter(
-                sensor=sensor,
-                time__range=(data.start_time, data.end_time)
-            )
-            
-            # Bucket readings
-            readings = readings.time_bucket(
-                'time', 
-                f"{data.timeframe} {data.period}"
-            )
-            
-            # Get distance values
-            readings = readings.annotate(
-                distance=F('distance')
-            )
-                        
-            # Serialize sensor readings
-            readings_json = [SensorReadingSchema(time=int(reading['bucket'].timestamp()), distance=reading['distance']).model_dump() for reading in readings]
-            
-            return Response(readings_json, status=status.HTTP_200_OK)
+                return Response({"detail": "Sensor does not exist."}, status=status.HTTP_404_NOT_FOUND)
+
+            # 3. Check for conflicts
+            # 4. Perfom main operation
+            record = Record.objects.filter(
+                sensor=sensor, 
+                channel__measure__id=serializer.validated_data['measure_id']
+            ).last()
+            if not record:
+                return Response({"detail": "No records found."}, status=status.HTTP_404_NOT_FOUND)
+
+            # 5. Store response data in cache
+            # 6. Prepare and return response
+            serializer = RecordSerializer(record)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class GetSensorLastReadingView(APIView):
+class GetRecordsView(APIView):
+    """
+    View for retrieving sensor records based on specified parameters.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for retrieving sensor records.
+    """
+
     def post(self, request):
-        try:
-            # Deserialize request data
-            data = GetLastSensorReadingSchema(**request.data)
-            
-            # Check sensor exists
-            sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
-            if not sensor:
-                return Response({'error': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-            
-            # Get last sensor reading
-            last_reading = SensorReading.objects.filter(sensor=sensor).order_by('-time').first()
-            
-            if not last_reading:
-                return Response({'error': 'No readings for this sensor'}, status=status.HTTP_404_NOT_FOUND)
-            
-            # Serialize last sensor reading
-            reading_json = SensorReadingSchema(time=int(last_reading.time.timestamp()), distance=last_reading.distance).model_dump()
-            return Response(reading_json, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        """
+        Handles POST requests for retrieving sensor records.
 
-class GetSensorFlowView(APIView):
-    def post(self, request):
-        try:
-            # Deserialize request data
-            data = GetSensorFlowSchema(**request.data)
+        Parameters:
+        - request: The HTTP request object containing the input parameters.
 
-            # Check sensor exists
-            sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
-            if not sensor:
-                return Response({'error': 'Sensor does not exist'}, status=status.HTTP_404_NOT_FOUND)
-            
-            # Convert string times to timezone-aware datetime objects
-            start_time = make_aware(data.start_time)
-            end_time = make_aware(data.end_time)
-            
-            # Use TimescaleDB's time_bucket function
-            readings = SensorReading.timescale.filter(
-                sensor=sensor,
-                time__range=(start_time, end_time)
+        Returns:
+        - Response: HTTP response with sensor readings if successful,
+                    or an error message if validation fails or an exception occurs.
+        """
+        try:
+            # 1. Validate input data
+            serializer = GetRecordsSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            if serializer.validated_data['start_time'] > serializer.validated_data['end_time']:
+                return Response({"detail": "Start time cannot be after end time."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # 2. Retrieve necessary objects
+            # 3. Check for conflicts
+            # 4. Perfom main operation
+            base_query = Record.timescale.filter(
+                channel__measure__sensor__tank__group__user=request.user,
+                time__range=(serializer.validated_data['start_time'], serializer.validated_data['end_time'])
+            )
+
+            if 'tank_id' in serializer.validated_data:
+                base_query = base_query.filter(channel__measure__sensor__tank__id=serializer.validated_data['tank_id'])
+            else:
+                base_query = base_query.filter(channel__measure__sensor__tank__group__id=serializer.validated_data['group_id'])
+
+            query = base_query.time_bucket(
+                # 'time', f"1 ${serializer.validated_data['timeframe']}"
+                'time', "1 minute"
+            ).values(
+                'time',
+                'channel__id',
+                'channel__measure__id',
+                'channel__measure__sensor__id'
             ).annotate(
-                bucket=TimeBucket('time', f"{data.timeframe} {data.period}")  # TimescaleDB function
-            ).values('bucket').annotate(
-                distance=Avg('distance')
-            ).order_by('bucket')
-            
-            # Calculate inflow and outflow
-            c_inflow, c_outflow = 0, 0
-            in_out_flow_data = []
-            prev_distance = None
-            
-            for reading in readings:
-                current_distance = reading['distance']
-                
-                if prev_distance is not None:
-                    diff = current_distance - prev_distance
-                    inflow = max(0, diff)
-                    outflow = abs(min(0, diff))
-                    c_inflow += inflow
-                    c_outflow += outflow
-                else:
-                    inflow, outflow = 0, 0
-                
-                in_out_flow_data.append({
-                    'time': reading['bucket'].isoformat(),
-                    'distance': current_distance,
-                    'inflow': c_inflow,
-                    'outflow': c_outflow,
-                })
-                
-                prev_distance = current_distance
-            
-            return Response(in_out_flow_data, status=status.HTTP_200_OK)
-        
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-############# RAW SQL #############
-class GetSensorFlowViewRaw(APIView):
-    def post(self, request):
-        try:
-            # Deserialize request data
-            data = GetSensorFlowSchema(**request.data)
-                        
-            # Check sensor exists
-            sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
-            if not sensor:
-                return Response({'error': 'Sensor does not exist'}, status=status.HTTP_404_NOT_FOUND)
-            
-            # Convert string times to timezone-aware datetime objects
-            start_time = make_aware(data.start_time)
-            end_time = make_aware(data.end_time)
-            
-            # Construct the interval string
-            interval = f"{data.timeframe} {data.period}"
-            
-            # Raw SQL query
-            with connection.cursor() as cursor:
-                cursor.execute("""
-                    WITH buckets AS (
-                        SELECT time_bucket(%s, time) AS bucket,
-                               AVG(distance) AS distance
-                        FROM sensor_reading
-                        WHERE sensor_id = %s AND time BETWEEN %s AND %s
-                        GROUP BY bucket
-                        ORDER BY bucket
-                    )
-                    SELECT bucket,
-                           distance,
-                           GREATEST(0, distance - LAG(distance) OVER (ORDER BY bucket)) AS inflow,
-                           GREATEST(0, LAG(distance) OVER (ORDER BY bucket) - distance) AS outflow
-                    FROM buckets
-                """, [interval, sensor.sensor_id, start_time, end_time])
-                
-                columns = [col[0] for col in cursor.description]
-                readings = [dict(zip(columns, row)) for row in cursor.fetchall()]
-            
-            # Calculate cumulative inflow and outflow
-            c_inflow, c_outflow = 0, 0
-            in_out_flow_data = []
-            
-            for reading in readings:
-                c_inflow += reading['inflow']
-                c_outflow += reading['outflow']
-                
-                in_out_flow_data.append({
-                    'time': reading['bucket'].isoformat(),
-                    'distance': reading['distance'],
-                    'inflow': c_inflow,
-                    'outflow': c_outflow,
-                })
-            
-            return Response(in_out_flow_data, status=status.HTTP_200_OK)
-        
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-###################################
-
-class GetSensorInputFlowView(APIView):
-    def post(self, request):
-        try:
-            # Deserialize request data
-            data = GetSensorReadingsSchema(**request.data)
-            
-            # Check sensor exists
-            sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
-            if not sensor:
-                return Response({'error': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-            # Get readings within timeframe
-            readings = SensorReading.timescale.filter(
-                sensor=sensor,
-                time__range=(data.start_time, data.end_time)
+                min=Min('value'),
+                max=Max('value'),
+                value=Avg('value'),
             )
 
-            # Apply window function for cumulative net flow
-            readings = readings.annotate(
-                distance=F('distance'),
-                previous_distance=Lag('distance', order_by='time'),
-                inflow=Case(
-                    When(previous_distance__isnull=True, then=F('distance')),
-                    default=F('distance') - Lag('distance', order_by='time')
-                ),
-                outflow=Case(
-                    When(previous_distance__isnull=True, then=0),
-                    default=F('distance') - Lag('distance', order_by='time')
-                ) * -1,
-                cumulative_inflow=Window(
-                    expression=Sum('inflow'),
-                    order_by=F('time')
-                ),
-                cumulative_outflow=Window(
-                    expression=Sum('outflow'),
-                    order_by=F('time')
+            # Here we can process the readings based on the channel id (ie. convert magnituds, correct versions, etc.)
+            # Maybe this can be done in the client side
+
+            # In order to read a queryset, we have to iterate over it
+            readings = []
+            for row in query:
+                readings.append(
+                    {
+                        'time': row['time'],
+                        'min': row['min'],
+                        'max': row['max'],
+                        'value': row['value'],
+                        'channel': row['channel__id'],
+                        'measure': row['channel__measure__id'],
+                        'sensor': row['channel__measure__sensor__id'],
+                    }
                 )
-            )
 
-            # Serialize and return response data
-            data = [
-                {
-                    'time': reading['time'],
-                    'distance': reading['distance'],
-                    'inflow': reading['cumulative_inflow'],
-                    'outflow': reading['cumulative_outflow'],
-                }
-                for reading in readings
-            ]
-            return Response(data, status=status.HTTP_200_OK)
-
+            # 5. Store response data in cache
+            # 6. Prepare and return response
+            serializer = RecordInfoSerializer(readings, many=True)           
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class GetSensorStatsView(APIView):
+class GetRecordsFlowView(APIView):
+    """
+    View for retrieving sensor flow based on specified parameters.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for retrieving sensor flow.
+    """
+
     def post(self, request):
+        """
+        Handles POST requests for retrieving sensor flow.
+
+        Parameters:
+        - request: The HTTP request object containing the input parameters.
+
+        Returns:
+        - Response: HTTP response with sensor flow if successful,
+                    or an error message if validation fails or an exception occurs.
+        """
         try:
-            # Deserialize request data
-            data = GetSensorReadingsSchema(**request.data)
+            # 1. Validate input data
+            serializer = GetRecordsFlowSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            # Check sensor exists
-            sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
+            # 2. Retrieve necessary objects 
+            sensor = Sensor.objects.filter(
+                pk=serializer.validated_data['sensor_id'],
+                tank__id=serializer.validated_data['tank_id'],
+                tank__group__id=serializer.validated_data['group_id'],
+                tank__group__user=request.user
+            ).first()
             if not sensor:
-                return Response({'error': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Sensor not found'}, status=status.HTTP_404_NOT_FOUND)
 
-            # Get readings within timeframe
-            readings = SensorReading.timescale.filter(
-                sensor=sensor,
-                time__range=(data.start_time, data.end_time)
+            # 3. Check for conflicts
+            # 4. Perfom main operation
+            query = Record.timescale.filter(
+                channel__measure__sensor=sensor,
+                time__range=(serializer.validated_data['start_time'], serializer.validated_data['end_time'])
+            ).time_bucket(
+                'time', f"1 ${serializer.validated_data['timeframe']}"
+            ).values(
+                'bucket'
+            ).annotate(
+                start_value=F('value'),
+                end_value=F('value'),
+            ).order_by(
+                'bucket'
             )
 
-            # Apply window functions for statistics
-            readings = readings.annotate(
-                distance=F('distance'),
-                min_value=Window(expression=Min('distance'), order_by='time'),
-                max_value=Window(expression=Max('distance'), order_by='time'),
-                average_value=Window(expression=Avg('distance'), order_by='time'),
-                standard_deviation=Window(expression=StdDev('distance'), order_by='time')
-            )
+            flow_analysis = []
+            for i in range(len(query) - 1):
+                current = query[i]
+                next = query[i + 1]
+                change = next['start_value'] - current['end_value']
+                flow_analysis.append({
+                    'time': int(datetime.timestamp(current['bucket'])),
+                    'input_flow': max(change, 0),
+                    'output_flow': abs(min(change, 0)),
+                    'net_change': change
+                })
 
-            # Serialize and return response data
-            data = [
-                {
-                    'time': reading['time'],
-                    'distance': reading['distance'],
-                    'min_value': reading['min_value'],
-                    'max_value': reading['max_value'],
-                    'average_value': reading['average_value'],
-                    'standard_deviation': reading['standard_deviation'],
-                }
-                for reading in readings
-            ]
-            return Response(data, status=status.HTTP_200_OK)
-
+            # 5. Store response data in cache
+            # 6. Prepare and return response
+            serializer = RecordFlowSerializer(flow_analysis, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-# class GetSensorDailyStatsView(APIView):
-#     def post(self, request):
-#         try:
-#             # Deserialize request data
-#             data = GetSensorReadingsSchema(**request.data)
-
-#             # Check sensor exists
-#             sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
-#             if not sensor:
-#                 return Response({'error': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-#             # Get readings within timeframe
-#             readings = SensorReading.timescale.filter(
-#                 sensor=sensor,
-#                 time__range=(data.start_time, data.end_time)
-#             )
-
-#             # Calculate daily statistics
-#             daily_stats = readings.annotate(
-#                 day=TruncDay('time')
-#             ).values('day').annotate(
-#                 min_distance=Min('distance'),
-#                 max_distance=Max('distance'),
-#                 average_distance=Avg('distance')
-#             ).order_by('day')
-
-#             # Serialize and return response data
-#             data = [
-#                 {
-#                     'date': stat['day'].isoformat(),
-#                     'min_distance': stat['min_distance'],
-#                     'max_distance': stat['max_distance'],
-#                     'average_distance': stat['average_distance'],
-#                 }
-#                 for stat in daily_stats
-#             ]
-#             return Response(data, status=status.HTTP_200_OK)
-
-#         except Exception as e:
-#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-# class GetSensorHourlyStatsView(APIView):
-#     def post(self, request):
-#         try:
-#             # Deserialize request data
-#             data = GetSensorReadingsSchema(**request.data)
-
-#             # Check sensor exists
-#             sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
-#             if not sensor:
-#                 return Response({'error': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-#             # Get readings within timeframe
-#             readings = SensorReading.timescale.filter(
-#                 sensor=sensor,
-#                 time__range=(data.start_time, data.end_time)
-#             )
-
-#             # Calculate hourly statistics
-#             hourly_stats = readings.annotate(
-#                 hour=TruncHour('time')
-#             ).values('hour').annotate(
-#                 min_distance=Min('distance'),
-#                 max_distance=Max('distance'),
-#                 average_distance=Avg('distance')
-#             ).order_by('hour')
-
-#             # Serialize and return response data
-#             data = [
-#                 {
-#                     'hour': stat['hour'].isoformat(),
-#                     'min_distance': stat['min_distance'],
-#                     'max_distance': stat['max_distance'],
-#                     'average_distance': stat['average_distance'],
-#                 }
-#                 for stat in hourly_stats
-#             ]
-#             return Response(data, status=status.HTTP_200_OK)
-
-#         except Exception as e:
-#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-# class GetSensorMonthlyStatsView(APIView):
-#     def post(self, request):
-#         try:
-#             # Deserialize request data
-#             data = GetSensorReadingsSchema(**request.data)
-
-#             # Check sensor exists
-#             sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
-#             if not sensor:
-#                 return Response({'error': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-#             # Get readings within timeframe
-#             readings = SensorReading.timescale.filter(
-#                 sensor=sensor,
-#                 time__range=(data.start_time, data.end_time)
-#             )
-
-#             # Calculate monthly statistics
-#             monthly_stats = readings.annotate(
-#                 month=TruncMonth('time')
-#             ).values('month').annotate(
-#                 min_distance=Min('distance'),
-#                 max_distance=Max('distance'),
-#                 average_distance=Avg('distance')
-#             ).order_by('month')
-
-#             # Serialize and return response data
-#             data = [
-#                 {
-#                     'month': stat['month'].isoformat(),
-#                     'min_distance': stat['min_distance'],
-#                     'max_distance': stat['max_distance'],
-#                     'average_distance': stat['average_distance'],
-#                 }
-#                 for stat in monthly_stats
-#             ]
-#             return Response(data, status=status.HTTP_200_OK)
-
-#         except Exception as e:
-#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-# class GetSensorYearlyStatsView(APIView):
-#     def post(self, request):
-#         try:
-#             # Deserialize request data
-#             data = GetSensorReadingsSchema(**request.data)
-
-#             # Check sensor exists
-#             sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
-#             if not sensor:
-#                 return Response({'error': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-#             # Get readings within timeframe
-#             readings = SensorReading.timescale.filter(
-#                 sensor=sensor,
-#                 time__range=(data.start_time, data.end_time)
-#             )
-
-#             # Calculate yearly statistics
-#             yearly_stats = readings.annotate(
-#                 year=TruncYear('time')
-#             ).values('year').annotate(
-#                 min_distance=Min('distance'),
-#                 max_distance=Max('distance'),
-#                 average_distance=Avg('distance')
-#             ).order_by('year')
-
-#             # Serialize and return response data
-#             data = [
-#                 {
-#                     'year': stat['year'].isoformat(),
-#                     'min_distance': stat['min_distance'],
-#                     'max_distance': stat['max_distance'],
-#                     'average_distance': stat['average_distance'],
-#                 }
-#                 for stat in yearly_stats
-#             ]
-#             return Response(data, status=status.HTTP_200_OK)
-
-#         except Exception as e:
-#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-# class GetSensorPercentilesView(APIView):
-#     def post(self, request):
-#         try:
-#             # Deserialize request data
-#             data = GetSensorReadingsSchema(**request.data)
-
-#             # Check sensor exists
-#             sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
-#             if not sensor:
-#                 return Response({'error': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-#             # Get readings within timeframe
-#             readings = SensorReading.timescale.filter(
-#                 sensor=sensor,
-#                 time__range=(data.start_time, data.end_time)
-#             )
-
-#             # Calculate percentiles
-#             percentiles = readings.aggregate(
-#                 p10=PercentileCont(0.10, field=F('distance')),
-#                 p25=PercentileCont(0.25, field=F('distance')),
-#                 p50=PercentileCont(0.50, field=F('distance')),
-#                 p75=PercentileCont(0.75, field=F('distance')),
-#                 p90=PercentileCont(0.90, field=F('distance'))
-#             )
-
-#             return Response(percentiles, status=status.HTTP_200_OK)
-
-#         except Exception as e:
-#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-# class GetSensorTrendAnalysisView(APIView):
-#     def post(self, request):
-#         try:
-#             # Deserialize request data
-#             data = GetSensorReadingsSchema(**request.data)
-
-#             # Check sensor exists
-#             sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
-#             if not sensor:
-#                 return Response({'error': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-#             # Get readings within timeframe
-#             readings = SensorReading.timescale.filter(
-#                 sensor=sensor,
-#                 time__range=(data.start_time, data.end_time)
-#             ).order_by('time')
-
-#             # Prepare data for linear regression
-#             times = np.array([reading.time.timestamp() for reading in readings])
-#             distances = np.array([reading.distance for reading in readings])
-
-#             # Perform linear regression
-#             slope, intercept, r_value, p_value, std_err = linregress(times, distances)
-
-#             # Create trend line
-#             trend_line = slope * times + intercept
-
-#             # Prepare response data
-#             data = {
-#                 'slope': slope,
-#                 'intercept': intercept,
-#                 'r_value': r_value,
-#                 'p_value': p_value,
-#                 'std_err': std_err,
-#                 'trend_line': trend_line.tolist()
-#             }
-
-#             return Response(data, status=status.HTTP_200_OK)
-
-#         except Exception as e:
-#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-# class GetSensorRollingStatisticsView(APIView):
-#     def post(self, request):
-#         try:
-#             # Deserialize request data
-#             data = GetSensorReadingsSchema(**request.data)
-
-#             # Check sensor exists
-#             sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
-#             if not sensor:
-#                 return Response({'error': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-#             # Convert string times to timezone-aware datetime objects
-#             start_time = make_aware(data.start_time)
-#             end_time = make_aware(data.end_time)
-            
-#             # Calculate rolling statistics
-#             window_size = int(data.window_size)  # Window size in minutes
-#             readings = SensorReading.timescale.filter(
-#                 sensor=sensor,
-#                 time__range=(start_time, end_time)
-#             ).annotate(
-#                 rolling_mean=Window(
-#                     expression=Avg('distance'),
-#                     partition_by=[TruncDate('time')],
-#                     order_by=F('time').asc(),
-#                     frame=RowRange(start=-window_size, end=0)
-#                 ),
-#                 rolling_stddev=Window(
-#                     expression=StdDev('distance'),
-#                     partition_by=[TruncDate('time')],
-#                     order_by=F('time').asc(),
-#                     frame=RowRange(start=-window_size, end=0)
-#                 )
-#             )
-
-#             # Serialize and return response data
-#             data = [
-#                 {
-#                     'time': reading['time'].isoformat(),
-#                     'distance': reading['distance'],
-#                     'rolling_mean': reading['rolling_mean'],
-#                     'rolling_stddev': reading['rolling_stddev'],
-#                 }
-#                 for reading in readings
-#             ]
-#             return Response(data, status=status.HTTP_200_OK)
-
-#         except Exception as e:
-#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-# class GetSensorSeasonalDecompositionView(APIView):
-#     def post(self, request):
-#         try:
-#             # Deserialize request data
-#             data = GetSensorReadingsSchema(**request.data)
-
-#             # Check sensor exists
-#             sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
-#             if not sensor:
-#                 return Response({'error': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-#             # Get readings within timeframe
-#             readings = SensorReading.timescale.filter(
-#                 sensor=sensor,
-#                 time__range=(data.start_time, data.end_time)
-#             ).order_by('time')
-
-#             # Prepare data for STL decomposition
-#             df = pd.DataFrame(list(readings.values('time', 'distance')))
-#             df.set_index('time', inplace=True)
-#             df.index = pd.to_datetime(df.index, unit='s')  # Convert to datetime
-#             df = df.asfreq('D')  # Resample to daily frequency
-
-#             # Perform STL decomposition
-#             stl = STL(df['distance'], period=365)
-#             result = stl.fit()
-
-#             # Prepare response data
-#             decomposition = {
-#                 'trend': result.trend.dropna().tolist(),
-#                 'seasonal': result.seasonal.dropna().tolist(),
-#                 'residual': result.resid.dropna().tolist(),
-#             }
-
-#             return Response(decomposition, status=status.HTTP_200_OK)
-
-#         except Exception as e:
-#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-# class GetSensorAnomalyDetectionView(APIView):
-#     def post(self, request):
-#         try:
-#             # Deserialize request data
-#             data = GetSensorReadingsSchema(**request.data)
-
-#             # Check sensor exists
-#             sensor = Sensor.objects.filter(sensor_id=data.sensor_id, tank__group__user=request.user).first()
-#             if not sensor:
-#                 return Response({'error': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-#             # Get readings within timeframe
-#             readings = SensorReading.timescale.filter(
-#                 sensor=sensor,
-#                 time__range=(data.start_time, data.end_time)
-#             ).order_by('time')
-
-#             # Prepare data for anomaly detection
-#             distances = np.array([reading.distance for reading in readings])
-#             z_scores = zscore(distances)
-
-#             # Detect anomalies based on z-score threshold
-#             anomaly_threshold = 3
-#             anomalies = readings.filter(distance__in=[distances[i] for i in range(len(z_scores)) if abs(z_scores[i]) > anomaly_threshold])
-
-#             # Serialize and return response data
-#             data = [
-#                 {
-#                     'time': reading.time.isoformat(),
-#                     'distance': reading.distance,
-#                     'z_score': z_scores[i]
-#                 }
-#                 for i, reading in enumerate(readings)
-#                 if abs(z_scores[i]) > anomaly_threshold
-#             ]
-#             return Response(data, status=status.HTTP_200_OK)
-
-#         except Exception as e:
-#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-###################
-### SENSOR LOGS ###
-###################
-
-# class GetSensorLogsView(APIView):
-#     def post(self, request):
-#         try:
-#             # Deserialize request data
-#             data = GetSensorLogsSchema(**request.data)
-
-#             # Check sensor exists
-#             sensor = Sensor.objects.filter(pk=data.id, tank__group__user=request.user).first()
-#             if not sensor:
-#                 return Response({'Bad Request': 'Sensor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-#             # Get sensor logs within timeframe
-#             logs = SensorLog.objects.filter(
-#                 sensor=sensor,
-#                 time__range=(data.start_time, data.end_time)
-#             )
-
-#             # Serialize and return response data
-#             data = [
-#                 {
-#                     'time': log.time,
-#                     'message': log.message,
-#                 }
-#                 for log in logs
-#             ]
-#             return Response(data, status=status.HTTP_200_OK)
-
-#         except Exception as e:
-#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+class GetRecordsTrendForecastView(APIView):
+    """
+    View for retrieving sensor trend forecast based on specified parameters.
+
+    Inherits from: rest_framework.views.APIView
+
+    Methods:
+    - post: Handles POST requests for retrieving sensor trend forecast.
+    """
+    def post(self, request):
+        """
+        Handles POST requests for retrieving sensor trend forecast.
+
+        Parameters:
+        - request: The HTTP request object containing the input parameters.
+
+        Returns:
+        - Response: HTTP response with sensor trend forecast if successful,
+                    or an error message if validation fails or an exception occurs.
+        """
+        try:
+            # 1. Validate input data
+            serializer = GetRecordsTrendForecastSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            # 2. Retrieve necessary objects
+            sensor = Sensor.objects.filter(
+                pk=serializer.validated_data['sensor_id'],
+                tank__id=serializer.validated_data['tank_id'],
+                tank__group__id=serializer.validated_data['group_id'],
+                tank__group__user=request.user
+            ).first()
+            if not sensor:
+                return Response({'error': 'Sensor not found'}, status=status.HTTP_404_NOT_FOUND)
+
+            # 3. Check for conflicts
+            # 4. Perfom main operation
+            records = Record.timescale.filter(
+                channel__measure__sensor=sensor,
+                time__range=(serializer.validated_data['start_time'], serializer.validated_data['end_time'])
+            ).time_bucket(
+                'time', f"1 ${serializer.validated_data['timeframe']}"
+            ).values(
+                'bucket'
+            ).annotate(
+                value=Avg('value')
+            ).order_by(
+                'bucket'
+            )
+
+            if not records or records.count() < 100:
+                return Response({'error': 'Not enough records found for the specified time range'}, status=status.HTTP_404_NOT_FOUND)
+
+            # Convert to pandas DataFrame
+            df = pd.DataFrame(records)
+            df.set_index('bucket', inplace=True)
+            df.index = pd.to_datetime(df.index)
+
+            # Fit ARIMA model
+            model = ARIMA(df['value'], order=(1,1,1))
+            results = model.fit()
+
+            # Forecast next steps
+            if (serializer.validated_data['timeframe'] == 'minute'):
+                forecast_steps = 60
+            elif (serializer.validated_data['timeframe'] == 'hour'):
+                forecast_steps = 24
+            elif (serializer.validated_data['timeframe'] == 'day'):
+                forecast_steps = 31
+            elif (serializer.validated_data['timeframe'] == 'week'):
+                forecast_steps = 8
+            elif (serializer.validated_data['timeframe'] == 'month'):
+                forecast_steps = 3
+            else:
+                return Response({'error': 'Invalid timeframe'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Make forecast
+            forecast = results.forecast(steps=forecast_steps)
+
+            # Prepare forecast data for response
+            last_timestamp = df.index[-1]
+            forecast_data = [
+                {
+                    'time': (last_timestamp + timedelta(hours=i+1)).isoformat(),
+                    'value': forecast.iloc[i]
+                }
+                for i in range(forecast_steps)
+            ]
+
+            # 5. Store response data in cache
+            # 6. Prepare and return response
+            serializer = RecordTrendForecastSerializer(forecast_data, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

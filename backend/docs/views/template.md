@@ -39,12 +39,12 @@ class YourViewName(APIView):
             if not serializer.is_valid():
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            # 2. Retrieve necessary objects (if applicable)
+            # 2. Retrieve necessary objects
             your_object = YourModel.objects.filter(id=serializer.validated_data['id'], user=request.user).first()
             if not your_object:
                 return Response({'Bad Request': '[Object] not found'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # 3. Check for conflicts (if applicable)
+            # 3. Check for conflicts
             if YourModel.objects.filter(
                 [conflict_conditions]
             ).exists():
@@ -56,7 +56,7 @@ class YourViewName(APIView):
                 [attributes]
             )
 
-            # 5. Store respnse data in cache (if applicable)
+            # 5. Store respnse data in cache
             cache_key = f"[Object]_{[attribute].id}"
             cache.set(cache_key, [Object], timeout=CACHE_TIMEOUT)
 

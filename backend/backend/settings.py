@@ -112,7 +112,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication', # Base authentication class
         'backend.csrf.CsrfExemptSessionAuthentication', # Custom session authentication (don't check csrf token)
-    ]
+    ],
+    'DATETIME_FORMAT': '%s', # Format for datetime
 }
 
 ########################### TEMPLATES ###########################

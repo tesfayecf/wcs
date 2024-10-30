@@ -58,7 +58,7 @@ class Channel(models.Model):
 #############
 
 class Chunk(models.Model):
-    measure = models.ForeignKey(Measure, on_delete=models.CASCADE, related_name='chunks')
+    measure = models.ForeignKey(Measure, on_delete=models.CASCADE, related_name='chunks', db_index=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
 
@@ -74,6 +74,7 @@ class Chunk(models.Model):
 ##############
 
 class Record(TimescaleModel):
+    time = TimescaleDateTimeField(interval="1 hour", default=now)
     value = models.FloatField()
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE, related_name='records', db_index=True)
     chunk = models.ForeignKey(Chunk, on_delete=models.CASCADE, related_name='records', db_index=True)

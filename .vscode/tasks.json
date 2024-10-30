@@ -35,7 +35,7 @@
       "command": "nodemon",
       "args": [
         "--exec", "python", "C:/Users/tesfa/Documents/Programming/WCS/Code/src/backend/manage.py", "generate_ts",
-        "--all", "--camelize", "--trim",
+        "--all", "--trim", "--enum_choices",
         "-o", "C:/Users/tesfa/Documents/Programming/WCS/Code/src/frontend/app/lib/api/types",
         "--watch", "C:/Users/tesfa/Documents/Programming/WCS/Code/src/backend"
       ],

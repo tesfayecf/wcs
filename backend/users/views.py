@@ -160,7 +160,7 @@ class ResetView(APIView):
                 id=serializer.validated_data['uid']
             ).first()
             if not user:
-                return Response({"detail": "User with the provided id does not exist."}, status=status.HTTP_404_NOT_FOUND)
+                return Response({"detail": "User with the provided id is not found."}, status=status.HTTP_404_NOT_FOUND)
             
             if serializer.validated_data['new_password'] != serializer.validated_data['confirm_password']:
                 return Response({"detail": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)

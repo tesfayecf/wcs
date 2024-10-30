@@ -130,7 +130,7 @@ class EditObjectView(GenericModelView):
             # Retrieve and update the object
             obj = self.get_object(validated_data['id'], request.user)
             if not obj:
-                return Response({'Bad Request': 'Object does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'Bad Request': 'Object not found'}, status=status.HTTP_400_BAD_REQUEST)
             
             # Update object fields
             for attr, value in validated_data.items():
@@ -169,7 +169,7 @@ class DeleteObjectView(GenericModelView):
             # Retrieve and delete the object
             obj = self.get_object(validated_data['id'], request.user)
             if not obj:
-                return Response({'Bad Request': 'Object does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'Bad Request': 'Object not found'}, status=status.HTTP_400_BAD_REQUEST)
             
             obj.delete()
             

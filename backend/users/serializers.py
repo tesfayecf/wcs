@@ -1,7 +1,5 @@
 from rest_framework import serializers
-
 from .models import User
-
 ######################
 ### AUTHENTICATION ###
 ######################
@@ -56,6 +54,10 @@ class UserSerializer(serializers.ModelSerializer):
             'is_active': instance.is_active,
             'is_staff': instance.is_staff,
         }
+
+    class Meta:
+        model = User
+        fields = '__all__'
 
 class CreateUserSerializer(serializers.Serializer):
     email = serializers.EmailField()

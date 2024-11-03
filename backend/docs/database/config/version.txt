@@ -1,0 +1,7 @@
+postgresql-16/jammy-pgdg,now 16.4-1.pgdg22.04+2 amd64 [installed]
+postgresql-client-16/jammy-pgdg,now 16.4-1.pgdg22.04+2 amd64 [installed,automatic]
+postgresql-client-common/jammy-pgdg,now 264.pgdg22.04+1 all [installed,automatic]
+postgresql-common/jammy-pgdg,now 264.pgdg22.04+1 all [installed,automatic]
+timescaledb-2-loader-postgresql-16/jammy,now 2.17.1~ubuntu22.04 amd64 [installed,automatic]
+timescaledb-2-postgresql-16/jammy,now 2.17.1~ubuntu22.04 amd64 [installed]
+timescaledb-toolkit-postgresql-16/jammy,now 1:1.18.0~ubuntu22.04 amd64 [installed,automatic]

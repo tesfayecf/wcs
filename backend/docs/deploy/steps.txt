@@ -1,9 +1,13 @@
-install python
-install django and dependancies (requirements.txt)
-install postgres (maybe different instance)
-install timescaleDB
-run manager.py check_data_database
+# Install python 3.10.12 if required
+# install postgres (16) and timescaledb from timescaledb web page
+sudo apt-get install libpq-dev -> required by psycopg2
+# edit /etc/postgresql/16/main/postgresql.conf shared_preloaded_libraries
+# Create db roles with roles.sql
+# Clone repository
+install requirements.txt
+run manager.py create_database
 run manager.py makemigrations
 run manager.py migrate
-check if create superuser(s)
+# run create user management command
+run manager.py collecstatic
 run manager.py runserver

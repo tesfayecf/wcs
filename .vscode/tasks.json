@@ -2,34 +2,6 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Start EMQ X Broker",
-      "type": "shell",
-      "command": "C:\\Program Files\\EMQX_5_1\\bin\\emqx.cmd",
-      "args": ["start"],
-      "options": {
-        "cwd": "C:\\Program Files\\EMQX_5_1\\bin"
-      },
-      "isBackground": false,
-      "presentation": {
-        "reveal": "silent"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "Stop EMQ X Broker",
-      "type": "shell",
-      "command": "C:\\Program Files\\EMQX_5_1\\bin\\emqx.cmd",
-      "args": ["stop"],
-      "options": {
-        "cwd": "C:\\Program Files\\EMQX_5_1\\bin"
-      },
-      "isBackground": false,
-      "presentation": {
-        "reveal": "silent"
-      },
-      "problemMatcher": []
-    },
-    {
       "label": "Generate APITypeScript Types (Watch Mode)",
       "type": "shell",
       "command": "nodemon",
@@ -50,6 +22,26 @@
       },
       "problemMatcher": [],
       "detail": "Run Django management command to generate TypeScript types in watch mode"
+    },
+    {
+      "label": "Compile SCSS",
+      "type": "shell",
+      "command": "sass",
+      "args": [
+        "styles:public",
+        "--watch"
+      ],
+      "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": [],
+      "detail": "Compile SCSS files in watch mode"
     }
   ]
 }

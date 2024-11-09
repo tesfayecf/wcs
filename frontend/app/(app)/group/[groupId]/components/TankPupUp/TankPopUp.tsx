@@ -5,7 +5,7 @@ import Popup from '@/app/components/popup/Popup';
 import { ITankCreationForm } from '@/app/(app)/group/[groupId]/types';
 
 import { createTank, getTanks } from '../../actions';
-import useGroupStore from '@/app/(app)/group/[groupId]/store';
+import { useGroupStore } from '@/app/(app)/group/[groupId]/store';
 
 
 interface ITankPopUpProps { }

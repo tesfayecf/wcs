@@ -1,16 +1,14 @@
 "use client"
 import React from "react";
-import { Button, Col, Divider, Form, Input, Modal, Row, Segmented, Table, Typography } from "antd";
+import { Button, Col, Divider, Row, Segmented, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import Card from "antd/es/card/Card";
 import Meta from "antd/es/card/Meta";
 import { AppstoreOutlined, BarsOutlined, DeleteOutlined, EditOutlined, InfoOutlined, PlusOutlined } from "@ant-design/icons";
 import Link from "next/link";
 
-import { createGroup, editGroup, deleteGroup } from "../../actions";
-import useDashboardStore from "@/app/(app)/dashboard/store";
 import { Api } from "@/app/lib/api/types";
-import { Group } from "@/app/(app)/group/[groupId]/types";
+import { useDashboardStore } from "@/app/(app)/dashboard/store";
 
 interface IGroupsPanelProps {
     groups?: Api.Resources.Group[];
@@ -19,8 +17,8 @@ interface IGroupsPanelProps {
 const GroupsPanel: React.FunctionComponent<IGroupsPanelProps> = (props: IGroupsPanelProps) => {
     const [mode, setMode] = React.useState<"grid" | "table">("grid");
     const [groups, setGroups] = React.useState<Api.Resources.Group[]>(props.groups || []);
+    const { setGroupMenu } = useDashboardStore();
     const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
-    const setGroupMenu = useDashboardStore((state) => state.setGroupMenu);
 
     React.useEffect(() => {
         setGroups(props.groups || []);
@@ -126,7 +124,6 @@ const GroupsPanel: React.FunctionComponent<IGroupsPanelProps> = (props: IGroupsP
                 />
             </div>
             {mode === "grid" ? renderGridView() : renderTableView()}
-            <GroupMenu /> {/*  TODO: make file and move to dashboard */}
         </div>
     )
 }
@@ -165,106 +162,3 @@ const columns: ColumnsType<Api.Resources.Group> = [
         ),
     },
 ]
-
-interface IGroupMenu { }
-
-const GroupMenu: React.FunctionComponent<IGroupMenu> = (props: IGroupMenu) => {
-    const [form] = Form.useForm<Group.IGroupForm>();
-    const [isLoading, setIsLoading] = React.useState(false);
-    const groups = useDashboardStore((state) => state.groups);
-    const groupMenu = useDashboardStore((state) => state.groupMenu);
-    const setGroupMenu = useDashboardStore((state) => state.setGroupMenu);
-
-    const onFinish = (values: Group.IGroupForm) => {
-        setIsLoading(true);
-        // Timeout
-        // setTimeout(() => { }, 2000);
-        if (groupMenu.mode == "create") createGroup(values);
-        else if (groupMenu.mode == "edit") editGroup(groupMenu.id, values);
-        else if (groupMenu.mode == "delete") deleteGroup(groupMenu.id);
-
-        setIsLoading(false);
-        setGroupMenu({ id: -1, mode: "", show: false });
-        form.resetFields();
-        // TODO: show notification
-    }
-
-    const onAbort = () => {
-        form.resetFields();
-
-        setGroupMenu({ id: -1, mode: "", show: false });
-        // TODO: show alert
-    }
-
-    return (
-        <Modal
-            open={groupMenu.show}
-            onCancel={onAbort}
-            footer={null}
-        >
-            <div id="group-menu-header" className="group-menu-header">
-                <div id="title" className="title">
-                    <Typography.Title level={3}>
-                        {groupMenu.mode == "create" ? "Create Group" : groupMenu.mode == "edit" ? "Edit Group" : "Delete Group"}
-                    </Typography.Title>
-                </div>
-            </div>
-            <div id="group-menu-form" className="group-menu-form">
-                <Form
-                    name="group-menu-form"
-                    className="group-menu-form-items"
-                    form={form}
-                    initialValues={groupMenu.id == -1 ? undefined : groups.find(g => g.id == groupMenu.id)}
-                    onFinish={onFinish}
-                    onAbort={onAbort}
-                    disabled={isLoading}
-                >
-                    <div id="form-items" className="form-items">
-                        <Form.Item
-                            name="name"
-                            className="form-item"
-                            rules={[{ required: true, message: 'Please input group name!' }]}
-                        >
-                            <Input placeholder="Name" />
-                        </Form.Item>
-
-                        <Form.Item
-                            name="location"
-                            className="form-item"
-                            rules={[{ required: true, message: 'Please input location!' }]}
-                        >
-                            <Input placeholder="Location" />
-                        </Form.Item>
-
-                        <Form.Item
-                            name="description"
-                            className="form-item"
-                            rules={[{ required: true, message: 'Please input description!' }]}
-                        >
-                            <Input.TextArea placeholder="Description" />
-                        </Form.Item>
-                    </div>
-                    <div id="buttons" className="buttons" style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-                        <Button
-                            onClick={onAbort}
-                            disabled={isLoading}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            type="primary"
-                            onClick={() => form.submit()}
-                            loading={isLoading}
-                        >
-                            {
-                                isLoading ?
-                                    "Loading..." :
-                                    groupMenu.mode == "create" ? "Create" : groupMenu.mode == "edit" ? "Edit" : "Delete"
-                            }
-                        </Button>
-                    </div>
-                </Form>
-            </div>
-        </Modal >
-    )
-} 

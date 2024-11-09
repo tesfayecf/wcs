@@ -1,7 +1,7 @@
 'use client'
-import useAppStore from "../../app/store";
-import useDashboardStore from "../../(app)/dashboard/store";
-import useGroupStore from "../../(app)/group/[groupId]/store";
+import { useAppStore } from "../../app/store";
+import { useDashboardStore } from "../../(app)/dashboard/store";
+import { useGroupStore } from "../../(app)/group/[groupId]/store";
 
 import { App } from "@/app/app/types";
 import { Dashboard } from "@/app/(app)/dashboard/types";

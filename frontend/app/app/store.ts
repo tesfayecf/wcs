@@ -21,13 +21,14 @@ const defaultStore: App.IAppStore = {
     userInfo: {
         id: -1,
         email: "",
-        firstName: "",
-        lastName: "",
-        editedAt: "",
-        createdAt: "",
-        isActive: false,
-        isStaff: false,
-        isSuperuser: false,
+        first_name: "",
+        last_name: "",
+        password: "",
+        edited_at: "",
+        created_at: "",
+        is_active: false,
+        is_staff: false,
+        is_superuser: false,
     },
     permissions: {}
 }
@@ -53,40 +54,39 @@ interface IAppStoreActions {
     resetPermissions: () => void;
 }
 
-const useAppStore = create(immer<App.IAppStore & IAppStoreActions>((set) => ({
-    /// Store ///
-    // Status
-    status: defaultStore.status,
-    // Connection
-    connection: defaultStore.connection,
-    // Authentication
-    isAuthenticated: false,
-    // User
-    userInfo: defaultStore.userInfo,
-    // Permissions
-    permissions: defaultStore.permissions,
+export const useAppStore = create<App.IAppStore & IAppStoreActions>()(
+    immer((set) => ({
+        /// Store ///
+        // Status
+        status: defaultStore.status,
+        // Connection
+        connection: defaultStore.connection,
+        // Authentication
+        isAuthenticated: false,
+        // User
+        userInfo: defaultStore.userInfo,
+        // Permissions
+        permissions: defaultStore.permissions,
 
-    /// Actions ///
-    setState: (state: Partial<App.IAppStore>) => set((prev) => ({ ...prev, ...state })),
-    // Status
-    setLoadingState: (isLoading: boolean) => set((prev) => { prev.status.isLoading = isLoading; prev.status.isWaiting = false; prev.status.isError = false; prev.status.isIdle = false; }),
-    setWaitingState: (isWaiting: boolean) => set((prev) => { prev.status.isLoading = false; prev.status.isWaiting = isWaiting; prev.status.isError = false; prev.status.isIdle = false; }),
-    setErrorState: (isError: boolean) => set((prev) => { prev.status.isLoading = false; prev.status.isWaiting = false; prev.status.isError = isError; prev.status.isIdle = false; }),
-    setIdleState: (isIdle: boolean) => set((prev) => { prev.status.isLoading = false; prev.status.isWaiting = false; prev.status.isError = false; prev.status.isIdle = isIdle; }),
-    // Connection
-    setConnectionState: (isConnected: boolean) => set((prev) => { prev.connection.isConnected = isConnected; prev.connection.isReconnecting = false; prev.connection.isIdle = false; prev.connection.isError = false; }),
-    setReconnectingState: (isReconnecting: boolean) => set((prev) => { prev.connection.isConnected = false; prev.connection.isReconnecting = isReconnecting; prev.connection.isIdle = false; prev.connection.isError = false; }),
-    setConnectionErrorState: (isError: boolean) => set((prev) => { prev.connection.isConnected = false; prev.connection.isReconnecting = false; prev.connection.isIdle = false; prev.connection.isError = isError; }),
-    setConnectionIdleState: (isIdle: boolean) => set((prev) => { prev.connection.isConnected = false; prev.connection.isReconnecting = false; prev.connection.isIdle = isIdle; prev.connection.isError = false; }),
-    // Authentication
-    setAuthenticationState: (isAuthenticated: boolean) => set(() => ({ isAuthenticated })),
-    // User
-    setUserInfo: (userInfo: Api.Users.User) => set((prev) => { prev.userInfo = userInfo; }),
-    resetUserInfo: () => set(() => ({ userInfo: defaultStore.userInfo })),
-    // Permissions
-    setPermissions: (permissions: any) => set((prev) => { prev.permissions = permissions; }),
-    resetPermissions: () => set(() => ({ permissions: [] })),
-})));
-
-export default useAppStore;
-
+        /// Actions ///
+        setState: (state: Partial<App.IAppStore>) => set((prev) => ({ ...prev, ...state })),
+        // Status
+        setLoadingState: (isLoading: boolean) => set((prev) => { prev.status.isLoading = isLoading; prev.status.isWaiting = false; prev.status.isError = false; prev.status.isIdle = false; }),
+        setWaitingState: (isWaiting: boolean) => set((prev) => { prev.status.isLoading = false; prev.status.isWaiting = isWaiting; prev.status.isError = false; prev.status.isIdle = false; }),
+        setErrorState: (isError: boolean) => set((prev) => { prev.status.isLoading = false; prev.status.isWaiting = false; prev.status.isError = isError; prev.status.isIdle = false; }),
+        setIdleState: (isIdle: boolean) => set((prev) => { prev.status.isLoading = false; prev.status.isWaiting = false; prev.status.isError = false; prev.status.isIdle = isIdle; }),
+        // Connection
+        setConnectionState: (isConnected: boolean) => set((prev) => { prev.connection.isConnected = isConnected; prev.connection.isReconnecting = false; prev.connection.isIdle = false; prev.connection.isError = false; }),
+        setReconnectingState: (isReconnecting: boolean) => set((prev) => { prev.connection.isConnected = false; prev.connection.isReconnecting = isReconnecting; prev.connection.isIdle = false; prev.connection.isError = false; }),
+        setConnectionErrorState: (isError: boolean) => set((prev) => { prev.connection.isConnected = false; prev.connection.isReconnecting = false; prev.connection.isIdle = false; prev.connection.isError = isError; }),
+        setConnectionIdleState: (isIdle: boolean) => set((prev) => { prev.connection.isConnected = false; prev.connection.isReconnecting = false; prev.connection.isIdle = isIdle; prev.connection.isError = false; }),
+        // Authentication
+        setAuthenticationState: (isAuthenticated: boolean) => set(() => ({ isAuthenticated })),
+        // User
+        setUserInfo: (userInfo: Api.Users.User) => set((prev) => { prev.userInfo = userInfo; }),
+        resetUserInfo: () => set(() => ({ userInfo: defaultStore.userInfo })),
+        // Permissions
+        setPermissions: (permissions: any) => set((prev) => { prev.permissions = permissions; }),
+        resetPermissions: () => set(() => ({ permissions: [] })),
+    }))
+);

@@ -30,7 +30,7 @@ export default async function RootLayout({ children }: IAppLayoutProps) {
     const userInfoResponse = await getUserInfo();
 
     /// User permissions \\\
-    const userPermissionsResponse = await getUserPermissions();
+    // const userPermissionsResponse = await getUserPermissions();
 
     //////////////////////////////////////////////////////////
 

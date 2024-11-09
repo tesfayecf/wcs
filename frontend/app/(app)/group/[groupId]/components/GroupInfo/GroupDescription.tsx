@@ -1,6 +1,6 @@
 import React from "react";
 import ContentBox from "@/app/components/contentBox/ContentBox";
-import useGroupStore from "@/app/(app)/group/[groupId]/store";
+import { useGroupStore } from "@/app/(app)/group/[groupId]/store";
 
 interface IGroupDescriptionProps {
     description: string;

@@ -1,91 +1,339 @@
 {
   "version": "0.2.0",
   "configurations": [
+    /////////////////////////
+    /// NextJS - Frontend ///
+    /////////////////////////
     {
-      "name": "NextJS dev",
+      "name": "🌐 Next.js Development",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/frontend",
       "runtimeExecutable": "npm",
       "restart": true,
       "env": {
-        "NODE_ENV": "development"
+        "NODE_ENV": "development",
+        "NEXT_TELEMETRY_DISABLED": "1"
       },
-      "runtimeArgs": ["run-script", "dev", "--inspect"],
-      "console": "integratedTerminal"
+      "runtimeArgs": ["run-script", "dev"],
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/frontend/**",
+        "!**/node_modules/**"
+      ],
+      "presentation": {
+        "hidden": false,
+        "group": "NextJS - Frontend",
+        "order": 1
+      }
     },
     {
-      "name": "NextJS dev turbo",
+      "name": "🚀 Next.js Turbo",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/frontend",
       "runtimeExecutable": "npm",
       "restart": true,
       "env": {
-        "NODE_ENV": "development"
+        "NODE_ENV": "development",
+        "NEXT_TELEMETRY_DISABLED": "1"
       },
-      "runtimeArgs": ["run", "dev::turbo", "--inspect"],
-      "console": "integratedTerminal"
+      "runtimeArgs": ["run", "dev::turbo"],
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": {
+        "hidden": false,
+        "group": "NextJS - Frontend",
+        "order": 2
+      }
     },
     {
-      "name": "Django WSGI",
+      "name": "⚡ Next.js Production",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/frontend",
+      "runtimeExecutable": "npm",
+      "restart": true,
+      "env": {
+        "NODE_ENV": "production",
+        "NEXT_TELEMETRY_DISABLED": "1"
+      },
+      "runtimeArgs": ["run-script", "start"],
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": {
+        "hidden": false,
+        "group": "NextJS - Frontend",
+        "order": 3
+      }
+    },
+
+    ////////////////////////
+    /// Django - Backend ///
+    ////////////////////////
+    {
+      "name": "🐍 Django Development",
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/backend/manage.py",
-      "args": ["runserver", "--noreload"],
+      "args": ["runserver", "--nothreading"],
       "django": true,
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "DJANGO_DEBUG": "True"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Django - Backend",
+        "order": 1
+      }
     },
     {
-      "name": "Django ASGI Daphne",
+      "name": "🔌 Django ASGI (Daphne)",
       "type": "debugpy",
       "request": "launch",
       "module": "daphne",
       "cwd": "${workspaceFolder}/backend",
-      "args": ["backend.asgi:application"],
-      "django": true
+      "args": [
+        "-b", "0.0.0.0",
+        "-p", "8000",
+        "backend.asgi:application"
+      ],
+      "django": true,
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "DJANGO_DEBUG": "True"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Django - Backend",
+        "order": 2
+      }
     },
     {
-      "name": "NextJS prod",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/frontend",
-      "runtimeExecutable": "npm",
-      "restart": true,
-      "runtimeArgs": ["run-script", "start"],
-      "console": "integratedTerminal"
-    },
-    {
-      "name": "Django prod",
+      "name": "🎯 Django Production",
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/backend/manage.py",
-      "args": ["runserver", "--noreload"],
+      "args": ["runserver", "--noreload", "--nothreading"],
       "django": true,
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "DJANGO_DEBUG": "False"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Django - Backend",
+        "order": 3
+      }
     },
+
+    /////////////////////////
+    /// Chrome - Renderer ///
+    /////////////////////////
     {
-      "name": "web-renderer",
+      "name": "🌐 Chrome Debug",
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:3000",
       "webRoot": "${workspaceFolder}/frontend",
-      "timeout": 10000,
-      "sourceMaps": true
+      "sourceMaps": true,
+      "timeout": 15000,
+      "trace": true,
+      "userDataDir": "${workspaceFolder}/.vscode/chrome-debug-profile"
+    },
+
+    /////////////////////////
+    /// Django - Database ///
+    /////////////////////////
+    // Reset
+    {
+      "name": "🗄️ Database: Reset",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/scripts/create_database.py",
+      "django": true,
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Database",
+        "order": 1
+      }
+    },
+
+    // Migrate
+    {
+      "name": "🔄 Database: Migrate",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/manage.py",
+      "args": ["migrate"],
+      "django": true,
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Database",
+        "order": 2
+      }
+    },
+
+    // Database Clear Commands
+    {
+      "name": "🧹 Clear: Users",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/manage.py",
+      "args": ["clear_users_data"],
+      "django": true,
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Database",
+        "order": 3
+      }
+    },
+    {
+      "name": "🧹 Clear: Resources",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/manage.py",
+      "args": ["clear_resources_data"],
+      "django": true,
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Database",
+        "order": 4
+      }
+    },
+    {
+      "name": "🧹 Clear: Timeseries",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/manage.py",
+      "args": ["clear_timeseries_data"],
+      "django": true,
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Database",
+        "order": 5
+      }
+    },
+
+    // Create
+    {
+      "name": "📝 Create: Users",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/manage.py",
+      "args": ["create_users_data"],
+      "django": true,
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Database",
+        "order": 6
+      }
+    },
+    {
+      "name": "📝 Create: Resources",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/manage.py",
+      "args": ["create_resources_data"],
+      "django": true,
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Database",
+        "order": 7
+      }
+    },
+    {
+      "name": "📝 Create: Timeseries",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/manage.py",
+      "args": ["create_timeseries_data"],
+      "django": true,
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Database",
+        "order": 8
+      }
     }
   ],
   "compounds": [
     {
-      "name": "APP dev",
-      "configurations": ["Django WSGI", "NextJS dev"]
+      "name": "🧹 Clear All Data",
+      "configurations": [
+        "🧹 Clear: Users",
+        "🧹 Clear: Resources",
+        "🧹 Clear: Timeseries"
+      ],
+      "stopAll": true,
+      "presentation": {
+        "group": "database",
+        "order": 1
+      }
     },
     {
-      "name": "APP dev - web",
-      "configurations": ["Django WSGI", "NextJS dev", "web-renderer"]
+      "name": "📝 Create All Data",
+      "configurations": [
+        "📝 Create: Users",
+        "📝 Create: Resources",
+        "📝 Create: Timeseries"
+      ],
+      "stopAll": true,
+      "presentation": {
+        "group": "database",
+        "order": 2
+      }
     },
     {
-      "name": "APP prod",
-      "configurations": ["NextJS prod", "Django prod"]
+      "name": "🚀 Full Stack Development",
+      "configurations": [
+        "🐍 Django Development",
+        "🌐 Next.js Development",
+        "🌐 Chrome Debug"
+      ],
+      "presentation": {
+        "hidden": false,
+        "group": "development",
+        "order": 1
+      },
+      "stopAll": true
     }
   ]
 }

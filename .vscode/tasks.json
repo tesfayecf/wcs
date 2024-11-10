@@ -1,8 +1,11 @@
 {
   "version": "2.0.0",
   "tasks": [
+    ///////////////////////////////
+    /// TypeScript Generation  ///
+    ///////////////////////////////
     {
-      "label": "Generate APITypeScript Types (Watch Mode)",
+      "label": "🔄 Generate APITypeScript Types (Watch Mode)",
       "type": "shell",
       "command": "nodemon",
       "args": [
@@ -23,8 +26,12 @@
       "problemMatcher": [],
       "detail": "Run Django management command to generate TypeScript types in watch mode"
     },
+
+    ///////////////////
+    /// SCSS Build  ///
+    ///////////////////
     {
-      "label": "Compile SCSS",
+      "label": "🎨 Compile SCSS",
       "type": "shell",
       "command": "sass",
       "args": [

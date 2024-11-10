@@ -129,7 +129,7 @@ class GetRecordsView(APIView):
             timeframe = serializer.validated_data.get('timeframe', '1 day')
             query = base_query.time_bucket(
                 'time', 
-                f"1 {timeframe}",
+                f"{timeframe}",
             ).values(
                 'bucket',  # TimescaleDB's time bucket result
                 channel_id=F('channel__id'),

@@ -1,10 +1,17 @@
 export enum TimeframeChoiceEnum {
-    MINUTE = 'minute',
-    HOUR = 'hour',
-    DAY = 'day',
-    WEEK = 'week',
-    MONTH = 'month',
-    YEAR = 'year',
+    '1_MINUTE' = '1 minute',
+    '5_MINUTES' = '5 minutes',
+    '15_MINUTES' = '15 minutes',
+    '1_HOUR' = '1 hour',
+    '3_HOURS' = '3 hours',
+    '1_DAY' = '1 day',
+    '3_DAYS' = '3 days',
+    '1_WEEK' = '1 week',
+    '2_WEEKS' = '2 weeks',
+    '1_MONTH' = '1 month',
+    '3_MONTHS' = '3 months',
+    '6_MONTHS' = '6 months',
+    '1_YEAR' = '1 year',
 }
 
 export enum TypeChoiceEnum {

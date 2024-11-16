@@ -1,30 +1,62 @@
 {
   "version": "2.0.0",
   "tasks": [
+    {
+      "label": "Build All",
+      "dependsOn": [
+        "🎨 Compile SCSS",
+        "🔄 Generate APITypeScript Types",
+      ],
+      "dependsOrder": "parallel",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "isBackground": true
+    },
+
     ///////////////////////////////
     /// TypeScript Generation  ///
     ///////////////////////////////
     {
-      "label": "🔄 Generate APITypeScript Types (Watch Mode)",
+      "label": "🔄 Generate APITypeScript Types",
       "type": "shell",
-      "command": "nodemon",
-      "args": [
-        "--exec", "python", "C:/Users/tesfa/Documents/Programming/WCS/Code/src/backend/manage.py", "generate_ts",
-        "--all", "--trim", "--enum_choices",
-        "-o", "C:/Users/tesfa/Documents/Programming/WCS/Code/src/frontend/app/lib/api/types",
-        "--watch", "C:/Users/tesfa/Documents/Programming/WCS/Code/src/backend"
-      ],
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "linux": {
+        "command": "watch",
+        "args": [
+          "-n",
+          "1",
+          "python",
+          "./manage.py",
+          "generate_ts",
+          "--all",
+          "--trim",
+          "--enum_choices",
+          "-o",
+          "${workspaceFolder}/frontend/app/lib/api/types"
+        ],
+      },
+      "windows": {
+        "command": "powershell",
+        "args": [
+          "-Command",
+          "while($true) { python 'manage.py' generate_ts --all --trim --enum_choices -o '${workspaceFolder}/frontend/app/lib/api/types'; Start-Sleep -Seconds 2 }"
+        ]
+      },
       "isBackground": true,
       "group": {
         "kind": "build",
-        "isDefault": true
+        "isDefault": false
       },
       "presentation": {
         "reveal": "always",
         "panel": "dedicated"
       },
       "problemMatcher": [],
-      "detail": "Run Django management command to generate TypeScript types in watch mode"
+      "detail": "Run Django management command to generate TypeScript types in watch mode using watch"
     },
 
     ///////////////////
@@ -32,10 +64,14 @@
     ///////////////////
     {
       "label": "🎨 Compile SCSS",
-      "type": "shell",
-      "command": "sass",
+      "type": "process",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "command": "npx",
       "args": [
-        "styles:public",
+        "sass",
+        "styles/app.scss:styles/app.css",
         "--watch"
       ],
       "isBackground": true,
@@ -45,10 +81,106 @@
       },
       "presentation": {
         "reveal": "always",
-        "panel": "shared"
+        "panel": "dedicated"
       },
       "problemMatcher": [],
       "detail": "Compile SCSS files in watch mode"
+    },
+
+    ///////////////////////
+    /// Arduino Actions ///
+    ///////////////////////
+    {
+      "label": "⚡ Arduino: Compile",
+      "type": "shell",
+      "command": "arduino-cli",
+      "args": [
+        "compile",
+        "${workspaceFolder}/sensor/sensor.ino",
+        "--fqbn", "esp8266:esp8266:d1_mini_pro",
+        "--config-file", "${workspaceFolder}/sensor/arduino-cli/cli-config.yaml",
+        "--build-property", "compiler.cpp.extra_flags=-I${workspaceFolder}/sensor/src",
+        "--build-path", "${workspaceFolder}/sensor/build",
+        "--verbose"
+      ],
+      "group": {
+        "kind": "none",
+        "isDefault": false
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": {
+        "owner": "cpp",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      }
+    },
+    {
+      "label": "📤 Arduino: Upload",
+      "type": "shell",
+      "command": "arduino-cli",
+      "args": [
+        "upload",
+        "${workspaceFolder}/sensor/sensor.ino",
+        "--fqbn", "esp8266:esp8266:d1_mini_pro",
+        "--port", "/dev/ttyUSB0",
+      ],
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🔍 Arduino: Board List",
+      "type": "shell",
+      "command": "arduino-cli",
+      "args": ["board", "list"],
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🔄 Arduino: Core Update",
+      "type": "shell",
+      "command": "arduino-cli",
+      "args": ["core", "update-index"],
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🔌 Arduino: Build and Upload",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "⚡ Arduino: Compile",
+        "📤 Arduino: Upload"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
     }
   ]
 }

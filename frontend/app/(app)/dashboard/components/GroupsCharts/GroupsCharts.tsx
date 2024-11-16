@@ -9,7 +9,7 @@ const GroupsCharts: React.FunctionComponent<IGroupsChartsProps> = React.memo(() 
     return (
         <div id="groups-charts" className="groups-charts">
             <GroupsAreaChart />
-            <GroupsPieChart />
+            {/* <GroupsPieChart /> */}
         </div >
     );
 });

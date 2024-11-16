@@ -1,54 +1,25 @@
 'use client'
 import React from "react";
+import { Spin } from 'antd';
 import { Area } from "@ant-design/plots";
-import { DatePicker, Divider, Segmented, Select, Spin } from 'antd';
 import { useDashboardStore } from "@/app/(app)/dashboard/store";
 import { ChartManager, PeriodEnum, ChartEvents, GroupChartConfig, GroupChartRecord, TimeRange } from "@/app/lib/managers/ChartManager";
-import { TimeframeChoiceEnum } from "@/app/lib/api/types/timeseries.serializers";
 import { getGroupRecords } from "@/app/(app)/dashboard/actions";
+import ChartFilters, { ChartOptions, TIME_OPTIONS } from "./GroupChartFilters";
 
 interface IGroupsAreaChartProps { }
 
-const GroupsAreaChart: React.FunctionComponent<IGroupsAreaChartProps> = React.memo(() => {
+const GroupsAreaChart: React.FC = () => {
     const manager = React.useMemo(() => new ChartManager<GroupChartConfig, GroupChartRecord>(), []);
     const groups = useDashboardStore((state) => state.groups);
+
     const [data, setData] = React.useState<GroupChartRecord[]>([]);
     const [loading, setLoading] = React.useState(false);
-    const [period, setPeriod] = React.useState(PeriodEnum.LAST_WEEK);
-    const [timeframe, setTimeframe] = React.useState(TimeframeChoiceEnum["1_HOUR"]);
+    const [isStacked, setIsStacked] = React.useState(true);
+    const [selectedGroups, setSelectedGroups] = React.useState<number[]>([]);
+    const [timeOption, setTimeOption] = React.useState<ChartOptions>(TIME_OPTIONS[2]);
 
-    // Helper function to get time range based on period
-    const getTimeRange = (period: PeriodEnum, customRange?: TimeRange): TimeRange => {
-        if (customRange && period === PeriodEnum.CUSTOM) {
-            return customRange;
-        }
-
-        const endTime = new Date();
-        const startTime = new Date();
-
-        switch (period) {
-            case PeriodEnum.LAST_HOUR:
-                startTime.setHours(endTime.getHours() - 1);
-                break;
-            case PeriodEnum.LAST_DAY:
-                startTime.setDate(endTime.getDate() - 1);
-                break;
-            case PeriodEnum.LAST_WEEK:
-                startTime.setDate(endTime.getDate() - 7);
-                break;
-            case PeriodEnum.LAST_MONTH:
-                startTime.setMonth(endTime.getMonth() - 1);
-                break;
-            case PeriodEnum.LAST_YEAR:
-                startTime.setFullYear(endTime.getFullYear() - 1);
-                break;
-        }
-
-        return { startTime, endTime };
-    };
-
-    // Data fetching function
-    const fetchGroupData = async (config: GroupChartConfig): Promise<GroupChartRecord[]> => {
+    const fetchData = React.useCallback(async (config: GroupChartConfig): Promise<GroupChartRecord[]> => {
         const timeRange = getTimeRange(config.period, config.customRange);
         const response = await getGroupRecords(
             config.groupId,
@@ -57,157 +28,133 @@ const GroupsAreaChart: React.FunctionComponent<IGroupsAreaChartProps> = React.me
             config.timeframe
         );
 
-        if (response.error) {
-            throw new Error(response.error);
-        }
+        if (response.error) throw new Error(response.error);
 
         return response.data.map(record => ({
             ...record,
             time: new Date(record.time).toISOString(),
             group_id: config.groupId,
             group_name: config.groupName,
-            tank_id: config.tankId,
         }));
-    };
+    }, []);
 
+    // Event handlers setup
     React.useEffect(() => {
         const handleLoading = () => setLoading(true);
         const handleLoaded = (records: GroupChartRecord[]) => {
             setLoading(false);
-            setData(records);
+            setData([...data].concat(records));
         };
         const handleError = (error: Error) => {
             setLoading(false);
             console.error('Chart error:', error);
         };
 
-        manager.on(ChartEvents.LOADING, handleLoading);
-        manager.on(ChartEvents.LOADED, handleLoaded);
-        manager.on(ChartEvents.ERROR, handleError);
+        manager.addListener(ChartEvents.LOADING, handleLoading);
+        manager.addListener(ChartEvents.LOADED, handleLoaded);
+        manager.addListener(ChartEvents.ERROR, handleError);
 
         return () => {
-            manager.off(ChartEvents.LOADING, handleLoading);
-            manager.off(ChartEvents.LOADED, handleLoaded);
-            manager.off(ChartEvents.ERROR, handleError);
+            manager.removeListener(ChartEvents.LOADING, handleLoading);
+            manager.removeListener(ChartEvents.LOADED, handleLoaded);
+            manager.removeListener(ChartEvents.ERROR, handleError);
         };
     }, [manager]);
 
+    // Data fetching effect
     React.useEffect(() => {
-        if (groups.length === 0) return;
+        if (selectedGroups.length === 0) return;
 
-        console.log(`Updating chart for group ${groups[0].id} - ${period} - ${timeframe}`);
+        const fetchGroupData = async () => {
+            try {
+                const promises = selectedGroups.map(groupId => {
+                    const group = groups.find(g => g.id === groupId);
+                    if (!group) return null;
 
-        const config: GroupChartConfig = {
-            groupId: groups[0].id,
-            groupName: groups[0].name,
-            timeframe,
-            period,
+                    const config: GroupChartConfig = {
+                        groupId: group.id,
+                        groupName: group.name,
+                        timeframe: timeOption.timeframe,
+                        period: timeOption.period,
+                    };
+
+                    return manager.updateData(config, fetchData);
+                });
+
+                await Promise.all(promises.filter(Boolean));
+            } catch (error) {
+                console.error('Failed to update chart:', error);
+            }
         };
 
-        manager.updateData(config, fetchGroupData).catch(error => {
-            console.error('Failed to update chart:', error);
-        });
-    }, [groups, period, timeframe, manager]);
+        fetchGroupData();
+    }, [selectedGroups, timeOption, manager, groups, fetchData]);
 
-    const handleTimeframeChange = (newTimeframe: TimeframeChoiceEnum) => {
-        setTimeframe(newTimeframe);
-    };
-
-    const handlePeriodChange = (newPeriod: PeriodEnum) => {
-        setPeriod(newPeriod);
-    };
-
-    const handleDateRangeChange = (dates: [Date, Date] | null) => {
-        if (!dates || !groups.length) return;
-
-        const [startTime, endTime] = dates;
-
-        const config = {
-            groupId: groups[0].id,
-            groupName: groups[0].name,
-            timeframe,
-            period: PeriodEnum.CUSTOM,
-            customRange: { startTime, endTime },
+    // Initialize selected groups
+    React.useEffect(() => {
+        if (groups.length > 0 && selectedGroups.length === 0) {
+            setSelectedGroups([groups[0].id]);
         }
-
-        manager.updateData(config, fetchGroupData).catch(error => {
-            console.error('Failed to update chart:', error);
-        });
-    };
+    }, [groups, selectedGroups]);
 
     if (loading && !data.length) {
         return <h1>Loading Area chart...</h1>;
     }
 
+    const onGroupsChange = (groupIds: number[]) => {
+        setSelectedGroups(groupIds);
+    };
+
     return (
         <div className="chart-container">
-            <div className="filters">
-                <Segmented
-                    value={timeframe}
-                    onChange={handleTimeframeChange}
-                    className="timeframe"
-                    vertical={false}
-                    options={Object.values(TimeframeChoiceEnum).map((tf) => ({
-                        label: tf.replace(/(\d+)([a-z]+)/, '$1$2'),
-                        value: tf,
-                        disabled: false,
-                        className: "timeframe-item",
-                    }))}
-                />
-                <Select
-                    value={period}
-                    onChange={handlePeriodChange}
-                    className="period"
-                    options={Object.values(PeriodEnum)
-                        .filter(p => p !== PeriodEnum.CUSTOM)
-                        .map((p) => ({
-                            label: p.split('_').map(word =>
-                                word.charAt(0).toUpperCase() + word.slice(1)
-                            ).join(' '),
-                            value: p,
-                            className: "period-item",
-                        }))}
-                    dropdownRender={(menu) => (
-                        <>
-                            {menu}
-                            <Divider style={{ margin: '8px 0' }} />
-                            <DatePicker.RangePicker
-                                onChange={(_, dateStrings) => {
-                                    if (dateStrings[0] && dateStrings[1]) {
-                                        handleDateRangeChange([
-                                            new Date(dateStrings[0]),
-                                            new Date(dateStrings[1])
-                                        ]);
-                                    }
-                                }}
-                                allowEmpty={[false, false]}
-                                required
-                            />
-                        </>
-                    )}
-                />
-            </div>
+            <ChartFilters
+                selectedGroups={selectedGroups}
+                isStacked={isStacked}
+                selectedTimeOption={timeOption}
+                onGroupsChange={onGroupsChange}
+                onStackedChange={setIsStacked}
+                onTimeOptionChange={setTimeOption}
+                availableGroups={groups.map(group => ({ id: group.id, name: group.name }))}
+            />
+
             <div className="chart">
-                <Spin spinning={loading} style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
-                <React.Suspense fallback={<h1>Loading Area chart...</h1>}>
-                    <Area
-                        data={data}
-                        // loading={loading}
-                        xField={(d) => new Date(d.time)}
-                        yField="value"
-                        colorField="group_name"
-                        shapeField="smooth"
-                        stack={true}
-                        legend={{
-                            position: 'top-left',
-                            flipPage: false,
-                            flipPageOnClick: false,
-                        }}
-                    />
-                </React.Suspense>
+                {loading && (<Spin />)}
+                <Area
+                    data={data}
+                    xField="time"
+                    yField="value"
+                    colorField="group_name"
+                    shapeField="smooth"
+                    stack={isStacked}
+                    legend={{
+                        position: 'top-left',
+                        flipPage: false,
+                    }}
+                />
             </div>
         </div>
     );
-});
+};
 
 export default GroupsAreaChart;
+
+// Helper function for time range calculation
+const getTimeRange = (period: PeriodEnum, customRange?: TimeRange): TimeRange => {
+    if (customRange && period === PeriodEnum.CUSTOM) {
+        return customRange;
+    }
+
+    const endTime = new Date();
+    const startTime = new Date();
+
+    const periodMapping = {
+        [PeriodEnum.LAST_HOUR]: () => startTime.setHours(endTime.getHours() - 1),
+        [PeriodEnum.LAST_DAY]: () => startTime.setDate(endTime.getDate() - 1),
+        [PeriodEnum.LAST_WEEK]: () => startTime.setDate(endTime.getDate() - 7),
+        [PeriodEnum.LAST_MONTH]: () => startTime.setMonth(endTime.getMonth() - 1),
+        [PeriodEnum.LAST_YEAR]: () => startTime.setFullYear(endTime.getFullYear() - 1),
+    };
+
+    periodMapping[period]?.();
+    return { startTime, endTime };
+};

@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     experimental: {
-        webpackBuildWorker: true
+        webpackBuildWorker: false
     },
     async redirects() {
         return [

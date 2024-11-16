@@ -6,13 +6,14 @@
 #include <TimeLib.h>
 #include <ArduinoJson.h>
 
+#include "../../app/App.h"
 #include "../../app/AppConfig.h"
 #include "../../misc/logger.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
 #include "../../utils/utils.h"
 
-#include "./message.h"
+#include "./Message.h"
 
 MQTTManager::MQTTManager() : mqttClient(wifiClient), state(MQTTConnectionState::DISCONNECTED) {}
 

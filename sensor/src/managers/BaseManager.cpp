@@ -1,6 +1,8 @@
 #include "BaseManager.h"
 
-#include "../../utils/utils.h"
+#include "../app/App.h"
+#include "../app/AppConfig.h"
+#include "../utils/utils.h"
 
 BaseManager::BaseManager() {}
 

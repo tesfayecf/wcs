@@ -2,11 +2,12 @@
 
 #include <ESP8266WiFi.h>
 
+#include "../../app/App.h"
 #include "../../app/AppConfig.h"
 #include "../../misc/logger.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
-#include "../mqtt/message.h"
+#include "../mqtt/Message.h"
 
 #include "Sensor.h"
 

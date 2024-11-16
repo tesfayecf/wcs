@@ -1,10 +1,11 @@
 #include "WifiManager.h"
 
+#include "../../app/App.h"
 #include "../../app/AppConfig.h"
-#include "../../misc/logger.h"
 #include "../../utils/constants.h"
 #include "../../utils/types.h"
-#include "webpage.h"
+#include "../../misc/logger.h"
+#include "WebPage.h"
 
 WifiManager::WifiManager(): server(SERVER_PORT), state(WiFiConnectionState::DISCONNECTED), connected(false) {
   this->ssid = "";

@@ -1,9 +1,7 @@
-#ifndef APPCONFIG_H
-#define APPCONFIG_H
+#ifndef APP_CONFIG_H
+#define APP_CONFIG_H
 
 #include <ESP8266WiFi.h>
-
-#include "./AppConfig.h"
 
 ////////////////////////////////
 /// Manager Status Interface ///
@@ -34,12 +32,18 @@ struct ManagerStatus {
 
 class AppConfig {
  public:
+  // Constructor
+  AppConfig();
+
   ///////////////////////
   /// BoardInfo Class ///
   ///////////////////////
 
   class BoardInfo {
    public:
+    // Constructor
+    BoardInfo();
+
     String boardChipId;               // Chip ID of the board
     uint32_t boardFlashChipId;        // Flash chip ID of the board
     String boardCoreVersion;          // Core version of the board
@@ -61,6 +65,9 @@ class AppConfig {
 
   class AppInfo {
    public:
+    // Constructor
+    AppInfo();
+
     String sensorId;           // ID of the sensor
     long startTime;            // Start timestamp of the sensor
     long localTime;            // Local timestamp of the sensor
@@ -75,6 +82,9 @@ class AppConfig {
 
   class WifiManagerInfo {
    public:
+    // Constructor
+    WifiManagerInfo();
+
     // Manager status
     ManagerStatus status;
 
@@ -96,6 +106,9 @@ class AppConfig {
 
   class MQTTManagerInfo {
     public:
+    // Constructor
+    MQTTManagerInfo();
+
     // Manager status
     ManagerStatus status;
 
@@ -118,6 +131,9 @@ class AppConfig {
 
   class HWManagerInfo {
    public:
+    // Constructor
+    HWManagerInfo();
+
     // Manager status
     ManagerStatus status;
 
@@ -139,4 +155,4 @@ class AppConfig {
   HWManagerInfo hwManagerInfo;
 };
 
-#endif  // APPCONFIG_H
+#endif  // APP_CONFIG_H

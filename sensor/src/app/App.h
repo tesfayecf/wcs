@@ -1,15 +1,14 @@
 #ifndef APP_H
 #define APP_H
 
-#include "Arduino.h"
+#include "./AppConfig.h"
 
-#include "../../managers/hardware/HWManager.h"
-#include "../../managers/mqtt/MQTTManager.h"
-#include "../../managers/wifi/WifiManager.h"
+#include "../managers/hardware/HWManager.h"
+#include "../managers/mqtt/MQTTManager.h"
+#include "../managers/wifi/WifiManager.h"
 
 #include "../utils/constants.h"
 #include "../utils/types.h"
-#include "./AppConfig.h"
 
 class App {
   public:

@@ -1,9 +1,7 @@
 #ifndef BASE_MANAGER_H
 #define BASE_MANAGER_H
 
-#include "Arduino.h"
-
-#include "../../app/AppConfig.h"
+#include "../app/AppConfig.h"
 
 class App;
 

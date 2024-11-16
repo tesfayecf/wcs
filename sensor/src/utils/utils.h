@@ -1,15 +1,16 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "../app/AppConfig.h"
-#include "constants.h"
 #include "types.h"
+#include "constants.h"
+
+#include "../app/AppConfig.h"
 
 /**
  * Function is used to generate a unique ID for each sensor.
  * Allows for an optional separator between boardId and flashChipId.
  */
-String generateId(const String &boardId, const String &flashChipId) {
+inline String generateId(const String &boardId, const String &flashChipId) {
     if (boardId.isEmpty() || flashChipId.isEmpty()) {
         return "";
     }
@@ -31,7 +32,7 @@ String generateId(const String &boardId, const String &flashChipId) {
  *  - useNumbers: Include numbers.
  *  - useSpecialChars: Include special characters.
  */
-String generateRandomString(int length, bool useUppercase = true, bool useLowercase = true, bool useNumbers = true, bool useSpecialChars = false) {
+inline String generateRandomString(int length, bool useUppercase = true, bool useLowercase = true, bool useNumbers = true, bool useSpecialChars = false) {
     String randomString = "";
     String characters = "";
 
@@ -55,7 +56,7 @@ String generateRandomString(int length, bool useUppercase = true, bool useLowerc
 /**
  * Function to format a byte array into a human-readable hex string.
  */
-String byteArrayToHexString(const byte* byteArray, int length) {
+inline String byteArrayToHexString(const byte* byteArray, int length) {
     String hexString = "";
     for (int i = 0; i < length; i++) {
         if (byteArray[i] < 0x10) {
@@ -69,7 +70,7 @@ String byteArrayToHexString(const byte* byteArray, int length) {
 /**
  * Function to convert a hex string to a byte array.
  */
-void hexStringToByteArray(const String &hexString, byte* byteArray, int arraySize) {
+inline void hexStringToByteArray(const String &hexString, byte* byteArray, int arraySize) {
     int len = hexString.length();
     int j = 0;
 
@@ -83,7 +84,7 @@ void hexStringToByteArray(const String &hexString, byte* byteArray, int arraySiz
  * Function to encode a string to Base64.
  * Ensures that the input is not empty.
  */
-String base64Encode(const String &input) {
+inline String base64Encode(const String &input) {
     if (input.isEmpty()) {
         return "";
     }
@@ -112,7 +113,7 @@ String base64Encode(const String &input) {
 /**
  * Function to decode a Base64 encoded string.
  */
-String base64Decode(const String &input) {
+inline String base64Decode(const String &input) {
     if (input.isEmpty()) {
         return "";
     }
@@ -157,7 +158,7 @@ String base64Decode(const String &input) {
  *  - count: Number of blinks.
  *  - pause: Time between each blink in milliseconds.
  */
-void blink(int time, int count = 1, int pause = 100) {
+inline void blink(int time, int count = 1, int pause = 100) {
     for (int i = 0; i < count; i++) {
         digitalWrite(LED_BUILTIN, HIGH);
         delay(time);

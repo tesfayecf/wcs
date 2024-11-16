@@ -2,24 +2,21 @@
 
 #include <TimeLib.h>
 
-#include "../managers/BaseManager.cpp" // BUG ALERT
+#include "./AppConfig.h"
+
+// #include "../managers/BaseManager.cpp" // BUG ALERT
 #include "../managers/BaseManager.h"
-
-#include "../../managers/hardware/HWManager.cpp"  // BUG ALERT
-#include "../../managers/hardware/HWManager.h"
-
-#include "../../managers/mqtt/MQTTManager.cpp"  // BUG ALERT
-#include "../../managers/mqtt/MQTTManager.h"
-
-#include "../../managers/wifi/WifiManager.cpp"  // BUG ALERT
-#include "../../managers/wifi/WifiManager.h"
+// #include "../../managers/hardware/HWManager.cpp"  // BUG ALERT
+#include "../managers/hardware/HWManager.h"
+// #include "../../managers/mqtt/MQTTManager.cpp"  // BUG ALERT
+#include "../managers/mqtt/MQTTManager.h"
+// #include "../../managers/wifi/WifiManager.cpp"  // BUG ALERT
+#include "../managers/wifi/WifiManager.h"
 
 #include "../utils/constants.h"
 #include "../utils/types.h"
 #include "../utils/utils.h"
 #include "../misc/logger.h"
-
-#include "./AppConfig.h"
 
 App::App(const AppConfig &config) :
     wifiManager(nullptr), mqttManager(nullptr), hwManager(nullptr), appConfig(config) {

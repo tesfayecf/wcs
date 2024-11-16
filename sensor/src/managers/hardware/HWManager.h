@@ -1,5 +1,5 @@
-#ifndef HW_CONNECTION_MANAGER_H
-#define HW_CONNECTION_MANAGER_H
+#ifndef HW_MANAGER_H
+#define HW_MANAGER_H
 
 #include "../../app/AppConfig.h"
 #include "../../utils/constants.h"
@@ -42,4 +42,4 @@ class HWManager : public BaseManager {
     // void readHumiditySensor();
 };
 
-#endif  // HW_CONNECTION_MANAGER_H
+#endif  // HW_MANAGER_H

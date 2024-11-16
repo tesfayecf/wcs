@@ -1,5 +1,5 @@
-#ifndef MQTT_CONNECTION_MANAGER_H
-#define MQTT_CONNECTION_MANAGER_H
+#ifndef MQTT_MANAGER_H
+#define MQTT_MANAGER_H
 
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
@@ -11,7 +11,7 @@
 
 #include "../BaseManager.h"
 
-#include "./message.h"
+#include "./Message.h"
 
 class App;
 
@@ -77,4 +77,4 @@ private:
 
 };
 
-#endif  // MQTT_CONNECTION_MANAGER_H
+#endif  // MQTT_MANAGER_H

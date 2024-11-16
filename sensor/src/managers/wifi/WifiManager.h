@@ -1,5 +1,5 @@
-#ifndef WIFI_CONNECTION_MANAGER_H
-#define WIFI_CONNECTION_MANAGER_H
+#ifndef WIFI_MANAGER_H
+#define WIFI_MANAGER_H
 
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
@@ -62,4 +62,4 @@ private:
     String ipToString(IPAddress ip);
 };
 
-#endif  // WIFI_CONNECTION_MANAGER_H
+#endif  // WIFI_MANAGER_H

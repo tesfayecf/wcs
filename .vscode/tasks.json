@@ -98,7 +98,7 @@
         "compile",
         "${workspaceFolder}/sensor/sensor.ino",
         "--fqbn", "esp8266:esp8266:d1_mini_pro",
-        "--config-file", "${workspaceFolder}/sensor/arduino-cli/cli-config.yaml",
+        "--config-file", "${workspaceFolder}/sensor/arduino-cli/config.yml",
         "--build-property", "compiler.cpp.extra_flags=-I${workspaceFolder}/sensor/src",
         "--build-path", "${workspaceFolder}/sensor/build",
         "--verbose"

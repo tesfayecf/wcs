@@ -2,7 +2,6 @@
 #define LOGGER_H
 
 #include "../utils/types.h"
-#include <Arduino.h>
 
 const char LEVEL_VERBOSE[] = "VERBOSE";
 const char LEVEL_NOTICE[] = "NOTICE";
@@ -145,7 +144,7 @@ class Logger {
 
 };
 
-void Logger::defaultLog(LogLevel level, const char* module, const char* message) {
+inline void Logger::defaultLog(LogLevel level, const char* module, const char* message) {
     Serial.print(F("["));
     Serial.print(asString(level));
     Serial.print(F("] "));

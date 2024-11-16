@@ -45,4 +45,4 @@ enum class MQTTConnectionState {
     PUBLISHING
 };
 
-#endif  // TYPES_H
+#endif // TYPES_H

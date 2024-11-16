@@ -9,7 +9,7 @@
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/frontend",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "pnpm",
       "restart": true,
       "env": {
         "NODE_ENV": "development",
@@ -42,7 +42,7 @@
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/frontend",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "pnpm",
       "restart": true,
       "env": {
         "NODE_ENV": "development",
@@ -71,7 +71,7 @@
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/frontend",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "pnpm",
       "restart": true,
       "env": {
         "NODE_ENV": "production",

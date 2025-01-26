@@ -1,0 +1,479 @@
+// src/lib/charts/types.ts
+export interface TimeRange {
+    startTime: Date;
+    endTime: Date;
+}
+
+export interface BaseChartConfig {
+    id: string;
+    timeRange: TimeRange;
+    [key: string]: any;
+}
+
+export interface CacheEntry<TConfig, TData> {
+    config: TConfig;
+    data: TData[];
+    timestamp: number;
+    expiresAt: number;
+    hash: string;
+    version: number;
+}
+
+export interface FetchOptions {
+    force?: boolean;
+    skipCache?: boolean;
+    timeout?: number;
+    priority?: 'high' | 'normal' | 'low';
+    batch?: boolean;
+    retryStrategy?: RetryStrategy;
+}
+
+export interface ManagerMetrics {
+    cacheHits: number;
+    cacheMisses: number;
+    requestCount: number;
+    errorCount: number;
+    averageResponseTime: number;
+    cacheSize: number;
+    oldestCacheEntry: number;
+}
+
+export interface RetryStrategy {
+    attempts: number;
+    baseDelay: number;
+    maxDelay: number;
+    backoffFactor: number;
+}
+
+export interface BatchConfig {
+    maxSize: number;
+    maxDelay: number;
+    enabled: boolean;
+}
+
+// src/lib/charts/cache/CacheManager.ts
+export class CacheManager<TConfig extends BaseChartConfig, TData> {
+    private cache: Map<string, CacheEntry<TConfig, TData>>;
+    private metrics: Map<string, number>;
+    private readonly maxSize: number;
+    private readonly defaultTTL: number;
+
+    constructor(maxSize: number = 100, defaultTTL: number = 5 * 60 * 1000) {
+        this.cache = new Map();
+        this.metrics = new Map();
+        this.maxSize = maxSize;
+        this.defaultTTL = defaultTTL;
+    }
+
+    public get(hash: string): TData[] | null {
+        const entry = this.cache.get(hash);
+        if (!entry || Date.now() > entry.expiresAt) {
+            this.incrementMetric('cacheMisses');
+            if (entry) this.delete(hash);
+            return null;
+        }
+
+        this.incrementMetric('cacheHits');
+        return entry.data;
+    }
+
+    public set(hash: string, config: TConfig, data: TData[], ttl?: number): void {
+        if (this.cache.size >= this.maxSize) {
+            this.evictOldest();
+        }
+
+        const timestamp = Date.now();
+        const expiresAt = timestamp + (ttl || this.defaultTTL);
+
+        this.cache.set(hash, {
+            config,
+            data,
+            timestamp,
+            expiresAt,
+            hash,
+            version: (this.cache.get(hash)?.version || 0) + 1
+        });
+    }
+
+    public delete(hash: string): boolean {
+        return this.cache.delete(hash);
+    }
+
+    public clear(): void {
+        this.cache.clear();
+        this.metrics.clear();
+    }
+
+    private evictOldest(): void {
+        let oldest: [string, CacheEntry<TConfig, TData>] | null = null;
+        
+        for (const entry of this.cache.entries()) {
+            if (!oldest || entry[1].timestamp < oldest[1].timestamp) {
+                oldest = entry;
+            }
+        }
+
+        if (oldest) {
+            this.cache.delete(oldest[0]);
+        }
+    }
+
+    private incrementMetric(key: string): void {
+        this.metrics.set(key, (this.metrics.get(key) || 0) + 1);
+    }
+
+    public getMetrics(): Record<string, number> {
+        return Object.fromEntries(this.metrics);
+    }
+}
+
+// src/lib/charts/batch/BatchManager.ts
+export class BatchManager<TConfig extends BaseChartConfig, TData> {
+    private batches: Map<string, Array<{
+        config: TConfig;
+        resolve: (data: TData[]) => void;
+        reject: (error: Error) => void;
+    }>> = new Map();
+
+    private timeouts: Map<string, NodeJS.Timeout> = new Map();
+    private readonly config: Required<BatchConfig>;
+
+    constructor(config: Partial<BatchConfig> = {}) {
+        this.config = {
+            maxSize: 10,
+            maxDelay: 50,
+            enabled: true,
+            ...config
+        };
+    }
+
+    public async add(
+        batchKey: string,
+        config: TConfig,
+        fetchFn: (configs: TConfig[]) => Promise<Map<string, TData[]>>
+    ): Promise<TData[]> {
+        if (!this.config.enabled) {
+            const result = await fetchFn([config]);
+            return result.get(config.id) || [];
+        }
+
+        return new Promise((resolve, reject) => {
+            const batch = this.batches.get(batchKey) || [];
+            batch.push({ config, resolve, reject });
+            this.batches.set(batchKey, batch);
+
+            if (batch.length === 1) {
+                this.scheduleFlush(batchKey, fetchFn);
+            } else if (batch.length >= this.config.maxSize) {
+                this.flush(batchKey, fetchFn);
+            }
+        });
+    }
+
+    private scheduleFlush(
+        batchKey: string,
+        fetchFn: (configs: TConfig[]) => Promise<Map<string, TData[]>>
+    ): void {
+        const timeout = setTimeout(() => {
+            this.flush(batchKey, fetchFn);
+        }, this.config.maxDelay);
+
+        this.timeouts.set(batchKey, timeout);
+    }
+
+    private async flush(
+        batchKey: string,
+        fetchFn: (configs: TConfig[]) => Promise<Map<string, TData[]>>
+    ): Promise<void> {
+        const timeout = this.timeouts.get(batchKey);
+        if (timeout) {
+            clearTimeout(timeout);
+            this.timeouts.delete(batchKey);
+        }
+
+        const batch = this.batches.get(batchKey) || [];
+        if (batch.length === 0) return;
+
+        this.batches.delete(batchKey);
+
+        try {
+            const configs = batch.map(item => item.config);
+            const results = await fetchFn(configs);
+
+            batch.forEach(({ config, resolve, reject }) => {
+                const result = results.get(config.id);
+                if (result) {
+                    resolve(result);
+                } else {
+                    reject(new Error(`No data returned for config ${config.id}`));
+                }
+            });
+        } catch (error) {
+            batch.forEach(({ reject }) => reject(error));
+        }
+    }
+}
+
+// src/lib/charts/retry/RetryManager.ts
+export class RetryManager {
+    private readonly defaultStrategy: Required<RetryStrategy> = {
+        attempts: 3,
+        baseDelay: 1000,
+        maxDelay: 10000,
+        backoffFactor: 2
+    };
+
+    constructor(private readonly strategy: Partial<RetryStrategy> = {}) {
+        this.strategy = { ...this.defaultStrategy, ...strategy };
+    }
+
+    public async execute<T>(
+        operation: () => Promise<T>,
+        onRetry?: (error: Error, attempt: number) => void
+    ): Promise<T> {
+        let lastError: Error;
+        const { attempts, baseDelay, maxDelay, backoffFactor } = 
+            { ...this.defaultStrategy, ...this.strategy };
+
+        for (let attempt = 1; attempt <= attempts; attempt++) {
+            try {
+                return await operation();
+            } catch (error) {
+                lastError = error;
+                
+                if (attempt === attempts) break;
+                
+                const delay = Math.min(
+                    baseDelay * Math.pow(backoffFactor, attempt - 1),
+                    maxDelay
+                );
+
+                if (onRetry) onRetry(error, attempt);
+                await new Promise(resolve => setTimeout(resolve, delay));
+            }
+        }
+
+        throw lastError!;
+    }
+}
+
+// src/lib/charts/monitoring/MetricsCollector.ts
+export class MetricsCollector {
+    private metrics: Map<string, number> = new Map();
+    private timings: Map<string, number[]> = new Map();
+    private readonly maxSamples: number = 100;
+
+    public incrementMetric(key: string): void {
+        this.metrics.set(key, (this.metrics.get(key) || 0) + 1);
+    }
+
+    public recordTiming(key: string, duration: number): void {
+        const timings = this.timings.get(key) || [];
+        timings.push(duration);
+        
+        if (timings.length > this.maxSamples) {
+            timings.shift();
+        }
+        
+        this.timings.set(key, timings);
+    }
+
+    public getMetrics(): ManagerMetrics {
+        const timings = this.timings.get('responseTime') || [];
+        const averageResponseTime = timings.length > 0
+            ? timings.reduce((a, b) => a + b, 0) / timings.length
+            : 0;
+
+        return {
+            cacheHits: this.metrics.get('cacheHits') || 0,
+            cacheMisses: this.metrics.get('cacheMisses') || 0,
+            requestCount: this.metrics.get('requestCount') || 0,
+            errorCount: this.metrics.get('errorCount') || 0,
+            averageResponseTime,
+            cacheSize: this.metrics.get('cacheSize') || 0,
+            oldestCacheEntry: this.metrics.get('oldestCacheEntry') || 0
+        };
+    }
+
+    public reset(): void {
+        this.metrics.clear();
+        this.timings.clear();
+    }
+}
+
+// src/lib/charts/EnterpriseChartManager.ts
+export class EnterpriseChartManager<
+    TConfig extends BaseChartConfig,
+    TData
+> extends EventEmitter {
+    private readonly cache: CacheManager<TConfig, TData>;
+    private readonly batch: BatchManager<TConfig, TData>;
+    private readonly retry: RetryManager;
+    private readonly metrics: MetricsCollector;
+    private readonly abortControllers: Map<string, AbortController>;
+    private readonly refreshTimers: Map<string, NodeJS.Timeout>;
+
+    constructor(options: {
+        cache?: Partial<{
+            maxSize: number;
+            defaultTTL: number;
+        }>;
+        batch?: Partial<BatchConfig>;
+        retry?: Partial<RetryStrategy>;
+    } = {}) {
+        super();
+
+        this.cache = new CacheManager(
+            options.cache?.maxSize,
+            options.cache?.defaultTTL
+        );
+        this.batch = new BatchManager(options.batch);
+        this.retry = new RetryManager(options.retry);
+        this.metrics = new MetricsCollector();
+        this.abortControllers = new Map();
+        this.refreshTimers = new Map();
+
+        // Setup periodic cache cleanup
+        setInterval(() => this.cleanup(), 60000);
+    }
+
+    public async fetchData(
+        config: TConfig,
+        fetchFn: (
+            configs: TConfig[],
+            signal: AbortSignal
+        ) => Promise<Map<string, TData[]>>,
+        options: FetchOptions = {}
+    ): Promise<TData[]> {
+        const startTime = Date.now();
+        const hash = this.hashConfig(config);
+
+        try {
+            // Check cache unless forced refresh
+            if (!options.force && !options.skipCache) {
+                const cachedData = this.cache.get(hash);
+                if (cachedData) return cachedData;
+            }
+
+            // Setup abort controller
+            const controller = new AbortController();
+            this.abortControllers.set(hash, controller);
+
+            // Setup timeout if specified
+            const timeoutId = options.timeout
+                ? setTimeout(() => controller.abort(), options.timeout)
+                : null;
+
+            this.emit('loading', { config });
+            this.metrics.incrementMetric('requestCount');
+
+            // Execute request with retry logic
+            const data = await this.retry.execute(
+                async () => {
+                    // Use batch manager if enabled
+                    if (options.batch) {
+                        return this.batch.add(
+                            this.getBatchKey(config),
+                            config,
+                            (configs) => fetchFn(configs, controller.signal)
+                        );
+                    }
+
+                    const results = await fetchFn([config], controller.signal);
+                    return results.get(config.id) || [];
+                },
+                (error, attempt) => {
+                    this.emit('retry', { config, error, attempt });
+                }
+            );
+
+            // Cleanup
+            if (timeoutId) clearTimeout(timeoutId);
+            this.abortControllers.delete(hash);
+
+            // Cache the results
+            this.cache.set(hash, config, data);
+
+            // Setup auto-refresh if needed
+            this.setupAutoRefresh(config, fetchFn);
+
+            this.emit('loaded', { config, data });
+            this.metrics.recordTiming('responseTime', Date.now() - startTime);
+
+            return data;
+
+        } catch (error) {
+            this.metrics.incrementMetric('errorCount');
+            this.emit('error', { config, error });
+            throw error;
+        }
+    }
+
+    private getBatchKey(config: TConfig): string {
+        // Create a batch key based on relevant config properties
+        const { timeRange, ...rest } = config;
+        return JSON.stringify(rest);
+    }
+
+    private hashConfig(config: TConfig): string {
+        return JSON.stringify(config);
+    }
+
+    private setupAutoRefresh(
+        config: TConfig,
+        fetchFn: (configs: TConfig[], signal: AbortSignal) => Promise<Map<string, TData[]>>
+    ): void {
+        const hash = this.hashConfig(config);
+        const existing = this.refreshTimers.get(hash);
+        if (existing) clearInterval(existing);
+
+        const timer = setInterval(() => {
+            this.fetchData(config, fetchFn, { skipCache: true })
+                .catch(error => this.emit('refreshError', { config, error }));
+        }, 30000); // 30 second refresh
+
+        this.refreshTimers.set(hash, timer);
+    }
+
+    private cleanup(): void {
+        const now = Date.now();
+
+        // Cleanup old abort controllers
+        for (const [hash, controller] of this.abortControllers.entries()) {
+            controller.abort();
+            this.abortControllers.delete(hash);
+        }
+
+        this.emit('cleanup');
+    }
+
+    public getMetrics(): ManagerMetrics {
+        return this.metrics.getMetrics();
+    }
+
+    public clearCache(): void {
+        this.cache.clear();
+        this.emit('cacheCleared');
+    }
+
+    public dispose(): void {
+        // Clear all timers
+        for (const timer of this.refreshTimers.values()) {
+            clearInterval(timer);
+        }
+        this.refreshTimers.clear();
+
+        // Abort all pending requests
+        for (const controller of this.abortControllers.values()) {
+            controller.abort();
+        }
+        this.abortControllers.clear();
+
+        // Clear cache and metrics
+        this.cache.clear();
+        this.metrics.reset();
+
+        // Remove all event listeners
+        this.removeAllListeners();
+    }
+}

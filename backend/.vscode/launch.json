@@ -1,96 +1,6 @@
 {
   "version": "0.2.0",
   "configurations": [
-    /////////////////////////
-    /// NextJS - Frontend ///
-    /////////////////////////
-    {
-      "name": "🌐 Next.js Development",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/frontend",
-      "runtimeExecutable": "pnpm",
-      "restart": true,
-      "env": {
-        "NODE_ENV": "development",
-        "NEXT_TELEMETRY_DISABLED": "1",
-        "PORT": "3000"
-      },
-      "runtimeArgs": ["run-script", "dev"],
-      "console": "integratedTerminal",
-      "skipFiles": [
-        "<node_internals>/**",
-        "${workspaceFolder}/frontend/node_modules/**"
-      ],
-      "resolveSourceMapLocations": [
-        "${workspaceFolder}/frontend/**",
-        "!**/node_modules/**"
-      ],
-      "presentation": {
-        "hidden": false,
-        "group": "NextJS - Frontend",
-        "order": 1
-      },
-      "serverReadyAction": {
-        "pattern": "started server on .+, url: (https?://.+)",
-        "uriFormat": "%s",
-        "action": "debugWithChrome"
-      }
-    },
-    {
-      "name": "🚀 Next.js Turbo",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/frontend",
-      "runtimeExecutable": "pnpm",
-      "restart": true,
-      "env": {
-        "NODE_ENV": "development",
-        "NEXT_TELEMETRY_DISABLED": "1",
-        "PORT": "3000"
-      },
-      "runtimeArgs": ["run", "dev::turbo"],
-      "console": "integratedTerminal",
-      "skipFiles": [
-        "<node_internals>/**",
-        "${workspaceFolder}/frontend/node_modules/**"
-      ],
-      "presentation": {
-        "hidden": false,
-        "group": "NextJS - Frontend",
-        "order": 2
-      },
-      "serverReadyAction": {
-        "pattern": "started server on .+, url: (https?://.+)",
-        "uriFormat": "%s",
-        "action": "debugWithChrome"
-      }
-    },
-    {
-      "name": "⚡ Next.js Production",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/frontend",
-      "runtimeExecutable": "pnpm",
-      "restart": true,
-      "env": {
-        "NODE_ENV": "production",
-        "NEXT_TELEMETRY_DISABLED": "1",
-        "PORT": "3000"
-      },
-      "runtimeArgs": ["run-script", "start"],
-      "console": "integratedTerminal",
-      "skipFiles": [
-        "<node_internals>/**",
-        "${workspaceFolder}/frontend/node_modules/**"
-      ],
-      "presentation": {
-        "hidden": false,
-        "group": "NextJS - Frontend",
-        "order": 3
-      }
-    },
-
     ////////////////////////
     /// Django - Backend ///
     ////////////////////////
@@ -158,32 +68,6 @@
         "hidden": false,
         "group": "Django - Backend",
         "order": 3
-      }
-    },
-
-    /////////////////////////
-    /// Chrome - Renderer ///
-    /////////////////////////
-    {
-      "name": "🌐 Chrome Debug",
-      "type": "chrome",
-      "request": "launch",
-      "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}/frontend",
-      "sourceMaps": true,
-      "timeout": 15000,
-      "trace": true,
-      "userDataDir": "${workspaceFolder}/.vscode/chrome-debug-profile",
-      "presentation": {
-        "hidden": false,
-        "group": "Browser",
-        "order": 1
-      },
-      "smartStep": true,
-      "sourceMapPathOverrides": {
-        "webpack:///./~/*": "${webRoot}/node_modules/*",
-        "webpack:///./*": "${webRoot}/*",
-        "webpack:///*": "*"
       }
     },
 
@@ -359,20 +243,6 @@
         "group": "database",
         "order": 2
       }
-    },
-    {
-      "name": "🚀 Full Stack Development",
-      "configurations": [
-        "🐍 Django Development",
-        "🌐 Next.js Development",
-        "🌐 Chrome Debug"
-      ],
-      "presentation": {
-        "hidden": false,
-        "group": "development",
-        "order": 3
-      },
-      "stopAll": true
     }
   ]
 }

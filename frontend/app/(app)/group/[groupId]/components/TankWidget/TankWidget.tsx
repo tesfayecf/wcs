@@ -1,17 +1,16 @@
 'use client'
 import React from 'react';
 import ContentBox from '@/app/components/contentBox/ContentBox';
-import { ITank, ITankStatus } from '@/app/(app)/group/[groupId]/types';
-import { getSensorLastReading } from '../../actions';
+import { Tank } from "@/app/(app)/group/[groupId]/tank/[tankId]/types";
 
 interface ITankWidgetWidgetProps {
-    tank: ITank,
+    tank: Tank.ITank,
 }
 
 const TankWidget: React.FunctionComponent<ITankWidgetWidgetProps> = async (props: ITankWidgetWidgetProps) => {
 
     const getSensorStatus = () => {
-        let text: ITankStatus = "Undefined";
+        let text: Tank.ITankStatus = "Undefined";
         let icon = null;
         let color: string = "#f69c68";
 

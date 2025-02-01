@@ -7,7 +7,6 @@
     "dev": "next dev",
     "dev::turbo": "next dev --turbo",
     "build": "next build",
-    "lint": "next lint",
     "ts": "tsc --noEmit --incremental",
     "ts:watch": "tsc --watch",
     "scss": "sass styles:styles --watch"

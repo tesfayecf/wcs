@@ -11,8 +11,12 @@ export default function RootLayout({ children }: IAppLayoutProps) {
         <html lang="en">
             <head>
                 <meta charSet="utf-8" />
+                <title>WCS | Water Control System</title>
+                <link rel="icon" href="/favicon.ico" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <title>WCS</title>
+                <meta name="description" content="A Next.js application to manage and monitor rain water control systems." />
+                <meta name="author" content="WCS S.L." />
+                <meta name="keywords" content="nextjs, water, control, system" />
             </head>
             <body>
                 <AntdRegistry>{children}</AntdRegistry>

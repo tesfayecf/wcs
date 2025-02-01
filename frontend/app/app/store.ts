@@ -8,17 +8,20 @@ const defaultStore: App.IAppStore = {
     status: {
         isLoading: true,
         isWaiting: false,
-        isError: false,
         isIdle: false,
+        isError: false,
     },
     connection: {
         isConnected: false,
-        isReconnecting: false,
+        isConnecting: false,
         isIdle: false,
         isError: false,
     },
-    isAuthenticated: false,
-    userInfo: {
+    permissions: {
+        isAuthenticated: false,
+        isAdmin: false
+    },
+    user: {
         id: -1,
         email: "",
         first_name: "",
@@ -30,22 +33,21 @@ const defaultStore: App.IAppStore = {
         is_staff: false,
         is_superuser: false,
     },
-    permissions: {}
 }
 
 interface IAppStoreActions {
     setState: (state: Partial<App.IAppStore>) => void;
     // App
     setLoadingState: (isLoading: boolean) => void;
-    setWaitingState: (isWaiting: boolean) => void; // Added waiting state
-    setErrorState: (isError: boolean) => void; // Added error state
-    setIdleState: (isIdle: boolean) => void; // Added idle state
+    setWaitingState: (isWaiting: boolean) => void;
+    setErrorState: (isError: boolean) => void;
+    setIdleState: (isIdle: boolean) => void;
     setAuthenticationState: (isAuthenticated: boolean) => void;
     // Connection
-    setConnectionState: (isConnected: boolean) => void; // Added connection state
-    setReconnectingState: (isReconnecting: boolean) => void; // Added reconnecting state
-    setConnectionIdleState: (isIdle: boolean) => void; // Added connection idle state
-    setConnectionErrorState: (isError: boolean) => void; // Added connection error state
+    setConnectionState: (isConnected: boolean) => void;
+    setConnectingState: (isConnecting: boolean) => void;
+    setConnectionIdleState: (isIdle: boolean) => void;
+    setConnectionErrorState: (isError: boolean) => void;
     // User
     setUserInfo: (userInfo: Api.Users.User) => void;
     resetUserInfo: () => void;
@@ -64,7 +66,7 @@ export const useAppStore = create<App.IAppStore & IAppStoreActions>()(
         // Authentication
         isAuthenticated: false,
         // User
-        userInfo: defaultStore.userInfo,
+        user: defaultStore.user,
         // Permissions
         permissions: defaultStore.permissions,
 
@@ -76,15 +78,15 @@ export const useAppStore = create<App.IAppStore & IAppStoreActions>()(
         setErrorState: (isError: boolean) => set((prev) => { prev.status.isLoading = false; prev.status.isWaiting = false; prev.status.isError = isError; prev.status.isIdle = false; }),
         setIdleState: (isIdle: boolean) => set((prev) => { prev.status.isLoading = false; prev.status.isWaiting = false; prev.status.isError = false; prev.status.isIdle = isIdle; }),
         // Connection
-        setConnectionState: (isConnected: boolean) => set((prev) => { prev.connection.isConnected = isConnected; prev.connection.isReconnecting = false; prev.connection.isIdle = false; prev.connection.isError = false; }),
-        setReconnectingState: (isReconnecting: boolean) => set((prev) => { prev.connection.isConnected = false; prev.connection.isReconnecting = isReconnecting; prev.connection.isIdle = false; prev.connection.isError = false; }),
-        setConnectionErrorState: (isError: boolean) => set((prev) => { prev.connection.isConnected = false; prev.connection.isReconnecting = false; prev.connection.isIdle = false; prev.connection.isError = isError; }),
-        setConnectionIdleState: (isIdle: boolean) => set((prev) => { prev.connection.isConnected = false; prev.connection.isReconnecting = false; prev.connection.isIdle = isIdle; prev.connection.isError = false; }),
+        setConnectionState: (isConnected: boolean) => set((prev) => { prev.connection.isConnected = isConnected; prev.connection.isConnecting = false; prev.connection.isIdle = false; prev.connection.isError = false; }),
+        setConnectingState: (isReconnecting: boolean) => set((prev) => { prev.connection.isConnected = false; prev.connection.isConnecting = isReconnecting; prev.connection.isIdle = false; prev.connection.isError = false; }),
+        setConnectionErrorState: (isError: boolean) => set((prev) => { prev.connection.isConnected = false; prev.connection.isConnecting = false; prev.connection.isIdle = false; prev.connection.isError = isError; }),
+        setConnectionIdleState: (isIdle: boolean) => set((prev) => { prev.connection.isConnected = false; prev.connection.isConnecting = false; prev.connection.isIdle = isIdle; prev.connection.isError = false; }),
         // Authentication
         setAuthenticationState: (isAuthenticated: boolean) => set(() => ({ isAuthenticated })),
         // User
-        setUserInfo: (userInfo: Api.Users.User) => set((prev) => { prev.userInfo = userInfo; }),
-        resetUserInfo: () => set(() => ({ userInfo: defaultStore.userInfo })),
+        setUserInfo: (userInfo: Api.Users.User) => set((prev) => { prev.user = userInfo; }),
+        resetUserInfo: () => set(() => ({ userInfo: defaultStore.user })),
         // Permissions
         setPermissions: (permissions: any) => set((prev) => { prev.permissions = permissions; }),
         resetPermissions: () => set(() => ({ permissions: [] })),

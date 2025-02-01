@@ -4,8 +4,9 @@
     {
       "label": "Build All",
       "dependsOn": [
+        "🎨 Compile TypeScript",
         "🎨 Compile SCSS",
-        "🔄 Generate APITypeScript Types",
+        "🔄 Generate API Types",
       ],
       "dependsOrder": "parallel",
       "group": {
@@ -15,36 +16,55 @@
       "isBackground": true
     },
 
-    ///////////////////////////////
-    /// TypeScript Generation  ///
-    ///////////////////////////////
+    //////////////////////////
+    /// TypeScript Builld  ///
+    //////////////////////////
     {
-      "label": "🔄 Generate APITypeScript Types",
+      "label": "🎨 Compile TypeScript",
       "type": "shell",
       "options": {
-        "cwd": "${workspaceFolder}/backend"
+        "cwd": "${workspaceFolder}"
+      },
+      "command": "pnpm",
+      "args": [
+        "tsc",
+        "--watch"
+      ],
+      "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    
+    /////////////////////////
+    /// Types Generation  ///
+    /////////////////////////
+    {
+      "label": "🔄 Generate API Types",
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/../backend"
       },
       "linux": {
         "command": "watch",
         "args": [
           "-n",
-          "1",
-          "python",
+          "5",
+          "${workspaceFolder}/../backend/.venv/bin/python",
           "./manage.py",
           "generate_ts",
           "--all",
           "--trim",
           "--enum_choices",
           "-o",
-          "${workspaceFolder}/frontend/app/lib/api/types"
+          "${workspaceFolder}/app/lib/api/types"
         ],
-      },
-      "windows": {
-        "command": "powershell",
-        "args": [
-          "-Command",
-          "while($true) { python 'manage.py' generate_ts --all --trim --enum_choices -o '${workspaceFolder}/frontend/app/lib/api/types'; Start-Sleep -Seconds 2 }"
-        ]
       },
       "isBackground": true,
       "group": {
@@ -66,7 +86,7 @@
       "label": "🎨 Compile SCSS",
       "type": "process",
       "options": {
-        "cwd": "${workspaceFolder}/frontend"
+        "cwd": "${workspaceFolder}"
       },
       "command": "npx",
       "args": [

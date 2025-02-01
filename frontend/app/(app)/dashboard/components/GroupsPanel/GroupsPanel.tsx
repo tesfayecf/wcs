@@ -10,19 +10,12 @@ import Link from "next/link";
 import { Api } from "@/app/lib/api/types";
 import { useDashboardStore } from "@/app/(app)/dashboard/store";
 
-interface IGroupsPanelProps {
-    groups?: Api.Resources.Group[];
-}
+interface IGroupsPanelProps { };
 
 const GroupsPanel: React.FunctionComponent<IGroupsPanelProps> = (props: IGroupsPanelProps) => {
     const [mode, setMode] = React.useState<"grid" | "table">("grid");
-    const [groups, setGroups] = React.useState<Api.Resources.Group[]>(props.groups || []);
-    const { setGroupMenu } = useDashboardStore();
+    const { groups, setGroupMenu } = useDashboardStore();
     const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
-
-    React.useEffect(() => {
-        setGroups(props.groups || []);
-    }, [props.groups]);
 
     const renderGridView = React.useCallback(() => {
 
@@ -78,23 +71,19 @@ const GroupsPanel: React.FunctionComponent<IGroupsPanelProps> = (props: IGroupsP
             </div>
 
         );
-    }, [props.groups])
-
-
+    }, [groups])
 
     const onSelectChange = (newSelectedRowKeys: React.Key[], selectedRows: Api.Resources.Group[]) => {
         setSelectedRowKeys(newSelectedRowKeys);
     };
 
     const renderTableView = React.useCallback(() => {
-
         // Add row
         // Custom empty status 
-
         return (
             <Table<Api.Resources.Group>
                 className="panel-table"
-                dataSource={props.groups}
+                dataSource={groups}
                 columns={columns}
                 rowSelection={{
                     selectedRowKeys,
@@ -105,7 +94,7 @@ const GroupsPanel: React.FunctionComponent<IGroupsPanelProps> = (props: IGroupsP
                 pagination={{ position: ["bottomRight"] }}
             />
         )
-    }, [props.groups, selectedRowKeys, setSelectedRowKeys])
+    }, [groups, selectedRowKeys, setSelectedRowKeys])
 
     return (
         <div className="groups-panel">

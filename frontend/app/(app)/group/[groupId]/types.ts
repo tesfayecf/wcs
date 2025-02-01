@@ -2,6 +2,7 @@ import { Api } from "@/app/lib/api/types";
 import { Tank } from "@/app/(app)/group/[groupId]/tank/[tankId]/types";
 
 export namespace Group {
+    
     /// GROUP PARAMS ///
     export interface IGroupParams {
         groupId: string;

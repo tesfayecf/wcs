@@ -2,7 +2,6 @@
 import React from 'react';
 import Form from '@/app/components/form/Form';
 import Popup from '@/app/components/popup/Popup';
-import { ITankCreationForm } from '@/app/(app)/group/[groupId]/types';
 
 import { createTank, getTanks } from '../../actions';
 import { useGroupStore } from '@/app/(app)/group/[groupId]/store';
@@ -15,10 +14,10 @@ const TankPopUp: React.FunctionComponent<ITankPopUpProps> = (props: ITankPopUpPr
     const showTankMenu = useGroupStore(state => state.showTankMenu);
     const setShowTankMenu = useGroupStore(state => state.setShowTankMenu);
 
-    const onCreate = async (fields: ITankCreationForm) => {
+    const onCreate = async (fields: any) => {
         const response = await createTank(fields, groupId);
         setShowTankMenu(false);
-        if (response.ok) await getTanks(groupId);
+        if (!response.error) await getTanks(groupId);
         // else return // Show error message
     }
 
@@ -27,7 +26,7 @@ const TankPopUp: React.FunctionComponent<ITankPopUpProps> = (props: ITankPopUpPr
             open={showTankMenu}
             onClose={() => setShowTankMenu(false)}
         >
-            <Form<ITankCreationForm>
+            <Form<any>
                 title="Create Tank"
                 externalError={false}
                 externalErrorText={"Invalid data"}

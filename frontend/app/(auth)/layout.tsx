@@ -3,9 +3,7 @@ import Image from 'next/image'
 import { redirect } from "next/navigation";
 import { authenticate } from "./actions";
 
-type IAppLayoutProps = {
-    children: React.ReactNode[] | React.ReactNode | undefined | null;
-}
+type IAppLayoutProps = { children?: React.ReactNode };
 
 export default async function AuthLayout({ children }: IAppLayoutProps) {
     //////////////////////////////////////////////////////

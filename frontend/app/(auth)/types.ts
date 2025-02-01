@@ -11,6 +11,7 @@ export interface ILoginForm {
 }
 
 // SIGNUP
+
 export interface ISignupForm {
     username: string,
     email: string,

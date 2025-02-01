@@ -1,18 +1,14 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { redirect } from 'next/navigation';
-
-import Layout, { Content } from 'antd/es/layout/layout';
+import Layout, { Content as AntDContent, Header as AntDHeader, Footer as AntDFooter } from 'antd/es/layout/layout';
 
 import { authenticate } from '@/app/(auth)/actions';
-import { getUserInfo, getUserPermissions } from '@/app/app/actions';
+import { getUserInfo } from '@/app/app/actions';
 import { StoreInitializer } from '@/app/lib/store/StoreInitializer';
 
 import Sidebar from '@/app/components/sidebar/Sidebar';
-import Header from '@/app/components/header/Header';
 
-type IAppLayoutProps = {
-    children: React.ReactNode[] | React.ReactNode | undefined | null;
-}
+type IAppLayoutProps = { children?: React.ReactNode };
 
 export default async function RootLayout({ children }: IAppLayoutProps) {
     //////////////////////////////////////////////////////////
@@ -23,14 +19,14 @@ export default async function RootLayout({ children }: IAppLayoutProps) {
     ///////////////////// LOAD APP STATE /////////////////////
     //////////////////////////////////////////////////////////
 
-    /// App data \\\
-    // const appDataResponse = await getAppData(); // Config, host, etc.
-
-    /// User info \\\
-    const userInfoResponse = await getUserInfo();
-
-    /// User permissions \\\
-    // const userPermissionsResponse = await getUserPermissions();
+    const [ userInfoResponse ] = await Promise.all([
+        /// App data \\\
+        // getAppData(), // Config, host, etc.
+        /// User info \\\
+        getUserInfo()
+        /// User permissions \\\
+        // getUserPermissions()
+    ])
 
     //////////////////////////////////////////////////////////
 
@@ -39,18 +35,28 @@ export default async function RootLayout({ children }: IAppLayoutProps) {
             {/* ////////////////////////////////////////////////////////// */}
             <StoreInitializer
                 app={{
-                    userInfo: userInfoResponse.data,
-                    permissions: {}, // userPermissionsResponse.data
+                    user: userInfoResponse.data,
+                    permissions: {
+                        isAuthenticated: true,
+                        isAdmin: true,
+                    },
                 }}
             />
             {/* ////////////////////////////////////////////////////////// */}
 
             <Sidebar />
             <Layout>
-                <Header />
-                <Content id="app-content" className="app-content">
+                <AntDHeader>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <div id="header" className="header">Header</div>
+                    </Suspense>
+                </AntDHeader>
+                <AntDContent id="app-content" className="app-content">
                     {children}
-                </Content>
+                </AntDContent>
+                <AntDFooter>
+                    <div id="footer" className="footer">Footer</div>
+                </AntDFooter>
             </Layout>
         </Layout >
     )

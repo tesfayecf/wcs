@@ -5,10 +5,10 @@
     /// NextJS - Frontend ///
     /////////////////////////
     {
-      "name": "🌐 Next.js Development",
+      "name": "🌐 Next.js Dev",
       "type": "node",
       "request": "launch",
-      "cwd": "${workspaceFolder}/frontend",
+      "cwd": "${workspaceFolder}",
       "runtimeExecutable": "pnpm",
       "restart": true,
       "env": {
@@ -20,10 +20,10 @@
       "console": "integratedTerminal",
       "skipFiles": [
         "<node_internals>/**",
-        "${workspaceFolder}/frontend/node_modules/**"
+        "${workspaceFolder}/node_modules/**"
       ],
       "resolveSourceMapLocations": [
-        "${workspaceFolder}/frontend/**",
+        "${workspaceFolder}/**",
         "!**/node_modules/**"
       ],
       "presentation": {
@@ -41,7 +41,7 @@
       "name": "🚀 Next.js Dev Turbo",
       "type": "node",
       "request": "launch",
-      "cwd": "${workspaceFolder}/frontend",
+      "cwd": "${workspaceFolder}",
       "runtimeExecutable": "pnpm",
       "restart": true,
       "env": {
@@ -53,7 +53,7 @@
       "console": "integratedTerminal",
       "skipFiles": [
         "<node_internals>/**",
-        "${workspaceFolder}/frontend/node_modules/**"
+        "${workspaceFolder}/node_modules/**"
       ],
       "presentation": {
         "hidden": false,
@@ -70,7 +70,7 @@
       "name": "⚡ Next.js Production",
       "type": "node",
       "request": "launch",
-      "cwd": "${workspaceFolder}/frontend",
+      "cwd": "${workspaceFolder}",
       "runtimeExecutable": "pnpm",
       "restart": true,
       "env": {
@@ -82,7 +82,7 @@
       "console": "integratedTerminal",
       "skipFiles": [
         "<node_internals>/**",
-        "${workspaceFolder}/frontend/node_modules/**"
+        "${workspaceFolder}/node_modules/**"
       ],
       "presentation": {
         "hidden": false,

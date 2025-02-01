@@ -32,7 +32,7 @@ export const useDashboardStore = create<Dashboard.IDashboardStore & IDashboardSt
         ...defualtDashboardStore,
 
         // Actions
-        setState: (partialState) => set((state) => { Object.assign(state, partialState); }),
+        setState: (partialState) => set((state) => { state = { ...state, ...partialState }; }),
         setGroups: (groups) => set((state) => { state.groups = groups; }),
         setGroupMenu: (groupMenu) => set((state) => { state.groupMenu = groupMenu; }),
         setCurrentWeather: (currentWeather) => set((state) => { state.currentWeather = currentWeather; }),

@@ -27,7 +27,7 @@ const Dashboard: React.FunctionComponent<IDashboardProps> = async (props: IDashb
             <StoreInitializer
                 dashboard={{
                     // Group
-                    groups: groupsResponse.data ?? [],
+                    groups: groupsResponse ? groupsResponse.data : [],
                     groupMenu: { id: -1, mode: "info", show: false },
                     // Weather
                     currentWeather: currentWeatherResponse.data,

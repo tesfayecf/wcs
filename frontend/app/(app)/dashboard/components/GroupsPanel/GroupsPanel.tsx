@@ -1,11 +1,11 @@
 "use client"
 import React from "react";
-import { Button, Col, Divider, Row, Segmented, Table } from "antd";
-import { ColumnsType } from "antd/es/table";
+import Link from "next/link";
 import Card from "antd/es/card/Card";
 import Meta from "antd/es/card/Meta";
+import { ColumnsType } from "antd/es/table";
+import { Button, Col, Divider, Row, Segmented, Table } from "antd";
 import { AppstoreOutlined, BarsOutlined, DeleteOutlined, EditOutlined, InfoOutlined, PlusOutlined } from "@ant-design/icons";
-import Link from "next/link";
 
 import { Api } from "@/app/lib/api/types";
 import { useDashboardStore } from "@/app/(app)/dashboard/store";
@@ -14,8 +14,10 @@ interface IGroupsPanelProps { };
 
 const GroupsPanel: React.FunctionComponent<IGroupsPanelProps> = (props: IGroupsPanelProps) => {
     const [mode, setMode] = React.useState<"grid" | "table">("grid");
-    const { groups, setGroupMenu } = useDashboardStore();
     const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
+    const { groups, setGroupMenu } = useDashboardStore();
+    const store = useDashboardStore();
+    console.log(store);
 
     const renderGridView = React.useCallback(() => {
 
@@ -99,9 +101,12 @@ const GroupsPanel: React.FunctionComponent<IGroupsPanelProps> = (props: IGroupsP
     return (
         <div className="groups-panel">
             <div className="mode-selector">
-                <Button icon={<PlusOutlined />} type="primary" onClick={() => setGroupMenu({ show: true, id: -1, mode: "create" })}>
-                    Create Group
-                </Button>
+                <Button 
+                    icon={<PlusOutlined />} 
+                    type="primary" 
+                    onClick={() => setGroupMenu({ show: true, id: -1, mode: "create" })}
+                    children="Create Group"
+                />
                 <Segmented
                     vertical={false}
                     options={[

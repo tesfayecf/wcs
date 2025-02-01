@@ -1,16 +1,16 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { redirect } from 'next/navigation';
-import Layout, { Content as AntDContent, Header as AntDHeader, Footer as AntDFooter } from 'antd/es/layout/layout';
+import Layout from 'antd/es/layout/layout';
 
 import { authenticate } from '@/app/(auth)/actions';
 import { getUserInfo } from '@/app/app/actions';
 import { StoreInitializer } from '@/app/lib/store/StoreInitializer';
 
-import Sidebar from '@/app/components/sidebar/Sidebar';
+import RootLayoutClient from '@/app/(app)/client';
 
-type IAppLayoutProps = { children?: React.ReactNode };
+type IRootLayoutProps = { children?: React.ReactNode };
 
-export default async function RootLayout({ children }: IAppLayoutProps) {
+export default async function RootLayout({ children }: IRootLayoutProps) {
     //////////////////////////////////////////////////////////
     if (!await authenticate()) redirect("/login"); ///////////
     //////////////////////////////////////////////////////////
@@ -44,20 +44,7 @@ export default async function RootLayout({ children }: IAppLayoutProps) {
             />
             {/* ////////////////////////////////////////////////////////// */}
 
-            <Sidebar />
-            <Layout>
-                <AntDHeader>
-                    <Suspense fallback={<div>Loading...</div>}>
-                        <div id="header" className="header">Header</div>
-                    </Suspense>
-                </AntDHeader>
-                <AntDContent id="app-content" className="app-content">
-                    {children}
-                </AntDContent>
-                <AntDFooter>
-                    <div id="footer" className="footer">Footer</div>
-                </AntDFooter>
-            </Layout>
+            <RootLayoutClient>{children}</RootLayoutClient>
         </Layout >
     )
 }

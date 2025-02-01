@@ -14,8 +14,8 @@ export interface IStoreInitializer {
 }
 
 export const StoreInitializer: React.FunctionComponent<IStoreInitializer> = (props: IStoreInitializer) => {
-    useAppStore.setState(props.app);
-    useDashboardStore.setState(props.dashboard);
-    useGroupStore.setState(props.group);
+    if (props.app) useAppStore.setState(props.app);
+    if (props.dashboard) useDashboardStore.setState(props.dashboard);
+    if (props.group) useGroupStore.setState(props.group);
     return null;
 };

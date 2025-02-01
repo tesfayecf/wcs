@@ -1,29 +1,19 @@
 .app-layout {
 
-    .sidebar {
+    .app-sidebar {
         width: 100%;
         height: 100vh;
         min-height: 100vh;
         padding: $spacing-xs;
         position: sticky;
         top: 0;
-
-        .sidebar-menu {
-            font-size: $font-size-md;
-        }
     }
 
-    .header {
+    .app-header {
         width: 100%;
         min-width: 100%;
         padding: 0px $spacing-md;
         background-color: $background-1-light;
-
-        .header-button {
-            width: 64px;
-            height: 64px;
-            font-size: 16px;
-        }
     }
 
     .app-content {
@@ -31,5 +21,10 @@
         height: 100%;
         padding: $spacing-lg $spacing-md;
         background-color: $background-3-light;
+    }
+
+    .app-footer {
+        width: 100%;
+        min-width: 100%;
     }
 }

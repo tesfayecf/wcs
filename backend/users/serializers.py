@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import User
+
 ######################
 ### AUTHENTICATION ###
 ######################
@@ -17,12 +18,24 @@ class ResetSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
     re_password = serializers.CharField(write_only=True)
 
+    # password and re_password must match
+    def validate(self, data):
+        if data['password'] != data['re_password']:
+            raise serializers.ValidationError("Passwords do not match.")
+        return data
+
 class SignupSerializer(serializers.Serializer):
     email = serializers.EmailField()
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     password = serializers.CharField(write_only=True)
     re_password = serializers.CharField(write_only=True)
+
+    # password and re_password must match
+    def validate(self, data):
+        if data['password'] != data['re_password']:
+            raise serializers.ValidationError("Passwords do not match.")
+        return data
 
 ###############
 ### SESSION ###

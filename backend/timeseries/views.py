@@ -1,8 +1,9 @@
+import time
 import pandas as pd
 from datetime import datetime, timedelta
 from statsmodels.tsa.arima.model import ARIMA
 
-from django.db.models import F, Min, Max, Avg
+from django.db.models import Q, F, Min, Max, Avg
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -92,6 +93,8 @@ class GetRecordsView(APIView):
                     or an error message if validation fails or an exception occurs.
         """
         try:
+            init_time = time.time()
+
             # 1. Validate input data
             serializer = GetRecordsSerializer(data=request.data)
             if not serializer.is_valid():
@@ -103,47 +106,55 @@ class GetRecordsView(APIView):
             # 2. Retrieve necessary objects
             # 3. Check for conflicts
             # 4. Perfom main operation
-            base_query = Record.timescale.filter(
-                channel__measure__sensor__tank__group__user=request.user,
-                time__range=(serializer.validated_data['start_time'], serializer.validated_data['end_time'])
+            base_query = Record.timescale.select_related(
+                'channel',
+                'channel__measure',
+                'channel__measure__sensor',
+                'channel__measure__sensor__tank'
+            ).filter(
+                Q(time__gte=serializer.validated_data['start_time']) & 
+                Q(time__lte=serializer.validated_data['end_time']) &
+                Q(channel__measure__sensor__tank__group__user=request.user)
             )
 
             if 'tank_id' in serializer.validated_data:
-                base_query = base_query.filter(channel__measure__sensor__tank__id=serializer.validated_data['tank_id'])
-            else:
-                base_query = base_query.filter(channel__measure__sensor__tank__group__id=serializer.validated_data['group_id'])
-
-            query = base_query.time_bucket(
-                # 'time', f"1 ${serializer.validated_data['timeframe']}"
-                'time', "1 minute"
-            ).values(
-                'time',
-                'channel__id',
-                'channel__measure__id',
-                'channel__measure__sensor__id'
-            ).annotate(
-                min=Min('value'),
-                max=Max('value'),
-                value=Avg('value'),
-            )
-
-            # Here we can process the readings based on the channel id (ie. convert magnituds, correct versions, etc.)
-            # Maybe this can be done in the client side
-
-            # In order to read a queryset, we have to iterate over it
-            readings = []
-            for row in query:
-                readings.append(
-                    {
-                        'time': row['time'],
-                        'min': row['min'],
-                        'max': row['max'],
-                        'value': row['value'],
-                        'channel': row['channel__id'],
-                        'measure': row['channel__measure__id'],
-                        'sensor': row['channel__measure__sensor__id'],
-                    }
+                base_query = base_query.filter(
+                    channel__measure__sensor__tank_id=serializer.validated_data['tank_id']
                 )
+            else:
+                base_query = base_query.filter(
+                    channel__measure__sensor__tank__group_id=serializer.validated_data['group_id']
+                )
+
+            timeframe = serializer.validated_data.get('timeframe', '1 day')
+            query = base_query.time_bucket(
+                'time', 
+                f"{timeframe}",
+            ).values(
+                'bucket',  # TimescaleDB's time bucket result
+                channel_id=F('channel__id'),
+                measure_id=F('channel__measure__id'),
+                sensor_id=F('channel__measure__sensor__id')
+            ).annotate(
+                min_value=Min('value'),
+                max_value=Max('value'),
+                avg_value=Avg('value')
+            ).order_by('bucket')  # Ensure consistent ordering
+
+            readings = [
+                {
+                    'time': row['bucket'],
+                    'min': row['min_value'],
+                    'max': row['max_value'],
+                    'value': row['avg_value'],
+                    'channel': row['channel_id'],
+                    'measure': row['measure_id'],
+                    'sensor': row['sensor_id'],
+                }
+                for row in query
+            ]
+
+            print(f"Retrieved {len(readings)} records in {time.time() - init_time} seconds.")
 
             # 5. Store response data in cache
             # 6. Prepare and return response

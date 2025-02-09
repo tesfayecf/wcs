@@ -45,11 +45,11 @@ It will also be used to style the more general elements of the component (backgr
 @import '../app/(app)/dashboard/components/GroupsPanel/styles/groupsPanel';
 @import '../app/(app)/dashboard/components/GroupsCharts/styles/groupsCharts';
 
-@import '../app/(app)/dashboard/components/SummaryWidget/styles/summaryWidget';
-@import '../app/(app)/dashboard/components/WeatherWidget/styles/weatherWidget';
-@import '../app/(app)/dashboard/components/GroupWidget/styles/groupWidget';
+// @import '../app/(app)/dashboard/components/SummaryWidget/styles/summaryWidget';
+// @import '../app/(app)/dashboard/components/WeatherWidget/styles/weatherWidget';
+//@import '../app/(app)/dashboard/components/GroupWidget/styles/groupWidget';
 
-// TANKS
+// GROUP
 @import '../app/(app)/group/[groupId]/styles/group';
 @import '../app/(app)/group/[groupId]/components/GroupInfo/styles/groupInfo';
 @import '../app/(app)/group/[groupId]/components/TankWidget/styles/tankWidget';
@@ -57,16 +57,16 @@ It will also be used to style the more general elements of the component (backgr
 @import '../app/(app)/group/[groupId]/components/TankPupUp/styles/tankPopUp';
 
 // COMPONENTS
+@import '../app/components/layout/header';
+@import '../app/components/layout/sidebar';
+@import '../app/components/layout/footer';
 @import '../app/components/button/styles/button';
 @import '../app/components/contentBox/styles/contentBox';
 @import '../app/components/form/styles/form';
-@import '../app/components/footer/styles/footer';
 @import '../app/components/loadingPage/styles/loadingPage';
 @import '../app/components/navbar/styles/navbar';
 @import '../app/components/popup/styles/popup';
 @import '../app/components/toolsBar/styles/toolsBar';
-@import '../app/components/sidebar/styles/sidebar';
-@import '../app/components/header/styles/header';
 
 // TEST
 @import "../app/(test)/test/charts/styles/charts";

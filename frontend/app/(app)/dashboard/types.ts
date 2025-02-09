@@ -1,6 +1,8 @@
 import { Api } from "@/app/lib/api/types";
 import { Group } from "../group/[groupId]/types";
+
 export namespace Dashboard {
+
     /// DASHBOARD STORE ///
     export interface IDashboardStore {
         groups: Group.IGroup[];

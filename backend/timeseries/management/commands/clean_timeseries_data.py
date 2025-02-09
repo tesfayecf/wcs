@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from utils.db_utils import truncate_tables
+from django.db import connection
 
 class Command(BaseCommand):
     help = "Clean all timeseries data by truncating relevant tables."
@@ -14,6 +14,8 @@ class Command(BaseCommand):
         ]
 
         # Clean the timeseries data
-        truncate_tables(tables_to_truncate)
+        with connection.cursor() as cursor:
+            for table in tables_to_truncate:
+                cursor.execute(f'TRUNCATE TABLE {table} CASCADE;')
 
         self.stdout.write(self.style.SUCCESS("Successfully cleaned all timeseries data."))

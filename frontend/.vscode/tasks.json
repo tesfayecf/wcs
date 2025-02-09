@@ -1,0 +1,110 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build All",
+      "dependsOn": [
+        "🎨 Compile TypeScript",
+        "🎨 Compile SCSS",
+        "🔄 Generate API Types",
+      ],
+      "dependsOrder": "parallel",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "isBackground": true
+    },
+
+    //////////////////////////
+    /// TypeScript Builld  ///
+    //////////////////////////
+    {
+      "label": "🎨 Compile TypeScript",
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "command": "pnpm",
+      "args": [
+        "tsc",
+        "--watch"
+      ],
+      "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    
+    /////////////////////////
+    /// Types Generation  ///
+    /////////////////////////
+    {
+      "label": "🔄 Generate API Types",
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/../backend"
+      },
+      "linux": {
+        "command": "watch",
+        "args": [
+          "-n",
+          "5",
+          "${workspaceFolder}/../backend/.venv/bin/python",
+          "./manage.py",
+          "generate_ts",
+          "--all",
+          "--trim",
+          "--enum_choices",
+          "-o",
+          "${workspaceFolder}/app/lib/api/types"
+        ],
+      },
+      "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": [],
+      "detail": "Run Django management command to generate TypeScript types in watch mode using watch"
+    },
+
+    ///////////////////
+    /// SCSS Build  ///
+    ///////////////////
+    {
+      "label": "🎨 Compile SCSS",
+      "type": "process",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "command": "npx",
+      "args": [
+        "sass",
+        "styles/app.scss:styles/app.css",
+        "--watch"
+      ],
+      "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": [],
+      "detail": "Compile SCSS files in watch mode"
+    }
+  ]
+}

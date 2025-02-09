@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
 import { App } from '@/app/app/types';
-import { Group } from '@/app/(app)/group/[groupId]/types';
 import { Dashboard } from '@/app/(app)/dashboard/types';
+import { Group } from '@/app/(app)/group/[groupId]/types';
 
 interface IDashboardStoreActions {
     setState: (state: Partial<Dashboard.IDashboardStore>) => void;
@@ -15,26 +15,27 @@ interface IDashboardStoreActions {
     setForecastWeather: (forecastWeather: Dashboard.IForecastWeather[]) => void;
 };
 
-const useDashboardStore = create(immer<Dashboard.IDashboardStore & IDashboardStoreActions>((set) => ({
-    // Group
+const defualtDashboardStore: Dashboard.IDashboardStore = {
     groups: [],
     groupMenu: {
-        id: 0,
-        mode: "",
+        id: -1,
+        mode: "info",
         show: false,
     },
-    // Weather
     currentWeather: null,
     forecastWeather: [],
+}
 
-    /// Actions ///
-    setState: (partialState: Partial<Dashboard.IDashboardStore>) => set((state) => Object.assign(state, partialState)),
-    // Group
-    setGroups: (groups: Group.IGroup[]) => set((state) => state.groups = groups),
-    setGroupMenu: (groupMenu: App.IUserMenu) => set((state) => state.groupMenu = groupMenu),
-    // Weather
-    setCurrentWeather: (currentWeather: Dashboard.ICurrentWeather) => set((state) => state.currentWeather = currentWeather),
-    setForecastWeather: (forecastWeather: Dashboard.IForecastWeather[]) => set((state) => state.forecastWeather = forecastWeather),
-})));
+export const useDashboardStore = create<Dashboard.IDashboardStore & IDashboardStoreActions>()(
+    immer((set) => ({
+        // Initial state
+        ...defualtDashboardStore,
 
-export default useDashboardStore;
+        // Actions
+        setState: (partialState) => set((state) => { state = { ...state, ...partialState }; }),
+        setGroups: (groups) => set((state) => { state.groups = groups; }),
+        setGroupMenu: (groupMenu) => set((state) => { state.groupMenu = groupMenu; }),
+        setCurrentWeather: (currentWeather) => set((state) => { state.currentWeather = currentWeather; }),
+        setForecastWeather: (forecastWeather) => set((state) => { state.forecastWeather = forecastWeather; }),
+    }))
+);

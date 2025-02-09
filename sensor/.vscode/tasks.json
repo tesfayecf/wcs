@@ -1,0 +1,100 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    ///////////////////////
+    /// Arduino Actions ///
+    ///////////////////////
+    {
+      "label": "⚡ Arduino: Compile",
+      "type": "shell",
+      "command": "arduino-cli",
+      "args": [
+        "compile",
+        "${workspaceFolder}/sensor/sensor.ino",
+        "--fqbn", "esp8266:esp8266:d1_mini_pro",
+        "--config-file", "${workspaceFolder}/sensor/arduino-cli/config.yml",
+        "--build-property", "compiler.cpp.extra_flags=-I${workspaceFolder}/sensor/src",
+        "--build-path", "${workspaceFolder}/sensor/build",
+        "--verbose"
+      ],
+      "group": {
+        "kind": "none",
+        "isDefault": false
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": {
+        "owner": "cpp",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      }
+    },
+    {
+      "label": "📤 Arduino: Upload",
+      "type": "shell",
+      "command": "arduino-cli",
+      "args": [
+        "upload",
+        "${workspaceFolder}/sensor/sensor.ino",
+        "--fqbn", "esp8266:esp8266:d1_mini_pro",
+        "--port", "/dev/ttyUSB0",
+      ],
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🔍 Arduino: Board List",
+      "type": "shell",
+      "command": "arduino-cli",
+      "args": ["board", "list"],
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🔄 Arduino: Core Update",
+      "type": "shell",
+      "command": "arduino-cli",
+      "args": ["core", "update-index"],
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🔌 Arduino: Build and Upload",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "⚡ Arduino: Compile",
+        "📤 Arduino: Upload"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

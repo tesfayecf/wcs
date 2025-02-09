@@ -1,7 +1,8 @@
-#include "app/App.cpp"  // BUG ALERT
-#include "app/App.h"
-#include "app/AppConfig.h"
-#include "utils/types.h"
+#include "Arduino.h"
+
+// #include "App.cpp"  // BUG ALERT
+#include "src/app/App.h"
+#include "src/app/AppConfig.h"
 
 // Create an instance of the AppConfig class to hold configuration data
 AppConfig appConfig;

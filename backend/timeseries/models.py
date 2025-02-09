@@ -1,10 +1,12 @@
 from django.db import models
 from timescale.db.models.models import TimescaleModel
 from timescale.db.models.fields import TimescaleDateTimeField
-from timescale.db.models.managers import TimescaleManager
+from django.core.validators import MinValueValidator
+
 from django.utils.timezone import now
 
 from resources.models import Sensor
+from django.core.exceptions import ValidationError
 
 ###############
 ### MEASURE ###
@@ -42,7 +44,7 @@ class Channel(models.Model):
     label = models.CharField(max_length=50)
     version = models.CharField(max_length=20)
     unit = models.CharField(max_length=20)
-    rate = models.FloatField()
+    rate = models.FloatField(validators=[MinValueValidator(0.0)])
     measure = models.ForeignKey(Measure, on_delete=models.CASCADE, related_name='channels', db_index=True)
 
     class Meta:
@@ -61,6 +63,10 @@ class Chunk(models.Model):
     measure = models.ForeignKey(Measure, on_delete=models.CASCADE, related_name='chunks', db_index=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+
+    def clean(self):
+        if self.end_time <= self.start_time:
+            raise ValidationError('End time must be after start time')
 
     class Meta:
         verbose_name = 'Chunk'

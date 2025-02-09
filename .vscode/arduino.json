@@ -1,7 +1,0 @@
-{
-	"sketch": "sensor\\sensor.ino",
-	"port": "COM5",
-	"board": "esp8266:esp8266:d1_mini",
-	"output": "sensor\\build",
-	"configuration": "xtal=80,vt=flash,exception=enabled,stacksmash=enabled,ssl=all,mmu=3232,non32xfer=fast,eesz=4M2M,ip=lm2f,dbg=Enabled,lvl=oom,wipe=none,baud=921600"
-}

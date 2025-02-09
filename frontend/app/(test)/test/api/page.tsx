@@ -24,8 +24,7 @@ const Api: React.FunctionComponent<IApiProps> = (props: IApiProps) => {
             Object.keys(apiInterface[endpointKey]).forEach((endpoint) => {
                 endpoints.push({
                     key: endpoint,
-                    address: apiInterface[endpointKey][endpoint].address,
-                    argKeys: apiInterface[endpointKey][endpoint].argsKeys,
+                    address: apiInterface[endpointKey][endpoint].endpoint,
                 });
             });
         });
@@ -59,13 +58,12 @@ const Api: React.FunctionComponent<IApiProps> = (props: IApiProps) => {
                             {selectedEndpointInfo && (
                                 <div>
                                     <h4>Address: {selectedEndpointInfo.address}</h4>
-                                    <h4>Argument Keys: {selectedEndpointInfo.argKeys.join(", ")}</h4>
                                 </div>
                             )}
                         </div>
                         <TextField
                             multiline
-                            rows={5}
+                            rows={10}
                             variant="outlined"
                             label="Request JSON Data"
                             value={requestData}

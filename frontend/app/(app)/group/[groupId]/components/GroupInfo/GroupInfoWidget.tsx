@@ -1,9 +1,9 @@
 import React from 'react';
 import ContentBox from '@/app/components/contentBox/ContentBox';
-import { IGroup } from '@/app/(app)/dashboard/types';
+import { Group } from "../../types";
 
 interface IGroupWidgetProps {
-    group: IGroup;
+    group: Group.IGroup;
 }
 
 // TOOD: maybe rename to groupStats

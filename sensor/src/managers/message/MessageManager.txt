@@ -1,0 +1,84 @@
+#include <queue>
+#include <map>
+
+// Helper struct for statistics
+struct MessageStats {
+    size_t sent_count;
+    size_t received_count;
+    size_t responded_count;
+};
+
+class MessageManager {
+private:
+    std::queue<Message> sent_queue;
+    std::queue<Message> received_queue;
+    std::map<std::pair<ActionType, char>, MessageStats> stats;
+
+public:
+    MessageManager() {}
+
+    // Send a message and add it to the sent queue
+    void sendMessage(Message& message) {
+        sent_queue.push(message);
+        auto action_key = std::make_pair(message.action_type, getActionNameChar(message));
+        stats[action_key].sent_count++;
+    }
+
+    // Receive a message and add it to the received queue
+    void receiveMessage(Message& message) {
+        received_queue.push(message);
+        auto action_key = std::make_pair(message.action_type, getActionNameChar(message));
+        stats[action_key].received_count++;
+    }
+
+    // Generate a response for the received message
+    Message generateResponse(Message& received_message) {
+        // Create a response message based on the received message
+        Message response_message = createResponse(received_message);
+        sendMessage(response_message);
+
+        auto action_key = std::make_pair(received_message.action_type, getActionNameChar(received_message));
+        stats[action_key].responded_count++;
+
+        // Remove the received message from the queue after responding
+        received_queue.pop();
+
+        return response_message;
+    }
+
+    // Handle response for a sent message
+    void handleResponse(Message& response_message) {
+        if (!sent_queue.empty()) {
+            sent_queue.pop();
+        }
+    }
+
+    // Get statistics based on action type and action name
+    MessageStats getStats(ActionType action_type, char action_name) {
+        auto action_key = std::make_pair(action_type, action_name);
+        return stats[action_key];
+    }
+
+private:
+    // Helper method to create a response message based on the received message
+    Message createResponse(Message& received_message) {
+        // Create a response based on the action type and other relevant fields
+        // This is just an example and should be customized according to your protocol
+        Message response(received_message.action_type, received_message.action_name, received_message.payload, received_message.payload_count, received_message.meta_info);
+        return response;
+    }
+
+    // Helper method to get the action name character from a message
+    char getActionNameChar(const Message& message) const {
+        switch (message.action_type) {
+            case ActionType::Register:
+                return static_cast<char>(message.action_name.register_action);
+            case ActionType::Data:
+                return static_cast<char>(message.action_name.data_action);
+            case ActionType::Command:
+                return static_cast<char>(message.action_name.command_action);
+            default:
+                return '\0';
+        }
+    }
+};

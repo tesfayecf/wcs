@@ -1,0 +1,15 @@
+board_manager:
+  additional_urls:
+    - file:///home/tesfa/Documents/WCS/Software/Development/WCS/sensor/arduino-cli/package_esp8266_index.json
+
+directories:
+  data: /home/tesfa/Documents/WCS/Software/Development/WCS/sensor/config
+  downloads: /home/tesfa/Documents/WCS/Software/Development/WCS/sensor/downloads
+  user: /home/tesfa/Documents/WCS/Software/Development/WCS/sensor
+
+libraries:
+  - ArduinoJson
+  - ESP8266WiFi
+  - PubSubClient
+  - Time
+  - Base64

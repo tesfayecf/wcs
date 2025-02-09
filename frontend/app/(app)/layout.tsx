@@ -1,20 +1,16 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
-
-import Layout, { Content } from 'antd/es/layout/layout';
+import Layout from 'antd/es/layout/layout';
 
 import { authenticate } from '@/app/(auth)/actions';
-import { getUserInfo, getUserPermissions } from '@/app/app/actions';
+import { getUserInfo } from '@/app/app/actions';
 import { StoreInitializer } from '@/app/lib/store/StoreInitializer';
 
-import Sidebar from '@/app/components/sidebar/Sidebar';
-import Header from '@/app/components/header/Header';
+import RootLayoutClient from '@/app/(app)/client';
 
-type IAppLayoutProps = {
-    children: React.ReactNode[] | React.ReactNode | undefined | null;
-}
+type IRootLayoutProps = { children?: React.ReactNode };
 
-export default async function RootLayout({ children }: IAppLayoutProps) {
+export default async function RootLayout({ children }: IRootLayoutProps) {
     //////////////////////////////////////////////////////////
     if (!await authenticate()) redirect("/login"); ///////////
     //////////////////////////////////////////////////////////
@@ -23,14 +19,14 @@ export default async function RootLayout({ children }: IAppLayoutProps) {
     ///////////////////// LOAD APP STATE /////////////////////
     //////////////////////////////////////////////////////////
 
-    /// App data \\\
-    // const appDataResponse = await getAppData(); // Config, host, etc.
-
-    /// User info \\\
-    const userInfoResponse = await getUserInfo();
-
-    /// User permissions \\\
-    const userPermissionsResponse = await getUserPermissions();
+    const [ userInfoResponse ] = await Promise.all([
+        /// App data \\\
+        // getAppData(), // Config, host, etc.
+        /// User info \\\
+        getUserInfo()
+        /// User permissions \\\
+        // getUserPermissions()
+    ])
 
     //////////////////////////////////////////////////////////
 
@@ -39,19 +35,16 @@ export default async function RootLayout({ children }: IAppLayoutProps) {
             {/* ////////////////////////////////////////////////////////// */}
             <StoreInitializer
                 app={{
-                    userInfo: userInfoResponse.data,
-                    permissions: {}, // userPermissionsResponse.data
+                    user: userInfoResponse.data,
+                    permissions: {
+                        isAuthenticated: true,
+                        isAdmin: true,
+                    },
                 }}
             />
             {/* ////////////////////////////////////////////////////////// */}
 
-            <Sidebar />
-            <Layout>
-                <Header />
-                <Content id="app-content" className="app-content">
-                    {children}
-                </Content>
-            </Layout>
+            <RootLayoutClient>{children}</RootLayoutClient>
         </Layout >
     )
 }

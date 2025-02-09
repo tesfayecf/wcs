@@ -1,0 +1,305 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    ////////////////////////
+    /// Django - Backend ///
+    ////////////////////////
+    {
+      "name": "🐍 Django Development",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["runserver", "--nothreading"],
+      "django": true,
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "DJANGO_DEBUG": "True",
+        "DJANGO_SETTINGS_MODULE": "backend.settings",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Django - Backend",
+        "order": 1
+      }
+    },
+    {
+      "name": "🔌 Django ASGI (Daphne)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "daphne",
+      "cwd": "${workspaceFolder}",
+      "args": [
+        "-b", "0.0.0.0",
+        "-p", "8000",
+        "backend.asgi:application"
+      ],
+      "django": true,
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "DJANGO_DEBUG": "True",
+        "DJANGO_SETTINGS_MODULE": "backend.settings",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Django - Backend",
+        "order": 2
+      }
+    },
+    {
+      "name": "🎯 Django Production",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["runserver", "--noreload", "--nothreading"],
+      "django": true,
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "DJANGO_DEBUG": "False",
+        "DJANGO_SETTINGS_MODULE": "backend.settings",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Django - Backend",
+        "order": 3
+      }
+    },
+
+    /////////////////////////
+    /// Django - Test ///
+    /////////////////////////
+    {
+      "name": "🧪 Django Test",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": [],
+      "django": true,
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Django - Test",
+        "order": 1
+      }
+    },
+
+    /////////////////////////
+    /// Django - Database ///
+    /////////////////////////
+    // Reset
+    {
+      "name": "🗄️ Database: Reset",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/create_database.py",
+      "python": "python3",
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Database Management",
+        "order": 1
+      }
+    },
+
+    {
+      "name": "🗄️ Test Database: Reset",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/create_test_database.py",
+      "python": "python3",
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Database Management",
+        "order": 1
+      }
+    },
+
+    // Make Migrations
+    {
+      "name": "📦 Database: Make Migrations",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["makemigrations"],
+      "django": true,
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Database Management",
+        "order": 2
+      }
+    },
+
+    // Migrate
+    {
+      "name": "🔄 Database: Migrate",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["migrate"],
+      "django": true,
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Database Management",
+        "order": 2
+      }
+    },
+
+    // Database Clean Commands
+    {
+      "name": "🧹 Clean: Users",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["clean_users_data"],
+      "django": true,
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Database - Clean",
+        "order": 3
+      }
+    },
+    {
+      "name": "🧹 Clean: Resources",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["clean_resources_data"],
+      "django": true,
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Database - Clean",
+        "order": 4
+      }
+    },
+    {
+      "name": "🧹 Clean: Timeseries",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["clean_timeseries_data"],
+      "django": true,
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Database - Clean",
+        "order": 5
+      }
+    },
+
+    // Create
+    {
+      "name": "📝 Create: Users",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["create_users_data"],
+      "django": true,
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Database - Create",
+        "order": 6
+      }
+    },
+    {
+      "name": "📝 Create: Resources",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["create_resources_data"],
+      "django": true,
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Database - Create",
+        "order": 7
+      }
+    },
+    {
+      "name": "📝 Create: Timeseries",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["create_timeseries_data"],
+      "django": true,
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "presentation": {
+        "hidden": false,
+        "group": "Database - Create",
+        "order": 8
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "🧹 Clean All Data",
+      "configurations": [
+        "🧹 Clean: Users",
+        "🧹 Clean: Resources",
+        "🧹 Clean: Timeseries"
+      ],
+      "stopAll": true,
+      "presentation": {
+        "group": "database",
+        "order": 1
+      }
+    },
+    {
+      "name": "📝 Create All Data",
+      "configurations": [
+        "📝 Create: Users",
+        "📝 Create: Resources",
+        "📝 Create: Timeseries"
+      ],
+      "stopAll": true,
+      "presentation": {
+        "group": "database",
+        "order": 2
+      }
+    }
+  ]
+}

@@ -20,9 +20,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
                     </div>
                     <div id="subtitle" className="subtitle">
                         <Typography.Text className="text" >Don't have an account yet?</Typography.Text>
-                        <Typography.Link className="text" href="/login">
-                            <Link href="/signup">Sign up</Link>
-                        </Typography.Link>
+                        <Link href="/signup">Sign up</Link>
                     </div>
                 </div>
                 <div id="login-form" className="login-form">
@@ -68,11 +66,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
                             </Typography.Link>
                         </div>
                         <div id="buttons" className="buttons">
-                            <Button
-                                type="primary"
-                                className="button-item"
-                                onClick={() => form.submit()}
-                            >
+                            <Button type="primary" className="button-item" htmlType="submit">
                                 Login
                             </Button>
                         </div>

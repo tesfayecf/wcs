@@ -13,9 +13,10 @@ export const handleSendRequest = async (selectedEndpoint, requestData) => {
         }
     }
 
-    const requestDataObject = JSON.parse(requestData); // Parse JSON string to object
-    const valuesArray = Object.values(requestDataObject); // Get values from object as array
-    const response = await serverRequest(endpointKey, selectedEndpoint, valuesArray);
-    return JSON.stringify(response.data); // Assuming response needs to be converted to string for display
+    // Parse JSON string to object
+    const requestDataObject = JSON.parse(requestData); 
 
+    // Send request
+    const response = await serverRequest(endpointKey, selectedEndpoint, requestDataObject);
+    return JSON.stringify(response.data); // Assuming response needs to be converted to string for display
 };

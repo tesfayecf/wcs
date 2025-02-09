@@ -29,14 +29,14 @@ const Group: React.FunctionComponent<IDashboardProps> = async (props: IDashboard
 
     return (
         <div className={"group"}>
-            <StoreInitializer
+            {/* <StoreInitializer
                 group={{
                     groupId: parseInt(props.params.groupId),
                     group: groupRes.data,
                     tanks: tanksRes.data,
                 }}
-            />
-            <div className={"status"}>
+            /> */}
+            {/* <div className={"status"}>
                 <GroupInfoWidget group={groupRes.data} />
                 <GroupDescription description={groupRes.data.description} />
                 <CreateTankWidget />
@@ -54,7 +54,7 @@ const Group: React.FunctionComponent<IDashboardProps> = async (props: IDashboard
                     <DataWidget />
                 </div>
             </div>
-            <TankPopUp />
+            <TankPopUp /> */}
         </div>
     )
 }

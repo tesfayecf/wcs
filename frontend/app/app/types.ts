@@ -6,18 +6,20 @@ export namespace App {
         status: {
             isLoading: boolean;
             isWaiting: boolean;
-            isError: boolean;
             isIdle: boolean;
+            isError: boolean;
         },
         connection: {
             isConnected: boolean;
-            isReconnecting: boolean;
+            isConnecting: boolean;
             isIdle: boolean;
             isError: boolean;
         },
-        isAuthenticated: boolean;
-        userInfo: Api.Users.User;
-        permissions: any; // Api.Users.Permission[];
+        permissions: {
+            isAuthenticated: boolean;
+            isAdmin: boolean;
+        }, // IPermissions -> Api.Users.Permission[]
+        user: IUser;
     }
 
     /// USER ///

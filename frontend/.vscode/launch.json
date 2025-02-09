@@ -1,0 +1,95 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    /////////////////////////
+    /// NextJS - Frontend ///
+    /////////////////////////
+    {
+      "name": "🌐 Next.js Dev",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "pnpm",
+      "restart": true,
+      "env": {
+        "NODE_ENV": "development",
+        "NEXT_TELEMETRY_DISABLED": "1",
+        "PORT": "3000"
+      },
+      "runtimeArgs": ["run-script", "dev"],
+      "console": "integratedTerminal",
+      "skipFiles": [
+        "<node_internals>/**",
+        "${workspaceFolder}/node_modules/**"
+      ],
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ],
+      "presentation": {
+        "hidden": false,
+        "group": "NextJS - Frontend",
+        "order": 1
+      },
+      "serverReadyAction": {
+        "pattern": "started server on .+, url: (https?://.+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
+      }
+    },
+    {
+      "name": "🚀 Next.js Dev Turbo",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "pnpm",
+      "restart": true,
+      "env": {
+        "NODE_ENV": "development",
+        "NEXT_TELEMETRY_DISABLED": "1",
+        "PORT": "3000"
+      },
+      "runtimeArgs": ["run", "dev::turbo"],
+      "console": "integratedTerminal",
+      "skipFiles": [
+        "<node_internals>/**",
+        "${workspaceFolder}/node_modules/**"
+      ],
+      "presentation": {
+        "hidden": false,
+        "group": "NextJS - Frontend",
+        "order": 2
+      },
+      "serverReadyAction": {
+        "pattern": "started server on .+, url: (https?://.+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
+      }
+    },
+    {
+      "name": "⚡ Next.js Production",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "pnpm",
+      "restart": true,
+      "env": {
+        "NODE_ENV": "production",
+        "NEXT_TELEMETRY_DISABLED": "1",
+        "PORT": "3000"
+      },
+      "runtimeArgs": ["run-script", "start"],
+      "console": "integratedTerminal",
+      "skipFiles": [
+        "<node_internals>/**",
+        "${workspaceFolder}/node_modules/**"
+      ],
+      "presentation": {
+        "hidden": false,
+        "group": "NextJS - Frontend",
+        "order": 3
+      }
+    }
+  ],
+  "compounds": []
+}

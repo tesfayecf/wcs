@@ -96,12 +96,19 @@ class ChunkSerializer(serializers.ModelSerializer):
 class TimeframeChoices(serializers.ChoiceField):
     def __init__(self, **kwargs):
         choices = (
-            ('minute', 'minute'),
-            ('hour', 'hour'),
-            ('day', 'day'),
-            ('week', 'week'),
-            ('month', 'month'),
-            ('year', 'year'),
+            ('1 minute', '1 minute'),
+            ('5 minutes', '5 minute'),
+            ('15 minutes', '15 minute'),
+            ('1 hour', '1 hour'),
+            ('3 hours', '3 hour'),
+            ('1 day', '1 day'),
+            ('3 days', '3 day'),
+            ('1 week', '1 week'),
+            ('2 weeks', '2 week'),
+            ('1 month', '1 month'),
+            ('3 months', '3 month'),
+            ('6 months', '6 month'),
+            ('1 year', '1 year'),
         )
         super().__init__(choices=choices, **kwargs)
 

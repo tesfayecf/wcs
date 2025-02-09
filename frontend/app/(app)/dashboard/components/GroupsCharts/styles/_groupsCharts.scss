@@ -1,3 +1,44 @@
 .groups-charts {
-    padding: $spacing-md 0px;
+    padding: $spacing-md 0;
+
+    .chart-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        gap: $spacing-md;
+
+        .chart-filters {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+            align-items: center;
+            gap: $spacing-md;
+
+            .timeframe {
+                margin: $spacing-md 0;
+                border-radius: 4px;
+
+                .timeframe-item {
+                    border-radius: 8px;
+                    margin: 0 $spacing-xxs;
+                    transition: background-color 0.3s;
+
+                    &:hover {
+                        background-color: $background-3-light;
+                    }
+                }
+            }
+
+            .period {
+                width: 200px;
+            }
+        }
+
+        .chart {
+            width: 100%;
+        }
+    }
 }

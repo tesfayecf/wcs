@@ -168,13 +168,13 @@
       }
     },
 
-    // Database Clear Commands
+    // Database Clean Commands
     {
-      "name": "🧹 Clear: Users",
+      "name": "🧹 Clean: Users",
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/manage.py",
-      "args": ["clear_users_data"],
+      "args": ["clean_users_data"],
       "django": true,
       "console": "integratedTerminal",
       "env": {
@@ -182,16 +182,16 @@
       },
       "presentation": {
         "hidden": false,
-        "group": "Database - Clear",
+        "group": "Database - Clean",
         "order": 3
       }
     },
     {
-      "name": "🧹 Clear: Resources",
+      "name": "🧹 Clean: Resources",
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/manage.py",
-      "args": ["clear_resources_data"],
+      "args": ["clean_resources_data"],
       "django": true,
       "console": "integratedTerminal",
       "env": {
@@ -199,16 +199,16 @@
       },
       "presentation": {
         "hidden": false,
-        "group": "Database - Clear",
+        "group": "Database - Clean",
         "order": 4
       }
     },
     {
-      "name": "🧹 Clear: Timeseries",
+      "name": "🧹 Clean: Timeseries",
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/manage.py",
-      "args": ["clear_timeseries_data"],
+      "args": ["clean_timeseries_data"],
       "django": true,
       "console": "integratedTerminal",
       "env": {
@@ -216,7 +216,7 @@
       },
       "presentation": {
         "hidden": false,
-        "group": "Database - Clear",
+        "group": "Database - Clean",
         "order": 5
       }
     },
@@ -276,11 +276,11 @@
   ],
   "compounds": [
     {
-      "name": "🧹 Clear All Data",
+      "name": "🧹 Clean All Data",
       "configurations": [
-        "🧹 Clear: Users",
-        "🧹 Clear: Resources",
-        "🧹 Clear: Timeseries"
+        "🧹 Clean: Users",
+        "🧹 Clean: Resources",
+        "🧹 Clean: Timeseries"
       ],
       "stopAll": true,
       "presentation": {

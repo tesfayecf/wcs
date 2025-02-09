@@ -220,7 +220,6 @@ class SensorSerializer(serializers.ModelSerializer):
         model = Sensor
         fields = '__all__'
 
-
 class SensorInfoSerializer(serializers.ModelSerializer): 
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(max_length=255)

@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from utils.db_utils import truncate_tables
+from django.db import connection
 
 class Command(BaseCommand):
     help = "Clean all dummy data by truncating relevant tables."
@@ -12,7 +12,9 @@ class Command(BaseCommand):
             'resources_sensor', # Table for sensors
         ]
 
-        # Clean the dummy data
-        truncate_tables(tables_to_truncate)
+        # Clean the resources data
+        with connection.cursor() as cursor:
+            for table in tables_to_truncate:
+                cursor.execute(f'TRUNCATE TABLE {table} CASCADE;')
 
         self.stdout.write(self.style.SUCCESS("Successfully cleaned all dummy data."))

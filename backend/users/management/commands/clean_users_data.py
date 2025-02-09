@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from backend.utils.db_utils import truncate_tables
+from django.db import connection
 
 class Command(BaseCommand):
     help = "Clean all user data by truncating relevant tables."
@@ -12,7 +12,9 @@ class Command(BaseCommand):
             'users_user_userpermission',    # Django's permission table
         ]
 
-        # Clean the user data
-        truncate_tables(tables_to_truncate)
+        # Clean the users data
+        with connection.cursor() as cursor:
+            for table in tables_to_truncate:
+                cursor.execute(f'TRUNCATE TABLE {table} CASCADE;')
 
         self.stdout.write(self.style.SUCCESS("Successfully cleaned all user data."))

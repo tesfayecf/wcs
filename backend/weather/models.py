@@ -6,7 +6,7 @@ class Current(models.Model):
     Model to store the current weather data for a city.
     """
     
-    city_name = models.CharField(max_length=255)
+    city_name = models.CharField(max_length=255, unique=True)
     lon = models.FloatField(help_text="Longitude of the city.")
     lat = models.FloatField(help_text="Latitude of the city.")
     weather_main = models.CharField(max_length=255, help_text="Main weather condition.")
@@ -22,7 +22,6 @@ class Current(models.Model):
     timestamp = models.DateTimeField(auto_now=True, help_text="Timestamp of the weather data update.")
 
     class Meta:
-        unique_together = ('city_name',)
         verbose_name = 'Current Weather Data'
         verbose_name_plural = 'Current Weather Data'
 

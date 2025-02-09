@@ -70,14 +70,18 @@ MIDDLEWARE = [
 
 DATABASES = {
     "default": {
-        "ENGINE": environ.get('DB_ENGINE'),
+        "ENGINE": 'timescale.db.backends.postgresql',
         "NAME": environ.get('DB_NAME'),
         "USER": environ.get('DB_USER'),
         "PASSWORD": environ.get('DB_PASSWORD'),
         "HOST": environ.get('DB_HOST'),
         "PORT": environ.get('DB_PORT'),
         "TEST": {
-            "NAME": "test_database",  # Specify a custom test database name
+            "NAME": environ.get('TEST_DB_NAME'),
+            "USER": environ.get('TEST_DB_USER'),
+            "PASSWORD": environ.get('TEST_DB_PASSWORD'),
+            "HOST": environ.get('TEST_DB_HOST'),
+            "PORT": environ.get('TEST_DB_PORT'),
         },
     },
 }
@@ -102,8 +106,8 @@ CSRF_COOKIE_SAMESITE = 'Lax'  # or 'Strict'
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000", # Allow request from NextJS Server
-    "http://127.0.0.1:3000", # Allow request from NextJS Server
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
 ########################### REST FRAMEWORK ###########################

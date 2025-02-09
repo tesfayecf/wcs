@@ -1,7 +1,6 @@
 import pytest
 from django.contrib.auth import get_user_model
 from .models import Group, Tank, Sensor
-from django.db.utils import IntegrityError
 
 User = get_user_model()
 
@@ -34,11 +33,6 @@ class TestGroupModel:
         assert group.location == 'Test Location', "Group location does not match"
         assert group.user == user, "Group user does not match"
 
-    # def test_group_unique_name(self, user):
-    #     Group.objects.create(name='Test Group', location='Test Location', user=user)
-    #     with pytest.raises(IntegrityError, match="unique constraint"):
-    #         Group.objects.create(name='Test Group', location='Test Location', user=user)
-
     def test_group_deletion_cascade(self, group):
         group_id = group.id
         group.delete()
@@ -54,11 +48,6 @@ class TestTankModel:
         assert tank.is_active, "Tank should be active"
         assert tank.group == group, "Tank group does not match"
 
-    # def test_tank_unique_name_within_group(self, group):
-    #     Tank.objects.create(name='Test Tank', type='Storage', capacity=100, is_active=True, group=group)
-    #     with pytest.raises(IntegrityError, match="unique constraint"):
-    #         Tank.objects.create(name='Test Tank', type='Storage', capacity=200, is_active=False, group=group)
-
     def test_tank_deletion_cascade(self, tank):
         tank_id = tank.id
         tank.delete()
@@ -72,17 +61,6 @@ class TestSensorModel:
         assert sensor.sensor_id == '123', "Sensor ID does not match"
         assert sensor.is_active, "Sensor should be active"
         assert sensor.tank == tank, "Sensor tank does not match"
-
-    # def test_sensor_unique_id(self, tank):
-    #     Sensor.objects.create(sensor_id='123', is_active=True, tank=tank)
-    #     with pytest.raises(IntegrityError, match="unique constraint"):
-    #         Sensor.objects.create(sensor_id='123', is_active=True, tank=tank)
-
-    # def test_one_sensor_per_tank(self, tank):
-    #     Sensor.objects.create(sensor_id='Sensor 1', is_active=True, tank=tank)
-    #     with pytest.raises(IntegrityError, match="unique constraint"):
-    #         Sensor.objects.create(sensor_id='Sensor 2', is_active=True, tank=tank)
-    #     assert Sensor.objects.filter(tank=tank).count() == 1, "Tank should have only one sensor"
 
     def test_sensor_deletion(self, sensor):
         sensor_id = sensor.id

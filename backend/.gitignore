@@ -84,7 +84,7 @@ target/
 __pycache__/
 local_settings.py
 
-/venv
+.venv/
 .env*
 db.sqlite3
 static

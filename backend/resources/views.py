@@ -63,7 +63,7 @@ class CreateGroupView(APIView):
                 user=request.user
             )
             
-            # 5. Store respnse data in cache
+            # 5. Store response data in cache
             cache_key = f"group_{group.id}"
             cache.set(cache_key, group, timeout=CACHE_TIMEOUT)
             
@@ -102,13 +102,13 @@ class GetGroupView(APIView):
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
             # 2. Retrieve necessary objects
-            group = get_group(serializer.validated_data['id'], request.user)
+            group = serializer.validated_data['group']
             if not group:
                 return Response({'Bad Request': 'Group not found'}, status=status.HTTP_400_BAD_REQUEST)
             
             # 3. Check for conflicts
             # 4. Perform main operation
-            # 5. Store respnse data in cache
+            # 5. Store response data in cache
             # 6. Prepare and return response
             serializer = GroupSerializer(group)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -148,7 +148,7 @@ class GetGroupsView(APIView):
 
             # 3. Check for conflicts
             # 4. Perform main operation
-            # 5. Store respnse data in cache
+            # 5. Store response data in cache
             # 6. Prepare and return response
             serializer = GroupSerializer(groups, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -201,7 +201,7 @@ class UpdateGroupView(APIView):
                 setattr(group, attr, value)
             group.save()
 
-            # 5. Store respnse data in cache
+            # 5. Store response data in cache
             cache_key = f"group_{group.id}"
             cache.set(cache_key, group, timeout=CACHE_TIMEOUT)
             
@@ -248,7 +248,7 @@ class DeleteGroupView(APIView):
             # 4. Perform main operation
             group.delete()
 
-            # 5. Store respnse data in cache
+            # 5. Store response data in cache
             # 6. Prepare and return response
             return Response(status=status.HTTP_204_NO_CONTENT)
         
@@ -315,7 +315,7 @@ class GetGroupInfoView(APIView):
                 'average_capacity': group.average_capacity or 0,
             }
 
-            # 5. Store respnse data in cache
+            # 5. Store response data in cache
             cache_key = f"group_info_{group.id}"
             cache.set(cache_key, info, timeout=CACHE_TIMEOUT)
 
@@ -523,7 +523,7 @@ class GetTankView(APIView):
             if not serializer.is_valid():
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            tank = Tank.objects.filter(pk=serializer.validated_data['id']).first()
+            tank = serializer.validated_data['tank']
             if not tank:
                 return Response({'Bad Request': 'Tank not foundt'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -561,7 +561,7 @@ class GetTanksView(APIView):
             if not serializer.is_valid():
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            group = get_group(serializer.validated_data['group'], request.user)
+            group = serializer.validated_data['group']
             if not group:
                 return Response({'Bad Request': 'Group not found'}, status=status.HTTP_400_BAD_REQUEST)
 

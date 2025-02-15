@@ -74,7 +74,7 @@ class CreateGroupSerializer(serializers.Serializer):
     description = serializers.CharField(allow_blank=True)
 
 class GetGroupSerializer(serializers.Serializer):
-    id = serializers.IntegerField(required=True)
+    group = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all())
 
 class GetGroupInfoSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=True)
@@ -116,7 +116,7 @@ class TankSerializer(serializers.ModelSerializer):
             'is_active': instance.is_active,
             'edited_at': instance.edited_at,
             'created_at': instance.created_at,
-            'group': instance.group
+            'group': instance.group.id
         }
 
     class Meta:
@@ -162,7 +162,7 @@ class CreateTankSerializer(serializers.Serializer):
     group = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all())
 
 class GetTankSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
+    tank = serializers.PrimaryKeyRelatedField(queryset=Tank.objects.all())
 
 class GetTanksSerializer(serializers.Serializer):
     group = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all())

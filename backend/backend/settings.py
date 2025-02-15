@@ -11,6 +11,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Development mode
+DEBUG = True
 DEVELOPMENT_MODE = environ.get('DEVELOPMENT_MODE')
 
 # Secret key
@@ -155,10 +156,9 @@ CACHES = {
 ########################### STATIC FILES ###########################
 
 STATIC_URL = '/static/'
-STATIC_ROOT = path.join(BASE_DIR, 'static')
+STATIC_ROOT = "" # Production only
 STATICFILES_DIRS = [
-    path.join(STATIC_ROOT, 'rest_framework'),
-    path.join(STATIC_ROOT, 'admin'),
+    path.join(BASE_DIR, 'static/'),
 ]
 
 ########################### INTERNATIONALIZATION ###########################

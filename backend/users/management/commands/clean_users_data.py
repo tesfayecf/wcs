@@ -11,10 +11,13 @@ class Command(BaseCommand):
             'users_user_groups',            # Table linking users to groups
             'users_user_userpermission',    # Django's permission table
         ]
-
+        
         # Clean the users data
         with connection.cursor() as cursor:
             for table in tables_to_truncate:
-                cursor.execute(f'TRUNCATE TABLE {table} CASCADE;')
+                try:
+                    cursor.execute(f'TRUNCATE TABLE {table} CASCADE;')
+                except Exception as e:
+                    self.stdout.write(self.style.ERROR(f"Error truncating table {table}: {e}"))
 
         self.stdout.write(self.style.SUCCESS("Successfully cleaned all user data."))

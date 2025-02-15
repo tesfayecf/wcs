@@ -60,13 +60,13 @@ It will also be used to style the more general elements of the component (backgr
 @import '../app/components/layout/header';
 @import '../app/components/layout/sidebar';
 @import '../app/components/layout/footer';
-@import '../app/components/button/styles/button';
-@import '../app/components/contentBox/styles/contentBox';
-@import '../app/components/form/styles/form';
-@import '../app/components/loadingPage/styles/loadingPage';
-@import '../app/components/navbar/styles/navbar';
-@import '../app/components/popup/styles/popup';
-@import '../app/components/toolsBar/styles/toolsBar';
+@import '../app/components/button/button';
+@import '../app/components/contentBox/contentBox';
+@import '../app/components/form/form';
+@import '../app/components/loading/loading';
+@import '../app/components/navbar/navbar';
+@import '../app/components/popup/popup';
+@import '../app/components/toolsBar/toolsBar';
 
 // TEST
 @import "../app/(test)/test/charts/styles/charts";

@@ -1,13 +1,13 @@
 'use client'
 import React from "react";
-import LoadingPage from "@/app/components/loadingPage/LoadingPage";
+import Loading from "@/app/components/loading/Loading";
 import { useAppStore } from "@/app/app/store";
 
 interface IProps { }
 
 const LoadingState: React.FunctionComponent<IProps> = (props: IProps) => {
     const isLoading = useAppStore(state => state.status.isLoading)
-    return isLoading ? <LoadingPage /> : null
+    return isLoading ? <Loading /> : null
 }
 
 export default LoadingState;

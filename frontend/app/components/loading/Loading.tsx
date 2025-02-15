@@ -1,14 +1,14 @@
 'use client'
 import React from "react";
-import LoadingSVG from "@/app/components/loadingPage/LoadingSVG";
+import LoadingSVG from "@/app/components/loading/LoadingSVG";
 
-interface ILoadingPageProps {
+interface ILoadingProps {
     text?: string;
     overlayOpacity?: number;
     style?: React.CSSProperties;
 }
 
-const LoadingPage: React.FunctionComponent<ILoadingPageProps> = (props: ILoadingPageProps) => {
+const Loading: React.FunctionComponent<ILoadingProps> = (props: ILoadingProps) => {
     return (
         <LoadingSVG
             text={props.text ?? ""}
@@ -18,4 +18,4 @@ const LoadingPage: React.FunctionComponent<ILoadingPageProps> = (props: ILoading
     )
 }
 
-export default LoadingPage;
+export default Loading;

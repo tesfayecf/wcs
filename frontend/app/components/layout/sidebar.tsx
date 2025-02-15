@@ -11,9 +11,7 @@ import { DashboardOutlined, LineChartOutlined, SettingOutlined } from '@ant-desi
 interface ISidebarProps { }
 
 const Sidebar: React.FunctionComponent<ISidebarProps> = (props: ISidebarProps) => {
-
     const rootPath = usePathname().split("/")[1];
-
     return (
         <div id="sidebar" className="sidebar">
             <div className="demo-logo-vertical" style={{ height: '52px', background: 'rgba(255, 255, 255, 0.2)', margin: '16px' }} />
